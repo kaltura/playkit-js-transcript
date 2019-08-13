@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 42 (36781) - http://www.bohemiancoding.com/sketch -->
+    <title>Play</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Play">
+            <rect id="Bounds" x="0" y="0" width="32" height="32"></rect>
+            <path d="M24.9001742,14.4125655 C26.3039071,15.2899011 26.2982643,16.71587 24.9001742,17.5896789 L10.5416833,26.5637616 C9.13795039,27.4410972 8,26.8110994 8,25.1479935 L8,6.85425086 C8,5.1950081 9.14359316,4.56467388 10.5416833,5.43848277 L24.9001742,14.4125655 Z" id="Triangle" fill="#FFFFFF"></path>
+        </g>
+    </g>
+</svg>

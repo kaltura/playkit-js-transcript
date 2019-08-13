@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 42 (36781) - http://www.bohemiancoding.com/sketch -->
+    <title>Pause</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Pause">
+            <rect id="Bounds" x="0" y="0" width="32" height="32"></rect>
+            <path d="M8,8.99508929 C8,7.8932319 8.88772964,7 10,7 C11.1045695,7 12,7.8926228 12,8.99508929 L12,23.0049107 C12,24.1067681 11.1122704,25 10,25 C8.8954305,25 8,24.1073772 8,23.0049107 L8,8.99508929 Z M20,8.99508929 C20,7.8932319 20.8877296,7 22,7 C23.1045695,7 24,7.8926228 24,8.99508929 L24,23.0049107 C24,24.1067681 23.1122704,25 22,25 C20.8954305,25 20,24.1073772 20,23.0049107 L20,8.99508929 Z" fill="#FFFFFF"></path>
+        </g>
+    </g>
+</svg>
