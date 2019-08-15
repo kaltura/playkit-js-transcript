@@ -25,10 +25,10 @@ import {
 } from "@playkit-js-contrib/ui";
 import Stage, { StageProps } from "./shared/components/Stage";
 import {
-    CuePointListAction,
-    KalturaAnnotation,
-    KalturaCuePointFilter,
-    KalturaCuePointType,
+    // CuePointListAction,
+    // KalturaAnnotation,
+    // KalturaCuePointFilter,
+    // KalturaCuePointType,
     KalturaCaptionAssetFilter,
     CaptionAssetListAction,
     KalturaCaptionAsset,
@@ -37,9 +37,11 @@ import {
 import { getContribLogger } from "@playkit-js-contrib/common";
 
 import { RawHotspotCuepoint } from "./shared/hotspot";
-import { convertToTranscript } from "./shared/cuepoints";
+// import { convertToTranscript } from "./shared/cuepoints";
 import { MenuIcon } from "./components/menu-icon";
 import { Transcript } from "./components/Transcript";
+
+import { getCaptionsByFormat } from "./utils";
 
 const isDev = true; // TODO - should be provided by Omri Katz as part of the cli implementation
 const pluginName = `transcript${isDev ? "-local" : ""}`;
@@ -54,7 +56,7 @@ export class TranscriptPlugin extends PlayerContribPlugin
     static defaultConfig = {};
 
     private _overlay: OverlayItem | null = null;
-    private _transcript: RawHotspotCuepoint[] = [];
+    private _captionsList: RawHotspotCuepoint[] = [];
     private _kalturaClient = new KalturaClient();
 
     onPluginSetup(config: ContribConfig): void {
@@ -66,6 +68,23 @@ export class TranscriptPlugin extends PlayerContribPlugin
         this._kalturaClient.setDefaultRequestOptions({
             ks: config.server.ks
         });
+
+        console.log(KalturaPlayer.ui.EventType.USER_SELECTED_CAPTION_TRACK)
+
+        this.eventManager.listen(this.player, this.player.Event.TIME_UPDATE, (e: any) => {
+            // console.log(e)
+            // if (!this._componentRef) {
+            //     return;
+            // }
+            // this._componentRef.update();
+        });
+
+        this.eventManager.listen(this.player, KalturaPlayer.ui.EventType.USER_SELECTED_CAPTION_TRACK, (e: any) => {
+          console.log(e)
+        });
+
+        // events add here
+        // + unregister events
     }
 
     onRegisterUI(uiManager: UIManager): void {
@@ -77,54 +96,54 @@ export class TranscriptPlugin extends PlayerContribPlugin
             renderContent: this._renderKitchenSinkContent
         });
 
-        // this._overlay = uiManager.overlay.add({
-        //     label: "Transcript",
-        //     mode: OverlayUIModes.FirstPlay,
-        //     renderContent: this._renderRoot
-        // });
+        this._overlay = uiManager.overlay.add({
+            label: "Transcript",
+            mode: OverlayUIModes.FirstPlay,
+            renderContent: this._renderRoot
+        });
     }
 
     onMediaLoad(config: OnMediaLoadConfig): void {
-        this._loadCuePoints(config.entryId);
+        // this._loadCuePoints(config.entryId);
         this._getCaptionsList(config.entryId)
     }
 
     onMediaUnload(): void {
         this._overlay = null;
-        this._transcript = [];
+        this._captionsList = [];
     }
 
-    private _loadCuePoints = (entryId: string): void => {
-        this._kalturaClient
-            .request(
-                new CuePointListAction({
-                    filter: new KalturaCuePointFilter({
-                        entryIdEqual: entryId,
-                        cuePointTypeEqual: KalturaCuePointType.annotation,
-                        tagsLike: "transcript"
-                    })
-                }).setRequestOptions({
-                    acceptedTypes: [KalturaAnnotation]
-                })
-            )
-            .then(
-                response => {
-                    if (!response) {
-                        return;
-                    }
+    // private _loadCuePoints = (entryId: string): void => {
+    //     this._kalturaClient
+    //         .request(
+    //             new CuePointListAction({
+    //                 filter: new KalturaCuePointFilter({
+    //                     entryIdEqual: entryId,
+    //                     cuePointTypeEqual: KalturaCuePointType.annotation,
+    //                     tagsLike: "transcript"
+    //                 })
+    //             }).setRequestOptions({
+    //                 acceptedTypes: [KalturaAnnotation]
+    //             })
+    //         )
+    //         .then(
+    //             response => {
+    //                 if (!response) {
+    //                     return;
+    //                 }
 
-                    this._transcript = convertToTranscript(response);
-                    console.log('this._transcript', response)
-                    if (this._overlay) {
-                        // TODO
-                        //this._overlay.update();
-                    }
-                },
-                reason => {
-                    console.warn("failed to load transcript", reason);
-                }
-            );
-    };
+    //                 this._transcript = convertToTranscript(response);
+    //                 console.log('this._transcript', response)
+    //                 if (this._overlay) {
+    //                     // TODO
+    //                     //this._overlay.update();
+    //                 }
+    //             },
+    //             reason => {
+    //                 console.warn("failed to load transcript", reason);
+    //             }
+    //         );
+    // };
 
     private _getCaptionsList = (entryId: string): void => {
         // const { setError } = this.props;
@@ -140,27 +159,17 @@ export class TranscriptPlugin extends PlayerContribPlugin
         this._kalturaClient.request(request).then(
           data => {
             if (data && data.objects) {
-            //   this.setState({ captionsList: data.objects });
-            //   if (!this.state.selectedCaption) {
-                // const captionsList = this.state.captionsList;
-                const captionsList = data.objects;
-                const targetAssetId =
-                  captionsList &&
-                //   this.props.assetId &&
-                  false &&
-                  captionsList.find((item: any) => item.id === this.props.assetId);
-                if (targetAssetId) {
-                //   this.captionAssetId = targetAssetId.id;
-                  this._getCaptionsById(targetAssetId as KalturaCaptionAsset);
-                } else {
-                  if (captionsList && captionsList.length > 0) {
-                    // this.captionAssetId = captionsList[0].id;
-                    this._getCaptionsById(captionsList[0] as KalturaCaptionAsset);
-                  } else {
-                    // setError("Current video does not have captions");
+              this._captionsList = data.objects;
+                if (this._captionsList && this._captionsList.length > 0) {
+                  const captionAsset: KalturaCaptionAsset | undefined = this._findCaptionAsset();
+                  if (captionAsset) {
+                    this._getCaptionsById(captionAsset);
                   }
+                } else {
+                    logger.error("Current video doesn't have captions", {
+                      method: "_getCaptionsList",
+                    });
                 }
-            //   }
             }
           },
           err => {
@@ -179,8 +188,14 @@ export class TranscriptPlugin extends PlayerContribPlugin
         );
     }
 
+    private _findCaptionAsset = () => {
+      const captionAsset: KalturaCaptionAsset = this._captionsList.find((ca: KalturaCaptionAsset) => {
+        return ca.languageCode === this.player.config.playback.textLanguage
+      })
+      return captionAsset;
+    }
+
     private _getCaptionsById = (item: KalturaCaptionAsset): void => {
-        // const { setError } = this.props;
         const request = new CaptionAssetGetUrlAction({ id: item.id });
         this._kalturaClient.request(request).then(
           data => {
@@ -195,14 +210,17 @@ export class TranscriptPlugin extends PlayerContribPlugin
             } else if (err instanceof KalturaAPIException) {
               // api exception
             }
-            // setError(getErrorMessage(err));
+            logger.error("Failed to fetch captions", {
+              method: "_getCaptionsById",
+              data: {
+                  err
+              }
+            });
           }
         );
     }
 
     private _loadCaptionsAsset = (url: string) => {
-        // const captionAssetId = this.captionAssetId;
-        // const captionsList = this.state.captionsList;
         fetch(url)
           .then(function(response: any) {
             if (response.ok) {
@@ -211,14 +229,35 @@ export class TranscriptPlugin extends PlayerContribPlugin
             throw new Error("Error message.");
           })
           .then((data: string) => {
-              console.log(data);
-            // this.props.onCaptionsLoaded(data, captionAssetId, captionsList);
+              // console.log(data);
+            this._parseCaptions(data);
           })
           .catch(function(err: Error) {
-            // console.log("failed to load ", url, getErrorMessage(err));
+            logger.error("Failed to fetch caption asset", {
+              method: "_loadCaptionsAsset",
+              data: {
+                  err
+              }
+            });
           });
-      }
+    }
 
+    private _parseCaptions = (data: string) => {
+      const captionFormat = this._getCaptionFormat();
+      const parsedData = getCaptionsByFormat(data, captionFormat);
+      console.log(parsedData)
+    }
+
+    private _getCaptionFormat = () => {
+      const captionAsset: KalturaCaptionAsset = this._findCaptionAsset();
+      const selectedLanguage = 
+          this._captionsList &&
+          this._captionsList.find((item: KalturaCaptionAsset) => item.id === captionAsset.id);
+      return selectedLanguage && selectedLanguage.format;
+    }
+
+
+ 
     private _pauseVideo() {
         this.player.pause();
     }
@@ -227,22 +266,18 @@ export class TranscriptPlugin extends PlayerContribPlugin
         this.player.currentTime = time;
     }
 
-    // private _renderRoot = (overlayUIProps: OverlayItemProps): ComponentChild => {
-    //     const props: StageProps = {
-    //         ...overlayUIProps,
-    //         transcript: this._transcript,
-    //         pauseVideo: this._pauseVideo.bind(this),
-    //         seekTo: this._seekTo.bind(this),
-    //         sendAnalytics: this._sendAnalytics.bind(this)
-    //     };
+    private _renderRoot = (overlayUIProps: OverlayItemProps): ComponentChild => {
+        const props: StageProps = {
+            ...overlayUIProps,
+            transcript: this._transcript,
+            pauseVideo: this._pauseVideo.bind(this),
+            seekTo: this._seekTo.bind(this),
+            sendAnalytics: this._sendAnalytics.bind(this)
+        };
 
-    //     // NOTE: the key attribute here is
-    //     return (
-    //         <LoggerProvider context={"Transcript"} kalturaPlayer={this.player}>
-    //             <Stage {...props} />
-    //         </LoggerProvider>
-    //     );
-    // };
+        // NOTE: the key attribute here is
+        return null;
+    };
 
     private _renderKitchenSinkContent(props: KitchenSinkContentRendererProps) {
         return <Transcript {...props} />;

@@ -1,0 +1,70 @@
+import { xml2js } from "xml-js";
+//@ts-ignore
+import { fromSrt } from "subtitles-parser";
+
+export const toSeconds = (val: any): number => {
+    const regex = /(\d+):(\d{2}):(\d{2}),(\d{2,3}|\d{2})/;
+    const parts: any | null[] = regex.exec(val);
+  
+    if (parts === null) {
+      return 0;
+    }
+  
+    for (var i = 1; i < 5; i++) {
+      parts[i] = parseInt(parts[i], 10);
+      if (isNaN(parts[i])) {
+        parts[i] = 0;
+      }
+    }
+    // hours + minutes + seconds + ms
+    return parts[1] * 3600 + parts[2] * 60 + parts[3] + parts[4] / 1000;
+  };
+
+export const getCaptionsByFormat = (captions: any, captionsFormat: string) => {
+    const format = captionsFormat.toLowerCase();
+    switch (format) {
+      case "2":
+        // strip 'span' from the p tags, they break the parser and no time (now) to write a parser
+        captions = captions
+            .replace(/<span[^>]+\?>/i, "")
+            .replace(/<\/span>/i, "")
+            .replace(/<br><\/br>/g, " ") // remove <br></br>'s as it breaks the parser too.
+            .replace(/<[//]{0,1}(SPAN|span)[^><]*>/g, "");
+        return TTML2Obj(captions);
+
+      case "1":
+        return fromSrt(captions).map((item: any) => {
+          item.endTimeSec = toSeconds(item.endTime);
+          item.startTimeSec = toSeconds(item.startTime);
+          item.selected = false;
+          return item;
+        });
+      default:
+        return [];
+    }
+  }
+
+  export const TTML2Obj = (ttml: any) => {
+    const data: any = xml2js(ttml, {compact: true});
+    // need only captions for showing. they located in tt.body.div.p.
+    const chapters = data.tt.body.div.p;
+    const correctData = chapters.map((item: any, index: number) => {
+      const {begin, end, ...otherAttributes} = item._attributes;
+      // convert time to 00:00:00.000 to 00:00:00,000
+      const endTime = end.replace(/\./g, ",");
+      const startTime = begin.replace(/\./g, ",");
+      const prepareObj = {
+        endTime: endTime,
+        startTime: startTime,
+        endTimeSec: toSeconds(endTime),
+        startTimeSec: toSeconds(startTime),
+        id: index + 1,
+        selected: false,
+        text: item._text,
+        // all non-required for editor
+        otherAttributes: otherAttributes
+      };
+      return prepareObj;
+    });
+    return correctData;
+  }
