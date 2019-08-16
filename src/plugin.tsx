@@ -1,4 +1,8 @@
-import { h, Ref, ComponentChild } from "preact";
+import { 
+  h,
+  Ref,
+  ComponentChild
+} from "preact";
 import {
     KalturaClient,
     KalturaClientException,
@@ -15,15 +19,12 @@ import {
 } from "@playkit-js-contrib/plugin";
 import {
     KitchenSinkContentRendererProps,
-    OverlayItem,
-    OverlayItemProps,
-    OverlayUIModes,
     UIManager,
     PresetNames,
     KitchenSinkPositions,
     KitchenSinkExpandModes
 } from "@playkit-js-contrib/ui";
-import Stage, { StageProps } from "./shared/components/Stage";
+// import Stage, { StageProps } from "./shared/components/Stage";
 import {
     // CuePointListAction,
     // KalturaAnnotation,
@@ -55,9 +56,12 @@ export class TranscriptPlugin extends PlayerContribPlugin
     implements OnMediaUnload, OnRegisterUI, OnMediaLoad, OnPluginSetup {
     static defaultConfig = {};
 
-    private _overlay: OverlayItem | null = null;
+    // private _overlay: OverlayItem | null = null;
+    private _isLoading = false;
     private _captionsList: RawHotspotCuepoint[] = [];
+    private _captions = [];
     private _kalturaClient = new KalturaClient();
+    private _captionsRaw: null | string = null;
 
     onPluginSetup(config: ContribConfig): void {
         this._kalturaClient.setOptions({
@@ -69,22 +73,10 @@ export class TranscriptPlugin extends PlayerContribPlugin
             ks: config.server.ks
         });
 
-        console.log(KalturaPlayer.ui.EventType.USER_SELECTED_CAPTION_TRACK)
-
-        this.eventManager.listen(this.player, this.player.Event.TIME_UPDATE, (e: any) => {
-            // console.log(e)
-            // if (!this._componentRef) {
-            //     return;
-            // }
-            // this._componentRef.update();
-        });
-
+        this.eventManager.listen(this.player, this.player.Event.TIME_UPDATE, this._onTimeUpdate);
         this.eventManager.listen(this.player, KalturaPlayer.ui.EventType.USER_SELECTED_CAPTION_TRACK, (e: any) => {
           console.log(e)
         });
-
-        // events add here
-        // + unregister events
     }
 
     onRegisterUI(uiManager: UIManager): void {
@@ -95,67 +87,32 @@ export class TranscriptPlugin extends PlayerContribPlugin
             expandMode: KitchenSinkExpandModes.AlongSideTheVideo,
             renderContent: this._renderKitchenSinkContent
         });
-
-        this._overlay = uiManager.overlay.add({
-            label: "Transcript",
-            mode: OverlayUIModes.FirstPlay,
-            renderContent: this._renderRoot
-        });
     }
 
     onMediaLoad(config: OnMediaLoadConfig): void {
-        // this._loadCuePoints(config.entryId);
         this._getCaptionsList(config.entryId)
     }
 
     onMediaUnload(): void {
-        this._overlay = null;
         this._captionsList = [];
+        this._captionsRaw = null;
+        this._captions = [];
+        this._isLoading = false;
+        this.player.removeEventListener(this.player.Event.TIME_UPDATE, this._onTimeUpdate)
     }
 
-    // private _loadCuePoints = (entryId: string): void => {
-    //     this._kalturaClient
-    //         .request(
-    //             new CuePointListAction({
-    //                 filter: new KalturaCuePointFilter({
-    //                     entryIdEqual: entryId,
-    //                     cuePointTypeEqual: KalturaCuePointType.annotation,
-    //                     tagsLike: "transcript"
-    //                 })
-    //             }).setRequestOptions({
-    //                 acceptedTypes: [KalturaAnnotation]
-    //             })
-    //         )
-    //         .then(
-    //             response => {
-    //                 if (!response) {
-    //                     return;
-    //                 }
-
-    //                 this._transcript = convertToTranscript(response);
-    //                 console.log('this._transcript', response)
-    //                 if (this._overlay) {
-    //                     // TODO
-    //                     //this._overlay.update();
-    //                 }
-    //             },
-    //             reason => {
-    //                 console.warn("failed to load transcript", reason);
-    //             }
-    //         );
-    // };
+    private _onTimeUpdate = (e: any):void => {
+      // console.log(e)
+      // if (this._overlay) {
+      //   // console.log(this._overlay)
+      //   this._overlay.update();
+      // }
+    }
 
     private _getCaptionsList = (entryId: string): void => {
-        // const { setError } = this.props;
         const filter: KalturaCaptionAssetFilter = new KalturaCaptionAssetFilter();
         filter.entryIdEqual = entryId;
         const request = new CaptionAssetListAction({ filter: filter });
-        // logger.info("start fetching caption list", {
-        //     method: "_getCaptionsList",
-        //     data: {
-        //         entryId,
-        //     }
-        // });
         this._kalturaClient.request(request).then(
           data => {
             if (data && data.objects) {
@@ -229,8 +186,8 @@ export class TranscriptPlugin extends PlayerContribPlugin
             throw new Error("Error message.");
           })
           .then((data: string) => {
-              // console.log(data);
-            this._parseCaptions(data);
+            this._captionsRaw = data; // keep it for downloading
+            this._captions = this._parseCaptions(data);
           })
           .catch(function(err: Error) {
             logger.error("Failed to fetch caption asset", {
@@ -244,8 +201,7 @@ export class TranscriptPlugin extends PlayerContribPlugin
 
     private _parseCaptions = (data: string) => {
       const captionFormat = this._getCaptionFormat();
-      const parsedData = getCaptionsByFormat(data, captionFormat);
-      console.log(parsedData)
+      return getCaptionsByFormat(data, captionFormat);
     }
 
     private _getCaptionFormat = () => {
@@ -255,32 +211,29 @@ export class TranscriptPlugin extends PlayerContribPlugin
           this._captionsList.find((item: KalturaCaptionAsset) => item.id === captionAsset.id);
       return selectedLanguage && selectedLanguage.format;
     }
-
-
  
-    private _pauseVideo() {
+    private _pauseVideo = () => {
         this.player.pause();
     }
 
-    private _seekTo(time: number) {
+    private _seekTo = (time: number) => {
         this.player.currentTime = time;
     }
 
-    private _renderRoot = (overlayUIProps: OverlayItemProps): ComponentChild => {
-        const props: StageProps = {
-            ...overlayUIProps,
-            transcript: this._transcript,
-            pauseVideo: this._pauseVideo.bind(this),
-            seekTo: this._seekTo.bind(this),
-            sendAnalytics: this._sendAnalytics.bind(this)
-        };
+    private _handleDownload = () => {
+      console.log(this._captionsRaw)
+    }
 
-        // NOTE: the key attribute here is
-        return null;
-    };
+    private _renderKitchenSinkContent = (props: KitchenSinkContentRendererProps) => {
+        const transcriptProps = {
+          ...props,
+          seek: this._seekTo,
+          captions: this._captions,
+          isLoading: this._isLoading,
+          onDownload: this._handleDownload
+        }
 
-    private _renderKitchenSinkContent(props: KitchenSinkContentRendererProps) {
-        return <Transcript {...props} />;
+        return <Transcript {...transcriptProps} />;
     }
 }
 

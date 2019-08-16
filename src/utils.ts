@@ -17,7 +17,7 @@ export const toSeconds = (val: any): number => {
       }
     }
     // hours + minutes + seconds + ms
-    return parts[1] * 3600 + parts[2] * 60 + parts[3] + parts[4] / 1000;
+    return parts[1] * 3600 + parts[2] * 60 + parts[3] + parts[4];
   };
 
 export const getCaptionsByFormat = (captions: any, captionsFormat: string) => {
@@ -33,12 +33,12 @@ export const getCaptionsByFormat = (captions: any, captionsFormat: string) => {
         return TTML2Obj(captions);
 
       case "1":
-        return fromSrt(captions).map((item: any) => {
-          item.endTimeSec = toSeconds(item.endTime);
-          item.startTimeSec = toSeconds(item.startTime);
-          item.selected = false;
-          return item;
-        });
+        return fromSrt(captions).map((item: any, index: number) => ({
+          id: index + 1,
+          endTime: toSeconds(item.endTime),
+          startTime: toSeconds(item.startTime),
+          text: item.text
+        }));
       default:
         return [];
     }
@@ -54,15 +54,12 @@ export const getCaptionsByFormat = (captions: any, captionsFormat: string) => {
       const endTime = end.replace(/\./g, ",");
       const startTime = begin.replace(/\./g, ",");
       const prepareObj = {
-        endTime: endTime,
-        startTime: startTime,
-        endTimeSec: toSeconds(endTime),
-        startTimeSec: toSeconds(startTime),
         id: index + 1,
-        selected: false,
+        endTime: toSeconds(endTime),
+        startTime: toSeconds(startTime),
         text: item._text,
-        // all non-required for editor
-        otherAttributes: otherAttributes
+        // all non-required
+        // otherAttributes: otherAttributes
       };
       return prepareObj;
     });
