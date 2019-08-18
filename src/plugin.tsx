@@ -1,7 +1,5 @@
 import { 
-  h,
-  Ref,
-  ComponentChild
+  h
 } from "preact";
 import {
     KalturaClient,
@@ -20,7 +18,7 @@ import {
 import {
     KitchenSinkContentRendererProps,
     UIManager,
-    PresetNames,
+    KitchenSinkItem,
     KitchenSinkPositions,
     KitchenSinkExpandModes
 } from "@playkit-js-contrib/ui";
@@ -56,8 +54,9 @@ export class TranscriptPlugin extends PlayerContribPlugin
     implements OnMediaUnload, OnRegisterUI, OnMediaLoad, OnPluginSetup {
     static defaultConfig = {};
 
-    // private _overlay: OverlayItem | null = null;
+    private _kitchenSinkItem: KitchenSinkItem | null = null;
     private _isLoading = false;
+    private _hasError = false;
     private _captionsList: RawHotspotCuepoint[] = [];
     private _captions = [];
     private _kalturaClient = new KalturaClient();
@@ -80,16 +79,21 @@ export class TranscriptPlugin extends PlayerContribPlugin
     }
 
     onRegisterUI(uiManager: UIManager): void {
-        uiManager.kitchenSink.add({
-            label: "Transcript",
-            renderIcon: () => <MenuIcon />,
-            position: KitchenSinkPositions.Bottom,
-            expandMode: KitchenSinkExpandModes.AlongSideTheVideo,
-            renderContent: this._renderKitchenSinkContent
-        });
+      this._kitchenSinkItem = uiManager.kitchenSink.add({
+        label: "Transcript",
+        renderIcon: () => <MenuIcon />,
+        position: KitchenSinkPositions.Bottom,
+        expandMode: KitchenSinkExpandModes.AlongSideTheVideo,
+        renderContent: this._renderKitchenSinkContent
+      });
     }
 
     onMediaLoad(config: OnMediaLoadConfig): void {
+        // Kaltura analytics
+        const kava = this.player.plugins.kava;
+        const viewModel = kava.getEventModel(kava.EventType.VIEW);
+        kava.sendAnalytics(viewModel);
+
         this._getCaptionsList(config.entryId)
     }
 
@@ -98,21 +102,34 @@ export class TranscriptPlugin extends PlayerContribPlugin
         this._captionsRaw = null;
         this._captions = [];
         this._isLoading = false;
+        this._hasError = false;
         this.player.removeEventListener(this.player.Event.TIME_UPDATE, this._onTimeUpdate)
     }
 
     private _onTimeUpdate = (e: any):void => {
       // console.log(e)
-      // if (this._overlay) {
-      //   // console.log(this._overlay)
-      //   this._overlay.update();
-      // }
+      this._updateKitchenSink();
     }
+
+    private _updateKitchenSink() {
+      if (this._kitchenSinkItem) {
+        console.log(this._kitchenSinkItem)
+          this._kitchenSinkItem.update();
+      }
+    }
+
+    private _onError = () => {
+      this._isLoading = false;
+      this._hasError = true;
+      this._updateKitchenSink();
+  }
 
     private _getCaptionsList = (entryId: string): void => {
         const filter: KalturaCaptionAssetFilter = new KalturaCaptionAssetFilter();
         filter.entryIdEqual = entryId;
         const request = new CaptionAssetListAction({ filter: filter });
+        this._isLoading = true;
+        this._updateKitchenSink();
         this._kalturaClient.request(request).then(
           data => {
             if (data && data.objects) {
@@ -153,6 +170,10 @@ export class TranscriptPlugin extends PlayerContribPlugin
     }
 
     private _getCaptionsById = (item: KalturaCaptionAsset): void => {
+        if (!this._isLoading) {
+          this._isLoading = true;
+          this._updateKitchenSink();
+        }
         const request = new CaptionAssetGetUrlAction({ id: item.id });
         this._kalturaClient.request(request).then(
           data => {
@@ -162,6 +183,7 @@ export class TranscriptPlugin extends PlayerContribPlugin
             }
           },
           err => {
+            this._onError();
             if (err instanceof KalturaClientException) {
               // network error etc
             } else if (err instanceof KalturaAPIException) {
@@ -188,8 +210,11 @@ export class TranscriptPlugin extends PlayerContribPlugin
           .then((data: string) => {
             this._captionsRaw = data; // keep it for downloading
             this._captions = this._parseCaptions(data);
+            this._isLoading = false;
+            this._updateKitchenSink();
           })
-          .catch(function(err: Error) {
+          .catch((err: Error) => {
+            this._onError();
             logger.error("Failed to fetch caption asset", {
               method: "_loadCaptionsAsset",
               data: {
@@ -225,15 +250,16 @@ export class TranscriptPlugin extends PlayerContribPlugin
     }
 
     private _renderKitchenSinkContent = (props: KitchenSinkContentRendererProps) => {
-        const transcriptProps = {
-          ...props,
-          seek: this._seekTo,
-          captions: this._captions,
-          isLoading: this._isLoading,
-          onDownload: this._handleDownload
-        }
-
-        return <Transcript {...transcriptProps} />;
+        return (
+          <Transcript
+            {...props}
+            seek={this._seekTo}
+            captions={this._captions}
+            isLoading={this._isLoading}
+            onDownload={this._handleDownload}
+            currentTime={this.player.currentTime}
+          />
+        );
     }
 }
 
