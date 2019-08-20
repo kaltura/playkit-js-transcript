@@ -33,14 +33,16 @@ import {
     KalturaCaptionAsset,
     CaptionAssetGetUrlAction
 } from "kaltura-typescript-client/api/types";
-import { getContribLogger } from "@playkit-js-contrib/common";
+import {
+  getContribLogger
+} from "@playkit-js-contrib/common";
 
-import { RawHotspotCuepoint } from "./shared/hotspot";
+// import { RawHotspotCuepoint } from "./shared/hotspot";
 // import { convertToTranscript } from "./shared/cuepoints";
 import { MenuIcon } from "./components/menu-icon";
 import { Transcript } from "./components/Transcript";
 
-import { getCaptionsByFormat } from "./utils";
+import { getCaptionsByFormat, CaptionItem } from "./utils";
 
 const isDev = true; // TODO - should be provided by Omri Katz as part of the cli implementation
 const pluginName = `transcript${isDev ? "-local" : ""}`;
@@ -57,8 +59,8 @@ export class TranscriptPlugin extends PlayerContribPlugin
     private _kitchenSinkItem: KitchenSinkItem | null = null;
     private _isLoading = false;
     private _hasError = false;
-    private _captionsList: RawHotspotCuepoint[] = [];
-    private _captions = [];
+    private _captionsList: KalturaCaptionAsset[] = [];  // list of captions
+    private _captions: CaptionItem[] = []; // parsed captions
     private _kalturaClient = new KalturaClient();
     private _captionsRaw: null | string = null;
 
@@ -106,14 +108,13 @@ export class TranscriptPlugin extends PlayerContribPlugin
         this.player.removeEventListener(this.player.Event.TIME_UPDATE, this._onTimeUpdate)
     }
 
-    private _onTimeUpdate = (e: any):void => {
+    private _onTimeUpdate = (e: any): void => {
       // console.log(e)
       this._updateKitchenSink();
     }
 
     private _updateKitchenSink() {
       if (this._kitchenSinkItem) {
-        console.log(this._kitchenSinkItem)
           this._kitchenSinkItem.update();
       }
     }
@@ -135,7 +136,7 @@ export class TranscriptPlugin extends PlayerContribPlugin
             if (data && data.objects) {
               this._captionsList = data.objects;
                 if (this._captionsList && this._captionsList.length > 0) {
-                  const captionAsset: KalturaCaptionAsset | undefined = this._findCaptionAsset();
+                  const captionAsset = this._findCaptionAsset();
                   if (captionAsset) {
                     this._getCaptionsById(captionAsset);
                   }
@@ -162,8 +163,8 @@ export class TranscriptPlugin extends PlayerContribPlugin
         );
     }
 
-    private _findCaptionAsset = () => {
-      const captionAsset: KalturaCaptionAsset = this._captionsList.find((ca: KalturaCaptionAsset) => {
+    private _findCaptionAsset = (): KalturaCaptionAsset | undefined => {
+      const captionAsset = this._captionsList.find((ca: KalturaCaptionAsset) => {
         return ca.languageCode === this.player.config.playback.textLanguage
       })
       return captionAsset;
@@ -224,17 +225,18 @@ export class TranscriptPlugin extends PlayerContribPlugin
           });
     }
 
-    private _parseCaptions = (data: string) => {
+    private _parseCaptions = (data: string): CaptionItem[] => {
       const captionFormat = this._getCaptionFormat();
       return getCaptionsByFormat(data, captionFormat);
     }
 
-    private _getCaptionFormat = () => {
-      const captionAsset: KalturaCaptionAsset = this._findCaptionAsset();
+    private _getCaptionFormat = (): string => {
+      const captionAsset = this._findCaptionAsset();
       const selectedLanguage = 
           this._captionsList &&
+          captionAsset &&
           this._captionsList.find((item: KalturaCaptionAsset) => item.id === captionAsset.id);
-      return selectedLanguage && selectedLanguage.format;
+      return selectedLanguage && selectedLanguage.format || '';
     }
  
     private _pauseVideo = () => {

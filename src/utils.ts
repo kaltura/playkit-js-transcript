@@ -1,6 +1,14 @@
 import { xml2js } from "xml-js";
 //@ts-ignore
 import { fromSrt } from "subtitles-parser";
+import {
+  Cuepoint
+} from "@playkit-js-contrib/common";
+
+
+export interface CaptionItem extends Cuepoint {
+  text: string
+ }
 
 export const toSeconds = (val: any): number => {
     const regex = /(\d+):(\d{2}):(\d{2}),(\d{2,3}|\d{2})/;
@@ -20,7 +28,7 @@ export const toSeconds = (val: any): number => {
     return parts[1] * 3600 + parts[2] * 60 + parts[3] + parts[4];
   };
 
-export const getCaptionsByFormat = (captions: any, captionsFormat: string) => {
+export const getCaptionsByFormat = (captions: any, captionsFormat: string): CaptionItem[] => {
     const format = captionsFormat.toLowerCase();
     switch (format) {
       case "2":
@@ -44,7 +52,7 @@ export const getCaptionsByFormat = (captions: any, captionsFormat: string) => {
     }
   }
 
-  export const TTML2Obj = (ttml: any) => {
+  export const TTML2Obj = (ttml: any): CaptionItem[] => {
     const data: any = xml2js(ttml, {compact: true});
     // need only captions for showing. they located in tt.body.div.p.
     const chapters = data.tt.body.div.p;

@@ -42,7 +42,7 @@ $white-color: white;
   line-height: 32px;
 }
 
-.header-button,
+.close-button,
 .download-button {
   flex-shrink: 1;
   width: 32px;
@@ -56,9 +56,4 @@ $white-color: white;
 
 .download-button {
   background-image: url('../../assets/close.svg');
-}
-
-.caption {
-  margin: 0;
-  font-size: 2.5vh;
 }
