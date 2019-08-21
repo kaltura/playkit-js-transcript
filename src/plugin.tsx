@@ -76,7 +76,6 @@ export class TranscriptPlugin extends PlayerContribPlugin
 
         this.eventManager.listen(this.player, this.player.Event.TIME_UPDATE, this._onTimeUpdate);
         this.eventManager.listen(this.player, KalturaPlayer.ui.EventType.USER_SELECTED_CAPTION_TRACK, (e: any) => {
-          console.log(e)
         });
     }
 
@@ -108,8 +107,7 @@ export class TranscriptPlugin extends PlayerContribPlugin
         this.player.removeEventListener(this.player.Event.TIME_UPDATE, this._onTimeUpdate)
     }
 
-    private _onTimeUpdate = (e: any): void => {
-      // console.log(e)
+    private _onTimeUpdate = (): void => {
       this._updateKitchenSink();
     }
 
@@ -239,9 +237,9 @@ export class TranscriptPlugin extends PlayerContribPlugin
       return selectedLanguage && selectedLanguage.format || '';
     }
  
-    private _pauseVideo = () => {
-        this.player.pause();
-    }
+    // private _pauseVideo = () => {
+    //     this.player.pause();
+    // }
 
     private _seekTo = (time: number) => {
         this.player.currentTime = time;

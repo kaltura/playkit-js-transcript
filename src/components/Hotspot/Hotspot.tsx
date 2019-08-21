@@ -1,5 +1,5 @@
 import { h, Component } from "preact";
-import { HotspotCuepoint } from "../../shared/hotspot";
+// import { HotspotCuepoint } from "../../shared/hotspot";
 // import { AnalyticsEvents } from "../../shared/analyticsEvents";
 import * as styles from "./Hotspot.scss";
 
@@ -20,11 +20,10 @@ import * as styles from "./Hotspot.scss";
 // };
 
 type Props = {
-    visible: boolean;
-    hotspot: HotspotCuepoint;
+    hotspot: any;
     // styles?: { [key: string]: any };
     // pauseVideo(): void;
-    // seekTo(time: number): void;
+    seekTo(time: number): void;
     // sendAnalytics(event: AnalyticsEvents): void;
 };
 
@@ -167,6 +166,7 @@ export class Hotspot extends Component<Props, State> {
             <p
                 // onClick={this.handleClick}
                 className={styles.caption}
+                style={{ color: hotspot.isHighlighted ? "yellow" : "white"}}
             >
                 {text}
             </p>

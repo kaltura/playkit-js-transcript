@@ -15,12 +15,12 @@ export interface JumpToTime {
     jumpToTime: number;
 }
 
-type OnClickAction = OpenUrl | OpenUrlInNewTab | JumpToTime;
+// type OnClickAction = OpenUrl | OpenUrlInNewTab | JumpToTime;
 
-export type RawHotspotCuepoint = RawOverlayCuepoint & {
-    onClick?: OnClickAction;
-    label?: string;
-    styles: { [key: string]: string };
-};
+// export type RawHotspotCuepoint = RawOverlayCuepoint & {
+//     onClick?: OnClickAction;
+//     label?: string;
+//     styles: { [key: string]: string };
+// };
 
-export type HotspotCuepoint = RawHotspotCuepoint & OverlayCuepoint;
+// export type HotspotCuepoint = RawHotspotCuepoint & OverlayCuepoint;

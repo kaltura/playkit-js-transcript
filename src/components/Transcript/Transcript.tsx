@@ -6,7 +6,7 @@ import { CaptionItem } from "../../utils"
 import { Hotspot } from "../Hotspot"
 
 export interface KitchenSinkProps {
-    seek: any;
+    seek(time: number): void;
     onClose: () => void;
     onDownload: () => void;
     isLoading: boolean;
@@ -15,7 +15,12 @@ export interface KitchenSinkProps {
 }
 
 interface KitchenSinkState {
-    visibleTranscript: CaptionItem[];
+    captions: VisibleCaption[];
+    preparedCaptions: VisibleCaption[];
+}
+
+interface VisibleCaption extends CaptionItem {
+    isHighlighted: boolean,
 }
 
 export class Transcript extends Component<KitchenSinkProps, KitchenSinkState> {
@@ -27,6 +32,11 @@ export class Transcript extends Component<KitchenSinkProps, KitchenSinkState> {
         cb(this.context.logger);
     }
 
+    constructor(props: KitchenSinkProps) {
+        super(props);
+        this.state.preparedCaptions = this._prepareCaptions(props.captions);
+    }
+
     componentDidMount(): void {
         this.log(logger => {
             logger.debug("Mount Transcript component", {
@@ -34,18 +44,22 @@ export class Transcript extends Component<KitchenSinkProps, KitchenSinkState> {
                 method: "componentDidMount"
             });
         });
-        this._reset();
         this._createEngine();
     }
 
     componentDidUpdate(
         previousProps: Readonly<KitchenSinkProps>,
-        previousState: Readonly<KitchenSinkState>,
-        previousContext: any
+        // previousState: Readonly<KitchenSinkState>,
+        // previousContext: any
     ): void {
-        // if (previousProps.transcript !== this.props.transcript) {
-        //     this._createEngine();
-        // }
+        const { captions } = this.props;
+        if (previousProps.captions !== captions) {
+            const preparedCaptions = this._prepareCaptions(captions);
+            this.setState({
+                captions: [],
+                preparedCaptions
+            }, this._createEngine)
+        }
 
         if (previousProps.currentTime !== this.props.currentTime) {
             this.log(logger => {
@@ -64,99 +78,115 @@ export class Transcript extends Component<KitchenSinkProps, KitchenSinkState> {
                 method: "componentWillUnmount"
             });
         });
+        this._reset();
     }
 
-    engine: CuepointEngine<CaptionItem> | null = null;
+    shouldComponentUpdate(
+        nextProps: Readonly<KitchenSinkProps>,
+        nextState: Readonly<KitchenSinkState>,
+    ) {
+        if (nextState.captions !== this.state.captions) {
+            return false
+        }
+        return true
+    }
+
+    _engine: CuepointEngine<CaptionItem> | null = null;
 
     initialState = {
-        visibleTranscript: []
+        captions: [],
+        preparedCaptions: []
     };
 
     state: KitchenSinkState = {
         ...this.initialState
     };
 
-    private _createEngine() {
-        const {
-            captions,
-            currentTime,
-        } = this.props;
+    private _prepareCaptions(captions: CaptionItem[]): VisibleCaption[] {
+        return captions.map(caption => ({
+            ...caption,
+            isHighlighted: false,
+        }));
+    } 
 
-        if (!captions || captions.length === 0) {
-            this.engine = null;
+    private _createEngine = () => {
+        const {
+            preparedCaptions
+        } = this.state;
+        if (!preparedCaptions || preparedCaptions.length === 0) {
+            this._engine = null;
             return;
         }
-
-        this.engine = new CuepointEngine<CaptionItem>(captions);
-        this.engine.updateTime(currentTime);
+        this._engine = new CuepointEngine<CaptionItem>(preparedCaptions);
+        this._syncVisibleTranscript();
     }
 
-    private _syncVisibleTranscript(forceSnapshot = false) {
+    private _syncVisibleTranscript = (forceSnapshot = false) => {
         const { currentTime } = this.props;
-
         this.setState((state: KitchenSinkState) => {
-            if (!this.engine) {
+            if (!this._engine) {
                 return {
-                    visibleTranscript: []
+                    captions: []
                 };
             }
 
-            const transcriptUpdate = this.engine.updateTime(currentTime, forceSnapshot);
+            const transcriptUpdate = this._engine.updateTime(currentTime * 1000, forceSnapshot);
             if (transcriptUpdate.snapshot) {
+                let captions: VisibleCaption[] = [...state.preparedCaptions];
+                // let captions: VisibleCaption[] = this._prepareCaptions(this.props.captions);
+                transcriptUpdate.snapshot.forEach((caption: CaptionItem) => {
+                    captions[caption.id - 1].isHighlighted = true;
+                })
                 return {
-                    visibleTranscript: transcriptUpdate.snapshot
+                    captions,
                 };
             }
 
             if (!transcriptUpdate.delta) {
                 return {
-                    visibleTranscript: []
+                    captions: state.captions,
                 };
             }
 
             const { show, hide } = transcriptUpdate.delta;
 
             if (show.length > 0 || hide.length > 0) {
-                let visibleTranscript: CaptionItem[] = state.visibleTranscript;
-                show.forEach((hotspot: CaptionItem) => {
-                    const index = visibleTranscript.indexOf(hotspot);
-                    if (index === -1) {
-                        visibleTranscript.push(hotspot);
-                    }
+                let captions: VisibleCaption[] = [...state.captions]; // issue with shouldComponentUpdate
+                show.forEach((caption: CaptionItem) => {
+                    captions[caption.id - 1].isHighlighted = true;
                 });
 
-                hide.forEach((hotspot: CaptionItem) => {
-                    const index = visibleTranscript.indexOf(hotspot);
-                    if (index !== -1) {
-                        visibleTranscript.splice(index, 1);
-                    }
+                hide.forEach((caption: CaptionItem) => {
+                    captions[caption.id - 1].isHighlighted = false;
                 });
 
                 return {
-                    visibleTranscript
+                    captions
                 };
             }
         });
     }
 
     private _reset = () => {
-        this.engine = null;
+        this._engine = null;
 
         this.setState({
             ...this.initialState
         });
     };
 
-    private _renderTranscript = (visualHotspot: CaptionItem[]) => {
+    private _renderTranscript = (visualHotspot: VisibleCaption[]) => {
         if (!visualHotspot) {
             return null;
         }
-        // const { seekTo, sendAnalytics } = this.props;
+        const {
+            seek,
+            // sendAnalytics
+        } = this.props;
         return visualHotspot.map(hotspotData => (
             <Hotspot
-                // seekTo={seekTo}
                 key={hotspotData.id}
-                visible={true}
+                seekTo={seek}
                 hotspot={hotspotData}
                 // sendAnalytics={sendAnalytics}
             />
@@ -167,11 +197,11 @@ export class Transcript extends Component<KitchenSinkProps, KitchenSinkState> {
         const {
             onClose,
             onDownload,
-            isLoading,
-            captions,
-            currentTime
+            isLoading
         } = props;
-        console.log('currentTime ----- >', currentTime)
+        const {
+            captions,
+        } = this.state;
         return (
             <div className={styles.root}>
                 <div className={styles.header}>
