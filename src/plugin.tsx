@@ -246,7 +246,18 @@ export class TranscriptPlugin extends PlayerContribPlugin
     }
 
     private _handleDownload = () => {
-      console.log(this._captionsRaw)
+      if (!this._captionsRaw) {
+        return;
+      }
+      const captionsFormat = this._getCaptionFormat();
+      let format = 'srt';
+      if (captionsFormat === '2') {
+        format = 'xml';
+      }
+      const link = document.createElement('a');
+      link.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(this._captionsRaw));
+      link.setAttribute('download', `transcript.${format}`);
+      link.click();
     }
 
     private _renderKitchenSinkContent = (props: KitchenSinkContentRendererProps) => {
