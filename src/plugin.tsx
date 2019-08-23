@@ -22,12 +22,7 @@ import {
     KitchenSinkPositions,
     KitchenSinkExpandModes
 } from "@playkit-js-contrib/ui";
-// import Stage, { StageProps } from "./shared/components/Stage";
 import {
-    // CuePointListAction,
-    // KalturaAnnotation,
-    // KalturaCuePointFilter,
-    // KalturaCuePointType,
     KalturaCaptionAssetFilter,
     CaptionAssetListAction,
     KalturaCaptionAsset,
@@ -37,8 +32,6 @@ import {
   getContribLogger
 } from "@playkit-js-contrib/common";
 
-// import { RawHotspotCuepoint } from "./shared/hotspot";
-// import { convertToTranscript } from "./shared/cuepoints";
 import { MenuIcon } from "./components/menu-icon";
 import { Transcript } from "./components/Transcript";
 
@@ -59,6 +52,7 @@ export class TranscriptPlugin extends PlayerContribPlugin
     private _kitchenSinkItem: KitchenSinkItem | null = null;
     private _isLoading = false;
     private _hasError = false;
+    private _entryId = '';
     private _captionsList: KalturaCaptionAsset[] = [];  // list of captions
     private _captions: CaptionItem[] = []; // parsed captions
     private _kalturaClient = new KalturaClient();
@@ -94,8 +88,8 @@ export class TranscriptPlugin extends PlayerContribPlugin
         const kava = this.player.plugins.kava;
         const viewModel = kava.getEventModel(kava.EventType.VIEW);
         kava.sendAnalytics(viewModel);
-
-        this._getCaptionsList(config.entryId)
+        this._entryId = config.entryId;
+        this._loadCaptions();
     }
 
     onMediaUnload(): void {
@@ -104,6 +98,7 @@ export class TranscriptPlugin extends PlayerContribPlugin
         this._captions = [];
         this._isLoading = false;
         this._hasError = false;
+        this._entryId = '';
         this.player.removeEventListener(this.player.Event.TIME_UPDATE, this._onTimeUpdate)
     }
 
@@ -117,46 +112,60 @@ export class TranscriptPlugin extends PlayerContribPlugin
       }
     }
 
-    private _onError = () => {
+    private _initLoading() {
+      if (!this._isLoading || this._hasError) {
+        this._isLoading = true;
+        this._hasError = false;
+        this._updateKitchenSink();
+      }
+    }
+
+    private _onError = (
+      error?: Error,
+      message?: string,
+      method?: string
+    ) => {
+      let msg: string = message || 'Error message not defined';
+      if (error instanceof KalturaClientException) {
+        msg = `${msg} (network error etc)`
+      } else if (error instanceof KalturaAPIException) {
+        msg = `${msg} (api exception)`
+      }
+      logger.error(msg, {
+        method: method || 'Method not defined',
+        data: {
+          error
+        }
+      });
       this._isLoading = false;
       this._hasError = true;
       this._updateKitchenSink();
-  }
+    }
 
-    private _getCaptionsList = (entryId: string): void => {
+    private _loadCaptions = (): void => {
+      if (this._captionsList && this._captionsList.length > 0) {
+        this._getCaptionsById();
+      } else {
+        this._getCaptionsList();
+      }
+    }
+
+    private _getCaptionsList = (): void => {
         const filter: KalturaCaptionAssetFilter = new KalturaCaptionAssetFilter();
-        filter.entryIdEqual = entryId;
+        filter.entryIdEqual = this._entryId;
         const request = new CaptionAssetListAction({ filter: filter });
-        this._isLoading = true;
-        this._updateKitchenSink();
+        this._initLoading();
         this._kalturaClient.request(request).then(
           data => {
             if (data && data.objects) {
               this._captionsList = data.objects;
-                if (this._captionsList && this._captionsList.length > 0) {
-                  const captionAsset = this._findCaptionAsset();
-                  if (captionAsset) {
-                    this._getCaptionsById(captionAsset);
-                  }
-                } else {
-                    logger.error("Current video doesn't have captions", {
-                      method: "_getCaptionsList",
-                    });
-                }
+                this._loadCaptions();
+            } else {
+              this._onError(undefined, "Data is empty", "_getCaptionsList");
             }
           },
           err => {
-            if (err instanceof KalturaClientException) {
-              // network error etc
-            } else if (err instanceof KalturaAPIException) {
-              // api exception
-            }
-            logger.error("Failed to fetch captions list", {
-                method: "_getCaptionsList",
-                data: {
-                    err
-                }
-            });
+            this._onError(err, "Failed to fetch captions list", "_getCaptionsList");
           }
         );
     }
@@ -168,34 +177,29 @@ export class TranscriptPlugin extends PlayerContribPlugin
       return captionAsset;
     }
 
-    private _getCaptionsById = (item: KalturaCaptionAsset): void => {
-        if (!this._isLoading) {
-          this._isLoading = true;
-          this._updateKitchenSink();
-        }
-        const request = new CaptionAssetGetUrlAction({ id: item.id });
-        this._kalturaClient.request(request).then(
-          data => {
-            if (data) {
-              // the data is in fact the URL of the file. Now we need to fetch it
-              this._loadCaptionsAsset(data);
-            }
-          },
-          err => {
-            this._onError();
-            if (err instanceof KalturaClientException) {
-              // network error etc
-            } else if (err instanceof KalturaAPIException) {
-              // api exception
-            }
-            logger.error("Failed to fetch captions", {
-              method: "_getCaptionsById",
-              data: {
-                  err
+    private _getCaptionsById = (): void => {
+      if (this._captionsList && this._captionsList.length > 0) {
+        const captionAsset: KalturaCaptionAsset | undefined = this._findCaptionAsset();
+        if (captionAsset) {
+          const request = new CaptionAssetGetUrlAction({ id: captionAsset.id });
+          this._initLoading();
+          this._kalturaClient.request(request).then(
+            data => {
+              if (data) {
+                // the data is in fact the URL of the file. Now we need to fetch it
+                this._loadCaptionsAsset(data);
+              } else {
+                this._onError(undefined, "Data is empty", "_getCaptionsById");
               }
-            });
-          }
-        );
+            },
+            err => {
+              this._onError(err, "Failed to fetch captions", "_getCaptionsById");
+            }
+          );
+        }
+      } else {
+          this._onError(undefined, "Current video doesn't have captions", "_getCaptionsList");
+      }
     }
 
     private _loadCaptionsAsset = (url: string) => {
@@ -213,13 +217,7 @@ export class TranscriptPlugin extends PlayerContribPlugin
             this._updateKitchenSink();
           })
           .catch((err: Error) => {
-            this._onError();
-            logger.error("Failed to fetch caption asset", {
-              method: "_loadCaptionsAsset",
-              data: {
-                  err
-              }
-            });
+            this._onError(err, "Failed to fetch caption asset", "_loadCaptionsAsset");
           });
     }
 
@@ -236,10 +234,6 @@ export class TranscriptPlugin extends PlayerContribPlugin
           this._captionsList.find((item: KalturaCaptionAsset) => item.id === captionAsset.id);
       return selectedLanguage && selectedLanguage.format || '';
     }
- 
-    // private _pauseVideo = () => {
-    //     this.player.pause();
-    // }
 
     private _seekTo = (time: number) => {
         this.player.currentTime = time;
@@ -267,8 +261,10 @@ export class TranscriptPlugin extends PlayerContribPlugin
             seek={this._seekTo}
             captions={this._captions}
             isLoading={this._isLoading}
+            hasError={this._hasError}
             onDownload={this._handleDownload}
             currentTime={this.player.currentTime}
+            onRetryLoad={this._loadCaptions}
           />
         );
     }

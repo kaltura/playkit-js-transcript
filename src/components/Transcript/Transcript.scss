@@ -28,7 +28,8 @@ $white-color: white;
   text-align: center;
 }
 
-.loading-wrapper {
+.loading-wrapper,
+.error-wrapper {
   height: 100%;
   width: 100%;
   display: flex;
@@ -47,6 +48,16 @@ $white-color: white;
   flex-shrink: 1;
   width: 32px;
   height: 32px;
+  cursor: pointer;
+}
+
+.retry-button {
+  width: 30px;
+  padding: 0;
+  margin-left: 20px;
+  border: none;
+  background: inherit;
+  color: white;
   cursor: pointer;
 }
 

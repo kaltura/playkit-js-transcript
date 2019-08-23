@@ -26,7 +26,7 @@ export const toSeconds = (val: any): number => {
       }
     }
     // hours + minutes + seconds + ms
-    return (parts[1] * 3600 + parts[2] * 60 + parts[3] + parts[4] / 1000) * 1000 ;
+    return parts[1] * 3600 + parts[2] * 60 + parts[3] + parts[4] / 1000 ;
   };
 
 export const getCaptionsByFormat = (captions: any, captionsFormat: string): CaptionItem[] => {

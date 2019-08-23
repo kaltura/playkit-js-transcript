@@ -8,19 +8,16 @@ import { Hotspot } from "../Hotspot"
 export interface KitchenSinkProps {
     seek(time: number): void;
     onClose: () => void;
+    onRetryLoad: () => void;
     onDownload: () => void;
     isLoading: boolean;
+    hasError: boolean;
     captions: CaptionItem[];
     currentTime: number;
 }
 
 interface KitchenSinkState {
-    captions: VisibleCaption[];
-    preparedCaptions: VisibleCaption[];
-}
-
-interface VisibleCaption extends CaptionItem {
-    isHighlighted: boolean,
+    highlightedMap: Record<number, boolean>
 }
 
 export class Transcript extends Component<KitchenSinkProps, KitchenSinkState> {
@@ -30,11 +27,6 @@ export class Transcript extends Component<KitchenSinkProps, KitchenSinkState> {
         }
 
         cb(this.context.logger);
-    }
-
-    constructor(props: KitchenSinkProps) {
-        super(props);
-        this.state.preparedCaptions = this._prepareCaptions(props.captions);
     }
 
     componentDidMount(): void {
@@ -47,21 +39,33 @@ export class Transcript extends Component<KitchenSinkProps, KitchenSinkState> {
         this._createEngine();
     }
 
-    componentDidUpdate(
-        previousProps: Readonly<KitchenSinkProps>,
-        // previousState: Readonly<KitchenSinkState>,
-        // previousContext: any
-    ): void {
+    // componentDidUpdate(
+    //     previousProps: Readonly<KitchenSinkProps>,
+    // ): void {
+    //     const { captions } = this.props;
+    //     if (previousProps.captions !== captions) {
+    //         this._createEngine();
+    //     }
+
+    //     if (previousProps.currentTime !== this.props.currentTime) {
+    //         this.log(logger => {
+    //             logger.debug("current time updated", {
+    //                 method: "componentDidUpdate"
+    //             });
+    //         });
+    //         this._syncVisibleTranscript();
+    //     }
+    // }
+
+    // we can use getDerivedStateFromProps in case when we keep "engine"
+    // outside of class
+    componentWillReceiveProps(nextProps: Readonly<KitchenSinkProps>,) {
         const { captions } = this.props;
-        if (previousProps.captions !== captions) {
-            const preparedCaptions = this._prepareCaptions(captions);
-            this.setState({
-                captions: [],
-                preparedCaptions
-            }, this._createEngine)
+        if (nextProps.captions !== captions) {
+            this._createEngine();
         }
 
-        if (previousProps.currentTime !== this.props.currentTime) {
+        if (nextProps.currentTime !== this.props.currentTime) {
             this.log(logger => {
                 logger.debug("current time updated", {
                     method: "componentDidUpdate"
@@ -85,39 +89,30 @@ export class Transcript extends Component<KitchenSinkProps, KitchenSinkState> {
         nextProps: Readonly<KitchenSinkProps>,
         nextState: Readonly<KitchenSinkState>,
     ) {
-        if (nextState.captions !== this.state.captions) {
-            return false
+        if (
+            nextState.highlightedMap !== this.state.highlightedMap ||
+            nextProps.isLoading !== this.props.isLoading ||
+            nextProps.hasError !== this.props.hasError
+        ) {
+            return true
         }
-        return true
+        return false
     }
 
-    _engine: CuepointEngine<CaptionItem> | null = null;
-
-    initialState = {
-        captions: [],
-        preparedCaptions: []
-    };
-
+    private _engine: CuepointEngine<CaptionItem> | null = null;
     state: KitchenSinkState = {
-        ...this.initialState
+        highlightedMap: {},
     };
-
-    private _prepareCaptions(captions: CaptionItem[]): VisibleCaption[] {
-        return captions.map(caption => ({
-            ...caption,
-            isHighlighted: false,
-        }));
-    } 
 
     private _createEngine = () => {
         const {
-            preparedCaptions
-        } = this.state;
-        if (!preparedCaptions || preparedCaptions.length === 0) {
+            captions
+        } = this.props;
+        if (!captions || captions.length === 0) {
             this._engine = null;
             return;
         }
-        this._engine = new CuepointEngine<CaptionItem>(preparedCaptions);
+        this._engine = new CuepointEngine<CaptionItem>(captions);
         this._syncVisibleTranscript();
     }
 
@@ -130,38 +125,34 @@ export class Transcript extends Component<KitchenSinkProps, KitchenSinkState> {
                 };
             }
 
-            const transcriptUpdate = this._engine.updateTime(currentTime * 1000, forceSnapshot);
+            const transcriptUpdate = this._engine.updateTime(currentTime, forceSnapshot);
             if (transcriptUpdate.snapshot) {
-                let captions: VisibleCaption[] = [...state.preparedCaptions];
-                // let captions: VisibleCaption[] = this._prepareCaptions(this.props.captions);
-                transcriptUpdate.snapshot.forEach((caption: CaptionItem) => {
-                    captions[caption.id - 1].isHighlighted = true;
-                })
+                const highlightedMap = transcriptUpdate.snapshot.reduce((acc, item) => {
+                    return { ...acc, [item.id]: true}
+                }, {})
                 return {
-                    captions,
+                    highlightedMap,
                 };
             }
 
             if (!transcriptUpdate.delta) {
-                return {
-                    captions: state.captions,
-                };
+                return state
             }
 
             const { show, hide } = transcriptUpdate.delta;
 
             if (show.length > 0 || hide.length > 0) {
-                let captions: VisibleCaption[] = [...state.captions]; // issue with shouldComponentUpdate
+                const newHighlightedMap = { ...state.highlightedMap }
                 show.forEach((caption: CaptionItem) => {
-                    captions[caption.id - 1].isHighlighted = true;
+                    newHighlightedMap[caption.id] = true;
                 });
 
                 hide.forEach((caption: CaptionItem) => {
-                    captions[caption.id - 1].isHighlighted = false;
+                    newHighlightedMap[caption.id] = false;
                 });
 
                 return {
-                    captions
+                    highlightedMap: newHighlightedMap,
                 };
             }
         });
@@ -169,26 +160,33 @@ export class Transcript extends Component<KitchenSinkProps, KitchenSinkState> {
 
     private _reset = () => {
         this._engine = null;
-
-        this.setState({
-            ...this.initialState
-        });
     };
 
-    private _renderTranscript = (visualHotspot: VisibleCaption[]) => {
-        if (!visualHotspot) {
+    private _renderTranscript = () => {
+        const { captions, seek, hasError, onRetryLoad } = this.props;
+        const { highlightedMap } = this.state;
+
+        if (!captions) {
             return null;
         }
-        const {
-            seek,
-            // sendAnalytics
-        } = this.props;
-        return visualHotspot.map(hotspotData => (
+
+        if (hasError) {
+            return (
+                <div className={styles.errorWrapper}>
+                    <p>Failed to get transcript, please try again</p>
+                    <button
+                        className={styles.retryButton}
+                        onClick={onRetryLoad}
+                    >Retry</button>
+                </div>
+            )
+        }
+        return captions.map(hotspotData => (
             <Hotspot
                 key={hotspotData.id}
                 seekTo={seek}
                 hotspot={hotspotData}
-                // sendAnalytics={sendAnalytics}
+                highlighted={highlightedMap[hotspotData.id]}
             />
         ));
     };
@@ -197,13 +195,12 @@ export class Transcript extends Component<KitchenSinkProps, KitchenSinkState> {
         const {
             onClose,
             onDownload,
-            isLoading
+            isLoading,
         } = props;
-        const {
-            captions,
-        } = this.state;
         return (
-            <div className={styles.root}>
+            <div
+                className={styles.root}
+            >
                 <div className={styles.header}>
                     <div className={styles.title}>Transcript</div>
                     <div className={styles.downloadButton} onClick={onDownload} />
@@ -216,7 +213,7 @@ export class Transcript extends Component<KitchenSinkProps, KitchenSinkState> {
                                 <Spinner />
                             </div>
                         )
-                        : this._renderTranscript(captions)
+                        : this._renderTranscript()
                     }
                 </div>
             </div>
