@@ -71,6 +71,17 @@ $white-color: white;
   cursor: pointer;
 }
 
+.goto-button {
+  position: absolute;
+  right: 12px;
+  top: 54px;
+  width: 30px;
+  height: 30px;
+  border: none;
+  cursor: pointer;
+  z-index: 1;
+}
+
 .close-button {
   background-image: url('../../assets/close.svg');
 }

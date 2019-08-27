@@ -2,7 +2,7 @@ import { h, Component } from "preact";
 import * as styles from "./Transcript.scss";
 import { ContribLogger, CuepointEngine } from "@playkit-js-contrib/common";
 import { Spinner } from "../spinner";
-import { CaptionItem } from "../../utils"
+import { CaptionItem, debounce } from "../../utils"
 import { Hotspot } from "../Hotspot"
 
 export interface KitchenSinkProps {
@@ -17,10 +17,25 @@ export interface KitchenSinkProps {
 }
 
 interface KitchenSinkState {
-    highlightedMap: Record<number, boolean>
+    highlightedMap: Record<number, boolean>;
+    isAutoScrollEnabled: boolean;
 }
 
+const SCROLL_OFFSET = 40;
+const DEBOUNCE_TIMEOUT = 300;
+
 export class Transcript extends Component<KitchenSinkProps, KitchenSinkState> {
+
+    private _engine: CuepointEngine<CaptionItem> | null = null;
+    private _transcriptListRef: HTMLElement | null = null;
+    private _preventScrollEvent: boolean = false;
+    
+    state: KitchenSinkState = {
+        highlightedMap: {},
+        isAutoScrollEnabled: true
+    };
+
+
     log(cb: (logger: ContribLogger) => void): void {
         if (!this.context.logger) {
             return;
@@ -62,6 +77,11 @@ export class Transcript extends Component<KitchenSinkProps, KitchenSinkState> {
     componentWillReceiveProps(nextProps: Readonly<KitchenSinkProps>,) {
         const { captions } = this.props;
         if (nextProps.captions !== captions) {
+            this.log(logger => {
+                logger.debug("handle changes of caption list", {
+                    method: "componentDidUpdate"
+                });
+            });
             this._createEngine();
         }
 
@@ -91,6 +111,7 @@ export class Transcript extends Component<KitchenSinkProps, KitchenSinkState> {
     ) {
         if (
             nextState.highlightedMap !== this.state.highlightedMap ||
+            nextState.isAutoScrollEnabled !== this.state.isAutoScrollEnabled ||
             nextProps.isLoading !== this.props.isLoading ||
             nextProps.hasError !== this.props.hasError
         ) {
@@ -98,11 +119,6 @@ export class Transcript extends Component<KitchenSinkProps, KitchenSinkState> {
         }
         return false
     }
-
-    private _engine: CuepointEngine<CaptionItem> | null = null;
-    state: KitchenSinkState = {
-        highlightedMap: {},
-    };
 
     private _createEngine = () => {
         const {
@@ -162,6 +178,23 @@ export class Transcript extends Component<KitchenSinkProps, KitchenSinkState> {
         this._engine = null;
     };
 
+    private _enableAutoScroll = (e: any) => {
+        e.preventDefault();
+        this._preventScrollEvent = true;
+        this.setState({
+            isAutoScrollEnabled: true,
+        })
+    }
+
+    private _renderScrollToButton = () => {
+        return (
+            <button
+                className={styles.gotoButton}
+                onClick={this._enableAutoScroll}
+            >Go</button>
+        )
+    }
+
     private _renderTranscript = () => {
         const { captions, seek, hasError, onRetryLoad } = this.props;
         const { highlightedMap } = this.state;
@@ -187,9 +220,32 @@ export class Transcript extends Component<KitchenSinkProps, KitchenSinkState> {
                 seekTo={seek}
                 hotspot={hotspotData}
                 highlighted={highlightedMap[hotspotData.id]}
+                scrollTo={this._debouncedScrollTo}
             />
         ));
     };
+
+    private _scrollTo = (el: HTMLElement, isAutoScroll?: boolean) => {
+        // console.log('isAutoScroll', isAutoScroll, '_preventScrollEvent', this._preventScrollEvent)
+        if (this._transcriptListRef && this.state.isAutoScrollEnabled) {
+            // el.scrollIntoView();
+            this._preventScrollEvent = true;
+            this._transcriptListRef.scrollTop = el.offsetTop - SCROLL_OFFSET; // delta;
+            
+        }
+    };
+
+    private _debouncedScrollTo = debounce(this._scrollTo, DEBOUNCE_TIMEOUT)
+
+    private _onScroll = () => {
+        if (this._preventScrollEvent) {
+            this._preventScrollEvent = false;
+            return
+        }
+        this.setState({
+            isAutoScrollEnabled: false,
+        })
+    }
 
     render(props: KitchenSinkProps) {
         const {
@@ -206,7 +262,14 @@ export class Transcript extends Component<KitchenSinkProps, KitchenSinkState> {
                     <div className={styles.downloadButton} onClick={onDownload} />
                     <div className={styles.closeButton} onClick={onClose} />
                 </div>
-                <div className={styles.body}>
+                {!this.state.isAutoScrollEnabled && this._renderScrollToButton()}
+                <div
+                    className={styles.body}
+                    onScroll={this._onScroll}
+                    ref={node => {
+                        this._transcriptListRef = node;
+                    }}
+                >
                     {isLoading
                         ? (
                             <div className={styles.loadingWrapper}>
