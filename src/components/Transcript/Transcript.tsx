@@ -213,7 +213,12 @@ export class Transcript extends Component<KitchenSinkProps, KitchenSinkState> {
                                 <Spinner />
                             </div>
                         )
-                        : this._renderTranscript()
+                        : 
+                        (
+                            <div className={styles.transcriptWrapper}>
+                                {this._renderTranscript()}
+                            </div>
+                        )
                     }
                 </div>
             </div>
