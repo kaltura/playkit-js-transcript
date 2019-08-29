@@ -70,6 +70,7 @@ export class TranscriptPlugin extends PlayerContribPlugin
 
         this.eventManager.listen(this.player, this.player.Event.TIME_UPDATE, this._onTimeUpdate);
         this.eventManager.listen(this.player, KalturaPlayer.ui.EventType.USER_SELECTED_CAPTION_TRACK, (e: any) => {
+          this._loadCaptions();
         });
     }
 
@@ -171,10 +172,12 @@ export class TranscriptPlugin extends PlayerContribPlugin
     }
 
     private _findCaptionAsset = (): KalturaCaptionAsset | undefined => {
-      const captionAsset = this._captionsList.find((ca: KalturaCaptionAsset) => {
+      if (this.player.config.playback.textLanguage === "off") {
+        return this._captionsList[0];
+      }
+      return this._captionsList.find((ca: KalturaCaptionAsset) => {
         return ca.languageCode === this.player.config.playback.textLanguage
       })
-      return captionAsset;
     }
 
     private _getCaptionsById = (): void => {
@@ -196,9 +199,11 @@ export class TranscriptPlugin extends PlayerContribPlugin
               this._onError(err, "Failed to fetch captions", "_getCaptionsById");
             }
           );
+        } else {
+          this._onError(undefined, "Current video doesn't have captions in selected language", "_getCaptionsById");
         }
       } else {
-          this._onError(undefined, "Current video doesn't have captions", "_getCaptionsList");
+          this._onError(undefined, "Current video doesn't have captions", "_getCaptionsById");
       }
     }
 
