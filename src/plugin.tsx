@@ -69,9 +69,7 @@ export class TranscriptPlugin extends PlayerContribPlugin
         });
 
         this.eventManager.listen(this.player, this.player.Event.TIME_UPDATE, this._onTimeUpdate);
-        this.eventManager.listen(this.player, KalturaPlayer.ui.EventType.USER_SELECTED_CAPTION_TRACK, (e: any) => {
-          this._loadCaptions();
-        });
+        this.eventManager.listen(this.player, this.player.Event.TEXT_TRACK_CHANGED, this._loadCaptions);
     }
 
     onRegisterUI(uiManager: UIManager): void {
@@ -101,6 +99,7 @@ export class TranscriptPlugin extends PlayerContribPlugin
         this._hasError = false;
         this._entryId = '';
         this.player.removeEventListener(this.player.Event.TIME_UPDATE, this._onTimeUpdate)
+        this.player.removeEventListener(this.player.Event.TEXT_TRACK_CHANGED, this._loadCaptions)
     }
 
     private _onTimeUpdate = (): void => {
@@ -143,9 +142,9 @@ export class TranscriptPlugin extends PlayerContribPlugin
       this._updateKitchenSink();
     }
 
-    private _loadCaptions = (): void => {
+    private _loadCaptions = (e?: any): void => {
       if (this._captionsList && this._captionsList.length > 0) {
-        this._getCaptionsById();
+        this._getCaptionsById(e ? e.payload.selectedTextTrack._language : this.player.config.playback.textLanguage);
       } else {
         this._getCaptionsList();
       }
@@ -171,18 +170,18 @@ export class TranscriptPlugin extends PlayerContribPlugin
         );
     }
 
-    private _findCaptionAsset = (): KalturaCaptionAsset | undefined => {
-      if (this.player.config.playback.textLanguage === "off") {
+    private _findCaptionAsset = (lang: string = this.player.config.playback.textLanguage): KalturaCaptionAsset | undefined => {
+      if (lang === "off") {
         return this._captionsList[0];
       }
       return this._captionsList.find((ca: KalturaCaptionAsset) => {
-        return ca.languageCode === this.player.config.playback.textLanguage
+        return ca.languageCode === lang
       })
     }
 
-    private _getCaptionsById = (): void => {
+    private _getCaptionsById = (lang?: string): void => {
       if (this._captionsList && this._captionsList.length > 0) {
-        const captionAsset: KalturaCaptionAsset | undefined = this._findCaptionAsset();
+        const captionAsset: KalturaCaptionAsset | undefined = this._findCaptionAsset(lang);
         if (captionAsset) {
           const request = new CaptionAssetGetUrlAction({ id: captionAsset.id });
           this._initLoading();
