@@ -1,0 +1,32 @@
+@import '../../variables.scss';
+
+.search-wrapper {
+  flex-grow: 1;
+  display: flex;
+  background-color: $semigray-color;
+  border-radius: 2px;
+  .searchIcon {
+    background-color: inherit;
+    background-position: center;
+    background-image: url('../../assets/serch.svg');
+    width: 32px;
+    height: 32px;
+  }
+  .searchInput {
+    flex-grow: 1;
+    font-size: 1.3em;
+    color: $gray-color;
+    background: inherit;
+    border: none;
+    font-family: Lato;
+  }
+  .clearIcon {
+    background-color: inherit;
+    background-position: center;
+    background-image: url('../../assets/clear.svg');
+    width: 32px;
+    height: 32px;
+    border: none;
+    cursor: pointer;
+  }
+}

@@ -116,3 +116,9 @@ export function debounce<F extends Procedure>(
     }
   } as any
 }
+
+export const secontsToTime = (seconts: number): string => {
+  const date = new Date(0);
+  date.setSeconds(seconts);
+  return date.toISOString().substr(14, 5);
+}

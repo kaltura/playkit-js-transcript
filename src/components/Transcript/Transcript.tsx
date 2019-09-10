@@ -2,10 +2,11 @@ import { h, Component } from "preact";
 import * as styles from "./Transcript.scss";
 import { ContribLogger, CuepointEngine } from "@playkit-js-contrib/common";
 import { Spinner } from "../spinner";
-import { CaptionItem, debounce } from "../../utils"
-import { Hotspot } from "../Hotspot"
+import { CaptionItem, debounce } from "../../utils";
+import { Caption } from "../Caption";
+import { Search } from "../Search";
 
-export interface KitchenSinkProps {
+export interface TranscriptProps {
     seek(time: number): void;
     onClose: () => void;
     onRetryLoad: () => void;
@@ -16,25 +17,27 @@ export interface KitchenSinkProps {
     currentTime: number;
 }
 
-interface KitchenSinkState {
+interface TranscriptState {
     highlightedMap: Record<number, boolean>;
     isAutoScrollEnabled: boolean;
+    search: string;
 }
 
-const SCROLL_OFFSET = 40;
-const DEBOUNCE_TIMEOUT = 300;
+const Constants = {
+    SCROLL_OFFSET: 0,
+    SCROLL_DEBOUNCE_TIMEOUT: 200,
+    SEARCH_DEBOUNCE_TIMEOUT: 300
+};
 
-export class Transcript extends Component<KitchenSinkProps, KitchenSinkState> {
-
+export class Transcript extends Component<TranscriptProps, TranscriptState> {
     private _engine: CuepointEngine<CaptionItem> | null = null;
     private _transcriptListRef: HTMLElement | null = null;
     private _preventScrollEvent: boolean = false;
-    
-    state: KitchenSinkState = {
+    state: TranscriptState = {
         highlightedMap: {},
-        isAutoScrollEnabled: true
+        isAutoScrollEnabled: true,
+        search: ""
     };
-
 
     log(cb: (logger: ContribLogger) => void): void {
         if (!this.context.logger) {
@@ -74,7 +77,7 @@ export class Transcript extends Component<KitchenSinkProps, KitchenSinkState> {
 
     // we can use getDerivedStateFromProps in case when we keep "engine"
     // outside of class
-    componentWillReceiveProps(nextProps: Readonly<KitchenSinkProps>,) {
+    componentWillReceiveProps(nextProps: Readonly<TranscriptProps>) {
         const { captions } = this.props;
         if (nextProps.captions !== captions) {
             this.log(logger => {
@@ -106,35 +109,34 @@ export class Transcript extends Component<KitchenSinkProps, KitchenSinkState> {
     }
 
     shouldComponentUpdate(
-        nextProps: Readonly<KitchenSinkProps>,
-        nextState: Readonly<KitchenSinkState>,
+        nextProps: Readonly<TranscriptProps>,
+        nextState: Readonly<TranscriptState>
     ) {
         if (
             nextState.highlightedMap !== this.state.highlightedMap ||
             nextState.isAutoScrollEnabled !== this.state.isAutoScrollEnabled ||
+            nextState.search !== this.state.search ||
             nextProps.isLoading !== this.props.isLoading ||
             nextProps.hasError !== this.props.hasError
         ) {
-            return true
+            return true;
         }
-        return false
+        return false;
     }
 
     private _createEngine = () => {
-        const {
-            captions
-        } = this.props;
+        const { captions } = this.props;
         if (!captions || captions.length === 0) {
             this._engine = null;
             return;
         }
         this._engine = new CuepointEngine<CaptionItem>(captions);
         this._syncVisibleTranscript();
-    }
+    };
 
     private _syncVisibleTranscript = (forceSnapshot = false) => {
         const { currentTime } = this.props;
-        this.setState((state: KitchenSinkState) => {
+        this.setState((state: TranscriptState) => {
             if (!this._engine) {
                 return {
                     highlightedMap: {}
@@ -144,21 +146,21 @@ export class Transcript extends Component<KitchenSinkProps, KitchenSinkState> {
             const transcriptUpdate = this._engine.updateTime(currentTime, forceSnapshot);
             if (transcriptUpdate.snapshot) {
                 const highlightedMap = transcriptUpdate.snapshot.reduce((acc, item) => {
-                    return { ...acc, [item.id]: true}
-                }, {})
+                    return { ...acc, [item.id]: true };
+                }, {});
                 return {
-                    highlightedMap,
+                    highlightedMap
                 };
             }
 
             if (!transcriptUpdate.delta) {
-                return state
+                return state;
             }
 
             const { show, hide } = transcriptUpdate.delta;
 
             if (show.length > 0 || hide.length > 0) {
-                const newHighlightedMap = { ...state.highlightedMap }
+                const newHighlightedMap = { ...state.highlightedMap };
                 show.forEach((caption: CaptionItem) => {
                     newHighlightedMap[caption.id] = true;
                 });
@@ -168,12 +170,12 @@ export class Transcript extends Component<KitchenSinkProps, KitchenSinkState> {
                 });
 
                 return {
-                    highlightedMap: newHighlightedMap,
+                    highlightedMap: newHighlightedMap
                 };
             }
-            return state
+            return state;
         });
-    }
+    };
 
     private _reset = () => {
         this._engine = null;
@@ -183,24 +185,43 @@ export class Transcript extends Component<KitchenSinkProps, KitchenSinkState> {
         e.preventDefault();
         this._preventScrollEvent = true;
         this.setState({
-            isAutoScrollEnabled: true,
-        })
-    }
+            isAutoScrollEnabled: true
+        });
+    };
 
     private _renderScrollToButton = () => {
         return (
-            <button
-                className={styles.gotoButton}
-                onClick={this._enableAutoScroll}
-            >Go</button>
-        )
-    }
+            <button className={styles.gotoButton} onClick={this._enableAutoScroll}>
+                Up
+            </button>
+        );
+    };
+
+    private _onSearch = (search: string) => {
+        this.setState({
+            search
+        });
+    };
+
+    private _renderHeader = (onClose: () => void, onDownload: () => void) => {
+        return (
+            <div className={styles.header}>
+                <Search
+                    onChange={this._debounced.onSearch}
+                    onPrev={() => {}}
+                    onNext={() => {}}
+                    value={this.state.search}
+                />
+                <div className={styles.downloadButton} onClick={onDownload} />
+                <div className={styles.closeButton} onClick={onClose} />
+            </div>
+        );
+    };
 
     private _renderTranscript = () => {
         const { captions, seek, hasError, onRetryLoad } = this.props;
-        const { highlightedMap } = this.state;
-
-        if (!captions) {
+        const { highlightedMap, search } = this.state;
+        if (!captions || !captions.length) {
             return null;
         }
 
@@ -208,61 +229,67 @@ export class Transcript extends Component<KitchenSinkProps, KitchenSinkState> {
             return (
                 <div className={styles.errorWrapper}>
                     <p>Failed to get transcript, please try again</p>
-                    <button
-                        className={styles.retryButton}
-                        onClick={onRetryLoad}
-                    >Retry</button>
+                    <button className={styles.retryButton} onClick={onRetryLoad}>
+                        Retry
+                    </button>
                 </div>
-            )
+            );
         }
-        return captions.map(hotspotData => (
-            <Hotspot
-                key={hotspotData.id}
-                seekTo={seek}
-                hotspot={hotspotData}
-                highlighted={highlightedMap[hotspotData.id]}
-                scrollTo={this._debouncedScrollTo}
-            />
-        ));
+        return (
+            <div className={styles.transcriptWrapper}>
+                <table>
+                    <tbody>
+                        {captions.map(captionData => (
+                            <Caption
+                                key={captionData.id}
+                                seekTo={seek}
+                                caption={captionData}
+                                highlighted={highlightedMap[captionData.id]}
+                                scrollTo={this._debounced.scrollTo}
+                                search={search}
+                            />
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        );
     };
 
-    private _scrollTo = (el: HTMLElement, isAutoScroll?: boolean) => {
-        // console.log('isAutoScroll', isAutoScroll, '_preventScrollEvent', this._preventScrollEvent)
+    private _renderLoading = () => {
+        return (
+            <div className={styles.loadingWrapper}>
+                <Spinner />
+            </div>
+        );
+    };
+
+    private _scrollTo = (el: HTMLElement) => {
         if (this._transcriptListRef && this.state.isAutoScrollEnabled) {
-            // el.scrollIntoView();
             this._preventScrollEvent = true;
-            this._transcriptListRef.scrollTop = el.offsetTop - SCROLL_OFFSET; // delta;
-            
+            this._transcriptListRef.scrollTop = el.offsetTop - Constants.SCROLL_OFFSET; // delta;
         }
     };
-
-    private _debouncedScrollTo = debounce(this._scrollTo, DEBOUNCE_TIMEOUT)
 
     private _onScroll = () => {
         if (this._preventScrollEvent) {
             this._preventScrollEvent = false;
-            return
+            return;
         }
         this.setState({
-            isAutoScrollEnabled: false,
-        })
-    }
+            isAutoScrollEnabled: false
+        });
+    };
 
-    render(props: KitchenSinkProps) {
-        const {
-            onClose,
-            onDownload,
-            isLoading,
-        } = props;
+    private _debounced = {
+        scrollTo: debounce(this._scrollTo, Constants.SCROLL_DEBOUNCE_TIMEOUT),
+        onSearch: debounce(this._onSearch, Constants.SEARCH_DEBOUNCE_TIMEOUT)
+    };
+
+    render(props: TranscriptProps) {
+        const { onClose, onDownload, isLoading } = props;
         return (
-            <div
-                className={styles.root}
-            >
-                <div className={styles.header}>
-                    <div className={styles.title}>Transcript</div>
-                    <div className={styles.downloadButton} onClick={onDownload} />
-                    <div className={styles.closeButton} onClick={onClose} />
-                </div>
+            <div className={styles.root}>
+                {this._renderHeader(onClose, onDownload)}
                 {!this.state.isAutoScrollEnabled && this._renderScrollToButton()}
                 <div
                     className={styles.body}
@@ -271,19 +298,7 @@ export class Transcript extends Component<KitchenSinkProps, KitchenSinkState> {
                         this._transcriptListRef = node;
                     }}
                 >
-                    {isLoading
-                        ? (
-                            <div className={styles.loadingWrapper}>
-                                <Spinner />
-                            </div>
-                        )
-                        : 
-                        (
-                            <div className={styles.transcriptWrapper}>
-                                {this._renderTranscript()}
-                            </div>
-                        )
-                    }
+                    {isLoading ? this._renderLoading() : this._renderTranscript()}
                 </div>
             </div>
         );

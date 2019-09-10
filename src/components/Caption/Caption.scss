@@ -1,0 +1,27 @@
+@import '../../variables.scss';
+
+.caption {
+  font-family: Lato;
+  color: $white-color;
+  .caption-time {
+    padding-right: 6px;
+    vertical-align: top;
+    font-size: 1.1em;
+    line-height: 1.75;
+  }
+  .caption-content {
+    font-size: 1.3em;
+    line-height: 1.4;
+    text-align: left;
+    cursor: pointer;
+    &.highlighted {
+      color: $black-color;
+      .caption-span {
+        background-color: $main-color;
+      }
+    }
+    .highlight-search {
+      background-color: $yellow-color;
+    }
+  }
+}
