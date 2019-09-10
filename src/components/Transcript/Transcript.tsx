@@ -137,7 +137,7 @@ export class Transcript extends Component<KitchenSinkProps, KitchenSinkState> {
         this.setState((state: KitchenSinkState) => {
             if (!this._engine) {
                 return {
-                    captions: []
+                    highlightedMap: {}
                 };
             }
 
@@ -171,6 +171,7 @@ export class Transcript extends Component<KitchenSinkProps, KitchenSinkState> {
                     highlightedMap: newHighlightedMap,
                 };
             }
+            return state
         });
     }
 
