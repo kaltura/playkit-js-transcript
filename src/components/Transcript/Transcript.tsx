@@ -1,6 +1,6 @@
 import { h, Component } from "preact";
 import * as styles from "./Transcript.scss";
-import { ContribLogger, CuepointEngine } from "@playkit-js-contrib/common";
+import { ContribLogger } from "@playkit-js-contrib/common";
 import { Spinner } from "../spinner";
 import { CaptionItem, debounce } from "../../utils";
 import { Caption } from "../Caption";
@@ -14,36 +14,37 @@ export interface TranscriptProps {
     isLoading: boolean;
     hasError: boolean;
     captions: CaptionItem[];
-    currentTime: number;
+    showTime: boolean; // TODO: use this for render or not time
+    highlightedMap: Record<number, true>;
 }
 
 interface TranscriptState {
-    highlightedMap: Record<number, boolean>;
     isAutoScrollEnabled: boolean;
     search: string;
+    activeSearchIndex: number;
+    searchMap: Record<number, any>;
 }
 
 const Constants = {
     SCROLL_OFFSET: 0,
     SCROLL_DEBOUNCE_TIMEOUT: 200,
-    SEARCH_DEBOUNCE_TIMEOUT: 300
+    SEARCH_DEBOUNCE_TIMEOUT: 250
 };
 
 export class Transcript extends Component<TranscriptProps, TranscriptState> {
-    private _engine: CuepointEngine<CaptionItem> | null = null;
     private _transcriptListRef: HTMLElement | null = null;
     private _preventScrollEvent: boolean = false;
     state: TranscriptState = {
-        highlightedMap: {},
         isAutoScrollEnabled: true,
-        search: ""
+        search: "",
+        activeSearchIndex: 0,
+        searchMap: {}
     };
 
     log(cb: (logger: ContribLogger) => void): void {
         if (!this.context.logger) {
             return;
         }
-
         cb(this.context.logger);
     }
 
@@ -54,48 +55,6 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
                 method: "componentDidMount"
             });
         });
-        this._createEngine();
-    }
-
-    // componentDidUpdate(
-    //     previousProps: Readonly<KitchenSinkProps>,
-    // ): void {
-    //     const { captions } = this.props;
-    //     if (previousProps.captions !== captions) {
-    //         this._createEngine();
-    //     }
-
-    //     if (previousProps.currentTime !== this.props.currentTime) {
-    //         this.log(logger => {
-    //             logger.debug("current time updated", {
-    //                 method: "componentDidUpdate"
-    //             });
-    //         });
-    //         this._syncVisibleTranscript();
-    //     }
-    // }
-
-    // we can use getDerivedStateFromProps in case when we keep "engine"
-    // outside of class
-    componentWillReceiveProps(nextProps: Readonly<TranscriptProps>) {
-        const { captions } = this.props;
-        if (nextProps.captions !== captions) {
-            this.log(logger => {
-                logger.debug("handle changes of caption list", {
-                    method: "componentDidUpdate"
-                });
-            });
-            this._createEngine();
-        }
-
-        if (nextProps.currentTime !== this.props.currentTime) {
-            this.log(logger => {
-                logger.debug("current time updated", {
-                    method: "componentDidUpdate"
-                });
-            });
-            this._syncVisibleTranscript();
-        }
     }
 
     componentWillUnmount(): void {
@@ -105,7 +64,6 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
                 method: "componentWillUnmount"
             });
         });
-        this._reset();
     }
 
     shouldComponentUpdate(
@@ -113,9 +71,9 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         nextState: Readonly<TranscriptState>
     ) {
         if (
-            nextState.highlightedMap !== this.state.highlightedMap ||
             nextState.isAutoScrollEnabled !== this.state.isAutoScrollEnabled ||
             nextState.search !== this.state.search ||
+            nextProps.highlightedMap !== this.props.highlightedMap ||
             nextProps.isLoading !== this.props.isLoading ||
             nextProps.hasError !== this.props.hasError
         ) {
@@ -123,63 +81,6 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         }
         return false;
     }
-
-    private _createEngine = () => {
-        const { captions } = this.props;
-        if (!captions || captions.length === 0) {
-            this._engine = null;
-            return;
-        }
-        this._engine = new CuepointEngine<CaptionItem>(captions);
-        this._syncVisibleTranscript();
-    };
-
-    private _syncVisibleTranscript = (forceSnapshot = false) => {
-        const { currentTime } = this.props;
-        this.setState((state: TranscriptState) => {
-            if (!this._engine) {
-                return {
-                    highlightedMap: {}
-                };
-            }
-
-            const transcriptUpdate = this._engine.updateTime(currentTime, forceSnapshot);
-            if (transcriptUpdate.snapshot) {
-                const highlightedMap = transcriptUpdate.snapshot.reduce((acc, item) => {
-                    return { ...acc, [item.id]: true };
-                }, {});
-                return {
-                    highlightedMap
-                };
-            }
-
-            if (!transcriptUpdate.delta) {
-                return state;
-            }
-
-            const { show, hide } = transcriptUpdate.delta;
-
-            if (show.length > 0 || hide.length > 0) {
-                const newHighlightedMap = { ...state.highlightedMap };
-                show.forEach((caption: CaptionItem) => {
-                    newHighlightedMap[caption.id] = true;
-                });
-
-                hide.forEach((caption: CaptionItem) => {
-                    newHighlightedMap[caption.id] = false;
-                });
-
-                return {
-                    highlightedMap: newHighlightedMap
-                };
-            }
-            return state;
-        });
-    };
-
-    private _reset = () => {
-        this._engine = null;
-    };
 
     private _enableAutoScroll = (e: any) => {
         e.preventDefault();
@@ -203,14 +104,20 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         });
     };
 
+    private _setActiveSearchIndex = (index: number) => {
+        this.setState({
+            activeSearchIndex: index
+        });
+    }
+
     private _renderHeader = (onClose: () => void, onDownload: () => void) => {
         return (
             <div className={styles.header}>
                 <Search
                     onChange={this._debounced.onSearch}
-                    onPrev={() => {}}
-                    onNext={() => {}}
+                    onSearchIndexChange={this._debounced.onActiveSearchIndexChange}
                     value={this.state.search}
+                    // activeSearchIndex={this.state.activeSearchIndex}
                 />
                 <div className={styles.downloadButton} onClick={onDownload} />
                 <div className={styles.closeButton} onClick={onClose} />
@@ -219,8 +126,8 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     };
 
     private _renderTranscript = () => {
-        const { captions, seek, hasError, onRetryLoad } = this.props;
-        const { highlightedMap, search } = this.state;
+        const { captions, seek, hasError, onRetryLoad, highlightedMap } = this.props;
+        const { search } = this.state;
         if (!captions || !captions.length) {
             return null;
         }
@@ -239,16 +146,26 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
             <div className={styles.transcriptWrapper}>
                 <table>
                     <tbody>
-                        {captions.map(captionData => (
-                            <Caption
-                                key={captionData.id}
-                                seekTo={seek}
-                                caption={captionData}
-                                highlighted={highlightedMap[captionData.id]}
-                                scrollTo={this._debounced.scrollTo}
-                                search={search}
-                            />
-                        ))}
+                        {captions.map(captionData => {
+                            const lcText = captionData.text.toLowerCase();
+                            const lcSearch = search.toLowerCase()
+                            let index = -1;
+                            if (lcSearch) {
+                                index = lcText.indexOf(lcSearch);
+                            }
+                            // TODO: cover the case when we have more than 2 match for the caption
+                            return (
+                                <Caption
+                                    key={captionData.id}
+                                    seekTo={seek}
+                                    caption={captionData}
+                                    highlighted={highlightedMap[captionData.id]}
+                                    scrollTo={this._debounced.scrollTo}
+                                    searchLength={search.length}
+                                    searchIndex={index}
+                                />
+                            )
+                        })}
                     </tbody>
                 </table>
             </div>
@@ -282,7 +199,8 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
 
     private _debounced = {
         scrollTo: debounce(this._scrollTo, Constants.SCROLL_DEBOUNCE_TIMEOUT),
-        onSearch: debounce(this._onSearch, Constants.SEARCH_DEBOUNCE_TIMEOUT)
+        onSearch: debounce(this._onSearch, Constants.SEARCH_DEBOUNCE_TIMEOUT),
+        onActiveSearchIndexChange: debounce(this._setActiveSearchIndex, Constants.SEARCH_DEBOUNCE_TIMEOUT)
     };
 
     render(props: TranscriptProps) {

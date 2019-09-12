@@ -29,7 +29,8 @@ import {
     CaptionAssetGetUrlAction
 } from "kaltura-typescript-client/api/types";
 import {
-  getContribLogger
+  getContribLogger,
+  CuepointEngine
 } from "@playkit-js-contrib/common";
 
 import { MenuIcon } from "./components/menu-icon";
@@ -47,7 +48,9 @@ const logger = getContribLogger({
 
 export class TranscriptPlugin extends PlayerContribPlugin
     implements OnMediaUnload, OnRegisterUI, OnMediaLoad, OnPluginSetup {
-    static defaultConfig = {};
+    static defaultConfig = {
+      showTime: true,
+    };
 
     private _kitchenSinkItem: KitchenSinkItem | null = null;
     private _isLoading = false;
@@ -57,6 +60,8 @@ export class TranscriptPlugin extends PlayerContribPlugin
     private _captions: CaptionItem[] = []; // parsed captions
     private _kalturaClient = new KalturaClient();
     private _captionsRaw: null | string = null;
+    private _engine: CuepointEngine<CaptionItem> | null = null;
+    private _highlightedMap: Record<number, true> = {};
 
     onPluginSetup(config: ContribConfig): void {
         this._kalturaClient.setOptions({
@@ -76,7 +81,7 @@ export class TranscriptPlugin extends PlayerContribPlugin
       this._kitchenSinkItem = uiManager.kitchenSink.add({
         label: "Transcript",
         renderIcon: () => <MenuIcon />,
-        position: KitchenSinkPositions.Bottom,
+        position: KitchenSinkPositions.Bottom, // set it from config, check is it eq Bottom or Right, otherwise use default
         expandMode: KitchenSinkExpandModes.AlongSideTheVideo,
         renderContent: this._renderKitchenSinkContent
       });
@@ -102,7 +107,50 @@ export class TranscriptPlugin extends PlayerContribPlugin
         this.player.removeEventListener(this.player.Event.TEXT_TRACK_CHANGED, this._loadCaptions)
     }
 
+    private _createEngine = (captions: CaptionItem[] ) => {
+      if (!captions || captions.length === 0) {
+          this._engine = null;
+          return;
+      }
+      this._engine = new CuepointEngine<CaptionItem>(captions);
+      this._syncVisibleTranscript(this.player.currentTime);
+    };
+
+    private _syncVisibleTranscript = (currentTime: number, forceSnapshot = false) => {
+      if (!this._engine) {
+            this._highlightedMap = {};
+            return;
+      };
+
+    const transcriptUpdate = this._engine.updateTime(currentTime, forceSnapshot);
+    if (transcriptUpdate.snapshot) {
+        const highlightedMap = transcriptUpdate.snapshot.reduce((acc, item) => {
+            return { ...acc, [item.id]: true };
+        }, {});
+        this._highlightedMap = highlightedMap;
+        return
+    }
+
+    if (!transcriptUpdate.delta) {
+        return;
+    }
+
+    const { show, hide } = transcriptUpdate.delta;
+    if (show.length > 0 || hide.length > 0) {
+        const newHighlightedMap = { ...this._highlightedMap };
+        show.forEach((caption: CaptionItem) => {
+            newHighlightedMap[caption.id] = true;
+        });
+
+        hide.forEach((caption: CaptionItem) => {
+            delete newHighlightedMap[caption.id];
+        });
+        this._highlightedMap = newHighlightedMap;
+      }
+    };
+
     private _onTimeUpdate = (): void => {
+      this._syncVisibleTranscript(this.player.currentTime);
       this._updateKitchenSink();
     }
 
@@ -217,6 +265,7 @@ export class TranscriptPlugin extends PlayerContribPlugin
           .then((data: string) => {
             this._captionsRaw = data; // keep it for downloading
             this._captions = this._parseCaptions(data);
+            this._createEngine(this._captions);
             this._isLoading = false;
             this._updateKitchenSink();
           })
@@ -262,13 +311,14 @@ export class TranscriptPlugin extends PlayerContribPlugin
         return (
           <Transcript
             {...props}
+            showTime={this.config.showTime}
             seek={this._seekTo}
             captions={this._captions}
             isLoading={this._isLoading}
             hasError={this._hasError}
             onDownload={this._handleDownload}
-            currentTime={this.player.currentTime}
             onRetryLoad={this._loadCaptions}
+            highlightedMap={this._highlightedMap}
           />
         );
     }

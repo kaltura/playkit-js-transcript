@@ -7,7 +7,8 @@ type Props = {
     seekTo(time: number): void;
     highlighted: boolean;
     scrollTo(el: HTMLElement, isAutoScroll: boolean): void;
-    search: string;
+    searchIndex: number;
+    searchLength: number;
 };
 
 export class Caption extends Component<Props> {
@@ -19,24 +20,26 @@ export class Caption extends Component<Props> {
         }
     }
 
+    // shouldComponentUpdate() {
+    //     // check do we need to rerender component
+    // }
+
     private _handleClick = () => {
         const { caption, seekTo } = this.props;
         seekTo(caption.startTime);
     };
 
     private _renderText = (text: string) => {
-        const lcText = text.toLowerCase();
-        const lcSearch = this.props.search.toLowerCase();
-        const index = lcText.indexOf(lcSearch);
+        const { searchIndex, searchLength } = this.props;
         return (
             <span className={styles.captionSpan}>
-                {(lcSearch && index > -1) ? (
+                {(searchIndex > -1) ? (
                     <span>
-                        {text.substring(0, index)}
+                        {text.substring(0, searchIndex)}
                         <span className={styles.highlightSearch}>
-                            {text.substring(index, index + lcSearch.length)}
+                            {text.substring(searchIndex, searchIndex + searchLength)}
                         </span>
-                        {text.substring(index + lcSearch.length)}
+                        {text.substring(searchIndex + searchLength)}
                     </span>
                 ) : (
                     text
