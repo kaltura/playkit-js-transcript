@@ -8,7 +8,7 @@ type CaptionProps = {
     highlighted: boolean;
     isAutoScrollEnabled: boolean;
     showTime: boolean;
-    scrollTo(el: HTMLElement, isAutoScroll: boolean): void;
+    scrollTo(el: HTMLElement): void;
     searchLength: number;
     indexMap: Record<string, number> | undefined
     activeSearchIndex: number;
@@ -19,7 +19,7 @@ export class Caption extends Component<CaptionProps> {
 
     componentDidUpdate() {
         if (this._hotspotRef) {
-            this.props.scrollTo(this._hotspotRef, true);
+            this.props.scrollTo(this._hotspotRef);
         }
     }
 
@@ -51,7 +51,7 @@ export class Caption extends Component<CaptionProps> {
         }
         return (
             <span className={styles.captionSpan}>
-                {indexMap && indexArray.length ? (
+                {indexMap ? (
                     indexArray.map((el: string, index: number) => {
                         return (
                             <span>
@@ -71,7 +71,7 @@ export class Caption extends Component<CaptionProps> {
     };
 
     render() {
-        const { caption, highlighted, showTime, indexMap, activeSearchIndex } = this.props;
+        const { caption, highlighted, showTime, isAutoScrollEnabled } = this.props;
         const { text, startTime } = caption;
 
         return (
@@ -82,7 +82,7 @@ export class Caption extends Component<CaptionProps> {
                     className={`${styles.captionContent} ${highlighted ? styles.highlighted : ""}`}
                     type="button"
                     ref={node => {
-                        this._hotspotRef = highlighted || (indexMap && indexMap[String(activeSearchIndex)]) ? node : null;
+                        this._hotspotRef = isAutoScrollEnabled ? node : null;
                     }}
                 >
                     {this._renderText(text)}

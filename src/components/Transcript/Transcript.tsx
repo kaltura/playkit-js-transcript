@@ -22,7 +22,7 @@ interface TranscriptState {
     isAutoScrollEnabled: boolean;
     search: string;
     activeSearchIndex: number;
-    searchMap: Record<number, Record<number, number>>;
+    searchMap: Record<number, Record<string, number>>;
     totalSearchResults: number;
 }
 
@@ -110,7 +110,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
             this.setState({ ...initialSearch });
             return
         }
-        let index = 1;
+        let index = 0;
         const loSearch = search.toLowerCase();
         const searchMap: Record<number, Record<number, number>> = {};
         this.props.captions.forEach((caption: CaptionItem) => {
@@ -122,8 +122,8 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
                 indices.push(result.index);
             }
             indices.forEach((i: number) => {
-                searchMap[caption.id] = { ...searchMap[caption.id], [index]: i }
                 index++;
+                searchMap[caption.id] = { ...searchMap[caption.id], [index]: i }
             })
         });
         this.setState({
@@ -188,7 +188,8 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
                                     searchLength={search.length}
                                     showTime={showTime}
                                     isAutoScrollEnabled={
-                                        isAutoScrollEnabled && highlightedMap[captionData.id]
+                                        (isAutoScrollEnabled && highlightedMap[captionData.id]) ||
+                                        (!isAutoScrollEnabled && !!(searchMap[captionData.id] || {})[String(activeSearchIndex)])
                                     }
                                     indexMap={searchMap[captionData.id]}
                                     activeSearchIndex={activeSearchIndex}
@@ -210,7 +211,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     };
 
     private _scrollTo = (el: HTMLElement) => {
-        if (this._transcriptListRef && this.state.isAutoScrollEnabled) {
+        if (this._transcriptListRef) {
             this._preventScrollEvent = true;
             this._transcriptListRef.scrollTop = el.offsetTop - Constants.SCROLL_OFFSET; // delta;
         }
