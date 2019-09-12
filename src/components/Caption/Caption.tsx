@@ -2,16 +2,18 @@ import { h, Component } from "preact";
 import * as styles from "./Caption.scss";
 import { secontsToTime } from "../../utils";
 
-type Props = {
+type CaptionProps = {
     caption: any;
     seekTo(time: number): void;
     highlighted: boolean;
+    isAutoScrollEnabled: boolean;
+    showTime: boolean;
     scrollTo(el: HTMLElement, isAutoScroll: boolean): void;
     searchIndex: number;
     searchLength: number;
 };
 
-export class Caption extends Component<Props> {
+export class Caption extends Component<CaptionProps> {
     private _hotspotRef: HTMLElement | null = null;
 
     componentDidUpdate() {
@@ -20,9 +22,18 @@ export class Caption extends Component<Props> {
         }
     }
 
-    // shouldComponentUpdate() {
-    //     // check do we need to rerender component
-    // }
+    shouldComponentUpdate(nextProps: Readonly<CaptionProps>) {
+        if (
+            nextProps.highlighted !== this.props.highlighted ||
+            nextProps.caption !== this.props.caption ||
+            nextProps.searchIndex !== this.props.searchIndex ||
+            nextProps.searchLength !== this.props.searchLength ||
+            nextProps.isAutoScrollEnabled !== this.props.isAutoScrollEnabled
+        ) {
+            return true;
+        }
+        return false;
+    }
 
     private _handleClick = () => {
         const { caption, seekTo } = this.props;
@@ -33,7 +44,7 @@ export class Caption extends Component<Props> {
         const { searchIndex, searchLength } = this.props;
         return (
             <span className={styles.captionSpan}>
-                {(searchIndex > -1) ? (
+                {searchIndex > -1 ? (
                     <span>
                         {text.substring(0, searchIndex)}
                         <span className={styles.highlightSearch}>
@@ -49,12 +60,12 @@ export class Caption extends Component<Props> {
     };
 
     render() {
-        const { caption, highlighted } = this.props;
+        const { caption, highlighted, showTime } = this.props;
         const { text, startTime } = caption;
 
         return (
             <tr className={styles.caption}>
-                <td className={styles.captionTime}>{secontsToTime(startTime)}</td>
+                {showTime && <td className={styles.captionTime}>{secontsToTime(startTime)}</td>}
                 <td
                     onClick={this._handleClick}
                     className={`${styles.captionContent} ${highlighted ? styles.highlighted : ""}`}

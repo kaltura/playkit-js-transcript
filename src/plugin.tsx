@@ -36,7 +36,11 @@ import {
 import { MenuIcon } from "./components/menu-icon";
 import { Transcript } from "./components/Transcript";
 
-import { getCaptionsByFormat, CaptionItem } from "./utils";
+import {
+  getCaptionsByFormat,
+  CaptionItem,
+  getPluginPosition
+} from "./utils";
 
 const isDev = true; // TODO - should be provided by Omri Katz as part of the cli implementation
 const pluginName = `transcript${isDev ? "-local" : ""}`;
@@ -50,6 +54,7 @@ export class TranscriptPlugin extends PlayerContribPlugin
     implements OnMediaUnload, OnRegisterUI, OnMediaLoad, OnPluginSetup {
     static defaultConfig = {
       showTime: true,
+      position: KitchenSinkPositions.Bottom
     };
 
     private _kitchenSinkItem: KitchenSinkItem | null = null;
@@ -81,7 +86,7 @@ export class TranscriptPlugin extends PlayerContribPlugin
       this._kitchenSinkItem = uiManager.kitchenSink.add({
         label: "Transcript",
         renderIcon: () => <MenuIcon />,
-        position: KitchenSinkPositions.Bottom, // set it from config, check is it eq Bottom or Right, otherwise use default
+        position: getPluginPosition(this.config.position),
         expandMode: KitchenSinkExpandModes.AlongSideTheVideo,
         renderContent: this._renderKitchenSinkContent
       });

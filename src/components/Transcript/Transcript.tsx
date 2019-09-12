@@ -14,15 +14,15 @@ export interface TranscriptProps {
     isLoading: boolean;
     hasError: boolean;
     captions: CaptionItem[];
-    showTime: boolean; // TODO: use this for render or not time
+    showTime: boolean;
     highlightedMap: Record<number, true>;
 }
 
 interface TranscriptState {
     isAutoScrollEnabled: boolean;
     search: string;
-    activeSearchIndex: number;
-    searchMap: Record<number, any>;
+    // activeSearchIndex: number;
+    // searchMap: Record<number, any>;
 }
 
 const Constants = {
@@ -37,8 +37,8 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     state: TranscriptState = {
         isAutoScrollEnabled: true,
         search: "",
-        activeSearchIndex: 0,
-        searchMap: {}
+        // activeSearchIndex: 0,
+        // searchMap: {}
     };
 
     log(cb: (logger: ContribLogger) => void): void {
@@ -104,18 +104,18 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         });
     };
 
-    private _setActiveSearchIndex = (index: number) => {
-        this.setState({
-            activeSearchIndex: index
-        });
-    }
+    // private _setActiveSearchIndex = (index: number) => {
+    //     this.setState({
+    //         activeSearchIndex: index
+    //     });
+    // };
 
     private _renderHeader = (onClose: () => void, onDownload: () => void) => {
         return (
             <div className={styles.header}>
                 <Search
                     onChange={this._debounced.onSearch}
-                    onSearchIndexChange={this._debounced.onActiveSearchIndexChange}
+                    // onSearchIndexChange={this._debounced.onActiveSearchIndexChange}
                     value={this.state.search}
                     // activeSearchIndex={this.state.activeSearchIndex}
                 />
@@ -126,8 +126,8 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     };
 
     private _renderTranscript = () => {
-        const { captions, seek, hasError, onRetryLoad, highlightedMap } = this.props;
-        const { search } = this.state;
+        const { captions, seek, hasError, onRetryLoad, highlightedMap, showTime } = this.props;
+        const { search, isAutoScrollEnabled } = this.state;
         if (!captions || !captions.length) {
             return null;
         }
@@ -148,7 +148,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
                     <tbody>
                         {captions.map(captionData => {
                             const lcText = captionData.text.toLowerCase();
-                            const lcSearch = search.toLowerCase()
+                            const lcSearch = search.toLowerCase();
                             let index = -1;
                             if (lcSearch) {
                                 index = lcText.indexOf(lcSearch);
@@ -163,8 +163,10 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
                                     scrollTo={this._debounced.scrollTo}
                                     searchLength={search.length}
                                     searchIndex={index}
+                                    showTime={showTime}
+                                    isAutoScrollEnabled={isAutoScrollEnabled && highlightedMap[captionData.id]}
                                 />
-                            )
+                            );
                         })}
                     </tbody>
                 </table>
@@ -200,7 +202,10 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     private _debounced = {
         scrollTo: debounce(this._scrollTo, Constants.SCROLL_DEBOUNCE_TIMEOUT),
         onSearch: debounce(this._onSearch, Constants.SEARCH_DEBOUNCE_TIMEOUT),
-        onActiveSearchIndexChange: debounce(this._setActiveSearchIndex, Constants.SEARCH_DEBOUNCE_TIMEOUT)
+        // onActiveSearchIndexChange: debounce(
+        //     this._setActiveSearchIndex,
+        //     Constants.SEARCH_DEBOUNCE_TIMEOUT
+        // )
     };
 
     render(props: TranscriptProps) {
