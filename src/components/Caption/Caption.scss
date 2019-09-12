@@ -21,6 +21,10 @@
       }
     }
     .highlight-search {
+      color: $white-color;
+      background-color: $semigray-color;
+    }
+    .active-search {
       color: $black-color;
       background-color: $yellow-color;
     }

@@ -9,8 +9,9 @@ type CaptionProps = {
     isAutoScrollEnabled: boolean;
     showTime: boolean;
     scrollTo(el: HTMLElement, isAutoScroll: boolean): void;
-    searchIndex: number;
     searchLength: number;
+    indexMap: Record<string, number> | undefined
+    activeSearchIndex: number;
 };
 
 export class Caption extends Component<CaptionProps> {
@@ -26,9 +27,10 @@ export class Caption extends Component<CaptionProps> {
         if (
             nextProps.highlighted !== this.props.highlighted ||
             nextProps.caption !== this.props.caption ||
-            nextProps.searchIndex !== this.props.searchIndex ||
+            nextProps.indexMap !== this.props.indexMap ||
             nextProps.searchLength !== this.props.searchLength ||
-            nextProps.isAutoScrollEnabled !== this.props.isAutoScrollEnabled
+            nextProps.isAutoScrollEnabled !== this.props.isAutoScrollEnabled ||
+            nextProps.activeSearchIndex !== this.props.activeSearchIndex
         ) {
             return true;
         }
@@ -41,17 +43,26 @@ export class Caption extends Component<CaptionProps> {
     };
 
     private _renderText = (text: string) => {
-        const { searchIndex, searchLength } = this.props;
+        const { activeSearchIndex, searchLength, indexMap } = this.props;
+        let indexArray: string[] = [];
+        if (indexMap) {
+            indexArray = Object.keys(indexMap)
+                .sort((a, b) => Number(a) - Number(b));
+        }
         return (
             <span className={styles.captionSpan}>
-                {searchIndex > -1 ? (
-                    <span>
-                        {text.substring(0, searchIndex)}
-                        <span className={styles.highlightSearch}>
-                            {text.substring(searchIndex, searchIndex + searchLength)}
-                        </span>
-                        {text.substring(searchIndex + searchLength)}
-                    </span>
+                {indexMap && indexArray.length ? (
+                    indexArray.map((el: string, index: number) => {
+                        return (
+                            <span>
+                                {index === 0 && text.substring(0, indexMap[el])}
+                                <span className={Number(el) === activeSearchIndex ? styles.activeSearch : styles.highlightSearch}>
+                                    {text.substring(indexMap[el], indexMap[el] + searchLength)}
+                                </span>
+                                {text.substring(indexMap[el] + searchLength, index - 1 === indexArray.length ? text.length : indexMap[indexArray[index + 1]])}
+                            </span>
+                        )
+                    })
                 ) : (
                     text
                 )}
@@ -60,7 +71,7 @@ export class Caption extends Component<CaptionProps> {
     };
 
     render() {
-        const { caption, highlighted, showTime } = this.props;
+        const { caption, highlighted, showTime, indexMap, activeSearchIndex } = this.props;
         const { text, startTime } = caption;
 
         return (
@@ -71,7 +82,7 @@ export class Caption extends Component<CaptionProps> {
                     className={`${styles.captionContent} ${highlighted ? styles.highlighted : ""}`}
                     type="button"
                     ref={node => {
-                        this._hotspotRef = highlighted ? node : null;
+                        this._hotspotRef = highlighted || (indexMap && indexMap[String(activeSearchIndex)]) ? node : null;
                     }}
                 >
                     {this._renderText(text)}

@@ -21,8 +21,9 @@ export interface TranscriptProps {
 interface TranscriptState {
     isAutoScrollEnabled: boolean;
     search: string;
-    // activeSearchIndex: number;
-    // searchMap: Record<number, any>;
+    activeSearchIndex: number;
+    searchMap: Record<number, Record<number, number>>;
+    totalSearchResults: number;
 }
 
 const Constants = {
@@ -31,14 +32,19 @@ const Constants = {
     SEARCH_DEBOUNCE_TIMEOUT: 250
 };
 
+const initialSearch = {
+    search: "",
+    activeSearchIndex: 1,
+    searchMap: {},
+    totalSearchResults: 0,
+}
+
 export class Transcript extends Component<TranscriptProps, TranscriptState> {
     private _transcriptListRef: HTMLElement | null = null;
     private _preventScrollEvent: boolean = false;
     state: TranscriptState = {
         isAutoScrollEnabled: true,
-        search: "",
-        // activeSearchIndex: 0,
-        // searchMap: {}
+        ...initialSearch,
     };
 
     log(cb: (logger: ContribLogger) => void): void {
@@ -73,6 +79,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         if (
             nextState.isAutoScrollEnabled !== this.state.isAutoScrollEnabled ||
             nextState.search !== this.state.search ||
+            nextState.activeSearchIndex !== this.state.activeSearchIndex ||
             nextProps.highlightedMap !== this.props.highlightedMap ||
             nextProps.isLoading !== this.props.isLoading ||
             nextProps.hasError !== this.props.hasError
@@ -99,25 +106,49 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     };
 
     private _onSearch = (search: string) => {
+        if (!search) {
+            this.setState({ ...initialSearch });
+            return
+        }
+        let index = 1;
+        const loSearch = search.toLowerCase();
+        const searchMap: Record<number, Record<number, number>> = {};
+        this.props.captions.forEach((caption: CaptionItem) => {
+            const text = caption.text.toLowerCase();
+            const regex = new RegExp(loSearch, 'gi');
+            let result;
+            const indices = [];
+            while (result = regex.exec(text)) {
+                indices.push(result.index);
+            }
+            indices.forEach((i: number) => {
+                searchMap[caption.id] = { ...searchMap[caption.id], [index]: i }
+                index++;
+            })
+        });
         this.setState({
-            search
+            search,
+            searchMap,
+            totalSearchResults: index
         });
     };
 
-    // private _setActiveSearchIndex = (index: number) => {
-    //     this.setState({
-    //         activeSearchIndex: index
-    //     });
-    // };
+    private _setActiveSearchIndex = (index: number) => {
+        this.setState({
+            activeSearchIndex: index,
+            isAutoScrollEnabled: false
+        });
+    };
 
     private _renderHeader = (onClose: () => void, onDownload: () => void) => {
         return (
             <div className={styles.header}>
                 <Search
                     onChange={this._debounced.onSearch}
-                    // onSearchIndexChange={this._debounced.onActiveSearchIndexChange}
+                    onSearchIndexChange={this._debounced.onActiveSearchIndexChange}
                     value={this.state.search}
-                    // activeSearchIndex={this.state.activeSearchIndex}
+                    activeSearchIndex={this.state.activeSearchIndex}
+                    totalSearchResults={this.state.totalSearchResults}
                 />
                 <div className={styles.downloadButton} onClick={onDownload} />
                 <div className={styles.closeButton} onClick={onClose} />
@@ -127,7 +158,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
 
     private _renderTranscript = () => {
         const { captions, seek, hasError, onRetryLoad, highlightedMap, showTime } = this.props;
-        const { search, isAutoScrollEnabled } = this.state;
+        const { search, isAutoScrollEnabled, searchMap, activeSearchIndex } = this.state;
         if (!captions || !captions.length) {
             return null;
         }
@@ -147,13 +178,6 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
                 <table>
                     <tbody>
                         {captions.map(captionData => {
-                            const lcText = captionData.text.toLowerCase();
-                            const lcSearch = search.toLowerCase();
-                            let index = -1;
-                            if (lcSearch) {
-                                index = lcText.indexOf(lcSearch);
-                            }
-                            // TODO: cover the case when we have more than 2 match for the caption
                             return (
                                 <Caption
                                     key={captionData.id}
@@ -162,9 +186,12 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
                                     highlighted={highlightedMap[captionData.id]}
                                     scrollTo={this._debounced.scrollTo}
                                     searchLength={search.length}
-                                    searchIndex={index}
                                     showTime={showTime}
-                                    isAutoScrollEnabled={isAutoScrollEnabled && highlightedMap[captionData.id]}
+                                    isAutoScrollEnabled={
+                                        isAutoScrollEnabled && highlightedMap[captionData.id]
+                                    }
+                                    indexMap={searchMap[captionData.id]}
+                                    activeSearchIndex={activeSearchIndex}
                                 />
                             );
                         })}
@@ -202,10 +229,10 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     private _debounced = {
         scrollTo: debounce(this._scrollTo, Constants.SCROLL_DEBOUNCE_TIMEOUT),
         onSearch: debounce(this._onSearch, Constants.SEARCH_DEBOUNCE_TIMEOUT),
-        // onActiveSearchIndexChange: debounce(
-        //     this._setActiveSearchIndex,
-        //     Constants.SEARCH_DEBOUNCE_TIMEOUT
-        // )
+        onActiveSearchIndexChange: debounce(
+            this._setActiveSearchIndex,
+            Constants.SEARCH_DEBOUNCE_TIMEOUT
+        )
     };
 
     render(props: TranscriptProps) {
