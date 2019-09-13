@@ -41,7 +41,7 @@ export class Search extends Component<SearchProps> {
     render() {
         const { value, activeSearchIndex, totalSearchResults } = this.props;
         return (
-            <div className={styles.searchWrapper}>
+            <div className={`${styles.searchWrapper} ${value ? styles.active : ""}`}>
                 <div className={styles.searchIcon} />
                 <input
                     className={styles.searchInput}
@@ -49,10 +49,16 @@ export class Search extends Component<SearchProps> {
                     value={value}
                     onInput={this._handleOnChange}
                 />
-                {value && <p>{`${activeSearchIndex}/${totalSearchResults}`}</p>}
-                {value && <button onClick={this._goToPrevSearchResult}>prev</button>}
-                {value && <button onClick={this._goToNextSearchResult}>next</button>}
                 {value && <button className={styles.clearIcon} onClick={this._onClear} />}
+                {value &&
+                    <p className={styles.searchResults}>
+                        {`${totalSearchResults > 0 ? `${activeSearchIndex}/${totalSearchResults}` : "0 results"}`}
+                    </p>
+                }
+                <div className={styles.prevNextWrapper}>
+                    {value && totalSearchResults > 0 && <button className={styles.prevNextButton} onClick={this._goToPrevSearchResult} />}
+                    {value && totalSearchResults > 0 && <button className={styles.prevNextButton} onClick={this._goToNextSearchResult} />}
+                </div>
             </div>
         );
     }

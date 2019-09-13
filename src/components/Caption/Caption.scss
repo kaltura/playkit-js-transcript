@@ -13,20 +13,28 @@
     font-size: 1.3em;
     line-height: 1.4;
     text-align: left;
-    cursor: pointer;
+    &:hover {
+      background-color: $semigray-color;
+      cursor: pointer;
+    }
     &.highlighted {
       color: $black-color;
       .caption-span {
         background-color: $main-color;
       }
     }
+    .caption-span {
+      padding: 0 2px;
+    }
     .highlight-search {
       color: $white-color;
       background-color: $semigray-color;
+      border-radius: 1px;
     }
     .active-search {
       color: $black-color;
       background-color: $yellow-color;
+      border-radius: 1px;
     }
   }
 }

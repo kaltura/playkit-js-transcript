@@ -78,6 +78,8 @@
   border-radius: 50%;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
   background-color: $main-color;
+  background-position: center;
+  background-image: url('../../assets/serch.svg');
   cursor: pointer;
   z-index: 1;
 }

@@ -29,7 +29,8 @@ interface TranscriptState {
 const Constants = {
     SCROLL_OFFSET: 0,
     SCROLL_DEBOUNCE_TIMEOUT: 200,
-    SEARCH_DEBOUNCE_TIMEOUT: 250
+    SEARCH_DEBOUNCE_TIMEOUT: 250,
+    NEXT_PREV_SEARCH_RESULT_TIMEOUT: 100
 };
 
 const initialSearch = {
@@ -99,9 +100,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
 
     private _renderScrollToButton = () => {
         return (
-            <button className={styles.gotoButton} onClick={this._enableAutoScroll}>
-                Up
-            </button>
+            <button className={styles.gotoButton} onClick={this._enableAutoScroll} />
         );
     };
 
@@ -129,7 +128,8 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         this.setState({
             search,
             searchMap,
-            totalSearchResults: index
+            totalSearchResults: index,
+            activeSearchIndex: 1
         });
     };
 
@@ -232,7 +232,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         onSearch: debounce(this._onSearch, Constants.SEARCH_DEBOUNCE_TIMEOUT),
         onActiveSearchIndexChange: debounce(
             this._setActiveSearchIndex,
-            Constants.SEARCH_DEBOUNCE_TIMEOUT
+            Constants.NEXT_PREV_SEARCH_RESULT_TIMEOUT
         )
     };
 
