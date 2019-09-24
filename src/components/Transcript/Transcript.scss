@@ -35,6 +35,30 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+  .error-icon {
+    width: 92px;
+    height: 91px;
+    background-size: cover;
+    background-image: url('../../assets/error.svg');
+  }
+  .error-main-text {
+    font-size: 1.3em;
+    margin-top: 8px;
+    margin-bottom: 2px;
+  }
+  .error-description-text {
+    margin: 0;
+  }
+  .retry-button {
+    width: 30px;
+    padding: 0;
+    margin-left: 20px;
+    border: none;
+    background: inherit;
+    color: white;
+    cursor: pointer;
+  }
 }
 
 .close-button,
@@ -42,16 +66,6 @@
   flex-shrink: 1;
   width: 32px;
   height: 32px;
-  cursor: pointer;
-}
-
-.retry-button {
-  width: 30px;
-  padding: 0;
-  margin-left: 20px;
-  border: none;
-  background: inherit;
-  color: white;
   cursor: pointer;
 }
 
@@ -67,7 +81,8 @@
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
   background-color: $main-color;
   background-position: center;
-  background-image: url('../../assets/serch.svg');
+  background-repeat: no-repeat;
+  background-image: url('../../assets/arrow-up.svg');
   cursor: pointer;
   z-index: 1;
 }
@@ -77,5 +92,5 @@
 }
 
 .download-button {
-  background-image: url('../../assets/close.svg');
+  background-image: url('../../assets/download.svg');
 }

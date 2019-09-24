@@ -230,10 +230,17 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         if (hasError) {
             return (
                 <div className={styles.errorWrapper}>
-                    <p>Failed to get transcript, please try again</p>
-                    <button className={styles.retryButton} onClick={onRetryLoad}>
-                        Retry
-                    </button>
+                    <div className={styles.errorIcon} />
+                    <p className={styles.errorMainText}>Whoops!</p>
+                    <p className={styles.errorDescriptionText}>
+                        Failed to get transcript, please try again
+                        {/* <button
+                            className={styles.retryButton}
+                            onClick={onRetryLoad}
+                        >
+                            Retry
+                        </button> */}
+                    </p>
                 </div>
             );
         }
@@ -279,7 +286,10 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
 
     private _handleSeek = (caption: CaptionItem) => {
         const { onSeek } = this.props;
-        onSeek(caption.startTime);
+        const selection = window.getSelection();
+        if (selection && selection.type !== "Range") {
+            onSeek(caption.startTime);
+        }
     };
 
     private _debounced = {

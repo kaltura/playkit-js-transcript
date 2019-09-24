@@ -13,18 +13,32 @@
     font-size: 1.3em;
     line-height: 1.4;
     text-align: left;
-    user-select: text;   
     &:hover {
-      background-color: $semigray-color;
+      .caption-span {
+        background-color: $semigray-color;
+        &::selection {
+          background-color: inherit;
+        }
+      }
+      &.highlighted {
+        .caption-span {
+          color: $white-color;
+        }
+      }
     }
     &.highlighted {
-      color: $black-color;
       .caption-span {
+        color: $black-color;
         background-color: $main-color;
       }
     }
     .caption-span {
       padding: 0 2px;
+      user-select: text;
+      cursor: pointer;
+      &::selection {
+        background-color: $text-selection-color;
+      }
     }
     .highlight-search {
       color: $white-color;

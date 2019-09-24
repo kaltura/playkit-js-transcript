@@ -60,15 +60,15 @@ export class Search extends Component<SearchProps> {
                     </p>
                 )}
                 <div className={styles.prevNextWrapper}>
-                    {value && totalSearchResults > 0 && (
+                    {value && totalSearchResults > 1 && (
                         <button
-                            className={styles.prevNextButton}
+                            className={`${styles.prevNextButton} ${styles.prevButton}`}
                             onClick={this._goToPrevSearchResult}
                         />
                     )}
-                    {value && totalSearchResults > 0 && (
+                    {value && totalSearchResults > 1 && (
                         <button
-                            className={styles.prevNextButton}
+                            className={`${styles.prevNextButton} ${styles.nextButton}`}
                             onClick={this._goToNextSearchResult}
                         />
                     )}

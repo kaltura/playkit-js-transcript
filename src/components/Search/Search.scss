@@ -26,9 +26,14 @@
       height: 8px;
       background-color: rgba(0,0,0,0);
       background-position: center;
-      background-image: url('../../assets/close.svg');
       border: none;
       cursor: pointer;
+      &.prev-button {
+        background-image: url('../../assets/up.svg');
+      }
+      &.next-button {
+        background-image: url('../../assets/down.svg');
+      }
     }
   }
   .search-input {
