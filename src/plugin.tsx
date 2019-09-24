@@ -29,18 +29,18 @@ import {
     CaptionAssetGetUrlAction
 } from "kaltura-typescript-client/api/types";
 import {
-  getContribLogger,
-  CuepointEngine
+  getContribLogger
 } from "@playkit-js-contrib/common";
 
-import { MenuIcon } from "./components/menu-icon";
-import { Transcript } from "./components/Transcript";
+import { Transcript } from "./components/transcript";
 
 import {
   getCaptionsByFormat,
   CaptionItem,
-  getPluginPosition
+  getConfigValue
 } from "./utils";
+
+import * as styles from "./plugin.scss";
 
 const isDev = true; // TODO - should be provided by Omri Katz as part of the cli implementation
 const pluginName = `transcript${isDev ? "-local" : ""}`;
@@ -54,7 +54,11 @@ export class TranscriptPlugin extends PlayerContribPlugin
     implements OnMediaUnload, OnRegisterUI, OnMediaLoad, OnPluginSetup {
     static defaultConfig = {
       showTime: true,
-      position: KitchenSinkPositions.Bottom
+      position: KitchenSinkPositions.Bottom,
+      scrollOffset: 0, // distance between top border of transcript container and active caption on auto-scroll
+      scrollDebounceTimeout: 200, // debounce on scroll
+      searchDebounceTimeout: 250, // debounce on search
+      searchNextPrevDebounceTimeout: 100 // debounce on jump between prev/next search result
     };
 
     private _kitchenSinkItem: KitchenSinkItem | null = null;
@@ -65,8 +69,6 @@ export class TranscriptPlugin extends PlayerContribPlugin
     private _captions: CaptionItem[] = []; // parsed captions
     private _kalturaClient = new KalturaClient();
     private _captionsRaw: null | string = null;
-    private _engine: CuepointEngine<CaptionItem> | null = null;
-    private _highlightedMap: Record<number, true> = {};
 
     onPluginSetup(config: ContribConfig): void {
         this._kalturaClient.setOptions({
@@ -85,18 +87,18 @@ export class TranscriptPlugin extends PlayerContribPlugin
     onRegisterUI(uiManager: UIManager): void {
       this._kitchenSinkItem = uiManager.kitchenSink.add({
         label: "Transcript",
-        renderIcon: () => <MenuIcon />,
-        position: getPluginPosition(this.config.position),
+        renderIcon: () => <div className={styles.pluginIcon} />,
+        position: getConfigValue(
+          this.config.position,
+          position => typeof position === "string" && (position === KitchenSinkPositions.Bottom || position === KitchenSinkPositions.Right),
+          KitchenSinkPositions.Bottom
+        ),
         expandMode: KitchenSinkExpandModes.AlongSideTheVideo,
         renderContent: this._renderKitchenSinkContent
       });
     }
 
     onMediaLoad(config: OnMediaLoadConfig): void {
-        // Kaltura analytics
-        const kava = this.player.plugins.kava;
-        const viewModel = kava.getEventModel(kava.EventType.VIEW);
-        kava.sendAnalytics(viewModel);
         this._entryId = config.entryId;
         this._loadCaptions();
     }
@@ -108,54 +110,9 @@ export class TranscriptPlugin extends PlayerContribPlugin
         this._isLoading = false;
         this._hasError = false;
         this._entryId = '';
-        this.player.removeEventListener(this.player.Event.TIME_UPDATE, this._onTimeUpdate)
-        this.player.removeEventListener(this.player.Event.TEXT_TRACK_CHANGED, this._loadCaptions)
     }
-
-    private _createEngine = (captions: CaptionItem[] ) => {
-      if (!captions || captions.length === 0) {
-          this._engine = null;
-          return;
-      }
-      this._engine = new CuepointEngine<CaptionItem>(captions);
-      this._syncVisibleTranscript(this.player.currentTime);
-    };
-
-    private _syncVisibleTranscript = (currentTime: number, forceSnapshot = false) => {
-      if (!this._engine) {
-            this._highlightedMap = {};
-            return;
-      };
-
-    const transcriptUpdate = this._engine.updateTime(currentTime, forceSnapshot);
-    if (transcriptUpdate.snapshot) {
-        const highlightedMap = transcriptUpdate.snapshot.reduce((acc, item) => {
-            return { ...acc, [item.id]: true };
-        }, {});
-        this._highlightedMap = highlightedMap;
-        return
-    }
-
-    if (!transcriptUpdate.delta) {
-        return;
-    }
-
-    const { show, hide } = transcriptUpdate.delta;
-    if (show.length > 0 || hide.length > 0) {
-        const newHighlightedMap = { ...this._highlightedMap };
-        show.forEach((caption: CaptionItem) => {
-            newHighlightedMap[caption.id] = true;
-        });
-
-        hide.forEach((caption: CaptionItem) => {
-            delete newHighlightedMap[caption.id];
-        });
-        this._highlightedMap = newHighlightedMap;
-      }
-    };
 
     private _onTimeUpdate = (): void => {
-      this._syncVisibleTranscript(this.player.currentTime);
       this._updateKitchenSink();
     }
 
@@ -196,7 +153,7 @@ export class TranscriptPlugin extends PlayerContribPlugin
     }
 
     private _loadCaptions = (e?: any): void => {
-      if (this._captionsList && this._captionsList.length > 0) {
+      if (this._captionsList.length > 0) {
         this._getCaptionsById(e ? e.payload.selectedTextTrack._language : this.player.config.playback.textLanguage);
       } else {
         this._getCaptionsList();
@@ -210,9 +167,9 @@ export class TranscriptPlugin extends PlayerContribPlugin
         this._initLoading();
         this._kalturaClient.request(request).then(
           data => {
-            if (data && data.objects) {
+            if (data && data.objects && Array.isArray(data.objects) && data.objects.length > 0) {
               this._captionsList = data.objects;
-                this._loadCaptions();
+              this._loadCaptions();
             } else {
               this._onError(undefined, "Data is empty", "_getCaptionsList");
             }
@@ -223,18 +180,18 @@ export class TranscriptPlugin extends PlayerContribPlugin
         );
     }
 
-    private _findCaptionAsset = (lang: string = this.player.config.playback.textLanguage): KalturaCaptionAsset | undefined => {
+    private _findCaptionAsset = (lang: string = this.player.config.playback.textLanguage): KalturaCaptionAsset | null => {
       if (lang === "off") {
         return this._captionsList[0];
       }
       return this._captionsList.find((ca: KalturaCaptionAsset) => {
         return ca.languageCode === lang
-      })
+      }) || null;
     }
 
     private _getCaptionsById = (lang?: string): void => {
       if (this._captionsList && this._captionsList.length > 0) {
-        const captionAsset: KalturaCaptionAsset | undefined = this._findCaptionAsset(lang);
+        const captionAsset: KalturaCaptionAsset | null = this._findCaptionAsset(lang);
         if (captionAsset) {
           const request = new CaptionAssetGetUrlAction({ id: captionAsset.id });
           this._initLoading();
@@ -270,7 +227,6 @@ export class TranscriptPlugin extends PlayerContribPlugin
           .then((data: string) => {
             this._captionsRaw = data; // keep it for downloading
             this._captions = this._parseCaptions(data);
-            this._createEngine(this._captions);
             this._isLoading = false;
             this._updateKitchenSink();
           })
@@ -313,19 +269,30 @@ export class TranscriptPlugin extends PlayerContribPlugin
     }
 
     private _renderKitchenSinkContent = (props: KitchenSinkContentRendererProps) => {
-        return (
-          <Transcript
-            {...props}
-            showTime={this.config.showTime}
-            seek={this._seekTo}
-            captions={this._captions}
-            isLoading={this._isLoading}
-            hasError={this._hasError}
-            onDownload={this._handleDownload}
-            onRetryLoad={this._loadCaptions}
-            highlightedMap={this._highlightedMap}
-          />
-        );
+      const {
+        showTime,
+        scrollOffset,
+        scrollDebounceTimeout,
+        searchDebounceTimeout,
+        searchNextPrevDebounceTimeout,
+      } = this.config;
+      return (
+        <Transcript
+          {...props}
+          showTime={getConfigValue(showTime, (showTime) => typeof showTime === "boolean", true)}
+          scrollOffset={getConfigValue(scrollOffset, Number.isInteger, 0)}
+          scrollDebounceTimeout={getConfigValue(scrollDebounceTimeout, Number.isInteger, 200)}
+          searchDebounceTimeout={getConfigValue(searchDebounceTimeout, Number.isInteger, 250)}
+          searchNextPrevDebounceTimeout={getConfigValue(searchNextPrevDebounceTimeout, Number.isInteger, 100)}
+          onSeek={this._seekTo}
+          captions={this._captions}
+          isLoading={this._isLoading}
+          hasError={this._hasError}
+          onDownload={this._handleDownload}
+          onRetryLoad={this._loadCaptions}
+          currentTime={this.player.currentTime}
+        />
+      );
     }
 }
 

@@ -125,3 +125,10 @@ compiled using http://lesscss.org/less-preview/
     border-spacing: 0;
 }
 /*********** end of CSS RESET */
+
+.plugin-icon {
+    background-image: url('./assets/transcript.svg');
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+}

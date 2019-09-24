@@ -13,9 +13,9 @@
     font-size: 1.3em;
     line-height: 1.4;
     text-align: left;
+    user-select: text;   
     &:hover {
       background-color: $semigray-color;
-      cursor: pointer;
     }
     &.highlighted {
       color: $black-color;

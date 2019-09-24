@@ -1,10 +1,11 @@
 import { h, Component } from "preact";
 import * as styles from "./Caption.scss";
 import { secontsToTime } from "../../utils";
+import { CaptionItem } from "../../utils";
 
 type CaptionProps = {
-    caption: any;
-    seekTo(time: number): void;
+    caption: CaptionItem;
+    onClick(): void;
     highlighted: boolean;
     isAutoScrollEnabled: boolean;
     showTime: boolean;
@@ -18,29 +19,10 @@ export class Caption extends Component<CaptionProps> {
     private _hotspotRef: HTMLElement | null = null;
 
     componentDidUpdate() {
-        if (this._hotspotRef) {
+        if (this._hotspotRef && this.props.isAutoScrollEnabled) {
             this.props.scrollTo(this._hotspotRef);
         }
     }
-
-    shouldComponentUpdate(nextProps: Readonly<CaptionProps>) {
-        if (
-            nextProps.highlighted !== this.props.highlighted ||
-            nextProps.caption !== this.props.caption ||
-            nextProps.indexMap !== this.props.indexMap ||
-            nextProps.searchLength !== this.props.searchLength ||
-            nextProps.isAutoScrollEnabled !== this.props.isAutoScrollEnabled ||
-            nextProps.activeSearchIndex !== this.props.activeSearchIndex
-        ) {
-            return true;
-        }
-        return false;
-    }
-
-    private _handleClick = () => {
-        const { caption, seekTo } = this.props;
-        seekTo(caption.startTime);
-    };
 
     private _renderText = (text: string) => {
         const { activeSearchIndex, searchLength, indexMap } = this.props;
@@ -71,18 +53,18 @@ export class Caption extends Component<CaptionProps> {
     };
 
     render() {
-        const { caption, highlighted, showTime, isAutoScrollEnabled } = this.props;
+        const { caption, highlighted, showTime, onClick } = this.props;
         const { text, startTime } = caption;
 
         return (
             <tr className={styles.caption}>
                 {showTime && <td className={styles.captionTime}>{secontsToTime(startTime)}</td>}
                 <td
-                    onClick={this._handleClick}
+                    onClick={onClick}
                     className={`${styles.captionContent} ${highlighted ? styles.highlighted : ""}`}
                     type="button"
                     ref={node => {
-                        this._hotspotRef = isAutoScrollEnabled ? node : null;
+                        this._hotspotRef = node;
                     }}
                 >
                     {this._renderText(text)}

@@ -2,7 +2,6 @@ import { xml2js } from "xml-js";
 //@ts-ignore
 import { fromSrt } from "subtitles-parser";
 import { Cuepoint } from "@playkit-js-contrib/common";
-import { KitchenSinkPositions } from "@playkit-js-contrib/ui";
 
 export interface CaptionItem extends Cuepoint {
     text: string;
@@ -121,13 +120,11 @@ export const secontsToTime = (seconts: number): string => {
     return date.toISOString().substr(14, 5);
 };
 
-export function getPluginPosition(position: string, defaultPosition = KitchenSinkPositions.Bottom) {
-    let pluginPosition = defaultPosition;
-    if (
-        typeof position === "string" &&
-        (position === KitchenSinkPositions.Bottom || position === KitchenSinkPositions.Right)
-    ) {
-        pluginPosition = position;
+export function getConfigValue(value: any, condition: (value: any) => boolean, defaultValue: any) {
+    let result = defaultValue;
+    if (typeof condition === "function" && condition(value)) {
+        result = value;
     }
-    return pluginPosition;
-}
+    return result;
+};
+
