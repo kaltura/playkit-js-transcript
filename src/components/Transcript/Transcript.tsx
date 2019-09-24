@@ -69,6 +69,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     componentDidUpdate(previousProps: Readonly<TranscriptProps>): void {
         const { captions } = this.props;
         if (previousProps.captions !== captions) {
+            this._log("Re-creating engine", "componentDidUpdate")
             this._createEngine();
         }
 
@@ -148,31 +149,37 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     };
 
     private _onSearch = (search: string) => {
-        if (!search) {
-            this.setState({ ...initialSearch });
-            return;
-        }
-        let index = 0;
-        const loSearch = search.toLowerCase();
-        const searchMap: Record<number, Record<number, number>> = {};
-        this.props.captions.forEach((caption: CaptionItem) => {
-            const text = caption.text.toLowerCase();
-            const regex = new RegExp(loSearch, "gi");
-            let result;
-            const indices = [];
-            while ((result = regex.exec(text))) {
-                indices.push(result.index);
+        this.setState(() => {
+            if (!search) {
+                return { ...initialSearch }
             }
-            indices.forEach((i: number) => {
-                index++;
-                searchMap[caption.id] = { ...searchMap[caption.id], [index]: i };
+            return { search }
+        }, this._debounced.findSearchMatches);
+    };
+
+    private _findSearchMatches = () => {
+        this.setState((state: TranscriptState) => {
+            let index = 0;
+            const loSearch = state.search.toLowerCase();
+            const searchMap: Record<number, Record<number, number>> = {};
+            this.props.captions.forEach((caption: CaptionItem) => {
+                const text = caption.text.toLowerCase();
+                const regex = new RegExp(loSearch, "gi");
+                let result;
+                const indices = [];
+                while ((result = regex.exec(text))) {
+                    indices.push(result.index);
+                }
+                indices.forEach((i: number) => {
+                    index++;
+                    searchMap[caption.id] = { ...searchMap[caption.id], [index]: i };
+                });
             });
-        });
-        this.setState({
-            search,
-            searchMap,
-            totalSearchResults: index,
-            activeSearchIndex: 1
+            return {
+                searchMap,
+                totalSearchResults: index,
+                activeSearchIndex: 1
+            }
         });
     };
 
@@ -187,7 +194,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         return (
             <div className={styles.header}>
                 <Search
-                    onChange={this._debounced.onSearch}
+                    onChange={this._onSearch}
                     onSearchIndexChange={this._debounced.onActiveSearchIndexChange}
                     value={this.state.search}
                     activeSearchIndex={this.state.activeSearchIndex}
@@ -269,7 +276,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
 
     private _debounced = {
         scrollTo: debounce(this._scrollTo, this.props.scrollDebounceTimeout),
-        onSearch: debounce(this._onSearch, this.props.searchDebounceTimeout),
+        findSearchMatches: debounce(this._findSearchMatches, this.props.searchDebounceTimeout),
         onActiveSearchIndexChange: debounce(this._setActiveSearchIndex, this.props.searchNextPrevDebounceTimeout)
     };
 
