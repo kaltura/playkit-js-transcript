@@ -11,7 +11,7 @@ type CaptionProps = {
     showTime: boolean;
     scrollTo(el: HTMLElement): void;
     searchLength: number;
-    indexMap: Record<string, number> | undefined
+    indexMap: Record<string, number> | undefined;
     activeSearchIndex: number;
 };
 
@@ -28,26 +28,34 @@ export class Caption extends Component<CaptionProps> {
         const { activeSearchIndex, searchLength, indexMap } = this.props;
         let indexArray: string[] = [];
         if (indexMap) {
-            indexArray = Object.keys(indexMap)
-                .sort((a, b) => Number(a) - Number(b));
+            indexArray = Object.keys(indexMap).sort((a, b) => Number(a) - Number(b));
         }
         return (
             <span className={styles.captionSpan}>
-                {indexMap ? (
-                    indexArray.map((el: string, index: number) => {
-                        return (
-                            <span>
-                                {index === 0 && text.substring(0, indexMap[el])}
-                                <span className={Number(el) === activeSearchIndex ? styles.activeSearch : styles.highlightSearch}>
-                                    {text.substring(indexMap[el], indexMap[el] + searchLength)}
-                                </span>
-                                {text.substring(indexMap[el] + searchLength, index - 1 === indexArray.length ? text.length : indexMap[indexArray[index + 1]])}
-                            </span>
-                        )
-                    })
-                ) : (
-                    text
-                )}
+                {indexMap
+                    ? indexArray.map((el: string, index: number) => {
+                          return (
+                              <span>
+                                  {index === 0 && text.substring(0, indexMap[el])}
+                                  <span
+                                      className={
+                                          Number(el) === activeSearchIndex
+                                              ? styles.activeSearch
+                                              : styles.highlightSearch
+                                      }
+                                  >
+                                      {text.substring(indexMap[el], indexMap[el] + searchLength)}
+                                  </span>
+                                  {text.substring(
+                                      indexMap[el] + searchLength,
+                                      index - 1 === indexArray.length
+                                          ? text.length
+                                          : indexMap[indexArray[index + 1]]
+                                  )}
+                              </span>
+                          );
+                      })
+                    : text}
             </span>
         );
     };

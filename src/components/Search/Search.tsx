@@ -12,11 +12,11 @@ export interface SearchProps {
 export class Search extends Component<SearchProps> {
     private _handleOnChange = (e: any) => {
         this.props.onChange(e.target.value);
-    }
+    };
 
     private _onClear = () => {
         this.props.onChange("");
-    }
+    };
 
     private _goToNextSearchResult = () => {
         const { activeSearchIndex, totalSearchResults, onSearchIndexChange } = this.props;
@@ -27,7 +27,7 @@ export class Search extends Component<SearchProps> {
             index = 1;
         }
         onSearchIndexChange(index);
-    }
+    };
     private _goToPrevSearchResult = () => {
         const { activeSearchIndex, totalSearchResults, onSearchIndexChange } = this.props;
         let index = 0;
@@ -37,7 +37,7 @@ export class Search extends Component<SearchProps> {
             index = totalSearchResults;
         }
         onSearchIndexChange(index);
-    }
+    };
     render() {
         const { value, activeSearchIndex, totalSearchResults } = this.props;
         return (
@@ -45,19 +45,33 @@ export class Search extends Component<SearchProps> {
                 <div className={styles.searchIcon} />
                 <input
                     className={styles.searchInput}
-                    placeholder={'Search in Transcript'}
+                    placeholder={"Search in Transcript"}
                     value={value}
                     onInput={this._handleOnChange}
                 />
                 {value && <button className={styles.clearIcon} onClick={this._onClear} />}
-                {value &&
+                {value && (
                     <p className={styles.searchResults}>
-                        {`${totalSearchResults > 0 ? `${activeSearchIndex}/${totalSearchResults}` : "0 results"}`}
+                        {`${
+                            totalSearchResults > 0
+                                ? `${activeSearchIndex}/${totalSearchResults}`
+                                : "0 results"
+                        }`}
                     </p>
-                }
+                )}
                 <div className={styles.prevNextWrapper}>
-                    {value && totalSearchResults > 0 && <button className={styles.prevNextButton} onClick={this._goToPrevSearchResult} />}
-                    {value && totalSearchResults > 0 && <button className={styles.prevNextButton} onClick={this._goToNextSearchResult} />}
+                    {value && totalSearchResults > 0 && (
+                        <button
+                            className={styles.prevNextButton}
+                            onClick={this._goToPrevSearchResult}
+                        />
+                    )}
+                    {value && totalSearchResults > 0 && (
+                        <button
+                            className={styles.prevNextButton}
+                            onClick={this._goToNextSearchResult}
+                        />
+                    )}
                 </div>
             </div>
         );

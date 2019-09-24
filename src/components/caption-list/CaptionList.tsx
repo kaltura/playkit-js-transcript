@@ -4,23 +4,23 @@ import * as styles from "./captionList.scss";
 import { CaptionItem } from "../../utils";
 
 interface CaptionListProps {
-    highlightedMap: Record<number, true>,
+    highlightedMap: Record<number, true>;
     captions: CaptionItem[];
     seekTo(caption: CaptionItem): void;
     scrollTo(el: HTMLElement): void;
-    search: string;
     showTime: boolean;
     isAutoScrollEnabled: boolean;
     searchMap: Record<number, Record<string, number>>;
     activeSearchIndex: number;
-};
+    searchLength: number;
+}
 
 export class CaptionList extends Component<CaptionListProps> {
     shouldComponentUpdate(nextProps: Readonly<CaptionListProps>) {
         if (
             this.props.highlightedMap !== nextProps.highlightedMap ||
             this.props.captions !== nextProps.captions ||
-            this.props.search !== nextProps.search ||
+            this.props.searchLength !== nextProps.searchLength ||
             this.props.activeSearchIndex !== nextProps.activeSearchIndex
         ) {
             return true;
@@ -34,7 +34,16 @@ export class CaptionList extends Component<CaptionListProps> {
     };
 
     render() {
-        const { captions, highlightedMap, scrollTo, search, showTime, isAutoScrollEnabled, searchMap, activeSearchIndex } = this.props;
+        const {
+            captions,
+            highlightedMap,
+            scrollTo,
+            searchLength,
+            showTime,
+            isAutoScrollEnabled,
+            searchMap,
+            activeSearchIndex
+        } = this.props;
         return (
             <div className={styles.transcriptWrapper}>
                 <table>
@@ -47,11 +56,14 @@ export class CaptionList extends Component<CaptionListProps> {
                                     caption={captionData}
                                     highlighted={highlightedMap[captionData.id]}
                                     scrollTo={scrollTo}
-                                    searchLength={search.length}
+                                    searchLength={searchLength}
                                     showTime={showTime}
                                     isAutoScrollEnabled={
                                         (isAutoScrollEnabled && highlightedMap[captionData.id]) ||
-                                        (!isAutoScrollEnabled && !!(searchMap[captionData.id] || {})[String(activeSearchIndex)])
+                                        (!isAutoScrollEnabled &&
+                                            !!(searchMap[captionData.id] || {})[
+                                                String(activeSearchIndex)
+                                            ])
                                     }
                                     indexMap={searchMap[captionData.id]}
                                     activeSearchIndex={activeSearchIndex}

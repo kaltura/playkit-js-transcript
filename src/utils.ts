@@ -126,5 +126,4 @@ export function getConfigValue(value: any, condition: (value: any) => boolean, d
         result = value;
     }
     return result;
-};
-
+}
