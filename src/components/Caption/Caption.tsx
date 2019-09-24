@@ -1,5 +1,5 @@
 import { h, Component } from "preact";
-import * as styles from "./Caption.scss";
+import * as styles from "./caption.scss";
 import { secontsToTime } from "../../utils";
 import { CaptionItem } from "../../utils";
 

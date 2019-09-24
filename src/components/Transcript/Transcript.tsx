@@ -1,5 +1,5 @@
 import { h, Component } from "preact";
-import * as styles from "./Transcript.scss";
+import * as styles from "./transcript.scss";
 import {
     getContribLogger,
     CuepointEngine

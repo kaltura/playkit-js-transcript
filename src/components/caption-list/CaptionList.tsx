@@ -1,6 +1,6 @@
 import { h, Component } from "preact";
 import { Caption } from "../caption";
-import * as styles from "./CaptionList.scss";
+import * as styles from "./captionList.scss";
 import { CaptionItem } from "../../utils";
 
 interface CaptionListProps {

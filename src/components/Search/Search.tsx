@@ -1,5 +1,5 @@
 import { h, Component } from "preact";
-import * as styles from "./Search.scss";
+import * as styles from "./search.scss";
 
 export interface SearchProps {
     onChange(value: string): void;
