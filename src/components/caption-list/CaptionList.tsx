@@ -47,32 +47,28 @@ export class CaptionList extends Component<CaptionListProps> {
         } = this.props;
         return (
             <div className={styles.transcriptWrapper}>
-                <table>
-                    <tbody>
-                        {captions.map(captionData => {
-                            return (
-                                <Caption
-                                    key={captionData.id}
-                                    onClick={this._handleClick(captionData)}
-                                    caption={captionData}
-                                    highlighted={highlightedMap[captionData.id]}
-                                    scrollTo={scrollTo}
-                                    searchLength={searchLength}
-                                    showTime={showTime}
-                                    isAutoScrollEnabled={
-                                        (isAutoScrollEnabled && highlightedMap[captionData.id]) ||
-                                        (!isAutoScrollEnabled &&
-                                            !!(searchMap[captionData.id] || {})[
-                                                String(activeSearchIndex)
-                                            ])
-                                    }
-                                    indexMap={searchMap[captionData.id]}
-                                    activeSearchIndex={activeSearchIndex}
-                                />
-                            );
-                        })}
-                    </tbody>
-                </table>
+                {captions.map(captionData => {
+                    return (
+                        <Caption
+                            key={captionData.id}
+                            onClick={this._handleClick(captionData)}
+                            caption={captionData}
+                            highlighted={highlightedMap[captionData.id]}
+                            scrollTo={scrollTo}
+                            searchLength={searchLength}
+                            showTime={showTime}
+                            isAutoScrollEnabled={
+                                (isAutoScrollEnabled && highlightedMap[captionData.id]) ||
+                                (!isAutoScrollEnabled &&
+                                    !!(searchMap[captionData.id] || {})[
+                                        String(activeSearchIndex)
+                                    ])
+                            }
+                            indexMap={searchMap[captionData.id]}
+                            activeSearchIndex={activeSearchIndex}
+                        />
+                    );
+                })}
             </div>
         );
     }

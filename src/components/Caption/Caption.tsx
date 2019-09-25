@@ -78,9 +78,9 @@ export class Caption extends Component<CaptionProps> {
         const { text, startTime } = caption;
 
         return (
-            <tr className={styles.caption}>
-                {showTime && <td className={styles.captionTime}>{secontsToTime(startTime)}</td>}
-                <td
+            <div className={styles.caption}>
+                {showTime && <div className={styles.captionTime}>{secontsToTime(startTime)}</div>}
+                <div
                     onClick={this._handleClick}
                     className={`${styles.captionContent} ${highlighted ? styles.highlighted : ""}`}
                     type="button"
@@ -89,8 +89,8 @@ export class Caption extends Component<CaptionProps> {
                     }}
                 >
                     {this._renderText(text)}
-                </td>
-            </tr>
+                </div>
+            </div>
         );
     }
 }
