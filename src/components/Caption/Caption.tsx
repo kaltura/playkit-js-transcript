@@ -24,36 +24,49 @@ export class Caption extends Component<CaptionProps> {
         }
     }
 
+    private _handleClick = () => {
+        const { caption, onClick } = this.props;
+        if (caption.text.length) {
+            onClick();
+        }
+    }
+
     private _renderText = (text: string) => {
         const { activeSearchIndex, searchLength, indexMap } = this.props;
         let indexArray: string[] = [];
         if (indexMap) {
             indexArray = Object.keys(indexMap).sort((a, b) => Number(a) - Number(b));
         }
+        if (text.length === 0) {
+            return null;
+        }
         return (
             <span className={styles.captionSpan}>
                 {indexMap
                     ? indexArray.map((el: string, index: number) => {
-                          return (
-                              <span>
-                                  {index === 0 && text.substring(0, indexMap[el])}
-                                  <span
-                                      className={
-                                          Number(el) === activeSearchIndex
-                                              ? styles.activeSearch
-                                              : styles.highlightSearch
-                                      }
-                                  >
-                                      {text.substring(indexMap[el], indexMap[el] + searchLength)}
-                                  </span>
-                                  {text.substring(
-                                      indexMap[el] + searchLength,
-                                      index - 1 === indexArray.length
-                                          ? text.length
-                                          : indexMap[indexArray[index + 1]]
-                                  )}
-                              </span>
-                          );
+                        const preSelected = index === 0 ? text.substring(0, indexMap[el]) : "";
+                        const selected = text.substring(indexMap[el], indexMap[el] + searchLength);
+                        const postSelected = text.substring(
+                            indexMap[el] + searchLength,
+                            index - 1 === indexArray.length
+                                ? text.length
+                                : indexMap[indexArray[index + 1]]
+                        )
+                        return (
+                            <span>
+                                {preSelected}
+                                <span
+                                    className={
+                                        Number(el) === activeSearchIndex
+                                            ? styles.activeSearch
+                                            : styles.highlightSearch
+                                    }
+                                >
+                                    {selected}
+                                </span>
+                                {postSelected}
+                            </span>
+                        );
                       })
                     : text}
             </span>
@@ -68,7 +81,7 @@ export class Caption extends Component<CaptionProps> {
             <tr className={styles.caption}>
                 {showTime && <td className={styles.captionTime}>{secontsToTime(startTime)}</td>}
                 <td
-                    onClick={onClick}
+                    onClick={this._handleClick}
                     className={`${styles.captionContent} ${highlighted ? styles.highlighted : ""}`}
                     type="button"
                     ref={node => {

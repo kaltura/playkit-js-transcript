@@ -21,7 +21,8 @@ export class CaptionList extends Component<CaptionListProps> {
             this.props.highlightedMap !== nextProps.highlightedMap ||
             this.props.captions !== nextProps.captions ||
             this.props.searchLength !== nextProps.searchLength ||
-            this.props.activeSearchIndex !== nextProps.activeSearchIndex
+            this.props.activeSearchIndex !== nextProps.activeSearchIndex ||
+            this.props.isAutoScrollEnabled !== nextProps.isAutoScrollEnabled
         ) {
             return true;
         }
