@@ -1,0 +1,59 @@
+@import '../../variables.scss';
+
+.search-wrapper {
+  flex-grow: 1;
+  display: flex;
+  background-color: $darkgray-color;
+  border-radius: 2px;
+  .search-icon {
+    background-color: rgba(0,0,0,0);
+    background-position: center;
+    background-image: url('../../assets/serch.svg');
+    width: 32px;
+    height: 32px;
+  }
+  .search-results {
+    display: flex;
+    align-items: center;
+  }
+  .prev-next-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    margin: 0 4px;
+    .prev-next-button {
+      width: 8px;
+      height: 8px;
+      background-color: rgba(0,0,0,0);
+      background-position: center;
+      border: none;
+      cursor: pointer;
+      &.prev-button {
+        background-image: url('../../assets/up.svg');
+      }
+      &.next-button {
+        background-image: url('../../assets/down.svg');
+      }
+    }
+  }
+  .search-input {
+    flex-grow: 1;
+    font-size: 1.2em;
+    color: $gray-color;
+    background: inherit;
+    border: none;
+  }
+  .clear-icon {
+    background-color: rgba(0,0,0,0);
+    background-position: center;
+    background-image: url('../../assets/clear.svg');
+    width: 32px;
+    height: 32px;
+    border: none;
+    cursor: pointer;
+  }
+  &.active {
+    color: $white-color;
+    background: $black-color;
+  }
+}

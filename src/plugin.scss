@@ -1,0 +1,134 @@
+/* CSS Reset
+taken from https://meyerweb.com/eric/tools/css/reset/
+compiled using http://lesscss.org/less-preview/
+ */
+
+.transcriptOverlay div,
+.transcriptOverlay span,
+.transcriptOverlay applet,
+.transcriptOverlay object,
+.transcriptOverlay iframe,
+.transcriptOverlay h1,
+.transcriptOverlay h2,
+.transcriptOverlay h3,
+.transcriptOverlay h4,
+.transcriptOverlay h5,
+.transcriptOverlay h6,
+.transcriptOverlay p,
+.transcriptOverlay blockquote,
+.transcriptOverlay pre,
+.transcriptOverlay a,
+.transcriptOverlay abbr,
+.transcriptOverlay acronym,
+.transcriptOverlay address,
+.transcriptOverlay big,
+.transcriptOverlay cite,
+.transcriptOverlay code,
+.transcriptOverlay del,
+.transcriptOverlay dfn,
+.transcriptOverlay em,
+.transcriptOverlay img,
+.transcriptOverlay ins,
+.transcriptOverlay kbd,
+.transcriptOverlay q,
+.transcriptOverlay s,
+.transcriptOverlay samp,
+.transcriptOverlay small,
+.transcriptOverlay strike,
+.transcriptOverlay strong,
+.transcriptOverlay sub,
+.transcriptOverlay sup,
+.transcriptOverlay tt,
+.transcriptOverlay var,
+.transcriptOverlay b,
+.transcriptOverlay u,
+.transcriptOverlay i,
+.transcriptOverlay center,
+.transcriptOverlay dl,
+.transcriptOverlay dt,
+.transcriptOverlay dd,
+.transcriptOverlay ol,
+.transcriptOverlay ul,
+.transcriptOverlay li,
+.transcriptOverlay fieldset,
+.transcriptOverlay form,
+.transcriptOverlay label,
+.transcriptOverlay legend,
+.transcriptOverlay table,
+.transcriptOverlay caption,
+.transcriptOverlay tbody,
+.transcriptOverlay tfoot,
+.transcriptOverlay thead,
+.transcriptOverlay tr,
+.transcriptOverlay th,
+.transcriptOverlay td,
+.transcriptOverlay article,
+.transcriptOverlay aside,
+.transcriptOverlay canvas,
+.transcriptOverlay details,
+.transcriptOverlay embed,
+.transcriptOverlay figure,
+.transcriptOverlay figcaption,
+.transcriptOverlay footer,
+.transcriptOverlay header,
+.transcriptOverlay hgroup,
+.transcriptOverlay menu,
+.transcriptOverlay nav,
+.transcriptOverlay output,
+.transcriptOverlay ruby,
+.transcriptOverlay section,
+.transcriptOverlay summary,
+.transcriptOverlay time,
+.transcriptOverlay mark,
+.transcriptOverlay audio,
+.transcriptOverlay video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+.transcriptOverlay article,
+.transcriptOverlay aside,
+.transcriptOverlay details,
+.transcriptOverlay figcaption,
+.transcriptOverlay figure,
+.transcriptOverlay footer,
+.transcriptOverlay header,
+.transcriptOverlay hgroup,
+.transcriptOverlay menu,
+.transcriptOverlay nav,
+.transcriptOverlay section {
+    display: block;
+}
+.transcriptOverlay body {
+    line-height: 1;
+}
+.transcriptOverlay ol,
+.transcriptOverlay ul {
+    list-style: none;
+}
+.transcriptOverlay blockquote,
+.transcriptOverlay q {
+    quotes: none;
+}
+.transcriptOverlay blockquote:before,
+.transcriptOverlay blockquote:after,
+.transcriptOverlay q:before,
+.transcriptOverlay q:after {
+    content: "";
+    content: none;
+}
+.transcriptOverlay table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+/*********** end of CSS RESET */
+
+.plugin-icon {
+    background-image: url('./assets/transcript.svg');
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+}

@@ -1,0 +1,102 @@
+@import '../../variables.scss';
+
+.root, .root * {
+  font-family: Lato, -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+  "Oxygen", "Ubuntu", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji",
+  "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.root {
+  display: flex;
+  flex-direction: column;
+  padding: 0 8px;
+  color: $white-color;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  background-color: #000000a1;
+}
+
+.header {
+  margin: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  height: 32px;
+  width: 100%;
+  font-size: 16px;
+}
+
+.body {
+  position: relative;
+  flex: 1;
+  overflow-y: auto;
+  text-align: center;
+}
+
+.loading-wrapper,
+.error-wrapper {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  .error-icon {
+    width: 92px;
+    height: 91px;
+    background-size: cover;
+    background-image: url('../../assets/error.svg');
+  }
+  .error-main-text {
+    font-size: 1.3em;
+    margin-top: 8px;
+    margin-bottom: 2px;
+  }
+  .error-description-text {
+    margin: 0;
+  }
+  .retry-button {
+    width: 30px;
+    padding: 0;
+    margin-left: 20px;
+    border: none;
+    background: inherit;
+    color: white;
+    cursor: pointer;
+  }
+}
+
+.close-button,
+.download-button {
+  flex-shrink: 1;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+}
+
+.goto-button {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+  background-color: $main-color;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-image: url('../../assets/arrow-up.svg');
+  cursor: pointer;
+  z-index: 1;
+}
+
+.close-button {
+  background-image: url('../../assets/close.svg');
+}
+
+.download-button {
+  background-image: url('../../assets/download.svg');
+}
