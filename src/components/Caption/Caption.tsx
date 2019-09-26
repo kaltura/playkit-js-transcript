@@ -3,19 +3,23 @@ import * as styles from "./caption.scss";
 import { secontsToTime } from "../../utils";
 import { CaptionItem } from "../../utils";
 
-type CaptionProps = {
+export interface CaptionProps {
+    showTime: boolean;
+    searchLength: number;
+    scrollTo(el: HTMLElement): void;
+    videoDuration: number;
+}
+
+interface ExtendedCaptionProps extends CaptionProps {
     caption: CaptionItem;
     onClick(): void;
     highlighted: boolean;
     isAutoScrollEnabled: boolean;
-    showTime: boolean;
-    scrollTo(el: HTMLElement): void;
-    searchLength: number;
     indexMap: Record<string, number> | undefined;
     activeSearchIndex: number;
-};
+}
 
-export class Caption extends Component<CaptionProps> {
+export class Caption extends Component<ExtendedCaptionProps> {
     private _hotspotRef: HTMLElement | null = null;
 
     componentDidUpdate() {
@@ -29,7 +33,7 @@ export class Caption extends Component<CaptionProps> {
         if (caption.text.length) {
             onClick();
         }
-    }
+    };
 
     private _renderText = (text: string) => {
         const { activeSearchIndex, searchLength, indexMap } = this.props;
@@ -44,29 +48,32 @@ export class Caption extends Component<CaptionProps> {
             <span className={styles.captionSpan}>
                 {indexMap
                     ? indexArray.map((el: string, index: number) => {
-                        const preSelected = index === 0 ? text.substring(0, indexMap[el]) : "";
-                        const selected = text.substring(indexMap[el], indexMap[el] + searchLength);
-                        const postSelected = text.substring(
-                            indexMap[el] + searchLength,
-                            index - 1 === indexArray.length
-                                ? text.length
-                                : indexMap[indexArray[index + 1]]
-                        )
-                        return (
-                            <span>
-                                {preSelected}
-                                <span
-                                    className={
-                                        Number(el) === activeSearchIndex
-                                            ? styles.activeSearch
-                                            : styles.highlightSearch
-                                    }
-                                >
-                                    {selected}
-                                </span>
-                                {postSelected}
-                            </span>
-                        );
+                          const preSelected = index === 0 ? text.substring(0, indexMap[el]) : "";
+                          const selected = text.substring(
+                              indexMap[el],
+                              indexMap[el] + searchLength
+                          );
+                          const postSelected = text.substring(
+                              indexMap[el] + searchLength,
+                              index - 1 === indexArray.length
+                                  ? text.length
+                                  : indexMap[indexArray[index + 1]]
+                          );
+                          return (
+                              <span>
+                                  {preSelected}
+                                  <span
+                                      className={
+                                          Number(el) === activeSearchIndex
+                                              ? styles.activeSearch
+                                              : styles.highlightSearch
+                                      }
+                                  >
+                                      {selected}
+                                  </span>
+                                  {postSelected}
+                              </span>
+                          );
                       })
                     : text}
             </span>
@@ -74,12 +81,16 @@ export class Caption extends Component<CaptionProps> {
     };
 
     render() {
-        const { caption, highlighted, showTime, onClick } = this.props;
+        const { caption, highlighted, showTime, videoDuration } = this.props;
         const { text, startTime } = caption;
 
         return (
             <div className={styles.caption}>
-                {showTime && <div className={styles.captionTime}>{secontsToTime(startTime)}</div>}
+                {showTime && (
+                    <div className={styles.captionTime}>
+                        {secontsToTime(startTime, videoDuration)}
+                    </div>
+                )}
                 <div
                     onClick={this._handleClick}
                     className={`${styles.captionContent} ${highlighted ? styles.highlighted : ""}`}

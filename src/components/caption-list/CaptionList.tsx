@@ -1,18 +1,17 @@
 import { h, Component } from "preact";
-import { Caption } from "../caption";
+import { Caption, CaptionProps } from "../caption";
 import * as styles from "./captionList.scss";
 import { CaptionItem } from "../../utils";
+
 
 interface CaptionListProps {
     highlightedMap: Record<number, true>;
     captions: CaptionItem[];
     seekTo(caption: CaptionItem): void;
-    scrollTo(el: HTMLElement): void;
-    showTime: boolean;
     isAutoScrollEnabled: boolean;
     searchMap: Record<number, Record<string, number>>;
     activeSearchIndex: number;
-    searchLength: number;
+    captionProps: CaptionProps;
 }
 
 export class CaptionList extends Component<CaptionListProps> {
@@ -20,7 +19,7 @@ export class CaptionList extends Component<CaptionListProps> {
         if (
             this.props.highlightedMap !== nextProps.highlightedMap ||
             this.props.captions !== nextProps.captions ||
-            this.props.searchLength !== nextProps.searchLength ||
+            this.props.searchMap !== nextProps.searchMap ||
             this.props.activeSearchIndex !== nextProps.activeSearchIndex ||
             this.props.isAutoScrollEnabled !== nextProps.isAutoScrollEnabled
         ) {
@@ -38,12 +37,10 @@ export class CaptionList extends Component<CaptionListProps> {
         const {
             captions,
             highlightedMap,
-            scrollTo,
-            searchLength,
-            showTime,
             isAutoScrollEnabled,
             searchMap,
-            activeSearchIndex
+            activeSearchIndex,
+            captionProps
         } = this.props;
         return (
             <div className={styles.transcriptWrapper}>
@@ -54,9 +51,6 @@ export class CaptionList extends Component<CaptionListProps> {
                             onClick={this._handleClick(captionData)}
                             caption={captionData}
                             highlighted={highlightedMap[captionData.id]}
-                            scrollTo={scrollTo}
-                            searchLength={searchLength}
-                            showTime={showTime}
                             isAutoScrollEnabled={
                                 (isAutoScrollEnabled && highlightedMap[captionData.id]) ||
                                 (!isAutoScrollEnabled &&
@@ -66,6 +60,7 @@ export class CaptionList extends Component<CaptionListProps> {
                             }
                             indexMap={searchMap[captionData.id]}
                             activeSearchIndex={activeSearchIndex}
+                            {...captionProps}
                         />
                     );
                 })}

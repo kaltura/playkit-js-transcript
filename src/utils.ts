@@ -118,15 +118,17 @@ export function debounce<F extends Procedure>(
 
 const pad = (number: number) => {
     if (number < 10) {
-      return `0${number}`;
+        return `0${number}`;
     }
     return number;
 };
 
-export const secontsToTime = (seconds: number): string => {
+export const secontsToTime = (seconds: number, videoDuration: number): string => {
     const date = new Date(0);
     date.setSeconds(seconds);
-    return `${seconds >= HOUR ? `${Math.floor(seconds / HOUR)}:` : ""}${pad(date.getUTCMinutes())}:${pad(date.getUTCSeconds())}`;
+    return `${videoDuration >= HOUR ? `${pad(Math.floor(seconds / HOUR))}:` : ""}${pad(
+        date.getUTCMinutes()
+    )}:${pad(date.getUTCSeconds())}`;
 };
 
 export function getConfigValue(value: any, condition: (value: any) => boolean, defaultValue: any) {
@@ -135,5 +137,4 @@ export function getConfigValue(value: any, condition: (value: any) => boolean, d
         result = value;
     }
     return result;
-};
-
+}
