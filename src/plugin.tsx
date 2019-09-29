@@ -149,7 +149,7 @@ export class TranscriptPlugin extends PlayerContribPlugin
 
     private _loadCaptions = (e?: any): void => {
         if (this._captionsList.length > 0) {
-            this._getCaptionsById(
+            this._getCaptionsByLang(
                 e ? e.payload.selectedTextTrack._language : this.player.config.playback.textLanguage
             );
         } else {
@@ -195,7 +195,7 @@ export class TranscriptPlugin extends PlayerContribPlugin
         );
     };
 
-    private _getCaptionsById = (lang?: string): void => {
+    private _getCaptionsByLang = (lang?: string): void => {
         if (this._captionsList && this._captionsList.length > 0) {
             const captionAsset: KalturaCaptionAsset | null = this._findCaptionAsset(lang);
             if (captionAsset) {
@@ -205,28 +205,28 @@ export class TranscriptPlugin extends PlayerContribPlugin
                     data => {
                         if (data) {
                             // the data is in fact the URL of the file. Now we need to fetch it
-                            this._loadCaptionsAsset(data);
+                            this._loadCaptionsAsset(data, captionAsset);
                         } else {
-                            this._onError(undefined, "Data is empty", "_getCaptionsById");
+                            this._onError(undefined, "Data is empty", "_getCaptionsByLang");
                         }
                     },
                     err => {
-                        this._onError(err, "Failed to fetch captions", "_getCaptionsById");
+                        this._onError(err, "Failed to fetch captions", "_getCaptionsByLang");
                     }
                 );
             } else {
                 this._onError(
                     undefined,
                     "Current video doesn't have captions in selected language",
-                    "_getCaptionsById"
+                    "_getCaptionsByLang"
                 );
             }
         } else {
-            this._onError(undefined, "Current video doesn't have captions", "_getCaptionsById");
+            this._onError(undefined, "Current video doesn't have captions", "_getCaptionsByLang");
         }
     };
 
-    private _loadCaptionsAsset = (url: string) => {
+    private _loadCaptionsAsset = (url: string, captionAsset: KalturaCaptionAsset) => {
         fetch(url)
             .then(function(response: any) {
                 if (response.ok) {
@@ -236,7 +236,7 @@ export class TranscriptPlugin extends PlayerContribPlugin
             })
             .then((data: string) => {
                 this._captionsRaw = data; // keep it for downloading
-                this._captions = this._parseCaptions(data);
+                this._captions = this._parseCaptions(data, captionAsset);
                 this._isLoading = false;
                 this._updateKitchenSink();
             })
@@ -245,13 +245,12 @@ export class TranscriptPlugin extends PlayerContribPlugin
             });
     };
 
-    private _parseCaptions = (data: string): CaptionItem[] => {
-        const captionFormat = this._getCaptionFormat();
+    private _parseCaptions = (data: string, captionAsset: KalturaCaptionAsset): CaptionItem[] => {
+        const captionFormat = this._getCaptionFormat(captionAsset);
         return getCaptionsByFormat(data, captionFormat);
     };
 
-    private _getCaptionFormat = (): string => {
-        const captionAsset = this._findCaptionAsset();
+    private _getCaptionFormat = (captionAsset: KalturaCaptionAsset): string => {
         const selectedLanguage =
             this._captionsList &&
             captionAsset &&
@@ -267,11 +266,7 @@ export class TranscriptPlugin extends PlayerContribPlugin
         if (!this._captionsRaw) {
             return;
         }
-        const captionsFormat = this._getCaptionFormat();
-        let format = "srt";
-        if (captionsFormat === "2") {
-            format = "xml";
-        }
+        const format = "txt";
         const link = document.createElement("a");
         link.setAttribute(
             "href",

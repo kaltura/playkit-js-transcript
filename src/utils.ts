@@ -1,6 +1,4 @@
 import { xml2js } from "xml-js";
-//@ts-ignore
-import { fromSrt } from "subtitles-parser";
 import { Cuepoint } from "@playkit-js-contrib/common";
 
 export interface CaptionItem extends Cuepoint {
@@ -11,11 +9,9 @@ export interface CaptionItem extends Cuepoint {
 export const toSeconds = (val: any): number => {
     const regex = /(\d+):(\d{2}):(\d{2}),(\d{2,3}|\d{2})/;
     const parts: any | null[] = regex.exec(val);
-
     if (parts === null) {
         return 0;
     }
-
     for (var i = 1; i < 5; i++) {
         parts[i] = parseInt(parts[i], 10);
         if (isNaN(parts[i])) {
@@ -28,6 +24,7 @@ export const toSeconds = (val: any): number => {
 
 export const getCaptionsByFormat = (captions: any, captionsFormat: string): CaptionItem[] => {
     const format = captionsFormat.toLowerCase();
+    // const a = fromSrt(captions);
     switch (format) {
         case "2":
             // strip 'span' from the p tags, they break the parser and no time (now) to write a parser
@@ -39,15 +36,28 @@ export const getCaptionsByFormat = (captions: any, captionsFormat: string): Capt
             return TTML2Obj(captions);
 
         case "1":
-            return fromSrt(captions).map((item: any, index: number) => ({
-                id: index + 1,
-                endTime: toSeconds(item.endTime),
-                startTime: toSeconds(item.startTime),
-                text: item.text
-            }));
+        case "3":
+            return fromSrt(captions);
         default:
             return [];
     }
+};
+
+const fromSrt = (data: string): CaptionItem[] => {
+    let result: string | string[] = data.replace(/\r/g, '');
+    const regex = /(\d+)?\n?(\d{2}:\d{2}:\d{2}[,.]\d{3}) --> (\d{2}:\d{2}:\d{2}[,.]\d{3}).*\n/g;
+    result = result.split(regex);
+    result.shift();
+    const items = [];
+    for (let i = 0; i < result.length; i += 4) {
+        items.push({
+            id: items.length + 1,
+            startTime: toSeconds(result[i + 1].trim()),
+            endTime: toSeconds(result[i + 2].trim()),
+            text: result[i + 3].trim()
+        });
+    }
+    return items;
 };
 
 export const TTML2Obj = (ttml: any): CaptionItem[] => {
@@ -63,7 +73,7 @@ export const TTML2Obj = (ttml: any): CaptionItem[] => {
             id: index + 1,
             endTime: toSeconds(endTime),
             startTime: toSeconds(startTime),
-            text: item._text
+            text: (Array.isArray(item._text) ? item._text.join(" ") : item._text) || ""
             // all non-required
             // otherAttributes: otherAttributes
         };
