@@ -6,8 +6,10 @@ export interface CaptionItem extends Cuepoint {
     id: number;
 }
 
-export const toSeconds = (val: any): number => {
-    const regex = /(\d+):(\d{2}):(\d{2}),(\d{2,3}|\d{2})/;
+export const toSeconds = (val: any, vtt = false): number => {
+    const regex = vtt
+        ? /(\d+):(\d{2}):(\d{2}).(\d{2,3}|\d{2})/
+        : /(\d+):(\d{2}):(\d{2}),(\d{2,3}|\d{2})/;
     const parts: any | null[] = regex.exec(val);
     if (parts === null) {
         return 0;
@@ -26,6 +28,8 @@ export const getCaptionsByFormat = (captions: any, captionsFormat: string): Capt
     const format = captionsFormat.toLowerCase();
     // const a = fromSrt(captions);
     switch (format) {
+        case "1":
+            return fromSrt(captions);
         case "2":
             // strip 'span' from the p tags, they break the parser and no time (now) to write a parser
             captions = captions
@@ -34,30 +38,46 @@ export const getCaptionsByFormat = (captions: any, captionsFormat: string): Capt
                 .replace(/<br><\/br>/g, " ") // remove <br></br>'s as it breaks the parser too.
                 .replace(/<[//]{0,1}(SPAN|span)[^><]*>/g, "");
             return TTML2Obj(captions);
-
-        case "1":
         case "3":
-            return fromSrt(captions);
+            return fromVtt(captions);
         default:
             return [];
     }
 };
 
-const fromSrt = (data: string): CaptionItem[] => {
-    let result: string | string[] = data.replace(/\r/g, '');
+const fromVtt = (data: string): CaptionItem[] => {
+    let source: string | string[] = data.replace(/\r/g, "");
     const regex = /(\d+)?\n?(\d{2}:\d{2}:\d{2}[,.]\d{3}) --> (\d{2}:\d{2}:\d{2}[,.]\d{3}).*\n/g;
-    result = result.split(regex);
-    result.shift();
-    const items = [];
-    for (let i = 0; i < result.length; i += 4) {
-        items.push({
-            id: items.length + 1,
-            startTime: toSeconds(result[i + 1].trim()),
-            endTime: toSeconds(result[i + 2].trim()),
-            text: result[i + 3].trim()
+    source = source.replace(/[\s\S]*.*(?=00:00:00.000)/, "");
+    source = source.split(regex);
+    source.shift();
+    const result = [];
+    for (let i = 0; i < source.length; i += 4) {
+        result.push({
+            id: result.length + 1,
+            startTime: toSeconds(source[i + 1].trim(), true),
+            endTime: toSeconds(source[i + 2].trim(), true),
+            text: source[i + 3].trim()
         });
     }
-    return items;
+    return result;
+};
+
+const fromSrt = (data: string): CaptionItem[] => {
+    let source: string | string[] = data.replace(/\r/g, "");
+    const regex = /(\d+)?\n?(\d{2}:\d{2}:\d{2}[,.]\d{3}) --> (\d{2}:\d{2}:\d{2}[,.]\d{3}).*\n/g;
+    source = source.split(regex);
+    source.shift();
+    const result = [];
+    for (let i = 0; i < source.length; i += 4) {
+        result.push({
+            id: result.length + 1,
+            startTime: toSeconds(source[i + 1].trim()),
+            endTime: toSeconds(source[i + 2].trim()),
+            text: source[i + 3].trim()
+        });
+    }
+    return result;
 };
 
 export const TTML2Obj = (ttml: any): CaptionItem[] => {
