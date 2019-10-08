@@ -216,7 +216,6 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     private _renderTranscript = () => {
         const { captions, hasError, onRetryLoad, showTime } = this.props;
         const {
-            search,
             isAutoScrollEnabled,
             searchMap,
             activeSearchIndex,
