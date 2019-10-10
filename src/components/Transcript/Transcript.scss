@@ -1,6 +1,7 @@
 @import '../../variables.scss';
 
 .root {
+  @import "~@playkit-js-contrib/ui/lib/normalize.scss";
   display: flex;
   flex-direction: column;
   padding: 0 8px;
