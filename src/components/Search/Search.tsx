@@ -1,40 +1,78 @@
 import { h, Component } from "preact";
-import * as styles from "./Search.scss";
+import * as styles from "./search.scss";
 
 export interface SearchProps {
     onChange(value: string): void;
-    // onSearchIndexChange(value: number): void;
+    onSearchIndexChange(value: number): void;
     value: string;
+    activeSearchIndex: number;
+    totalSearchResults: number;
 }
 
 export class Search extends Component<SearchProps> {
     private _handleOnChange = (e: any) => {
         this.props.onChange(e.target.value);
-    }
+    };
 
     private _onClear = () => {
         this.props.onChange("");
-    }
+    };
 
-    // private _goToNextSearchResult = () => {
-
-    // }
-    // private _goToPrevSearchResult = () => {
-
-    // }
+    private _goToNextSearchResult = () => {
+        const { activeSearchIndex, totalSearchResults, onSearchIndexChange } = this.props;
+        let index = 0;
+        if (activeSearchIndex !== totalSearchResults) {
+            index = this.props.activeSearchIndex + 1;
+        } else {
+            index = 1;
+        }
+        onSearchIndexChange(index);
+    };
+    private _goToPrevSearchResult = () => {
+        const { activeSearchIndex, totalSearchResults, onSearchIndexChange } = this.props;
+        let index = 0;
+        if (activeSearchIndex !== 1) {
+            index = activeSearchIndex - 1;
+        } else {
+            index = totalSearchResults;
+        }
+        onSearchIndexChange(index);
+    };
     render() {
+        const { value, activeSearchIndex, totalSearchResults } = this.props;
         return (
-            <div className={styles.searchWrapper}>
+            <div className={`${styles.searchWrapper} ${value ? styles.active : ""}`}>
                 <div className={styles.searchIcon} />
                 <input
                     className={styles.searchInput}
-                    placeholder={'Search in Transcript'}
-                    value={this.props.value}
+                    placeholder={"Search in Transcript"}
+                    value={value}
                     onInput={this._handleOnChange}
                 />
-                {/* <button onClick={this._goToPrevSearchResult}>prev</button>
-                <button onClick={this._goToNextSearchResult}>next</button> */}
-                <button className={styles.clearIcon} onClick={this._onClear} />
+                {value && <button className={styles.clearIcon} onClick={this._onClear} />}
+                {value && (
+                    <p className={styles.searchResults}>
+                        {`${
+                            totalSearchResults > 0
+                                ? `${activeSearchIndex}/${totalSearchResults}`
+                                : "0 results"
+                        }`}
+                    </p>
+                )}
+                <div className={styles.prevNextWrapper}>
+                    {value && totalSearchResults > 1 && (
+                        <button
+                            className={`${styles.prevNextButton} ${styles.prevButton}`}
+                            onClick={this._goToPrevSearchResult}
+                        />
+                    )}
+                    {value && totalSearchResults > 1 && (
+                        <button
+                            className={`${styles.prevNextButton} ${styles.nextButton}`}
+                            onClick={this._goToNextSearchResult}
+                        />
+                    )}
+                </div>
             </div>
         );
     }
