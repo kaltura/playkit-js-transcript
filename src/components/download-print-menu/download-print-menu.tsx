@@ -1,17 +1,18 @@
 import { h, Component } from "preact";
 import { PopoverComponent } from "../popover-component";
 import { PopoverMenu } from "../popover-menu";
-import * as styles from "./donwload-print-menu.scss";
+import * as styles from "./download-print-menu.scss";
 
 interface DownloadPrintMenuProps {
     buttonAriaLabel: string;
+    onDownload: () => void;
 }
 
 interface DownloadPrintMenuState {
     popoverOpen: boolean;
 }
 
-class DownloadPrintMenu extends Component<DownloadPrintMenuProps, DownloadPrintMenuState> {
+export class DownloadPrintMenu extends Component<DownloadPrintMenuProps, DownloadPrintMenuState> {
     static defaultProps = {
         buttonAriaLabel: "Download or print transcript"
     }
@@ -28,11 +29,11 @@ class DownloadPrintMenu extends Component<DownloadPrintMenuProps, DownloadPrintM
         document.removeEventListener("click", this._handleClickOutside);
     }
 
-    private _handleClickOutside(e: any) {
+    private _handleClickOutside = (e: any) => {
         if (
             //   !this.props.isMobile &&
             !!this._controlElement &&
-            // !this._controlSettingsElement.contains(e.target) &&
+            !this._controlElement.contains(e.target) &&
             this.state.popoverOpen
         ) {
             // if (e.target.classList.contains(style.overlayPlay)) {
@@ -42,12 +43,12 @@ class DownloadPrintMenu extends Component<DownloadPrintMenuProps, DownloadPrintM
         }
     }
 
-    private _onButtonClick(): void {
+    private _onButtonClick = () => {
         this.setState((state: DownloadPrintMenuState) => ({ popoverOpen: !state.popoverOpen }));
     }
 
     private _onDownloadClicked(): void {
-        // start downloading
+        this.props.onDownload();
     }
 
     private _onPrintClicked(): void {
@@ -58,25 +59,21 @@ class DownloadPrintMenu extends Component<DownloadPrintMenuProps, DownloadPrintM
         return (
             <div
                 ref={c => (this._controlElement = c)}
-                // className={[style.controlButtonContainer, style.controlSettings].join(" ")}
+                className={styles.downloadPrintContainer}
             >
                 <button
                     tabIndex={0}
                     aria-label={props.buttonAriaLabel}
-                    // className={
-                    //     this.state.smartContainerOpen
-                    //         ? [style.controlButton, style.active].join(" ")
-                    //         : style.controlButton
-                    // }
+                    className={`${styles.downloadPrintButton}${this.state.popoverOpen ? ` ${styles.active}`:''}`}
                     onClick={this._onButtonClick}
                 >
-                    <div className={styles.icon} />;
+                    <div className={styles.icon} />
                 </button>
-                {!this.state.popoverOpen ? (
-                    ""
-                ) : (
+                {this.state.popoverOpen && (
                     <PopoverComponent
                         onClose={this._onButtonClick}
+                        verticalPosition={"bottom"}
+                        horizontalPosition={"left"}
                     >
                         <PopoverMenu
                             onDownload={this._onDownloadClicked}

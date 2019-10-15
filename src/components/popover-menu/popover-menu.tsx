@@ -10,7 +10,8 @@ export class PopoverMenu extends Component<PopoverMenuProps> {
     render(props: any) {
         return (
             <div>
-                test
+                <p>download</p>
+                <p>print</p>
                 {/* <div
             ref={c => this._menuElement = c}
             className={[style.dropdownMenu, ...this.state.position].join(' ')}

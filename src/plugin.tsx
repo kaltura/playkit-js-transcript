@@ -50,6 +50,8 @@ const logger = getContribLogger({
     module: "transcript-plugin"
 });
 
+import { DownloadPrintMenu } from "./components/download-print-menu";
+
 export class TranscriptPlugin extends PlayerContribPlugin
     implements OnMediaUnload, OnRegisterUI, OnMediaLoad, OnPluginSetup {
     static defaultConfig = {
@@ -83,6 +85,11 @@ export class TranscriptPlugin extends PlayerContribPlugin
     }
 
     onRegisterUI(uiManager: UIManager): void {
+      uiManager.upperBar.add({
+        label: "test",
+        onClick: () => {},
+        renderItem: () => <DownloadPrintMenu onDownload={this._handleDownload} />,
+      });
       this._kitchenSinkItem = uiManager.kitchenSink.add({
         label: "Transcript",
         renderIcon: () => <MenuIcon />,
@@ -321,7 +328,6 @@ export class TranscriptPlugin extends PlayerContribPlugin
             captions={this._captions}
             isLoading={this._isLoading}
             hasError={this._hasError}
-            onDownload={this._handleDownload}
             onRetryLoad={this._loadCaptions}
             highlightedMap={this._highlightedMap}
           />
