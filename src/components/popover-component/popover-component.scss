@@ -1,3 +1,5 @@
+@import '../../variables.scss';
+
 @keyframes openPopoverComponent {
     from {
       opacity: 0;
@@ -21,7 +23,7 @@
   }
 
 .popover-component {
-    background-color: #222222;
+    background-color: $semiblack-color;
     box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.3);
     border-radius: 4px;
     position: absolute;

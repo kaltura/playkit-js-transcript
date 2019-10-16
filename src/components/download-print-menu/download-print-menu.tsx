@@ -39,23 +39,49 @@ export class DownloadPrintMenu extends Component<DownloadPrintMenuProps, Downloa
             // if (e.target.classList.contains(style.overlayPlay)) {
             //     e.stopPropagation();
             // }
-            this.setState({ popoverOpen: false });
+            this._handleClosePopover();
         }
+    }
+
+    private _handleClosePopover = () => {
+        this.setState({ popoverOpen: false });
     }
 
     private _onButtonClick = () => {
         this.setState((state: DownloadPrintMenuState) => ({ popoverOpen: !state.popoverOpen }));
     }
 
-    private _onDownloadClicked(): void {
+    private _onDownloadClicked = () => {
         this.props.onDownload();
+        this._handleClosePopover();
     }
 
-    private _onPrintClicked(): void {
-        // start downloading
+    private _onPrintClicked = () => {
+        console.log("start printing")
+        this._handleClosePopover();
     }
+    private _onKeyDown = (e: KeyboardEvent, cb: Function) => {
+        switch (e.keyCode) {
+          case 13:
+            if (typeof cb === "function") {
+                cb();
+            }
+            break;
+          case 27:
+            e.stopPropagation();
+            this._handleClosePopover();
+            break;
+        }
+      }
 
     render(props: DownloadPrintMenuProps) {
+        const itemRenderer = (el: any) => (
+            <div
+                onClick={el.onMenuChosen}
+                onKeyDown={e => this._onKeyDown(e, el.onMenuChosen)}
+                className={styles.popoverMenuItem}
+            >{el.label}</div>
+        )
         return (
             <div
                 ref={c => (this._controlElement = c)}
@@ -78,6 +104,11 @@ export class DownloadPrintMenu extends Component<DownloadPrintMenuProps, Downloa
                         <PopoverMenu
                             onDownload={this._onDownloadClicked}
                             onPrint={this._onPrintClicked}
+                            itemRenderer={itemRenderer}
+                            options={[
+                                { label: "Download ", onMenuChosen: this._onDownloadClicked },
+                                { label: "Print", onMenuChosen: this._onPrintClicked }
+                            ]}
                         />
                     </PopoverComponent>
                 )}

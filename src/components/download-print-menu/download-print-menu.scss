@@ -27,3 +27,14 @@
         }
     }
 }
+.popover-menu-item {
+    display: flex;
+    align-items: center;
+    padding: 2px 10px 2px 16px;
+    white-space: nowrap;
+    min-height: 30px;
+    line-height: 26px;
+    &:hover {
+        cursor: pointer;
+    }
+  }
