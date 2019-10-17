@@ -1,28 +1,59 @@
 @import '../../variables.scss';
 
 .caption {
-  font-family: Lato;
+  display: flex;
+  width: 100%;
   color: $white-color;
   .caption-time {
+    flex-basis: 70px;
+    align-items: flex-start;
     padding-right: 6px;
-    vertical-align: top;
-    font-size: 1.1em;
+    text-align: left;
+    font-size: 1em;
     line-height: 1.75;
   }
   .caption-content {
-    font-size: 1.3em;
+    flex-grow: 1;
+    font-size: 1.2em;
     line-height: 1.4;
     text-align: left;
-    cursor: pointer;
-    &.highlighted {
-      color: $black-color;
+    &:hover {
       .caption-span {
+        background-color: $semigray-color;
+        &::selection {
+          background-color: inherit;
+        }
+      }
+      &.highlighted {
+        .caption-span {
+          color: $white-color;
+        }
+      }
+    }
+    &.highlighted {
+      .caption-span {
+        color: $black-color;
         background-color: $main-color;
       }
     }
+    .caption-span {
+      padding: 0 2px;
+      user-select: text;
+      border-radius: 2px;
+      cursor: pointer;
+      &::selection {
+        background-color: $text-selection-color;
+      }
+    }
     .highlight-search {
+      color: $white-color;
+      background-color: $semigray-color;
+      border-radius: 1px;
+    }
+    .active-search {
       color: $black-color;
       background-color: $yellow-color;
+      border-radius: 1px;
     }
   }
 }

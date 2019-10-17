@@ -1,22 +1,21 @@
 import { xml2js } from "xml-js";
-//@ts-ignore
-import { fromSrt } from "subtitles-parser";
 import { Cuepoint } from "@playkit-js-contrib/common";
-import { KitchenSinkPositions } from "@playkit-js-contrib/ui";
+
+const HOUR = 60 * 60; // seconds in 1 hour
 
 export interface CaptionItem extends Cuepoint {
     text: string;
     id: number;
 }
 
-export const toSeconds = (val: any): number => {
-    const regex = /(\d+):(\d{2}):(\d{2}),(\d{2,3}|\d{2})/;
+export const toSeconds = (val: any, vtt = false): number => {
+    const regex = vtt
+        ? /(\d+):(\d{2}):(\d{2}).(\d{2,3}|\d{2})/
+        : /(\d+):(\d{2}):(\d{2}),(\d{2,3}|\d{2})/;
     const parts: any | null[] = regex.exec(val);
-
     if (parts === null) {
         return 0;
     }
-
     for (var i = 1; i < 5; i++) {
         parts[i] = parseInt(parts[i], 10);
         if (isNaN(parts[i])) {
@@ -29,7 +28,10 @@ export const toSeconds = (val: any): number => {
 
 export const getCaptionsByFormat = (captions: any, captionsFormat: string): CaptionItem[] => {
     const format = captionsFormat.toLowerCase();
+    // const a = fromSrt(captions);
     switch (format) {
+        case "1":
+            return fromSrt(captions);
         case "2":
             // strip 'span' from the p tags, they break the parser and no time (now) to write a parser
             captions = captions
@@ -38,17 +40,46 @@ export const getCaptionsByFormat = (captions: any, captionsFormat: string): Capt
                 .replace(/<br><\/br>/g, " ") // remove <br></br>'s as it breaks the parser too.
                 .replace(/<[//]{0,1}(SPAN|span)[^><]*>/g, "");
             return TTML2Obj(captions);
-
-        case "1":
-            return fromSrt(captions).map((item: any, index: number) => ({
-                id: index + 1,
-                endTime: toSeconds(item.endTime),
-                startTime: toSeconds(item.startTime),
-                text: item.text
-            }));
+        case "3":
+            return fromVtt(captions);
         default:
             return [];
     }
+};
+
+const fromVtt = (data: string): CaptionItem[] => {
+    let source: string | string[] = data.replace(/\r/g, "");
+    const regex = /(\d+)?\n?(\d{2}:\d{2}:\d{2}[,.]\d{3}) --> (\d{2}:\d{2}:\d{2}[,.]\d{3}).*\n/g;
+    source = source.replace(/[\s\S]*.*(?=00:00:00.000)/, "");
+    source = source.split(regex);
+    source.shift();
+    const result = [];
+    for (let i = 0; i < source.length; i += 4) {
+        result.push({
+            id: result.length + 1,
+            startTime: toSeconds(source[i + 1].trim(), true),
+            endTime: toSeconds(source[i + 2].trim(), true),
+            text: source[i + 3].trim()
+        });
+    }
+    return result;
+};
+
+const fromSrt = (data: string): CaptionItem[] => {
+    let source: string | string[] = data.replace(/\r/g, "");
+    const regex = /(\d+)?\n?(\d{2}:\d{2}:\d{2}[,.]\d{3}) --> (\d{2}:\d{2}:\d{2}[,.]\d{3}).*\n/g;
+    source = source.split(regex);
+    source.shift();
+    const result = [];
+    for (let i = 0; i < source.length; i += 4) {
+        result.push({
+            id: result.length + 1,
+            startTime: toSeconds(source[i + 1].trim()),
+            endTime: toSeconds(source[i + 2].trim()),
+            text: source[i + 3].trim()
+        });
+    }
+    return result;
 };
 
 export const TTML2Obj = (ttml: any): CaptionItem[] => {
@@ -64,7 +95,7 @@ export const TTML2Obj = (ttml: any): CaptionItem[] => {
             id: index + 1,
             endTime: toSeconds(endTime),
             startTime: toSeconds(startTime),
-            text: item._text
+            text: (Array.isArray(item._text) ? item._text.join(" ") : item._text) || ""
             // all non-required
             // otherAttributes: otherAttributes
         };
@@ -115,19 +146,25 @@ export function debounce<F extends Procedure>(
     } as any;
 }
 
-export const secontsToTime = (seconts: number): string => {
-    const date = new Date(0);
-    date.setSeconds(seconts);
-    return date.toISOString().substr(14, 5);
+const pad = (number: number) => {
+    if (number < 10) {
+        return `0${number}`;
+    }
+    return number;
 };
 
-export function getPluginPosition(position: string, defaultPosition = KitchenSinkPositions.Bottom) {
-    let pluginPosition = defaultPosition;
-    if (
-        typeof position === "string" &&
-        (position === KitchenSinkPositions.Bottom || position === KitchenSinkPositions.Right)
-    ) {
-        pluginPosition = position;
+export const secontsToTime = (seconds: number, videoDuration: number): string => {
+    const date = new Date(0);
+    date.setSeconds(seconds);
+    return `${videoDuration >= HOUR ? `${pad(Math.floor(seconds / HOUR))}:` : ""}${pad(
+        date.getUTCMinutes()
+    )}:${pad(date.getUTCSeconds())}`;
+};
+
+export function getConfigValue(value: any, condition: (value: any) => boolean, defaultValue: any) {
+    let result = defaultValue;
+    if (typeof condition === "function" && condition(value)) {
+        result = value;
     }
-    return pluginPosition;
+    return result;
 }
