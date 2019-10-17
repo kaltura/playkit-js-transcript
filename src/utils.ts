@@ -3,6 +3,8 @@ import { xml2js } from "xml-js";
 import { fromSrt } from "subtitles-parser";
 import { Cuepoint } from "@playkit-js-contrib/common";
 
+const HOUR = 60 * 60; // seconds in 1 hour
+
 export interface CaptionItem extends Cuepoint {
     text: string;
     id: number;
@@ -114,10 +116,19 @@ export function debounce<F extends Procedure>(
     } as any;
 }
 
-export const secontsToTime = (seconts: number): string => {
+const pad = (number: number) => {
+    if (number < 10) {
+        return `0${number}`;
+    }
+    return number;
+};
+
+export const secontsToTime = (seconds: number, videoDuration: number): string => {
     const date = new Date(0);
-    date.setSeconds(seconts);
-    return date.toISOString().substr(14, 5);
+    date.setSeconds(seconds);
+    return `${videoDuration >= HOUR ? `${pad(Math.floor(seconds / HOUR))}:` : ""}${pad(
+        date.getUTCMinutes()
+    )}:${pad(date.getUTCSeconds())}`;
 };
 
 export function getConfigValue(value: any, condition: (value: any) => boolean, defaultValue: any) {

@@ -308,6 +308,7 @@ export class TranscriptPlugin extends PlayerContribPlugin
                 onDownload={this._handleDownload}
                 onRetryLoad={this._loadCaptions}
                 currentTime={this.player.currentTime}
+                videoDuration={this.player.duration}
             />
         );
     };

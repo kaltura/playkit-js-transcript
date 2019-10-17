@@ -20,6 +20,7 @@ export interface TranscriptProps {
     scrollDebounceTimeout: number;
     searchDebounceTimeout: number;
     searchNextPrevDebounceTimeout: number;
+    videoDuration: number;
 }
 
 interface TranscriptState {
@@ -214,7 +215,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     };
 
     private _renderTranscript = () => {
-        const { captions, hasError, onRetryLoad, showTime } = this.props;
+        const { captions, hasError, onRetryLoad, showTime, videoDuration } = this.props;
         const {
             isAutoScrollEnabled,
             searchMap,
@@ -243,17 +244,23 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
                 </div>
             );
         }
+
+        const captionProps = {
+            showTime,
+            searchLength,
+            scrollTo: this._debounced.scrollTo,
+            videoDuration
+        };
+
         return (
             <CaptionList
                 highlightedMap={highlightedMap}
                 captions={captions}
                 seekTo={this._handleSeek}
-                scrollTo={this._debounced.scrollTo}
-                searchLength={searchLength}
-                showTime={showTime}
                 isAutoScrollEnabled={isAutoScrollEnabled}
                 searchMap={searchMap}
                 activeSearchIndex={activeSearchIndex}
+                captionProps={captionProps}
             />
         );
     };

@@ -1,16 +1,19 @@
 @import '../../variables.scss';
 
 .caption {
+  display: flex;
+  width: 100%;
   color: $white-color;
   .caption-time {
-    max-width: 50px;
-    min-width: 50px;
+    flex-basis: 70px;
+    align-items: flex-start;
     padding-right: 6px;
-    vertical-align: top;
+    text-align: left;
     font-size: 1em;
     line-height: 1.75;
   }
   .caption-content {
+    flex-grow: 1;
     font-size: 1.2em;
     line-height: 1.4;
     text-align: left;
