@@ -43,9 +43,10 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  color: $lightgray-color;
   .error-icon {
-    width: 92px;
-    height: 91px;
+    width: 20vh;
+    height: 20vh;
     background-size: cover;
     background-image: url('../../assets/error.svg');
   }
