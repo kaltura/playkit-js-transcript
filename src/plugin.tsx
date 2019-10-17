@@ -30,7 +30,7 @@ import { getContribLogger } from "@playkit-js-contrib/common";
 
 import { Transcript } from "./components/transcript";
 
-import { getCaptionsByFormat, CaptionItem, getConfigValue } from "./utils";
+import { getCaptionsByFormat, CaptionItem, getConfigValue, isBoolean } from "./utils";
 
 import * as styles from "./plugin.scss";
 
@@ -83,11 +83,22 @@ export class TranscriptPlugin extends PlayerContribPlugin
     }
 
     onRegisterUI(uiManager: UIManager): void {
-      uiManager.upperBar.add({
-        label: "test",
-        onClick: () => {},
-        renderItem: () => <DownloadPrintMenu onDownload={this._handleDownload} />,
-      });
+        const {
+            downloadDisabled,
+            printDisabled
+        } = this.config;
+        uiManager.upperBar.add({
+            label: "Download/Print menu",
+            onClick: () => {},
+            renderItem: () => (
+                <DownloadPrintMenu
+                    onDownload={this._handleDownload}
+                    onPrint={this._handlePrint}
+                    downloadDisabled={getConfigValue(downloadDisabled, isBoolean, false)}
+                    printDisabled={getConfigValue(printDisabled, isBoolean, false)}
+                />
+            )
+        });
         this._kitchenSinkItem = uiManager.kitchenSink.add({
             label: "Transcript",
             renderIcon: () => <div className={styles.pluginIcon} />,
@@ -282,6 +293,10 @@ export class TranscriptPlugin extends PlayerContribPlugin
         link.click();
     };
 
+    private _handlePrint = () => {
+        console.log("start print")
+    }
+
     private _renderKitchenSinkContent = (props: KitchenSinkContentRendererProps) => {
         const {
             showTime,
@@ -291,17 +306,26 @@ export class TranscriptPlugin extends PlayerContribPlugin
             searchNextPrevDebounceTimeout
         } = this.config;
         return (
-          <Transcript
-            {...props}
-            showTime={this.config.showTime}
-            seek={this._seekTo}
-            captions={this._captions}
-            isLoading={this._isLoading}
-            hasError={this._hasError}
-            onDownload={this._handleDownload}
-            onRetryLoad={this._loadCaptions}
-            highlightedMap={this._highlightedMap}
-          />
+            <Transcript
+                {...props}
+                showTime={getConfigValue(showTime, isBoolean, true)}
+                scrollOffset={getConfigValue(scrollOffset, Number.isInteger, 0)}
+                scrollDebounceTimeout={getConfigValue(scrollDebounceTimeout, Number.isInteger, 200)}
+                searchDebounceTimeout={getConfigValue(searchDebounceTimeout, Number.isInteger, 250)}
+                searchNextPrevDebounceTimeout={getConfigValue(
+                    searchNextPrevDebounceTimeout,
+                    Number.isInteger,
+                    100
+                )}
+                onSeek={this._seekTo}
+                captions={this._captions}
+                isLoading={this._isLoading}
+                hasError={this._hasError}
+                onDownload={this._handleDownload}
+                onRetryLoad={this._loadCaptions}
+                currentTime={this.player.currentTime}
+                videoDuration={this.player.duration}
+            />
         );
     };
 }

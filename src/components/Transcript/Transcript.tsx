@@ -10,6 +10,7 @@ export interface TranscriptProps {
     onSeek(time: number): void;
     onClose: () => void;
     onRetryLoad: () => void;
+    onDownload: () => void;
     isLoading: boolean;
     hasError: boolean;
     captions: CaptionItem[];
@@ -196,7 +197,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         });
     };
 
-    private _renderHeader = (onClose: () => void, onDownload: () => void) => {
+    private _renderHeader = (onClose: () => void) => {
         const { search, activeSearchIndex, totalSearchResults } = this.state;
         return (
             <div className={styles.header}>
