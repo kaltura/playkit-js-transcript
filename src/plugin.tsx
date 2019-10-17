@@ -266,13 +266,12 @@ export class TranscriptPlugin extends PlayerContribPlugin
         if (!this._captionsRaw) {
             return;
         }
-        const format = "txt";
         const link = document.createElement("a");
         link.setAttribute(
             "href",
             "data:text/plain;charset=utf-8," + encodeURIComponent(this._captionsRaw)
         );
-        link.setAttribute("download", `transcript.${format}`);
+        link.setAttribute("download", "transcript.txt");
         link.click();
     };
 
