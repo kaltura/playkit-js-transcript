@@ -30,7 +30,7 @@ import { getContribLogger } from "@playkit-js-contrib/common";
 
 import { Transcript } from "./components/transcript";
 
-import { getCaptionsByFormat, CaptionItem, getConfigValue } from "./utils";
+import { getCaptionsByFormat, CaptionItem, getConfigValue, isBoolean } from "./utils";
 
 import * as styles from "./plugin.scss";
 
@@ -41,6 +41,8 @@ const logger = getContribLogger({
     class: "TranscriptPlugin",
     module: "transcript-plugin"
 });
+
+import { DownloadPrintMenu } from "./components/download-print-menu";
 
 export class TranscriptPlugin extends PlayerContribPlugin
     implements OnMediaUnload, OnRegisterUI, OnMediaLoad, OnPluginSetup {
@@ -81,6 +83,22 @@ export class TranscriptPlugin extends PlayerContribPlugin
     }
 
     onRegisterUI(uiManager: UIManager): void {
+        const {
+            downloadDisabled,
+            printDisabled
+        } = this.config;
+        uiManager.upperBar.add({
+            label: "Download/Print menu",
+            onClick: () => {},
+            renderItem: () => (
+                <DownloadPrintMenu
+                    onDownload={this._handleDownload}
+                    onPrint={this._handlePrint}
+                    downloadDisabled={getConfigValue(downloadDisabled, isBoolean, false)}
+                    printDisabled={getConfigValue(printDisabled, isBoolean, false)}
+                />
+            )
+        });
         this._kitchenSinkItem = uiManager.kitchenSink.add({
             label: "Transcript",
             renderIcon: () => <div className={styles.pluginIcon} />,
@@ -275,6 +293,10 @@ export class TranscriptPlugin extends PlayerContribPlugin
         link.click();
     };
 
+    private _handlePrint = () => {
+        console.log("start print")
+    }
+
     private _renderKitchenSinkContent = (props: KitchenSinkContentRendererProps) => {
         const {
             showTime,
@@ -286,7 +308,7 @@ export class TranscriptPlugin extends PlayerContribPlugin
         return (
             <Transcript
                 {...props}
-                showTime={getConfigValue(showTime, showTime => typeof showTime === "boolean", true)}
+                showTime={getConfigValue(showTime, isBoolean, true)}
                 scrollOffset={getConfigValue(scrollOffset, Number.isInteger, 0)}
                 scrollDebounceTimeout={getConfigValue(scrollDebounceTimeout, Number.isInteger, 200)}
                 searchDebounceTimeout={getConfigValue(searchDebounceTimeout, Number.isInteger, 250)}

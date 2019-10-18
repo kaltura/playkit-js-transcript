@@ -197,7 +197,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         });
     };
 
-    private _renderHeader = (onClose: () => void, onDownload: () => void) => {
+    private _renderHeader = (onClose: () => void) => {
         const { search, activeSearchIndex, totalSearchResults } = this.state;
         return (
             <div className={styles.header}>
@@ -208,7 +208,6 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
                     activeSearchIndex={activeSearchIndex}
                     totalSearchResults={totalSearchResults}
                 />
-                <div className={styles.downloadButton} onClick={onDownload} />
                 <div className={styles.closeButton} onClick={onClose} />
             </div>
         );
@@ -308,10 +307,10 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     };
 
     render(props: TranscriptProps) {
-        const { onClose, onDownload, isLoading } = props;
+        const { onClose, isLoading } = props;
         return (
             <div className={styles.root}>
-                {this._renderHeader(onClose, onDownload)}
+                {this._renderHeader(onClose)}
                 {!this.state.isAutoScrollEnabled && this._renderScrollToButton()}
                 <div
                     className={styles.body}

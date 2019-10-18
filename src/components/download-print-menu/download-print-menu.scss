@@ -1,0 +1,51 @@
+@import "../../variables.scss";
+
+.download-print-container {
+    position: relative;
+}
+.download-print-button {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    margin-left: 10px;
+    margin-right: 10px;
+    color: $white-color;
+    background: inherit;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    &:hover {
+        opacity: 1;
+    }
+    &:focus {
+        outline: 1px solid $focus-color;
+    }
+    .icon {
+        width: 100%;
+        height: 100%;
+        background-position: center;
+        background-size: cover;
+    }
+    .download-icon {
+        background-image: url('../../assets/download.svg');
+    }
+    .print-icon {
+        background-image: url('../../assets/print.svg');
+    }
+}
+.popover-menu-item {
+    display: flex;
+    align-items: center;
+    padding: 9px 24px 9px 16px;
+    white-space: nowrap;
+    min-height: 30px;
+    line-height: 18px;
+    font-size: 15px;
+    &:hover {
+        cursor: pointer;
+        background-color: $semigray-color;
+    }
+    &:focus {
+        outline: 1px solid $focus-color;
+    }
+  }

@@ -168,3 +168,7 @@ export function getConfigValue(value: any, condition: (value: any) => boolean, d
     }
     return result;
 }
+
+export function isBoolean(value: any) {
+    return typeof value === "boolean"
+}
