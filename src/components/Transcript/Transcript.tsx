@@ -1,8 +1,8 @@
 import { h, Component } from "preact";
 import * as styles from "./transcript.scss";
-import { getContribLogger, CuepointEngine } from "@playkit-js-contrib/common";
+import { getContribLogger, CuepointEngine, debounce } from "@playkit-js-contrib/common";
 import { Spinner } from "../spinner";
-import { CaptionItem, debounce } from "../../utils";
+import { CaptionItem } from "../../utils";
 import { Search } from "../search";
 import { CaptionList } from "../caption-list";
 

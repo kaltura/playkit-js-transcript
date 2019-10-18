@@ -1,5 +1,6 @@
 import { h, Component } from "preact";
-import { PopoverComponent } from "../popover-component";
+import { Popover } from "../popover-component";
+// import { Popover } from "@playkit-js-contrib/ui";
 import { PopoverMenu, PopoverMenuItem } from "../popover-menu";
 import * as styles from "./download-print-menu.scss";
 
@@ -112,37 +113,37 @@ export class DownloadPrintMenu extends Component<DownloadPrintMenuProps, Downloa
         ];
     };
 
+    private _renderButton = () => (
+        <button
+            tabIndex={1}
+            aria-label={this.props.dropdownAriaLabel}
+            className={styles.downloadPrintButton}
+        >
+            <div className={[styles.icon, styles.downloadIcon].join(" ")} />
+        </button>
+    );
+
     render(props: DownloadPrintMenuProps) {
         if (!props.downloadDisabled && !props.printDisabled) {
             return (
-                <div
-                    ref={c => (this._controlElement = c)}
-                    className={styles.downloadPrintContainer}
-                >
-                    <button
-                        tabIndex={1}
-                        aria-label={props.dropdownAriaLabel}
-                        className={styles.downloadPrintButton}
-                        onClick={this._onButtonClick}
+                <div ref={c => (this._controlElement = c)}>
+                    <Popover
+                        className="download-print-popover"
+                        onClose={this._onButtonClick}
+                        onOpen={this._onButtonClick}
+                        verticalPosition="bottom"
+                        horizontalPosition="left"
+                        open={this.state.popoverOpen}
+                        anchorEl={this._renderButton()}
+                        closeOnEsc={true}
                     >
-                        <div className={[styles.icon, styles.downloadIcon].join(" ")} />
-                    </button>
-                    {this.state.popoverOpen && (
-                        <PopoverComponent
-                            popoverClassName="download-print-popover"
-                            aria-expanded="true"
-                            onClose={this._onButtonClick}
-                            verticalPosition="bottom"
-                            horizontalPosition="left"
-                        >
-                            <PopoverMenu
-                                onDownload={this._onDownloadClicked}
-                                onPrint={this._onPrintClicked}
-                                itemRenderer={this._popoverMenuItemRenderer}
-                                options={this._getPopoverMenuOptions()}
-                            />
-                        </PopoverComponent>
-                    )}
+                        <PopoverMenu
+                            onDownload={this._onDownloadClicked}
+                            onPrint={this._onPrintClicked}
+                            itemRenderer={this._popoverMenuItemRenderer}
+                            options={this._getPopoverMenuOptions()}
+                        />
+                    </Popover>
                 </div>
             );
         }

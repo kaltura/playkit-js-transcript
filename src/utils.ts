@@ -104,48 +104,6 @@ export const TTML2Obj = (ttml: any): CaptionItem[] => {
     return correctData;
 };
 
-/**
- * A function that emits a side effect and does not return anything.
- */
-type Procedure = (...args: any[]) => void;
-
-type Options = {
-    isImmediate: boolean;
-};
-
-export function debounce<F extends Procedure>(
-    func: F,
-    waitMilliseconds = 50,
-    options: Options = {
-        isImmediate: false
-    }
-): F {
-    let timeoutId: NodeJS.Timeout | undefined;
-
-    return function(this: any, ...args: any[]) {
-        const context = this;
-
-        const doLater = function() {
-            timeoutId = undefined;
-            if (!options.isImmediate) {
-                func.apply(context, args);
-            }
-        };
-
-        const shouldCallNow = options.isImmediate && timeoutId === undefined;
-
-        if (timeoutId !== undefined) {
-            clearTimeout(timeoutId);
-        }
-
-        timeoutId = setTimeout(doLater, waitMilliseconds);
-
-        if (shouldCallNow) {
-            func.apply(context, args);
-        }
-    } as any;
-}
-
 const pad = (number: number) => {
     if (number < 10) {
         return `0${number}`;
@@ -170,5 +128,11 @@ export function getConfigValue(value: any, condition: (value: any) => boolean, d
 }
 
 export function isBoolean(value: any) {
-    return typeof value === "boolean"
+    return typeof value === "boolean";
+}
+
+export function makePlainText(captions: Array<CaptionItem>): string {
+    return captions.reduce((acc: string, next: CaptionItem) => {
+        return `${acc} ${next.text}`;
+    }, "");
 }

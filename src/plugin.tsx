@@ -18,7 +18,8 @@ import {
     UIManager,
     KitchenSinkItem,
     KitchenSinkPositions,
-    KitchenSinkExpandModes
+    KitchenSinkExpandModes,
+    downloader
 } from "@playkit-js-contrib/ui";
 import {
     KalturaCaptionAssetFilter,
@@ -30,7 +31,13 @@ import { getContribLogger } from "@playkit-js-contrib/common";
 
 import { Transcript } from "./components/transcript";
 
-import { getCaptionsByFormat, CaptionItem, getConfigValue, isBoolean } from "./utils";
+import {
+    getCaptionsByFormat,
+    CaptionItem,
+    getConfigValue,
+    isBoolean,
+    makePlainText
+} from "./utils";
 
 import * as styles from "./plugin.scss";
 
@@ -62,7 +69,7 @@ export class TranscriptPlugin extends PlayerContribPlugin
     private _captionsList: KalturaCaptionAsset[] = []; // list of captions
     private _captions: CaptionItem[] = []; // parsed captions
     private _kalturaClient = new KalturaClient();
-    private _captionsRaw: null | string = null;
+    private _transcriptLabel = "transcript";
 
     onPluginSetup(config: ContribConfig): void {
         this._kalturaClient.setOptions({
@@ -83,12 +90,9 @@ export class TranscriptPlugin extends PlayerContribPlugin
     }
 
     onRegisterUI(uiManager: UIManager): void {
-        const {
-            downloadDisabled,
-            printDisabled
-        } = this.config;
+        const { downloadDisabled, printDisabled } = this.config;
         uiManager.upperBar.add({
-            label: "Download/Print menu",
+            label: "Download transcript",
             onClick: () => {},
             renderItem: () => (
                 <DownloadPrintMenu
@@ -122,7 +126,6 @@ export class TranscriptPlugin extends PlayerContribPlugin
 
     onMediaUnload(): void {
         this._captionsList = [];
-        this._captionsRaw = null;
         this._captions = [];
         this._isLoading = false;
         this._hasError = false;
@@ -217,6 +220,7 @@ export class TranscriptPlugin extends PlayerContribPlugin
         if (this._captionsList && this._captionsList.length > 0) {
             const captionAsset: KalturaCaptionAsset | null = this._findCaptionAsset(lang);
             if (captionAsset) {
+                this._transcriptLabel = captionAsset.label;
                 const request = new CaptionAssetGetUrlAction({ id: captionAsset.id });
                 this._initLoading();
                 this._kalturaClient.request(request).then(
@@ -253,7 +257,6 @@ export class TranscriptPlugin extends PlayerContribPlugin
                 throw new Error("Error message.");
             })
             .then((data: string) => {
-                this._captionsRaw = data; // keep it for downloading
                 this._captions = this._parseCaptions(data, captionAsset);
                 this._isLoading = false;
                 this._updateKitchenSink();
@@ -281,21 +284,21 @@ export class TranscriptPlugin extends PlayerContribPlugin
     };
 
     private _handleDownload = () => {
-        if (!this._captionsRaw) {
-            return;
+        if (this._captions) {
+            downloader(makePlainText(this._captions), `${this._transcriptLabel}.txt`);
         }
-        const link = document.createElement("a");
-        link.setAttribute(
-            "href",
-            "data:text/plain;charset=utf-8," + encodeURIComponent(this._captionsRaw)
-        );
-        link.setAttribute("download", "transcript.txt");
-        link.click();
     };
 
     private _handlePrint = () => {
-        console.log("start print")
-    }
+        const myWindow = window.open("", "", "width=400,height=600");
+        if (myWindow && this._captions) {
+            myWindow.document.write(makePlainText(this._captions));
+            myWindow.document.close();
+            myWindow.focus();
+            myWindow.print();
+            myWindow.close();
+        }
+    };
 
     private _renderKitchenSinkContent = (props: KitchenSinkContentRendererProps) => {
         const {
