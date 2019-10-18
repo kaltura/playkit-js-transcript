@@ -1,6 +1,5 @@
 import { h, Component } from "preact";
-import { Popover } from "../popover-component";
-// import { Popover } from "@playkit-js-contrib/ui";
+import { Popover } from "@playkit-js-contrib/ui";
 import { PopoverMenu, PopoverMenuItem } from "../popover-menu";
 import * as styles from "./download-print-menu.scss";
 
