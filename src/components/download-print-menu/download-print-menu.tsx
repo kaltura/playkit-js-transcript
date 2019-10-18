@@ -45,14 +45,10 @@ export class DownloadPrintMenu extends Component<DownloadPrintMenuProps, Downloa
 
     private _handleClickOutside = (e: any) => {
         if (
-            //   !this.props.isMobile &&
             !!this._controlElement &&
             !this._controlElement.contains(e.target) &&
             this.state.popoverOpen
         ) {
-            // if (e.target.classList.contains(style.overlayPlay)) {
-            //     e.stopPropagation();
-            // }
             this._handleClosePopover();
         }
     };

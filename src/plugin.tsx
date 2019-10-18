@@ -19,7 +19,8 @@ import {
     KitchenSinkItem,
     KitchenSinkPositions,
     KitchenSinkExpandModes,
-    downloader
+    downloader,
+    printer
 } from "@playkit-js-contrib/ui";
 import {
     KalturaCaptionAssetFilter,
@@ -59,7 +60,9 @@ export class TranscriptPlugin extends PlayerContribPlugin
         scrollOffset: 0, // distance between top border of transcript container and active caption on auto-scroll
         scrollDebounceTimeout: 200, // debounce on scroll
         searchDebounceTimeout: 250, // debounce on search
-        searchNextPrevDebounceTimeout: 100 // debounce on jump between prev/next search result
+        searchNextPrevDebounceTimeout: 100, // debounce on jump between prev/next search result
+        downloadDisabled: false, // disable ability to download transcript
+        printDisabled: false // disable ability to print transcript
     };
 
     private _kitchenSinkItem: KitchenSinkItem | null = null;
@@ -290,13 +293,8 @@ export class TranscriptPlugin extends PlayerContribPlugin
     };
 
     private _handlePrint = () => {
-        const myWindow = window.open("", "", "width=400,height=600");
-        if (myWindow && this._captions) {
-            myWindow.document.write(makePlainText(this._captions));
-            myWindow.document.close();
-            myWindow.focus();
-            myWindow.print();
-            myWindow.close();
+        if (this._captions) {
+            printer(makePlainText(this._captions));
         }
     };
 
