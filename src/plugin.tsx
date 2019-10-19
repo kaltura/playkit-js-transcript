@@ -21,12 +21,10 @@ import {
     KitchenSinkPositions,
     KitchenSinkExpandModes
 } from "@playkit-js-contrib/ui";
-import {
-    KalturaCaptionAssetFilter,
-    CaptionAssetListAction,
-    KalturaCaptionAsset,
-    CaptionAssetGetUrlAction
-} from "kaltura-typescript-client/api/types";
+import { KalturaCaptionAssetFilter } from "kaltura-typescript-client/api/types/KalturaCaptionAssetFilter";
+import { CaptionAssetListAction } from "kaltura-typescript-client/api/types/CaptionAssetListAction";
+import { KalturaCaptionAsset } from "kaltura-typescript-client/api/types/KalturaCaptionAsset";
+import { CaptionAssetGetUrlAction } from "kaltura-typescript-client/api/types/CaptionAssetGetUrlAction";
 import { getContribLogger } from "@playkit-js-contrib/common";
 
 import { Transcript } from "./components/transcript";
