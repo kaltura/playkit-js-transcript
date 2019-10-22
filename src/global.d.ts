@@ -1,4 +1,4 @@
-/// <reference path="../node_modules/@playkit-js-contrib/common/player-internals.d.ts" />
+/// <reference path="../node_modules/@playkit-js-contrib/common/global-types/index.d.ts" />
 
 declare module "*.scss" {
     const content: { [className: string]: string };

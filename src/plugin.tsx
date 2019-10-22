@@ -5,13 +5,14 @@ import {
     KalturaAPIException
 } from "kaltura-typescript-client";
 import {
-    ContribConfig,
+    ContribPluginConfigs,
+    ContribPluginData,
+    ContribPluginManager,
+    ContribServices,
     OnMediaLoad,
-    OnMediaLoadConfig,
     OnMediaUnload,
     OnPluginSetup,
-    OnRegisterUI,
-    PlayerContribPlugin
+    OnRegisterUI
 } from "@playkit-js-contrib/plugin";
 import {
     KitchenSinkContentRendererProps,
@@ -22,12 +23,10 @@ import {
     downloader,
     printer
 } from "@playkit-js-contrib/ui";
-import {
-    KalturaCaptionAssetFilter,
-    CaptionAssetListAction,
-    KalturaCaptionAsset,
-    CaptionAssetGetUrlAction
-} from "kaltura-typescript-client/api/types";
+import { KalturaCaptionAssetFilter } from "kaltura-typescript-client/api/types/KalturaCaptionAssetFilter";
+import { CaptionAssetListAction } from "kaltura-typescript-client/api/types/CaptionAssetListAction";
+import { KalturaCaptionAsset } from "kaltura-typescript-client/api/types/KalturaCaptionAsset";
+import { CaptionAssetGetUrlAction } from "kaltura-typescript-client/api/types/CaptionAssetGetUrlAction";
 import { getContribLogger } from "@playkit-js-contrib/common";
 
 import { Transcript } from "./components/transcript";
@@ -42,29 +41,22 @@ import {
 
 import * as styles from "./plugin.scss";
 
-const isDev = true; // TODO - should be provided by Omri Katz as part of the cli implementation
-const pluginName = `transcript${isDev ? "-local" : ""}`;
-
 const logger = getContribLogger({
     class: "TranscriptPlugin",
     module: "transcript-plugin"
 });
 
+interface TranscriptPluginConfig {
+    showTime: boolean;
+    position: KitchenSinkPositions;
+    scrollOffset: number; // distance between top border of transcript container and active caption on auto-scroll
+    scrollDebounceTimeout: number; // debounce on scroll
+    searchDebounceTimeout: number; // debounce on search
+    searchNextPrevDebounceTimeout: number; // debounce on jump between prev/next search result
+}
 import { DownloadPrintMenu } from "./components/download-print-menu";
 
-export class TranscriptPlugin extends PlayerContribPlugin
-    implements OnMediaUnload, OnRegisterUI, OnMediaLoad, OnPluginSetup {
-    static defaultConfig = {
-        showTime: true,
-        position: KitchenSinkPositions.Bottom,
-        scrollOffset: 0, // distance between top border of transcript container and active caption on auto-scroll
-        scrollDebounceTimeout: 200, // debounce on scroll
-        searchDebounceTimeout: 250, // debounce on search
-        searchNextPrevDebounceTimeout: 100, // debounce on jump between prev/next search result
-        downloadDisabled: false, // disable ability to download transcript
-        printDisabled: false // disable ability to print transcript
-    };
-
+export class TranscriptPlugin implements OnMediaUnload, OnRegisterUI, OnMediaLoad, OnPluginSetup {
     private _kitchenSinkItem: KitchenSinkItem | null = null;
     private _isLoading = false;
     private _hasError = false;
@@ -74,25 +66,30 @@ export class TranscriptPlugin extends PlayerContribPlugin
     private _kalturaClient = new KalturaClient();
     private _transcriptLabel = "transcript";
 
-    onPluginSetup(config: ContribConfig): void {
+    constructor(
+        private _contribServices: ContribServices,
+        private _configs: ContribPluginConfigs<TranscriptPluginConfig>,
+        private _player: KalturaPlayerTypes.Player
+    ) {}
+
+    onPluginSetup(): void {
+        const { playerConfig } = this._configs;
+
         this._kalturaClient.setOptions({
             clientTag: "playkit-js-transcript",
-            endpointUrl: config.server.serviceUrl
+            endpointUrl: playerConfig.provider.env.serviceUrl
         });
 
         this._kalturaClient.setDefaultRequestOptions({
-            ks: config.server.ks
+            ks: playerConfig.provider.ks
         });
 
-        this.eventManager.listen(this.player, this.player.Event.TIME_UPDATE, this._onTimeUpdate);
-        this.eventManager.listen(
-            this.player,
-            this.player.Event.TEXT_TRACK_CHANGED,
-            this._loadCaptions
-        );
+        this._player.addEventListener(this._player.Event.TIME_UPDATE, this._onTimeUpdate);
+        this._player.addEventListener(this._player.Event.TEXT_TRACK_CHANGED, this._loadCaptions);
     }
 
     onRegisterUI(uiManager: UIManager): void {
+        const { pluginConfig } = this._configs;
         const { downloadDisabled, printDisabled } = this.config;
         uiManager.upperBar.add({
             label: "Download transcript",
@@ -110,7 +107,7 @@ export class TranscriptPlugin extends PlayerContribPlugin
             label: "Transcript",
             renderIcon: () => <div className={styles.pluginIcon} />,
             position: getConfigValue(
-                this.config.position,
+                pluginConfig.position,
                 position =>
                     typeof position === "string" &&
                     (position === KitchenSinkPositions.Bottom ||
@@ -122,8 +119,10 @@ export class TranscriptPlugin extends PlayerContribPlugin
         });
     }
 
-    onMediaLoad(config: OnMediaLoadConfig): void {
-        this._entryId = config.entryId;
+    onMediaLoad(): void {
+        const { playerConfig } = this._configs;
+
+        this._entryId = playerConfig.sources.id;
         this._loadCaptions();
     }
 
@@ -174,7 +173,9 @@ export class TranscriptPlugin extends PlayerContribPlugin
     private _loadCaptions = (e?: any): void => {
         if (this._captionsList.length > 0) {
             this._getCaptionsByLang(
-                e ? e.payload.selectedTextTrack._language : this.player.config.playback.textLanguage
+                e
+                    ? e.payload.selectedTextTrack._language
+                    : this._configs.playerConfig.playback.textLanguage
             );
         } else {
             this._getCaptionsList();
@@ -207,7 +208,7 @@ export class TranscriptPlugin extends PlayerContribPlugin
     };
 
     private _findCaptionAsset = (
-        lang: string = this.player.config.playback.textLanguage
+        lang: string = this._configs.playerConfig.playback.textLanguage || ""
     ): KalturaCaptionAsset | null => {
         if (lang === "off") {
             return this._captionsList[0];
@@ -283,7 +284,7 @@ export class TranscriptPlugin extends PlayerContribPlugin
     };
 
     private _seekTo = (time: number) => {
-        this.player.currentTime = time;
+        this._player.currentTime = time;
     };
 
     private _handleDownload = () => {
@@ -305,7 +306,7 @@ export class TranscriptPlugin extends PlayerContribPlugin
             scrollDebounceTimeout,
             searchDebounceTimeout,
             searchNextPrevDebounceTimeout
-        } = this.config;
+        } = this._configs.pluginConfig;
         return (
             <Transcript
                 {...props}
@@ -324,11 +325,26 @@ export class TranscriptPlugin extends PlayerContribPlugin
                 hasError={this._hasError}
                 onDownload={this._handleDownload}
                 onRetryLoad={this._loadCaptions}
-                currentTime={this.player.currentTime}
-                videoDuration={this.player.duration}
+                currentTime={this._player.currentTime}
+                videoDuration={this._player.duration}
             />
         );
     };
 }
 
-KalturaPlayer.core.registerPlugin(pluginName, TranscriptPlugin);
+ContribPluginManager.registerPlugin(
+    "transcript",
+    (data: ContribPluginData<TranscriptPluginConfig>) => {
+        return new TranscriptPlugin(data.contribServices, data.configs, data.player);
+    },
+    {
+        defaultConfig: {
+            showTime: true,
+            position: KitchenSinkPositions.Bottom,
+            scrollOffset: 0,
+            scrollDebounceTimeout: 200,
+            searchDebounceTimeout: 250,
+            searchNextPrevDebounceTimeout: 100
+        }
+    }
+);
