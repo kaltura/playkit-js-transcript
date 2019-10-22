@@ -30,6 +30,7 @@ import { CaptionAssetGetUrlAction } from "kaltura-typescript-client/api/types/Ca
 import { getContribLogger } from "@playkit-js-contrib/common";
 
 import { Transcript } from "./components/transcript";
+import { DownloadPrintMenu } from "./components/download-print-menu";
 
 import {
     getCaptionsByFormat,
@@ -53,8 +54,9 @@ interface TranscriptPluginConfig {
     scrollDebounceTimeout: number; // debounce on scroll
     searchDebounceTimeout: number; // debounce on search
     searchNextPrevDebounceTimeout: number; // debounce on jump between prev/next search result
+    downloadDisabled: boolean; // disable download menu
+    printDisabled: boolean; // disable print menu
 }
-import { DownloadPrintMenu } from "./components/download-print-menu";
 
 export class TranscriptPlugin implements OnMediaUnload, OnRegisterUI, OnMediaLoad, OnPluginSetup {
     private _kitchenSinkItem: KitchenSinkItem | null = null;
@@ -90,7 +92,6 @@ export class TranscriptPlugin implements OnMediaUnload, OnRegisterUI, OnMediaLoa
 
     onRegisterUI(uiManager: UIManager): void {
         const { pluginConfig } = this._configs;
-        const { downloadDisabled, printDisabled } = this.config;
         uiManager.upperBar.add({
             label: "Download transcript",
             onClick: () => {},
@@ -98,8 +99,12 @@ export class TranscriptPlugin implements OnMediaUnload, OnRegisterUI, OnMediaLoa
                 <DownloadPrintMenu
                     onDownload={this._handleDownload}
                     onPrint={this._handlePrint}
-                    downloadDisabled={getConfigValue(downloadDisabled, isBoolean, false)}
-                    printDisabled={getConfigValue(printDisabled, isBoolean, false)}
+                    downloadDisabled={getConfigValue(
+                        pluginConfig.downloadDisabled,
+                        isBoolean,
+                        false
+                    )}
+                    printDisabled={getConfigValue(pluginConfig.printDisabled, isBoolean, false)}
                 />
             )
         });
@@ -344,7 +349,9 @@ ContribPluginManager.registerPlugin(
             scrollOffset: 0,
             scrollDebounceTimeout: 200,
             searchDebounceTimeout: 250,
-            searchNextPrevDebounceTimeout: 100
+            searchNextPrevDebounceTimeout: 100,
+            downloadDisabled: false,
+            printDisabled: false
         }
     }
 );
