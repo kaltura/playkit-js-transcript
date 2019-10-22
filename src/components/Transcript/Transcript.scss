@@ -10,7 +10,7 @@
   @import "~@playkit-js-contrib/ui/lib/normalize.scss";
   display: flex;
   flex-direction: column;
-  padding: 0 14px 8px 14px;
+  padding: 6px 16px;
   color: $white-color;
   height: 100%;
   width: 100%;
@@ -22,8 +22,7 @@
   margin: 10px 0;
   display: flex;
   justify-content: space-between;
-  align-items: stretch;
-  height: 32px;
+  align-items: center;
   width: 100%;
   font-size: 16px;
 }
@@ -69,11 +68,11 @@
   }
 }
 
-.close-button,
-.download-button {
+.close-button {
   flex-shrink: 1;
   width: 32px;
   height: 32px;
+  margin: 0 8px;
   cursor: pointer;
 }
 
@@ -97,8 +96,4 @@
 
 .close-button {
   background-image: url('../../assets/close.svg');
-}
-
-.download-button {
-  background-image: url('../../assets/download.svg');
 }

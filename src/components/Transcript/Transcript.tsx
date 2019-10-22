@@ -208,7 +208,6 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
                     activeSearchIndex={activeSearchIndex}
                     totalSearchResults={totalSearchResults}
                 />
-                <div className={styles.downloadButton} onClick={onDownload} />
                 <div className={styles.closeButton} onClick={onClose} />
             </div>
         );
