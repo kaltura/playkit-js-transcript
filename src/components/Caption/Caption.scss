@@ -9,6 +9,7 @@
     flex-shrink: 1;
     min-width: 52px;
     align-items: flex-start;
+    margin-right: 12px;
     text-align: left;
     font-size: 12px;
     line-height: 1.75;
@@ -19,7 +20,6 @@
     font-size: 15px;
     line-height: 1.4;
     text-align: left;
-    margin-left: 12px;
     &:hover {
       .caption-span {
         background-color: $semigray-color;

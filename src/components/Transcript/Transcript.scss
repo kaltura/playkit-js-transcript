@@ -15,15 +15,24 @@
   height: 100%;
   width: 100%;
   position: absolute;
-  background-color: #000000a1;
+  background-color: $root-background;
 }
 
 .header {
-  margin-bottom: 8px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   width: 100%;
+  margin-bottom: 8px;
   font-size: 16px;
+  .close-button {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    margin: 0 8px;
+    cursor: pointer;
+    background-image: url('../../assets/close.svg');
+  }
 }
 
 .body {
@@ -67,14 +76,6 @@
   }
 }
 
-.close-button {
-  width: 32px;
-  height: 32px;
-  min-width: 32px;
-  margin: 0 8px;
-  cursor: pointer;
-}
-
 .goto-button {
   position: absolute;
   right: 12px;
@@ -92,8 +93,4 @@
   background-image: url('../../assets/arrow-up.svg');
   cursor: pointer;
   z-index: 1;
-}
-
-.close-button {
-  background-image: url('../../assets/close.svg');
 }
