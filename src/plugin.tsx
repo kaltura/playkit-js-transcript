@@ -20,8 +20,8 @@ import {
     KitchenSinkItem,
     KitchenSinkPositions,
     KitchenSinkExpandModes,
-    downloader,
-    printer
+    downloadContent,
+    printContent
 } from "@playkit-js-contrib/ui";
 import { KalturaCaptionAssetFilter } from "kaltura-typescript-client/api/types/KalturaCaptionAssetFilter";
 import { CaptionAssetListAction } from "kaltura-typescript-client/api/types/CaptionAssetListAction";
@@ -294,13 +294,13 @@ export class TranscriptPlugin implements OnMediaUnload, OnRegisterUI, OnMediaLoa
 
     private _handleDownload = () => {
         if (this._captions) {
-            downloader(makePlainText(this._captions), `${this._transcriptLabel}.txt`);
+            downloadContent(makePlainText(this._captions), `${this._transcriptLabel}.txt`);
         }
     };
 
     private _handlePrint = () => {
         if (this._captions) {
-            printer(makePlainText(this._captions));
+            printContent(makePlainText(this._captions));
         }
     };
 
