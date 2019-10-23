@@ -2,31 +2,33 @@
 
 .caption {
   display: flex;
+  justify-content: space-between;
   width: 100%;
   color: $white-color;
   .caption-time {
-    flex-basis: 70px;
+    flex-shrink: 1;
+    min-width: 52px;
     align-items: flex-start;
-    padding-right: 6px;
     text-align: left;
-    font-size: 1em;
+    font-size: 12px;
     line-height: 1.75;
+    color: $gray-color;
   }
   .caption-content {
     flex-grow: 1;
-    font-size: 1.2em;
+    font-size: 15px;
     line-height: 1.4;
     text-align: left;
+    margin-left: 12px;
     &:hover {
       .caption-span {
         background-color: $semigray-color;
-        &::selection {
-          background-color: inherit;
-        }
       }
       &.highlighted {
         .caption-span {
           color: $white-color;
+          background-color: $main-color-darken;
+          padding: 0 2px;
         }
       }
     }
@@ -34,26 +36,36 @@
       .caption-span {
         color: $black-color;
         background-color: $main-color;
+        padding: 0 2px;
       }
     }
     .caption-span {
-      padding: 0 2px;
       user-select: text;
       border-radius: 2px;
       cursor: pointer;
       &::selection {
+        background-color: $text-selection-color;
+        padding: 0 2px;
+      }
+      & > span::selection {
         background-color: $text-selection-color;
       }
     }
     .highlight-search {
       color: $white-color;
       background-color: $semigray-color;
-      border-radius: 1px;
+      border-radius: 2px;
+      &::selection {
+        background-color: $text-selection-color;
+      }
     }
     .active-search {
       color: $black-color;
       background-color: $yellow-color;
-      border-radius: 1px;
+      border-radius: 2px;
+      &::selection {
+        background-color: $text-selection-color;
+      }
     }
   }
 }
