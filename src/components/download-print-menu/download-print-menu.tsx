@@ -1,5 +1,9 @@
 import { h, Component } from "preact";
-import { Popover } from "@playkit-js-contrib/ui";
+import {
+    Popover,
+    PopoverHorizontalPositions,
+    PopoverVerticalPositions
+} from "@playkit-js-contrib/ui";
 import { PopoverMenu, PopoverMenuItem } from "../popover-menu";
 import * as styles from "./download-print-menu.scss";
 
@@ -126,8 +130,8 @@ export class DownloadPrintMenu extends Component<DownloadPrintMenuProps, Downloa
                         className="download-print-popover"
                         onClose={this._onButtonClick}
                         onOpen={this._onButtonClick}
-                        verticalPosition="bottom"
-                        horizontalPosition="left"
+                        verticalPosition={PopoverVerticalPositions.Bottom}
+                        horizontalPosition={PopoverHorizontalPositions.Left}
                         open={this.state.popoverOpen}
                         anchorEl={this._renderButton()}
                         closeOnEsc={true}
