@@ -328,7 +328,6 @@ export class TranscriptPlugin implements OnMediaUnload, OnRegisterUI, OnMediaLoa
                 captions={this._captions}
                 isLoading={this._isLoading}
                 hasError={this._hasError}
-                onDownload={this._handleDownload}
                 onRetryLoad={this._loadCaptions}
                 currentTime={this._player.currentTime}
                 videoDuration={this._player.duration}

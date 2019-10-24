@@ -10,7 +10,6 @@ export interface TranscriptProps {
     onSeek(time: number): void;
     onClose: () => void;
     onRetryLoad: () => void;
-    onDownload: () => void;
     isLoading: boolean;
     hasError: boolean;
     captions: CaptionItem[];
