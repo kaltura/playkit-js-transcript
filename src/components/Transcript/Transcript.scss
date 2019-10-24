@@ -10,22 +10,29 @@
   @import "~@playkit-js-contrib/ui/lib/normalize.scss";
   display: flex;
   flex-direction: column;
-  padding: 0 14px 8px 14px;
+  padding: 6px 3.5%;
   color: $white-color;
   height: 100%;
   width: 100%;
   position: absolute;
-  background-color: #000000a1;
+  background-color: $root-background;
 }
 
 .header {
-  margin: 10px 0;
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: stretch;
-  height: 32px;
   width: 100%;
+  margin-bottom: 8px;
   font-size: 16px;
+  .close-button {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    margin: 0 8px;
+    cursor: pointer;
+    background-image: url('../../assets/close.svg');
+  }
 }
 
 .body {
@@ -69,36 +76,21 @@
   }
 }
 
-.close-button,
-.download-button {
-  flex-shrink: 1;
-  width: 32px;
-  height: 32px;
-  cursor: pointer;
-}
-
 .goto-button {
   position: absolute;
   right: 12px;
   bottom: 12px;
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   padding: 0;
   border: none;
   border-radius: 50%;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
   background-color: $main-color;
   background-position: center;
   background-repeat: no-repeat;
+  background-size: 22px;
   background-image: url('../../assets/arrow-up.svg');
   cursor: pointer;
   z-index: 1;
-}
-
-.close-button {
-  background-image: url('../../assets/close.svg');
-}
-
-.download-button {
-  background-image: url('../../assets/download.svg');
 }

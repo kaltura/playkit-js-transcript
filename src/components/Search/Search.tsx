@@ -20,6 +20,9 @@ export class Search extends Component<SearchProps> {
 
     private _goToNextSearchResult = () => {
         const { activeSearchIndex, totalSearchResults, onSearchIndexChange } = this.props;
+        if (totalSearchResults === 0) {
+            return;
+        }
         let index = 0;
         if (activeSearchIndex !== totalSearchResults) {
             index = this.props.activeSearchIndex + 1;
@@ -55,20 +58,24 @@ export class Search extends Component<SearchProps> {
                         {`${
                             totalSearchResults > 0
                                 ? `${activeSearchIndex}/${totalSearchResults}`
-                                : "0 results"
+                                : "0/0"
                         }`}
                     </p>
                 )}
                 <div className={styles.prevNextWrapper}>
-                    {value && totalSearchResults > 1 && (
+                    {value && (
                         <button
-                            className={`${styles.prevNextButton} ${styles.prevButton}`}
+                            className={`${styles.prevNextButton} ${styles.prevButton} ${
+                                totalSearchResults === 0 ? styles.disabled : ""
+                            }`}
                             onClick={this._goToPrevSearchResult}
                         />
                     )}
-                    {value && totalSearchResults > 1 && (
+                    {value && (
                         <button
-                            className={`${styles.prevNextButton} ${styles.nextButton}`}
+                            className={`${styles.prevNextButton} ${styles.nextButton} ${
+                                totalSearchResults === 0 ? styles.disabled : ""
+                            }`}
                             onClick={this._goToNextSearchResult}
                         />
                     )}
