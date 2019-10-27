@@ -23,7 +23,7 @@ interface DownloadPrintMenuState {
 
 export class DownloadPrintMenu extends Component<DownloadPrintMenuProps, DownloadPrintMenuState> {
     static defaultProps = {
-        dropdownAriaLabel: "Download or print transcript",
+        dropdownAriaLabel: "Download or print current transcript",
         printButtonAriaLabel: "Print current transcript",
         downloadButtonAriaLabel: "Download current transcript"
     };
@@ -38,12 +38,12 @@ export class DownloadPrintMenu extends Component<DownloadPrintMenuProps, Downloa
     private _onPrintClicked = () => {
         this.props.onPrint();
     };
-    private _onKeyDown = (e: KeyboardEvent, cb: Function) => {
+    private _onKeyDown = (e: KeyboardEvent, callBack: Function) => {
         e.stopPropagation();
         switch (e.keyCode) {
             case 13: // Enter pressed
-                if (typeof cb === "function") {
-                    cb();
+                if (typeof callBack === "function") {
+                    callBack();
                 }
                 break;
         }
@@ -74,11 +74,10 @@ export class DownloadPrintMenu extends Component<DownloadPrintMenuProps, Downloa
     };
 
     render(props: DownloadPrintMenuProps) {
-        if (!props.downloadDisabled && !props.printDisabled) {
+        const { downloadDisabled, printDisabled } = props;
+        if (!downloadDisabled && !printDisabled) {
             const popoverContent = (
                 <PopoverMenu
-                    onDownload={this._onDownloadClicked}
-                    onPrint={this._onPrintClicked}
                     itemRenderer={this._popoverMenuItemRenderer}
                     options={this._getPopoverMenuOptions()}
                 />
@@ -103,7 +102,7 @@ export class DownloadPrintMenu extends Component<DownloadPrintMenuProps, Downloa
                 </div>
             );
         }
-        if (!props.downloadDisabled && props.printDisabled) {
+        if (!downloadDisabled && printDisabled) {
             return (
                 <button
                     tabIndex={1}
@@ -115,7 +114,7 @@ export class DownloadPrintMenu extends Component<DownloadPrintMenuProps, Downloa
                 </button>
             );
         }
-        if (props.downloadDisabled && !props.printDisabled) {
+        if (downloadDisabled && !printDisabled) {
             return (
                 <button
                     tabIndex={1}

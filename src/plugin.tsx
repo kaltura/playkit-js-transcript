@@ -66,7 +66,7 @@ export class TranscriptPlugin implements OnMediaUnload, OnRegisterUI, OnMediaLoa
     private _captionsList: KalturaCaptionAsset[] = []; // list of captions
     private _captions: CaptionItem[] = []; // parsed captions
     private _kalturaClient = new KalturaClient();
-    private _transcriptLabel = "transcript";
+    private _transcriptLabel = "Transcript";
 
     constructor(
         private _contribServices: ContribServices,
