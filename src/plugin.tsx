@@ -11,12 +11,10 @@ import {
     ContribServices,
     OnMediaLoad,
     OnMediaUnload,
-    OnPluginSetup,
-    OnRegisterUI
+    OnPluginSetup
 } from "@playkit-js-contrib/plugin";
 import {
     KitchenSinkContentRendererProps,
-    UIManager,
     KitchenSinkItem,
     KitchenSinkPositions,
     KitchenSinkExpandModes
@@ -39,6 +37,7 @@ const logger = getContribLogger({
 });
 
 interface TranscriptPluginConfig {
+    expandOnFirstPlay: boolean;
     showTime: boolean;
     position: KitchenSinkPositions;
     scrollOffset: number; // distance between top border of transcript container and active caption on auto-scroll
@@ -47,7 +46,7 @@ interface TranscriptPluginConfig {
     searchNextPrevDebounceTimeout: number; // debounce on jump between prev/next search result
 }
 
-export class TranscriptPlugin implements OnMediaUnload, OnRegisterUI, OnMediaLoad, OnPluginSetup {
+export class TranscriptPlugin implements OnMediaUnload, OnMediaLoad, OnPluginSetup {
     private _kitchenSinkItem: KitchenSinkItem | null = null;
     private _isLoading = false;
     private _hasError = false;
@@ -79,29 +78,15 @@ export class TranscriptPlugin implements OnMediaUnload, OnRegisterUI, OnMediaLoa
         this._player.addEventListener(this._player.Event.TEXT_TRACK_CHANGED, this._loadCaptions);
     }
 
-    onRegisterUI(uiManager: UIManager): void {
-        const { pluginConfig } = this._configs;
-        this._kitchenSinkItem = uiManager.kitchenSink.add({
-            label: "Transcript",
-            renderIcon: () => <div className={styles.pluginIcon} />,
-            position: getConfigValue(
-                pluginConfig.position,
-                position =>
-                    typeof position === "string" &&
-                    (position === KitchenSinkPositions.Bottom ||
-                        position === KitchenSinkPositions.Right),
-                KitchenSinkPositions.Bottom
-            ),
-            expandMode: KitchenSinkExpandModes.AlongSideTheVideo,
-            renderContent: this._renderKitchenSinkContent
-        });
-    }
-
     onMediaLoad(): void {
         const { playerConfig } = this._configs;
+        this._addKitchenSinkItem();
 
         this._entryId = playerConfig.sources.id;
         this._loadCaptions();
+        if (this._kitchenSinkItem) {
+            this._kitchenSinkItem.activate();
+        }
     }
 
     onMediaUnload(): void {
@@ -111,6 +96,28 @@ export class TranscriptPlugin implements OnMediaUnload, OnRegisterUI, OnMediaLoa
         this._isLoading = false;
         this._hasError = false;
         this._entryId = "";
+    }
+
+    private _addKitchenSinkItem(): void {
+        const { position, expandOnFirstPlay } = this._configs.pluginConfig;
+        this._kitchenSinkItem = this._contribServices.kitchenSinkManager.add({
+            label: "Transcript",
+            expandMode: KitchenSinkExpandModes.AlongSideTheVideo,
+            renderIcon: () => <div className={styles.pluginIcon} />,
+            position: getConfigValue(
+                position,
+                position =>
+                    typeof position === "string" &&
+                    (position === KitchenSinkPositions.Bottom ||
+                        position === KitchenSinkPositions.Right),
+                KitchenSinkPositions.Bottom
+            ),
+            renderContent: this._renderKitchenSinkContent
+        });
+
+        if (expandOnFirstPlay) {
+            this._kitchenSinkItem.activate();
+        }
     }
 
     private _onTimeUpdate = (): void => {
@@ -318,6 +325,7 @@ ContribPluginManager.registerPlugin(
     },
     {
         defaultConfig: {
+            expandOnFirstPlay: true,
             showTime: true,
             position: KitchenSinkPositions.Bottom,
             scrollOffset: 0,
