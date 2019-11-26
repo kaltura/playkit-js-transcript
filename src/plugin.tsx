@@ -16,6 +16,7 @@ import {
 import {
     KitchenSinkContentRendererProps,
     KitchenSinkItem,
+    UpperBarItem,
     KitchenSinkPositions,
     KitchenSinkExpandModes,
     downloadContent,
@@ -59,13 +60,14 @@ interface TranscriptPluginConfig {
 
 export class TranscriptPlugin implements OnMediaUnload, OnMediaLoad, OnPluginSetup {
     private _kitchenSinkItem: KitchenSinkItem | null = null;
+    private _upperBarItem: UpperBarItem | null = null;
     private _isLoading = false;
     private _hasError = false;
     private _entryId = "";
     private _captionsList: KalturaCaptionAsset[] = []; // list of captions
     private _captions: CaptionItem[] = []; // parsed captions
     private _kalturaClient = new KalturaClient();
-    private _transcriptLabel = "Transcript";
+    private _transcriptLanguage = "default";
 
     constructor(
         private _contribServices: ContribServices,
@@ -93,17 +95,23 @@ export class TranscriptPlugin implements OnMediaUnload, OnMediaLoad, OnPluginSet
 
     onMediaLoad(): void {
         const { playerConfig } = this._configs;
-        this._addKitchenSinkItem();
-        this._addPopoverIcon();
-
         this._entryId = playerConfig.sources.id;
         this._loadCaptions();
-        if (this._kitchenSinkItem) {
-            this._kitchenSinkItem.activate();
-        }
     }
 
     onMediaUnload(): void {
+        this._reset();
+    }
+
+    private _reset(): void {
+        if (this._kitchenSinkItem) {
+            this._contribServices.kitchenSinkManager.remove(this._kitchenSinkItem);
+            this._kitchenSinkItem = null;
+        }
+        if (this._upperBarItem) {
+            this._contribServices.upperBarManager.remove(this._upperBarItem);
+            this._upperBarItem = null;
+        }
         this._captionsList = [];
         this._captions = [];
         this._isLoading = false;
@@ -113,7 +121,7 @@ export class TranscriptPlugin implements OnMediaUnload, OnMediaLoad, OnPluginSet
 
     private _addPopoverIcon(): void {
         const { downloadDisabled, printDisabled } = this._configs.pluginConfig;
-        this._contribServices.upperBarManager.add({
+        this._upperBarItem = this._contribServices.upperBarManager.add({
             label: "Download transcript",
             onClick: () => {},
             renderItem: () => (
@@ -129,6 +137,7 @@ export class TranscriptPlugin implements OnMediaUnload, OnMediaLoad, OnPluginSet
 
     private _addKitchenSinkItem(): void {
         const { position, expandOnFirstPlay } = this._configs.pluginConfig;
+        this._contribServices.upperBarManager.remove;
         this._kitchenSinkItem = this._contribServices.kitchenSinkManager.add({
             label: "Transcript",
             expandMode: KitchenSinkExpandModes.AlongSideTheVideo,
@@ -239,12 +248,17 @@ export class TranscriptPlugin implements OnMediaUnload, OnMediaLoad, OnPluginSet
         if (this._captionsList && this._captionsList.length > 0) {
             const captionAsset: KalturaCaptionAsset | null = this._findCaptionAsset(lang);
             if (captionAsset) {
-                this._transcriptLabel = captionAsset.label;
+                this._transcriptLanguage = captionAsset.language;
                 const request = new CaptionAssetGetUrlAction({ id: captionAsset.id });
                 this._initLoading();
                 this._kalturaClient.request(request).then(
                     data => {
                         if (data) {
+                            this._addKitchenSinkItem();
+                            if (this._kitchenSinkItem) {
+                                this._kitchenSinkItem.activate();
+                            }
+                            this._addPopoverIcon();
                             // the data is in fact the URL of the file. Now we need to fetch it
                             this._loadCaptionsAsset(data, captionAsset);
                         } else {
@@ -303,8 +317,13 @@ export class TranscriptPlugin implements OnMediaUnload, OnMediaLoad, OnPluginSet
     };
 
     private _handleDownload = () => {
+        const { playerConfig } = this._configs;
         if (this._captions) {
-            downloadContent(makePlainText(this._captions), `${this._transcriptLabel}.txt`);
+            const entryMetadata = playerConfig.sources.metadata;
+            downloadContent(
+                makePlainText(this._captions),
+                `${this._transcriptLanguage}${entryMetadata ? `-${entryMetadata.name}` : ""}.txt`
+            );
         }
     };
 
