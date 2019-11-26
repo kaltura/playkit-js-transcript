@@ -1,13 +1,6 @@
 @import '../../variables.scss';
 
-.root, .root * {
-  font-family: Lato, -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
-  "Oxygen", "Ubuntu", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji",
-  "Segoe UI Emoji", "Segoe UI Symbol";
-}
-
 .root {
-  @import "~@playkit-js-contrib/ui/lib/normalize.scss";
   display: flex;
   flex-direction: column;
   padding: 6px 3.5%;
@@ -52,9 +45,13 @@
   flex-direction: column;
   color: $lightgray-color;
   .error-icon {
-    width: 20vh;
-    height: 20vh;
-    background-size: cover;
+    width: 100%;
+    height: 100%;
+    max-width: 184px;
+    max-height: 184px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
     background-image: url('../../assets/error.svg');
   }
   .error-main-text {
