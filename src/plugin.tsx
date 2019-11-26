@@ -89,43 +89,12 @@ export class TranscriptPlugin implements OnMediaUnload, OnMediaLoad, OnPluginSet
         this._player.addEventListener(this._player.Event.TEXT_TRACK_CHANGED, this._loadCaptions);
     }
 
-    onRegisterUI(uiManager: UIManager): void {
-        const { pluginConfig } = this._configs;
-        uiManager.upperBar.add({
-            label: "Download transcript",
-            onClick: () => {},
-            renderItem: () => (
-                <DownloadPrintMenu
-                    onDownload={this._handleDownload}
-                    onPrint={this._handlePrint}
-                    downloadDisabled={getConfigValue(
-                        pluginConfig.downloadDisabled,
-                        isBoolean,
-                        false
-                    )}
-                    printDisabled={getConfigValue(pluginConfig.printDisabled, isBoolean, false)}
-                />
-            )
-        });
-        this._kitchenSinkItem = uiManager.kitchenSink.add({
-            label: "Transcript",
-            renderIcon: () => <div className={styles.pluginIcon} />,
-            position: getConfigValue(
-                pluginConfig.position,
-                position =>
-                    typeof position === "string" &&
-                    (position === KitchenSinkPositions.Bottom ||
-                        position === KitchenSinkPositions.Right),
-                KitchenSinkPositions.Bottom
-            ),
-            expandMode: KitchenSinkExpandModes.AlongSideTheVideo,
-            renderContent: this._renderKitchenSinkContent
-        });
-    }
+    onRegisterUI(): void {}
 
     onMediaLoad(): void {
         const { playerConfig } = this._configs;
         this._addKitchenSinkItem();
+        this._addPopoverIcon();
 
         this._entryId = playerConfig.sources.id;
         this._loadCaptions();
@@ -140,6 +109,22 @@ export class TranscriptPlugin implements OnMediaUnload, OnMediaLoad, OnPluginSet
         this._isLoading = false;
         this._hasError = false;
         this._entryId = "";
+    }
+
+    private _addPopoverIcon(): void {
+        const { downloadDisabled, printDisabled } = this._configs.pluginConfig;
+        this._contribServices.upperBarManager.add({
+            label: "Download transcript",
+            onClick: () => {},
+            renderItem: () => (
+                <DownloadPrintMenu
+                    onDownload={this._handleDownload}
+                    onPrint={this._handlePrint}
+                    downloadDisabled={getConfigValue(downloadDisabled, isBoolean, false)}
+                    printDisabled={getConfigValue(printDisabled, isBoolean, false)}
+                />
+            )
+        });
     }
 
     private _addKitchenSinkItem(): void {
