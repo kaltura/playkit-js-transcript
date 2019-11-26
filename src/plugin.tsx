@@ -325,7 +325,7 @@ ContribPluginManager.registerPlugin(
     },
     {
         defaultConfig: {
-            expandOnFirstPlay: false,
+            expandOnFirstPlay: true,
             showTime: true,
             position: KitchenSinkPositions.Bottom,
             scrollOffset: 0,
