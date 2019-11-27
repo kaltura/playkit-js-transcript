@@ -120,6 +120,13 @@ export class TranscriptPlugin implements OnMediaUnload, OnMediaLoad, OnPluginSet
         this._transcriptLanguage = "default";
     }
 
+    private _initKitchensinkAndUpperBarItems(): void {
+        if (!this._upperBarItem && !this._kitchenSinkItem) {
+            this._addKitchenSinkItem();
+            this._addPopoverIcon();
+        }
+    }
+
     private _addPopoverIcon(): void {
         const { downloadDisabled, printDisabled } = this._configs.pluginConfig;
         this._upperBarItem = this._contribServices.upperBarManager.add({
@@ -258,11 +265,7 @@ export class TranscriptPlugin implements OnMediaUnload, OnMediaLoad, OnPluginSet
                 this._kalturaClient.request(request).then(
                     data => {
                         if (data) {
-                            this._addKitchenSinkItem();
-                            if (this._kitchenSinkItem) {
-                                this._kitchenSinkItem.activate();
-                            }
-                            this._addPopoverIcon();
+                            this._initKitchensinkAndUpperBarItems();
                             // the data is in fact the URL of the file. Now we need to fetch it
                             this._loadCaptionsAsset(data, captionAsset);
                         } else {
