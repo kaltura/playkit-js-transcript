@@ -117,6 +117,7 @@ export class TranscriptPlugin implements OnMediaUnload, OnMediaLoad, OnPluginSet
         this._isLoading = false;
         this._hasError = false;
         this._entryId = "";
+        this._transcriptLanguage = "default";
     }
 
     private _addPopoverIcon(): void {
@@ -195,6 +196,9 @@ export class TranscriptPlugin implements OnMediaUnload, OnMediaLoad, OnPluginSet
     };
 
     private _loadCaptions = (e?: any): void => {
+        if (!this._entryId) {
+            return;
+        }
         if (this._captionsList.length > 0) {
             this._getCaptionsByLang(
                 e
