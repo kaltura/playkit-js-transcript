@@ -96,7 +96,7 @@ export class TranscriptPlugin implements OnMediaUnload, OnMediaLoad, OnPluginSet
     onMediaLoad(): void {
         const { playerConfig } = this._configs;
         this._entryId = playerConfig.sources.id;
-        this._loadCaptions();
+        this._getCaptionsList();
     }
 
     onMediaUnload(): void {
@@ -206,15 +206,11 @@ export class TranscriptPlugin implements OnMediaUnload, OnMediaLoad, OnPluginSet
         if (!this._entryId) {
             return;
         }
-        if (this._captionsList.length > 0) {
-            this._getCaptionsByLang(
-                e
-                    ? e.payload.selectedTextTrack._language
-                    : this._configs.playerConfig.playback.textLanguage
-            );
-        } else {
-            this._getCaptionsList();
-        }
+        this._getCaptionsByLang(
+            e
+                ? e.payload.selectedTextTrack._language
+                : this._configs.playerConfig.playback.textLanguage
+        );
     };
 
     private _getCaptionsList = (): void => {
@@ -224,12 +220,7 @@ export class TranscriptPlugin implements OnMediaUnload, OnMediaLoad, OnPluginSet
         this._initLoading();
         this._kalturaClient.request(request).then(
             data => {
-                if (
-                    data &&
-                    data.objects &&
-                    Array.isArray(data.objects) &&
-                    data.objects.length > 0
-                ) {
+                if (data && Array.isArray(data.objects) && data.objects.length > 0) {
                     this._captionsList = data.objects;
                     this._loadCaptions();
                 } else {
