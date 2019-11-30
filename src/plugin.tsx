@@ -196,7 +196,7 @@ export class TranscriptPlugin implements OnMediaUnload, OnMediaLoad, OnPluginSet
     private _findCaptionAsset = (
         lang: string = this._configs.playerConfig.playback.textLanguage || ""
     ): KalturaCaptionAsset | null => {
-        if (lang === "off") {
+        if (lang === "off" || lang === "") {
             return this._captionsList[0];
         }
         return (
