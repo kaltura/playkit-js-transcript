@@ -118,19 +118,6 @@
                 /><br />
             </div>
 
-            <div class="marginRight">
-                <input
-                    type="radio"
-                    name="expandMode"
-                    id="AlongSideTheVideo"
-                    value="AlongSideTheVideo"
-                    checked="checked"
-                />
-                Application Mode
-                <input type="radio" name="expandMode" id="OverTheVideo" value="OverTheVideo" />
-                Embedded Mode<br />
-            </div>
-
             <div>
                 <input type="radio" name="prodOrQA" id="prod" value="prod" checked="checked" />
                 Prod
@@ -139,8 +126,31 @@
             </div>
 
             <div>
-                <input type="checkbox" name="AnonymousUser" id="AnonymousUser" value="true" />
-                Anonymous User
+                <input type="checkbox" name="expandOnFirstPlay" id="expandOnFirstPlay" checked />
+                ExpandOnFirstPlay
+            </div>
+
+            <div>
+                <input type="checkbox" name="showTime" id="showTime" checked />
+                ShowTranscriptTime
+            </div>
+
+            <!-- <div>
+                <input type="checkbox" name="showPrint" id="showPrint" checked />
+                Show Print option
+            </div>
+
+            <div>
+                <input type="checkbox" name="showDownload" id="showDownload" checked />
+                Show Download option
+            </div> -->
+
+            <div>
+                <span class="field-name">Position:</span>
+                <select id="position" name="position" value="Right">
+                    <option value="right">Right</option>
+                    <option value="bottom">Bottom</option>
+                </select>
             </div>
 
             <div class="action-buttons">
@@ -171,10 +181,13 @@
             var uiConfId = urlParams.get("uiConfId");
             var width = urlParams.get("width") >>> 0;
             var height = urlParams.get("height") >>> 0;
-            var expandMode = urlParams.get("expandMode");
             var prodOrQA = urlParams.get("prodOrQA");
-            var AnonymousUser = urlParams.get("AnonymousUser");
             var env;
+            var expandOnFirstPlay = urlParams.get("expandOnFirstPlay");
+            var showTime = urlParams.get("showTime");
+            // var showPrint = urlParams.get("showPrint");
+            // var showDownload = urlParams.get("showDownload");
+            var position = urlParams.get("position");
 
             // Insert params to form and put default values when needed
             if (entryId) document.getElementById("entryId").value = entryId;
@@ -193,14 +206,6 @@
             }
             document.getElementById("height").value = height;
 
-            if (expandMode && expandMode === "OverTheVideo") {
-                document.getElementById("OverTheVideo").checked = true;
-            } else {
-                // default
-                expandMode = "AlongSideTheVideo";
-                document.getElementById("AlongSideTheVideo").checked = true;
-            }
-
             if (prodOrQA && prodOrQA === "qa") {
                 document.getElementById("qa").checked = true;
                 env = {
@@ -217,21 +222,35 @@
                 };
             }
 
-            if (AnonymousUser && AnonymousUser === "true") {
-                document.getElementById("AnonymousUser").checked = true;
-                AnonymousUser = "anonymousRole";
-            } else {
-                // default
-                AnonymousUser = "unmoderatedAdminRole";
-                document.getElementById("AnonymousUser").checked = false;
-            }
-
             // Validation check
             if (entryId && userId && ks && partnerId && uiConfId) {
                 errorMsg.style.display = "none";
                 isValid = true;
             } else {
                 errorMsg.style.display = "block";
+            }
+
+            if (expandOnFirstPlay && expandOnFirstPlay === "on") {
+                document.getElementById("expandOnFirstPlay").checked = true;
+                expandOnFirstPlay = true;
+            } else {
+                document.getElementById("expandOnFirstPlay").checked = false;
+                expandOnFirstPlay = false;
+            }
+
+            if (showTime && showTime === "on") {
+                document.getElementById("showTime").checked = true;
+                showTime = true;
+            } else {
+                document.getElementById("showTime").checked = false;
+                showTime = false;
+            }
+
+            if (position && position === "right") {
+                document.getElementById("position").value = "right";
+            } else {
+                document.getElementById("position").value = "bottom";
+                position = "bottom";
             }
 
             // init player size:
@@ -241,7 +260,11 @@
 
             if (isValid) {
                 var plugins = {
-                    transcript: {}
+                    transcript: {
+                        showTime: showTime,
+                        expandOnFirstPlay: expandOnFirstPlay,
+                        position: position
+                    }
                 };
 
                 var player;
@@ -311,16 +334,6 @@
                         return unescape(decodeURI(results[1]) || 0);
                     }
                 };
-            }
-
-            function getValueFromExpandModeRadioButton() {
-                var radios = document.getElementsByName("expandMode");
-
-                for (var i = 0; i < radios.length; i++) {
-                    if (radios[i].checked) {
-                        return radios[i].value;
-                    }
-                }
             }
         </script>
     </body>
