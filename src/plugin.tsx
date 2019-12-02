@@ -317,10 +317,12 @@ export class TranscriptPlugin implements OnMediaUnload, OnMediaLoad, OnPluginSet
     private _handleDownload = () => {
         const { playerConfig } = this._configs;
         if (this._captions) {
-            const entryMetadata = playerConfig.sources.metadata;
+            const entryMetadata = playerConfig.sources.metadata || {};
             downloadContent(
                 makePlainText(this._captions),
-                `${this._transcriptLanguage}${entryMetadata ? `-${entryMetadata.name}` : ""}.txt`
+                `${this._transcriptLanguage}${
+                    entryMetadata.name ? `-${entryMetadata.name}` : ""
+                }.txt`
             );
         }
     };
