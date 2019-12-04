@@ -138,6 +138,15 @@ export class TranscriptPlugin implements OnMediaUnload, OnMediaLoad, OnPluginSet
                     onPrint={this._handlePrint}
                     downloadDisabled={getConfigValue(downloadDisabled, isBoolean, false)}
                     printDisabled={getConfigValue(printDisabled, isBoolean, false)}
+                    dropdownAriaLabel={`Download or print ${
+                        this._captionsList.length > 1 ? "current " : ""
+                    }transcript`}
+                    printButtonAriaLabel={`Print ${
+                        this._captionsList.length > 1 ? "current " : ""
+                    }transcript`}
+                    downloadButtonAriaLabel={`Download ${
+                        this._captionsList.length > 1 ? "current " : ""
+                    }transcript`}
                 />
             )
         });

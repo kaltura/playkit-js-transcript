@@ -89,7 +89,7 @@ export class DownloadPrintMenu extends Component<DownloadPrintMenuProps, Downloa
                         verticalPosition={PopoverVerticalPositions.Bottom}
                         horizontalPosition={PopoverHorizontalPositions.Left}
                         content={popoverContent}
-                        closeOnEsc={true}
+                        closeOnEsc
                     >
                         <button
                             tabIndex={1}
