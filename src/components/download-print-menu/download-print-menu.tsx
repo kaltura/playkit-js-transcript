@@ -17,6 +17,14 @@ interface DownloadPrintMenuProps {
     printDisabled: boolean;
 }
 
+interface ButtonProperties {
+    ["aria-label"]: string;
+    buttonStyles: string;
+    onClick?: () => void;
+    tabIndex?: number;
+    iconStyles: string;
+}
+
 interface DownloadPrintMenuState {
     popoverOpen: boolean;
 }
@@ -39,12 +47,13 @@ export class DownloadPrintMenu extends Component<DownloadPrintMenuProps, Downloa
         this.props.onPrint();
     };
     private _onKeyDown = (e: KeyboardEvent, callBack: Function) => {
-        e.stopPropagation();
+        if (e.keyCode !== 13 && e.keyCode !== 27) {
+            // don't stopPropagation on ESC and Enter pressed as it prevent the popup closing
+            e.stopPropagation();
+        }
         switch (e.keyCode) {
             case 13: // Enter pressed
-                if (typeof callBack === "function") {
-                    callBack();
-                }
+                callBack();
                 break;
         }
     };
@@ -73,58 +82,61 @@ export class DownloadPrintMenu extends Component<DownloadPrintMenuProps, Downloa
         ];
     };
 
+    private _renderIcon = ({
+        buttonStyles,
+        tabIndex = 1,
+        iconStyles,
+        ...props
+    }: ButtonProperties): JSX.Element => {
+        return (
+            <button className={buttonStyles} tabIndex={tabIndex} {...props}>
+                <div className={iconStyles} />
+            </button>
+        );
+    };
+
+    private _popoverContent = () => {
+        return (
+            <PopoverMenu
+                itemRenderer={this._popoverMenuItemRenderer}
+                options={this._getPopoverMenuOptions()}
+            />
+        );
+    };
+
     render(props: DownloadPrintMenuProps) {
         const { downloadDisabled, printDisabled } = props;
         if (!downloadDisabled && !printDisabled) {
-            const popoverContent = (
-                <PopoverMenu
-                    itemRenderer={this._popoverMenuItemRenderer}
-                    options={this._getPopoverMenuOptions()}
-                />
-            );
             return (
-                <div>
-                    <Popover
-                        className="download-print-popover"
-                        verticalPosition={PopoverVerticalPositions.Bottom}
-                        horizontalPosition={PopoverHorizontalPositions.Left}
-                        content={popoverContent}
-                        closeOnEsc
-                    >
-                        <button
-                            tabIndex={1}
-                            aria-label={this.props.dropdownAriaLabel}
-                            className={styles.downloadPrintButton}
-                        >
-                            <div className={[styles.icon, styles.downloadIcon].join(" ")} />
-                        </button>
-                    </Popover>
-                </div>
+                <Popover
+                    className="download-print-popover"
+                    verticalPosition={PopoverVerticalPositions.Bottom}
+                    horizontalPosition={PopoverHorizontalPositions.Left}
+                    content={this._popoverContent()}
+                >
+                    {this._renderIcon({
+                        ["aria-label"]: props.dropdownAriaLabel,
+                        buttonStyles: styles.downloadPrintButton,
+                        iconStyles: [styles.icon, styles.downloadIcon].join(" ")
+                    })}
+                </Popover>
             );
         }
         if (!downloadDisabled && printDisabled) {
-            return (
-                <button
-                    tabIndex={1}
-                    aria-label={props.downloadButtonAriaLabel}
-                    className={styles.downloadPrintButton}
-                    onClick={this._onDownloadClicked}
-                >
-                    <div className={[styles.icon, styles.downloadIcon].join(" ")} />
-                </button>
-            );
+            return this._renderIcon({
+                ["aria-label"]: props.downloadButtonAriaLabel,
+                buttonStyles: styles.downloadPrintButton,
+                iconStyles: [styles.icon, styles.downloadIcon].join(" "),
+                onClick: this._onDownloadClicked
+            });
         }
         if (downloadDisabled && !printDisabled) {
-            return (
-                <button
-                    tabIndex={1}
-                    aria-label={props.printButtonAriaLabel}
-                    className={styles.downloadPrintButton}
-                    onClick={this._onPrintClicked}
-                >
-                    <div className={[styles.icon, styles.printIcon].join(" ")} />
-                </button>
-            );
+            return this._renderIcon({
+                ["aria-label"]: props.printButtonAriaLabel,
+                buttonStyles: styles.downloadPrintButton,
+                iconStyles: [styles.icon, styles.printIcon].join(" "),
+                onClick: this._onPrintClicked
+            });
         }
         return null;
     }
