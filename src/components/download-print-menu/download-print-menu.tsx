@@ -2,7 +2,8 @@ import { h, Component } from "preact";
 import {
     Popover,
     PopoverHorizontalPositions,
-    PopoverVerticalPositions
+    PopoverVerticalPositions,
+    KeyboardKeys
 } from "@playkit-js-contrib/ui";
 import { PopoverMenu, PopoverMenuItem } from "../popover-menu";
 import * as styles from "./download-print-menu.scss";
@@ -47,7 +48,7 @@ export class DownloadPrintMenu extends Component<DownloadPrintMenuProps, Downloa
         this.props.onPrint();
     };
     private _onKeyDown = (e: KeyboardEvent, callBack: Function) => {
-        if (e.keyCode !== 13 && e.keyCode !== 27) {
+        if (e.keyCode !== KeyboardKeys.Enter && e.keyCode !== KeyboardKeys.Esc) {
             // don't stopPropagation on ESC and Enter pressed as it prevent the popup closing
             e.stopPropagation();
         }
