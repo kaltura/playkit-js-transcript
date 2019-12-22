@@ -61,7 +61,7 @@
     }
     .active-search {
       color: $black-color;
-      background-color: $yellow-color;
+      background-color: $text-match-color;
       border-radius: 2px;
       &::selection {
         background-color: $text-selection-color;
