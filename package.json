@@ -1,7 +1,7 @@
 {
   "name": "@playkit-js/transcript-plugin",
-  "version": "1.0.0-rc.0",
-  "license": "AGPL-3.0",
+  "version": "0.0.1",
+  "private": false,
   "bugs": {
     "url": "https://github.com/kaltura/playkit-js-transcript/issues"
   },
@@ -10,70 +10,55 @@
     "type": "git",
     "url": "git+https://github.com/kaltura/playkit-js-transcript.git"
   },
-  "description": "",
-  "main": "dist/playkit-js-transcript.js",
+  "dependencies": {
+    "@playkit-js-contrib/common": "^3.1.1",
+    "@playkit-js-contrib/plugin": "^3.1.2",
+    "@playkit-js-contrib/ui": "^3.1.2",
+    "@types/classnames": "2.2.9",
+    "@types/node": "12.12.21",
+    "classnames": "2.2.6",
+    "kaltura-typescript-client": "file:libs/kaltura-typescript-client-7.0.0-v20190324-101134.tgz",
+    "preact": "^8.4.2",
+    "xml-js": "^1.6.11"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "8.2.0",
+    "@commitlint/config-conventional": "8.2.0",
+    "@playkit-js-contrib/cli": "^1.0.0-beta.1",
+    "@typescript-eslint/eslint-plugin": "2.12.0",
+    "@typescript-eslint/parser": "2.12.0",
+    "husky": "3.1.0",
+    "tslint": "5.20.1",
+    "typescript": "3.7.4"
+  },
   "scripts": {
     "clean": "rm -rf dist",
     "reset": "npm run clean && rm -rf node_modules",
-    "build": "webpack --config webpack.prod.js",
-    "build:dev": "webpack --config webpack.dev.js",
-    "serve": "webpack-dev-server --open --config webpack.dev.js",
-    "serve:external": "npm run serve -- --host 0.0.0.0",
-    "analyze": "npm run build && npx source-map-explorer dist/playkit-js-transcript.js",
-    "contrib:latest": "npm i @playkit-js-contrib/{common,ui,plugin}@latest",
-    "contrib:next": "npm i @playkit-js-contrib/{common,ui,plugin}@next",
-    "contrib:local": "npm link @playkit-js-contrib/{common,ui,plugin} --production"
+    "build": "kcontrib build",
+    "build:dev": "kcontrib build --dev",
+    "serve": "kcontrib serve",
+    "analyze": "npm run build && npx source-map-explorer dist/transcript.js",
+    "lint": "tsc --noEmit && eslint ./src --ext .ts,.tsx",
+    "lint:fix": "tsc --noEmit && eslint ./src --ext .ts,.tsx --fix",
+    "husky:pre-commit": "lint-staged",
+    "husky:commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+    "deploy:prepare": "kcontrib deploy --prepare",
+    "deploy:publish-to-npm": "kcontrib deploy --publish",
+    "deploy:next:prepare": "kcontrib deploy --prepare --prerelease next",
+    "contrib:latest": "kcontrib contrib --type=latest",
+    "contrib:next": "kcontrib contrib --type=next",
+    "contrib:local": "kcontrib contrib --type=local"
   },
-  "keywords": [],
-  "author": "",
-  "devDependencies": {
-    "awesome-typescript-loader": "^5.2.1",
-    "clean-webpack-plugin": "^3.0.0",
-    "copy-webpack-plugin": "^5.0.2",
-    "css-loader": "^2.1.1",
-    "html-webpack-plugin": "^3.2.0",
-    "husky": "^1.3.1",
-    "lint-staged": "^8.1.5",
-    "node-sass": "^4.5.3",
-    "npm": "^6.9.0",
-    "prettier": "^1.15.3",
-    "sass-loader": "^7.1.0",
-    "source-map-loader": "^0.2.4",
-    "style-loader": "^0.23.1",
-    "tslint": "^5.11.0",
-    "tslint-config-prettier": "^1.17.0",
-    "tslint-consistent-codestyle": "^1.14.1",
-    "tslint-eslint-rules": "^5.4.0",
-    "tslint-react": "^3.6.0",
-    "typescript": "^3.2.1",
-    "url-loader": "^1.1.2",
-    "webpack": "^4.29.6",
-    "webpack-cli": "^3.3.0",
-    "webpack-dev-server": "^3.2.1",
-    "webpack-merge": "^4.2.2"
-  },
-  "dependencies": {
-    "@playkit-js-contrib/common": "^2.0.0",
-    "@playkit-js-contrib/plugin": "^2.0.0",
-    "@playkit-js-contrib/ui": "^2.0.0",
-    "deep-diff": "^1.0.2",
-    "kaltura-typescript-client": "file:libs/kaltura-typescript-client-7.0.0-v20190324-101134.tgz",
-    "preact": "^8.4.2",
-    "svg-url-loader": "^2.3.2",
-    "xml-js": "^1.6.11"
-  },
-  "files": [
-    "dist"
-  ],
-  "lint-staged": {
-    "*.{ts,tsx,json,css,html}": [
-      "prettier --write",
-      "git add"
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   }
 }
