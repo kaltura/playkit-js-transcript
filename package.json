@@ -1,6 +1,7 @@
 {
   "name": "@playkit-js/transcript-plugin",
   "version": "0.0.1",
+  "license": "AGPL-3.0",
   "private": false,
   "bugs": {
     "url": "https://github.com/kaltura/playkit-js-transcript/issues"
