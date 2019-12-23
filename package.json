@@ -61,5 +61,12 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md",
+    "src"
+  ]
 }
