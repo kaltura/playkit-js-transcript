@@ -126,8 +126,8 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
 
   private _initKitchensinkAndUpperBarItems(): void {
     if (!this._upperBarItem && !this._kitchenSinkItem) {
-      this._addKitchenSinkItem();
       this._addPopoverIcon();
+      this._addKitchenSinkItem();
     }
   }
 
