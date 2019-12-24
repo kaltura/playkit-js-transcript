@@ -1,15 +1,15 @@
-import { h, Component } from "preact";
+import { h, Component, ComponentChild } from "preact";
 import * as styles from "./popover-menu.scss";
 
 export interface PopoverMenuItem {
     label: string;
     onMenuChosen: Function;
-    customRenderer?: (el: PopoverMenuItem) => JSX.Element;
+    customRenderer?: (el: PopoverMenuItem) => ComponentChild;
 }
 
 interface PopoverMenuProps {
     options: Array<PopoverMenuItem>;
-    itemRenderer?: (el: PopoverMenuItem) => JSX.Element;
+    itemRenderer?: (el: PopoverMenuItem) => ComponentChild;
 }
 
 /**
