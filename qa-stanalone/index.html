@@ -79,12 +79,7 @@
         <form action="" class="test-form">
             <div>
                 <span class="field-name">EntryId:</span>
-                <input type="text" id="entryId" name="entryId" placeholder="entryId" /><br />
-            </div>
-
-            <div>
-                <span class="field-name">UserId:</span>
-                <input type="text" id="userId" name="userId" placeholder="userId" /><br />
+                <input type="text" id="entryId" name="entryId" placeholder="entryId" required /><br />
             </div>
 
             <div>
@@ -94,12 +89,12 @@
 
             <div>
                 <span class="field-name">partnerId:</span>
-                <input type="text" id="partnerId" name="partnerId" placeholder="partnerId" /><br />
+                <input type="text" id="partnerId" name="partnerId" placeholder="partnerId" required /><br />
             </div>
 
             <div>
                 <span class="field-name">uiConfId:</span>
-                <input type="text" id="uiConfId" name="uiConfId" placeholder="uiConfId" /><br />
+                <input type="text" id="uiConfId" name="uiConfId" placeholder="uiConfId" required /><br />
             </div>
 
             <div>
@@ -135,7 +130,7 @@
                 ShowTranscriptTime
             </div>
 
-            <!-- <div>
+            <div>
                 <input type="checkbox" name="showPrint" id="showPrint" checked />
                 Show Print option
             </div>
@@ -143,7 +138,7 @@
             <div>
                 <input type="checkbox" name="showDownload" id="showDownload" checked />
                 Show Download option
-            </div> -->
+            </div>
 
             <div>
                 <span class="field-name">Position:</span>
@@ -175,7 +170,6 @@
             var urlParams = new urlParamParse(window.location.search);
 
             var entryId = urlParams.get("entryId");
-            var userId = urlParams.get("userId");
             var ks = urlParams.get("ks");
             var partnerId = urlParams.get("partnerId");
             var uiConfId = urlParams.get("uiConfId");
@@ -185,14 +179,13 @@
             var env;
             var expandOnFirstPlay = urlParams.get("expandOnFirstPlay");
             var showTime = urlParams.get("showTime");
-            // var showPrint = urlParams.get("showPrint");
-            // var showDownload = urlParams.get("showDownload");
+            var showPrint = urlParams.get("showPrint");
+            var showDownload = urlParams.get("showDownload");
             var position = urlParams.get("position");
 
             // Insert params to form and put default values when needed
             if (entryId) document.getElementById("entryId").value = entryId;
-            if (userId) document.getElementById("userId").value = userId;
-            if (ks) document.getElementById("ks").value = ks;
+            if (ks && ks !== "0") document.getElementById("ks").value = ks;
             if (partnerId) document.getElementById("partnerId").value = partnerId;
             if (uiConfId) document.getElementById("uiConfId").value = uiConfId;
 
@@ -223,7 +216,7 @@
             }
 
             // Validation check
-            if (entryId && userId && ks && partnerId && uiConfId) {
+            if (entryId && partnerId && uiConfId) {
                 errorMsg.style.display = "none";
                 isValid = true;
             } else {
@@ -253,6 +246,22 @@
                 position = "bottom";
             }
 
+            if (showPrint && showPrint === "on") {
+                document.getElementById("showPrint").checked = true;
+                showPrint = true;
+            } else {
+                document.getElementById("showPrint").checked = false;
+                showPrint = false;
+            }
+
+            if (showDownload && showDownload === "on") {
+                document.getElementById("showDownload").checked = true;
+                showDownload = true;
+            } else {
+                document.getElementById("showDownload").checked = false;
+                showDownload = false;
+            }
+
             // init player size:
             var playerDiv = document.getElementById("player-div");
             playerDiv.style.width = width + "px";
@@ -263,7 +272,9 @@
                     transcript: {
                         showTime: showTime,
                         expandOnFirstPlay: expandOnFirstPlay,
-                        position: position
+                        position: position,
+                        printDisabled: !showPrint,
+                        downloadDisabled: !showDownload
                     }
                 };
 
@@ -296,22 +307,23 @@
                 var config = {
                     logLevel: "DEBUG",
                     targetId: "player-div",
-                    provider: {
-                        env: env,
-                        partnerId: partnerId,
-                        uiConfId: uiConfId,
-                        ks: ks
-                    },
-                    session: {
-                        userId: userId
-                    },
+                    session: {},
                     contrib: contrib,
                     plugins: plugins,
                     ui: {
                         debug: true
                     }
                 };
-
+                var provider = {
+                        env: env,
+                        partnerId: partnerId,
+                        uiConfId: uiConfId,
+                    }
+                if (ks && ks !== "0") {
+                    provider.ks = ks;
+                }
+                config.provider = provider;
+                
                 window.onload = function() {
                     var mediaInfo = { entryId: entryId };
                     player = KalturaPlayer.setup(config);
