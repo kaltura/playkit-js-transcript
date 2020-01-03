@@ -1,7 +1,6 @@
 import { h, Component } from "preact";
 import * as styles from "./caption.scss";
-import { secontsToTime } from "../../utils";
-import { CaptionItem } from "../../utils";
+import { secontsToTime, HOUR, CaptionItem } from "../../utils";
 
 export interface CaptionProps {
     showTime: boolean;
@@ -87,7 +86,7 @@ export class Caption extends Component<ExtendedCaptionProps> {
         return (
             <div className={styles.caption}>
                 {showTime && (
-                    <div className={styles.captionTime}>
+                    <div className={`${styles.captionTime} ${videoDuration >= HOUR ? styles.longDuration : ""}`}>
                         {secontsToTime(startTime, videoDuration)}
                     </div>
                 )}

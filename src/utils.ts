@@ -1,7 +1,7 @@
 import { xml2js } from "xml-js";
 import { Cuepoint } from "@playkit-js-contrib/common";
 
-const HOUR = 60 * 60; // seconds in 1 hour
+export const HOUR = 60 * 60; // seconds in 1 hour
 
 export interface CaptionItem extends Cuepoint {
     text: string;
