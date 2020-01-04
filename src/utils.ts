@@ -111,12 +111,20 @@ const pad = (number: number) => {
     return number;
 };
 
+const getHours = (date: Date, videoDuration: number): string => {
+    if (videoDuration >= HOUR) {
+        const hours = date.getUTCHours();
+        if (hours >= 1 ) {
+            return `${hours}:`
+        }
+    }
+    return "";
+};
+
 export const secontsToTime = (seconds: number, videoDuration: number): string => {
     const date = new Date(0);
     date.setSeconds(seconds);
-    return `${videoDuration >= HOUR ? `${pad(Math.floor(seconds / HOUR))}:` : ""}${pad(
-        date.getUTCMinutes()
-    )}:${pad(date.getUTCSeconds())}`;
+    return `${getHours(date, videoDuration)}${pad(date.getUTCMinutes())}:${pad(date.getUTCSeconds())}`;
 };
 
 export function getConfigValue(value: any, condition: (value: any) => boolean, defaultValue: any) {
