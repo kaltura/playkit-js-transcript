@@ -74,6 +74,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         if (previousProps.captions !== captions) {
             this._log("Re-creating engine", "componentDidUpdate");
             this._createEngine();
+            this.setState({ search: "", isAutoScrollEnabled: true });
         }
 
         if (previousProps.currentTime !== currentTime) {
