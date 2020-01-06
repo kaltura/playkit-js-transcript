@@ -16,6 +16,7 @@ interface ExtendedCaptionProps extends CaptionProps {
     isAutoScrollEnabled: boolean;
     indexMap: Record<string, number> | undefined;
     activeSearchIndex: number;
+    isLongVideo: boolean
 }
 
 export class Caption extends Component<ExtendedCaptionProps> {
@@ -80,14 +81,14 @@ export class Caption extends Component<ExtendedCaptionProps> {
     };
 
     render() {
-        const { caption, highlighted, showTime, videoDuration } = this.props;
+        const { caption, highlighted, showTime, videoDuration, isLongVideo } = this.props;
         const { text, startTime } = caption;
 
         return (
             <div className={styles.caption}>
                 {showTime && (
-                    <div className={`${styles.captionTime} ${videoDuration >= HOUR ? styles.longDuration : ""}`}>
-                        {secontsToTime(startTime, videoDuration)}
+                    <div className={`${styles.captionTime} ${isLongVideo ? styles.longDuration : ""}`}>
+                        {secontsToTime(startTime, isLongVideo)}
                     </div>
                 )}
                 <div

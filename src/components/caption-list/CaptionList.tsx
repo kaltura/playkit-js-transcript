@@ -1,7 +1,7 @@
 import { h, Component } from "preact";
 import { Caption, CaptionProps } from "../caption";
 import * as styles from "./captionList.scss";
-import { CaptionItem } from "../../utils";
+import { CaptionItem, HOUR } from "../../utils";
 
 
 interface CaptionListProps {
@@ -60,6 +60,7 @@ export class CaptionList extends Component<CaptionListProps> {
                             }
                             indexMap={searchMap[captionData.id]}
                             activeSearchIndex={activeSearchIndex}
+                            isLongVideo={captionProps.videoDuration >= HOUR}
                             {...captionProps}
                         />
                     );

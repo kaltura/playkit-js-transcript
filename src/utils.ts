@@ -1,7 +1,7 @@
 import { xml2js } from "xml-js";
 import { Cuepoint } from "@playkit-js-contrib/common";
 
-export const HOUR = 60 * 60; // seconds in 1 hour
+export const HOUR = 3600; // seconds in 1 hour
 
 export interface CaptionItem extends Cuepoint {
     text: string;
@@ -23,7 +23,7 @@ export const toSeconds = (val: any, vtt = false): number => {
         }
     }
     // hours + minutes + seconds + ms
-    return parts[1] * 3600 + parts[2] * 60 + parts[3] + parts[4] / 1000;
+    return parts[1] * HOUR + parts[2] * 60 + parts[3] + parts[4] / 1000;
 };
 
 export const getCaptionsByFormat = (captions: any, captionsFormat: string): CaptionItem[] => {
@@ -111,20 +111,18 @@ const pad = (number: number) => {
     return number;
 };
 
-const getHours = (date: Date, videoDuration: number): string => {
-    if (videoDuration >= HOUR) {
-        const hours = date.getUTCHours();
-        if (hours >= 1 ) {
-            return `${hours}:`
-        }
+const makeHoursString = (seconds: number): string => {
+    const hours = Math.floor(seconds / HOUR)
+    if (hours >= 1) {
+        return `${hours}:`
     }
     return "";
 };
 
-export const secontsToTime = (seconds: number, videoDuration: number): string => {
+export const secontsToTime = (seconds: number, isLongVideo: boolean): string => {
     const date = new Date(0);
     date.setSeconds(seconds);
-    return `${getHours(date, videoDuration)}${pad(date.getUTCMinutes())}:${pad(date.getUTCSeconds())}`;
+    return `${isLongVideo ? makeHoursString(seconds) : ""}${pad(date.getUTCMinutes())}:${pad(date.getUTCSeconds())}`;
 };
 
 export function getConfigValue(value: any, condition: (value: any) => boolean, defaultValue: any) {
