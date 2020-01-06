@@ -60,7 +60,7 @@ export class CaptionList extends Component<CaptionListProps> {
                             }
                             indexMap={searchMap[captionData.id]}
                             activeSearchIndex={activeSearchIndex}
-                            isLongVideo={captionProps.videoDuration >= HOUR}
+                            longerThanHour={captionProps.videoDuration >= HOUR}
                             {...captionProps}
                         />
                     );

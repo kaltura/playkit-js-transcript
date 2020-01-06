@@ -119,10 +119,10 @@ const makeHoursString = (seconds: number): string => {
     return "";
 };
 
-export const secontsToTime = (seconds: number, isLongVideo: boolean): string => {
+export const secontsToTime = (seconds: number, longerThanHour: boolean): string => {
     const date = new Date(0);
     date.setSeconds(seconds);
-    return `${isLongVideo ? makeHoursString(seconds) : ""}${pad(date.getUTCMinutes())}:${pad(date.getUTCSeconds())}`;
+    return `${longerThanHour ? makeHoursString(seconds) : ""}${pad(date.getUTCMinutes())}:${pad(date.getUTCSeconds())}`;
 };
 
 export function getConfigValue(value: any, condition: (value: any) => boolean, defaultValue: any) {
