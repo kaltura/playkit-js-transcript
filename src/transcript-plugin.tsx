@@ -249,7 +249,8 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
   private _findCaptionAsset = (
       lang: string = this._configs.playerConfig.playback.textLanguage || ""
   ): KalturaCaptionAsset | null => {
-    if (lang === "off" || lang === "") {
+    if (lang === "off" || lang === "" || lang === "auto") {
+      // take first captions from caption-list when caption language is not defined
       return this._captionsList[0];
     }
     return (
@@ -260,6 +261,10 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
   };
 
   private _getCaptionsByLang = (lang?: string): void => {
+    if (lang === "off" && this._captions.length) {
+      // prevent loading of captions when user select "off" captions option
+      return;
+    }
     if (this._captionsList && this._captionsList.length > 0) {
       const captionAsset: KalturaCaptionAsset | null = this._findCaptionAsset(lang);
       if (captionAsset) {
