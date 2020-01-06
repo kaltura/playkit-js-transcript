@@ -7,13 +7,16 @@
   color: $white-color;
   .caption-time {
     flex-shrink: 1;
-    min-width: 52px;
+    min-width: 32px;
     align-items: flex-start;
-    margin-right: 12px;
-    text-align: left;
+    margin-right: 8px;
+    text-align: right;
     font-size: 12px;
     line-height: 1.75;
     color: $gray-color;
+    &.long-duration {
+      min-width: 48px;
+    }
   }
   .caption-content {
     flex-grow: 1;

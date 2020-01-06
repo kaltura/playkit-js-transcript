@@ -1,7 +1,6 @@
 import { h, Component } from "preact";
 import * as styles from "./caption.scss";
-import { secontsToTime } from "../../utils";
-import { CaptionItem } from "../../utils";
+import { secontsToTime, HOUR, CaptionItem } from "../../utils";
 
 export interface CaptionProps {
     showTime: boolean;
@@ -17,6 +16,7 @@ interface ExtendedCaptionProps extends CaptionProps {
     isAutoScrollEnabled: boolean;
     indexMap: Record<string, number> | undefined;
     activeSearchIndex: number;
+    longerThanHour: boolean
 }
 
 export class Caption extends Component<ExtendedCaptionProps> {
@@ -81,14 +81,14 @@ export class Caption extends Component<ExtendedCaptionProps> {
     };
 
     render() {
-        const { caption, highlighted, showTime, videoDuration } = this.props;
+        const { caption, highlighted, showTime, longerThanHour } = this.props;
         const { text, startTime } = caption;
 
         return (
             <div className={styles.caption}>
                 {showTime && (
-                    <div className={styles.captionTime}>
-                        {secontsToTime(startTime, videoDuration)}
+                    <div className={`${styles.captionTime} ${longerThanHour ? styles.longDuration : ""}`}>
+                        {secontsToTime(startTime, longerThanHour)}
                     </div>
                 )}
                 <div
