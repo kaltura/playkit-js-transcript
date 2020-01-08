@@ -2,5 +2,10 @@
   background-image: url("./assets/transcript.svg");
   width: 32px;
   height: 32px;
+  opacity: 0.8;
   cursor: pointer;
+  &:hover,
+  &:focus {
+    opacity: 1;
+  }
 }

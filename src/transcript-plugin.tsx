@@ -162,7 +162,13 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
     this._kitchenSinkItem = this._contribServices.kitchenSinkManager.add({
       label: "Transcript",
       expandMode: KitchenSinkExpandModes.AlongSideTheVideo,
-      renderIcon: () => <div className={styles.pluginIcon} />,
+      renderIcon: () => (
+        <div
+          className={styles.pluginIcon}
+          role="button"
+          tabIndex={1}
+        />
+      ),
       position: getConfigValue(
           position,
           position =>
