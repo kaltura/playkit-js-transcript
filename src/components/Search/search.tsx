@@ -9,7 +9,11 @@ export interface SearchProps {
     totalSearchResults: number;
 }
 
-export class Search extends Component<SearchProps> {
+interface SearchState {
+    active: boolean;
+}
+
+export class Search extends Component<SearchProps, SearchState> {
     private _handleOnChange = (e: any) => {
         this.props.onChange(e.target.value);
     };
@@ -17,6 +21,14 @@ export class Search extends Component<SearchProps> {
     private _onClear = () => {
         this.props.onChange("");
     };
+
+    private _onFocus = () => {
+        this.setState({ active: true })
+    }
+
+    private _onBlur = () => {
+        this.setState({ active: false })
+    }
 
     private _goToNextSearchResult = () => {
         const { activeSearchIndex, totalSearchResults, onSearchIndexChange } = this.props;
@@ -44,13 +56,15 @@ export class Search extends Component<SearchProps> {
     render() {
         const { value, activeSearchIndex, totalSearchResults } = this.props;
         return (
-            <div className={`${styles.searchWrapper} ${value ? styles.active : ""}`}>
+            <div className={`${styles.searchWrapper} ${(value || this.state.active) ? styles.active : ""}`}>
                 <div className={styles.searchIcon} />
                 <input
                     className={styles.searchInput}
                     placeholder={"Search in Transcript"}
                     value={value}
                     onInput={this._handleOnChange}
+                    onFocus={this._onFocus}
+                    onBlur={this._onBlur}
                 />
                 {value && <button className={styles.clearIcon} onClick={this._onClear} />}
                 {value && (
