@@ -56,8 +56,8 @@
       }
     }
     .highlight-search {
-      color: $white-color;
-      background-color: $semigray-color;
+      color: $black-color;
+      background-color: $text-match-color;
       border-radius: 2px;
       &::selection {
         background-color: $text-selection-color;
@@ -65,7 +65,7 @@
     }
     .active-search {
       color: $black-color;
-      background-color: $text-match-color;
+      background-color: $text-current-match-color;
       border-radius: 2px;
       &::selection {
         background-color: $text-selection-color;
