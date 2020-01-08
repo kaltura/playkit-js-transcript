@@ -1,6 +1,10 @@
 @import '../../variables.scss';
 
 .search-wrapper {
+  ::-moz-placeholder {
+    opacity: 1
+  }
+
   display: flex;
   align-items: center;
   flex-grow: 1;
