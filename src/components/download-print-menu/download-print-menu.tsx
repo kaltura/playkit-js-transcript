@@ -1,4 +1,4 @@
-import { h, Component } from "preact";
+import { h, Component, ComponentChild } from "preact";
 import {
     Popover,
     PopoverHorizontalPositions,
@@ -88,7 +88,7 @@ export class DownloadPrintMenu extends Component<DownloadPrintMenuProps, Downloa
         tabIndex = 1,
         iconStyles,
         ...props
-    }: ButtonProperties): JSX.Element => {
+    }: ButtonProperties): ComponentChild => {
         return (
             <button className={buttonStyles} tabIndex={tabIndex} {...props}>
                 <div className={iconStyles} />
