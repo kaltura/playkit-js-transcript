@@ -1,4 +1,4 @@
-import { h } from "preact";
+import { h, render } from "preact";
 import {
   ContribPluginManager,
   OnMediaLoad,
@@ -39,8 +39,7 @@ import {
   makePlainText
 } from "./utils";
 import { DownloadPrintMenu } from "./components/download-print-menu";
-
-
+import { External } from "./components/external";
 
 const pluginName = `transcript`;
 
@@ -60,11 +59,14 @@ interface TranscriptPluginConfig {
   searchNextPrevDebounceTimeout: number; // debounce on jump between prev/next search result
   downloadDisabled: boolean; // disable download menu
   printDisabled: boolean; // disable print menu
+  detached: boolean; // render TW as detached
+  detachedTargetId: string; // DOM element id where detached TW rendered
 }
 
 export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSetup, OnMediaUnload {
   private _kitchenSinkItem: KitchenSinkItem | null = null;
   private _upperBarItem: UpperBarItem | null = null;
+  private _externalItem: any | null = null;
   private _isLoading = false;
   private _hasError = false;
   private _entryId = "";
@@ -116,6 +118,10 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
       this._contribServices.upperBarManager.remove(this._upperBarItem);
       this._upperBarItem = null;
     }
+    if (this._externalItem) {
+      // TODO: make remove method
+      this._upperBarItem = null;
+    }
     this._captionsList = [];
     this._captions = [];
     this._isLoading = false;
@@ -125,10 +131,32 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
   }
 
   private _initKitchensinkAndUpperBarItems(): void {
-    if (!this._upperBarItem && !this._kitchenSinkItem) {
+    const { detached } = this._configs.pluginConfig;
+    if (!this._upperBarItem) {
       this._addPopoverIcon();
+    }
+    if (!getConfigValue(detached, isBoolean, false) && !this._kitchenSinkItem) {
       this._addKitchenSinkItem();
     }
+    if (getConfigValue(detached, isBoolean, false) && !this._externalItem) {
+      this._addExternalTw();
+    }
+  }
+
+  private _addExternalTw(): void {
+    this._upperBarItem = this._contribServices.upperBarManager.add({
+      label: "Transcript",
+      onClick: () => {},
+      renderItem: (props) => (
+        <div
+        className={styles.pluginIcon}
+        role="button"
+        tabIndex={1}
+      >
+        {this._renderExternalContent(props)}
+      </div>
+      )
+    });
   }
 
   private _addPopoverIcon(): void {
@@ -387,6 +415,31 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
         />
     );
   };
+
+  private _renderExternalContent = (props: any) => {
+    const { detachedTargetId } = this._configs.pluginConfig;
+    return (
+      <External
+        targetId={detachedTargetId}
+      >
+        <Transcript
+            onClose={() => {}}
+            showTime={true}
+            scrollOffset={0}
+            scrollDebounceTimeout={200}
+            searchDebounceTimeout={250}
+            searchNextPrevDebounceTimeout={100}
+            onSeek={this._seekTo}
+            captions={this._captions}
+            isLoading={this._isLoading}
+            hasError={this._hasError}
+            onRetryLoad={this._loadCaptions}
+            currentTime={this._player.currentTime}
+            videoDuration={this._player.duration}
+        />
+      </External>
+    )
+  }
 }
 
 ContribPluginManager.registerPlugin(
@@ -404,7 +457,9 @@ ContribPluginManager.registerPlugin(
       searchDebounceTimeout: 250,
       searchNextPrevDebounceTimeout: 100,
       downloadDisabled: false,
-      printDisabled: false
+      printDisabled: false,
+      detached: false,
+      detachedTargetId: '',
     }
   }
 );
