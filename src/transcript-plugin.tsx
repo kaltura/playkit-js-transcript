@@ -1,10 +1,9 @@
-import { h, render } from "preact";
+import { h, ComponentChild, ComponentChildren } from "preact";
 import {
   ContribPluginManager,
   OnMediaLoad,
   OnMediaUnload,
   OnPluginSetup,
-
   ContribServices,
   ContribPluginData,
   ContribPluginConfigs
@@ -23,7 +22,9 @@ import {
   KitchenSinkPositions,
   KitchenSinkExpandModes,
   downloadContent,
-  printContent, UpperBarItem
+  printContent,
+  UpperBarItem,
+  ManagedComponent
 } from "@playkit-js-contrib/ui";
 import { KalturaCaptionAssetFilter } from "kaltura-typescript-client/api/types/KalturaCaptionAssetFilter";
 import { CaptionAssetListAction } from "kaltura-typescript-client/api/types/CaptionAssetListAction";
@@ -39,7 +40,7 @@ import {
   makePlainText
 } from "./utils";
 import { DownloadPrintMenu } from "./components/download-print-menu";
-import { External } from "./components/external";
+import { Detached } from "./components/detached";
 
 const pluginName = `transcript`;
 
@@ -66,7 +67,7 @@ interface TranscriptPluginConfig {
 export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSetup, OnMediaUnload {
   private _kitchenSinkItem: KitchenSinkItem | null = null;
   private _upperBarItem: UpperBarItem | null = null;
-  private _externalItem: any | null = null;
+  private _detachedItem: any | null = null;
   private _isLoading = false;
   private _hasError = false;
   private _entryId = "";
@@ -118,7 +119,7 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
       this._contribServices.upperBarManager.remove(this._upperBarItem);
       this._upperBarItem = null;
     }
-    if (this._externalItem) {
+    if (this._detachedItem) {
       // TODO: make remove method
       this._upperBarItem = null;
     }
@@ -138,22 +139,22 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
     if (!getConfigValue(detached, isBoolean, false) && !this._kitchenSinkItem) {
       this._addKitchenSinkItem();
     }
-    if (getConfigValue(detached, isBoolean, false) && !this._externalItem) {
+    if (getConfigValue(detached, isBoolean, false) && !this._detachedItem) {
       this._addExternalTw();
     }
   }
 
   private _addExternalTw(): void {
-    this._upperBarItem = this._contribServices.upperBarManager.add({
+    this._contribServices.upperBarManager.add({
       label: "Transcript",
       onClick: () => {},
-      renderItem: (props) => (
+      renderItem: () => (
         <div
         className={styles.pluginIcon}
         role="button"
         tabIndex={1}
       >
-        {this._renderExternalContent(props)}
+        {this._renderDetachedContent()}
       </div>
       )
     });
@@ -220,6 +221,8 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
   private _updateKitchenSink() {
     if (this._kitchenSinkItem) {
       this._kitchenSinkItem.update();
+    } else if (this._detachedItem) {
+      this._detachedItem.update();
     }
   }
 
@@ -385,7 +388,7 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
     }
   };
 
-  private _renderKitchenSinkContent = (props: KitchenSinkContentRendererProps) => {
+  private _renderTranscript = ({ onClose }: any): ComponentChildren => {
     const {
       showTime,
       scrollOffset,
@@ -394,50 +397,51 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
       searchNextPrevDebounceTimeout
     } = this._configs.pluginConfig;
     return (
-        <Transcript
-            {...props}
-            showTime={getConfigValue(showTime, isBoolean, true)}
-            scrollOffset={getConfigValue(scrollOffset, Number.isInteger, 0)}
-            scrollDebounceTimeout={getConfigValue(scrollDebounceTimeout, Number.isInteger, 200)}
-            searchDebounceTimeout={getConfigValue(searchDebounceTimeout, Number.isInteger, 250)}
-            searchNextPrevDebounceTimeout={getConfigValue(
-                searchNextPrevDebounceTimeout,
-                Number.isInteger,
-                100
-            )}
-            onSeek={this._seekTo}
-            captions={this._captions}
-            isLoading={this._isLoading}
-            hasError={this._hasError}
-            onRetryLoad={this._loadCaptions}
-            currentTime={this._player.currentTime}
-            videoDuration={this._player.duration}
-        />
-    );
+      <Transcript
+          onClose={onClose}
+          showTime={getConfigValue(showTime, isBoolean, true)}
+          scrollOffset={getConfigValue(scrollOffset, Number.isInteger, 0)}
+          scrollDebounceTimeout={getConfigValue(scrollDebounceTimeout, Number.isInteger, 200)}
+          searchDebounceTimeout={getConfigValue(searchDebounceTimeout, Number.isInteger, 250)}
+          searchNextPrevDebounceTimeout={getConfigValue(
+              searchNextPrevDebounceTimeout,
+              Number.isInteger,
+              100
+          )}
+          onSeek={this._seekTo}
+          captions={this._captions}
+          isLoading={this._isLoading}
+          hasError={this._hasError}
+          onRetryLoad={this._loadCaptions}
+          currentTime={this._player.currentTime}
+          videoDuration={this._player.duration}
+      />
+    )
+  }
+
+  private _renderKitchenSinkContent = (props: KitchenSinkContentRendererProps) => {
+    return this._renderTranscript({ onClose: props.onClose });
   };
 
-  private _renderExternalContent = (props: any) => {
+  private _renderDetachedContent = () => {
     const { detachedTargetId } = this._configs.pluginConfig;
     return (
-      <External
+      <ManagedComponent
+      label={'detached-component'}
+      isShown={() => true}
+      renderChildren={() => (
+        <Detached
         targetId={detachedTargetId}
       >
-        <Transcript
-            onClose={() => {}}
-            showTime={true}
-            scrollOffset={0}
-            scrollDebounceTimeout={200}
-            searchDebounceTimeout={250}
-            searchNextPrevDebounceTimeout={100}
-            onSeek={this._seekTo}
-            captions={this._captions}
-            isLoading={this._isLoading}
-            hasError={this._hasError}
-            onRetryLoad={this._loadCaptions}
-            currentTime={this._player.currentTime}
-            videoDuration={this._player.duration}
-        />
-      </External>
+          <div className={styles.detachedRoot}>
+            {this._renderTranscript({ onClose: () => {}})}
+          </div>
+      </Detached>
+      )}
+      ref={node => {
+        this._detachedItem = node
+      }}
+    />
     )
   }
 }

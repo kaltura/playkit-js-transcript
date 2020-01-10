@@ -1,11 +1,11 @@
 import { h, Component } from "preact";
 
-export interface SearchProps {
+export interface DetachedProps {
     children: any;
     targetId: string;
 }
 
-export class External extends Component<SearchProps> {
+export class Detached extends Component<DetachedProps> {
     render() {
         const { children, targetId } = this.props;
         return h((KalturaPlayer.ui as any).Portal, { into: targetId }, children);
