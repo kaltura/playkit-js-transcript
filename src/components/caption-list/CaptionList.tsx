@@ -12,6 +12,7 @@ interface CaptionListProps {
     searchMap: Record<number, Record<string, number>>;
     activeSearchIndex: number;
     captionProps: CaptionProps;
+    latestActiveSearchIndex: null | number;
 }
 
 export class CaptionList extends Component<CaptionListProps> {
@@ -40,11 +41,13 @@ export class CaptionList extends Component<CaptionListProps> {
             isAutoScrollEnabled,
             searchMap,
             activeSearchIndex,
-            captionProps
+            captionProps,
+            latestActiveSearchIndex
         } = this.props;
         return (
             <div className={styles.transcriptWrapper}>
                 {captions.map(captionData => {
+                    const highlightSearch = !!(searchMap[captionData.id] || {})[String(activeSearchIndex)]
                     return (
                         <Caption
                             key={captionData.id}
@@ -52,15 +55,20 @@ export class CaptionList extends Component<CaptionListProps> {
                             caption={captionData}
                             highlighted={highlightedMap[captionData.id]}
                             isAutoScrollEnabled={
-                                (isAutoScrollEnabled && highlightedMap[captionData.id]) ||
-                                (!isAutoScrollEnabled &&
-                                    !!(searchMap[captionData.id] || {})[
-                                        String(activeSearchIndex)
-                                    ])
+                                (
+                                    isAutoScrollEnabled &&
+                                    highlightedMap[captionData.id]
+                                ) ||
+                                (
+                                    !isAutoScrollEnabled &&
+                                    highlightSearch && 
+                                    !(latestActiveSearchIndex === activeSearchIndex)
+                                )
                             }
                             indexMap={searchMap[captionData.id]}
                             activeSearchIndex={activeSearchIndex}
                             longerThanHour={captionProps.videoDuration >= HOUR}
+                            shouldSetLatestSearchIndex={highlightSearch}
                             {...captionProps}
                         />
                     );

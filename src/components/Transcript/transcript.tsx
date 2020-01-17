@@ -54,6 +54,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
             method: method || "Method not defined"
         });
     };
+    private _latestActiveSearchIndex: number | null = null;
     state: TranscriptState = {
         isAutoScrollEnabled: true,
         highlightedMap: {},
@@ -74,6 +75,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         if (previousProps.captions !== captions) {
             this._log("Re-creating engine", "componentDidUpdate");
             this._createEngine();
+            this._latestActiveSearchIndex = null;
             this.setState({ search: "", isAutoScrollEnabled: true });
         }
 
@@ -161,6 +163,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     };
 
     private _findSearchMatches = () => {
+        this._latestActiveSearchIndex = null;
         this.setState((state: TranscriptState) => {
             if (!state.search) {
                 return { ...initialSearch };
@@ -248,7 +251,8 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
             showTime,
             searchLength,
             scrollTo: this._debounced.scrollTo,
-            videoDuration
+            videoDuration,
+            setLatestActiveSearchIndex: this._setLatestActiveSearchIndex
         };
 
         return (
@@ -259,10 +263,15 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
                 isAutoScrollEnabled={isAutoScrollEnabled}
                 searchMap={searchMap}
                 activeSearchIndex={activeSearchIndex}
+                latestActiveSearchIndex={this._latestActiveSearchIndex}
                 captionProps={captionProps}
             />
         );
     };
+
+    private _setLatestActiveSearchIndex = (index: number) => {
+        this._latestActiveSearchIndex =  index;
+    }
 
     private _renderLoading = () => {
         return (

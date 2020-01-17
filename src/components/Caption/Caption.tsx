@@ -1,12 +1,13 @@
 import { h, Component } from "preact";
 import * as styles from "./caption.scss";
-import { secontsToTime, HOUR, CaptionItem } from "../../utils";
+import { secontsToTime, CaptionItem } from "../../utils";
 
 export interface CaptionProps {
     showTime: boolean;
     searchLength: number;
     scrollTo(el: HTMLElement): void;
     videoDuration: number;
+    setLatestActiveSearchIndex: (index: number) => void;
 }
 
 interface ExtendedCaptionProps extends CaptionProps {
@@ -16,15 +17,26 @@ interface ExtendedCaptionProps extends CaptionProps {
     isAutoScrollEnabled: boolean;
     indexMap: Record<string, number> | undefined;
     activeSearchIndex: number;
-    longerThanHour: boolean
+    longerThanHour: boolean;
+    shouldSetLatestSearchIndex: boolean;
 }
 
 export class Caption extends Component<ExtendedCaptionProps> {
     private _hotspotRef: HTMLElement | null = null;
 
     componentDidUpdate() {
-        if (this._hotspotRef && this.props.isAutoScrollEnabled) {
-            this.props.scrollTo(this._hotspotRef);
+        const {
+            shouldSetLatestSearchIndex,
+            setLatestActiveSearchIndex,
+            activeSearchIndex,
+            scrollTo,
+            isAutoScrollEnabled
+        } = this.props;
+        if (this._hotspotRef && isAutoScrollEnabled) {
+            if (shouldSetLatestSearchIndex) {
+                setLatestActiveSearchIndex(activeSearchIndex);
+            }
+            scrollTo(this._hotspotRef);
         }
     }
 
