@@ -1,10 +1,11 @@
-import { h, Component } from "preact";
 import * as styles from "./transcript.scss";
 import { getContribLogger, CuepointEngine, debounce } from "@playkit-js-contrib/common";
 import { Spinner } from "../spinner";
 import { CaptionItem } from "../../utils";
 import { Search } from "../search";
 import { CaptionList } from "../caption-list";
+
+const { h, Component } = KalturaPlayer.ui.preact;
 
 export interface TranscriptProps {
     onSeek(time: number): void;

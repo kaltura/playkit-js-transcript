@@ -1,5 +1,5 @@
-import { h, Component } from "preact";
 import * as styles from "./spinner.scss";
+const { h, Component } = KalturaPlayer.ui.preact;
 
 export class Spinner extends Component {
     render() {

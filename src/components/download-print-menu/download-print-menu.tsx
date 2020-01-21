@@ -1,4 +1,4 @@
-import { h, Component, ComponentChild } from "preact";
+import { ComponentChild } from "preact";
 import {
     Popover,
     PopoverHorizontalPositions,
@@ -7,6 +7,7 @@ import {
 } from "@playkit-js-contrib/ui";
 import { PopoverMenu, PopoverMenuItem } from "../popover-menu";
 import * as styles from "./download-print-menu.scss";
+const { h, Component } = KalturaPlayer.ui.preact;
 
 interface DownloadPrintMenuProps {
     dropdownAriaLabel: string;

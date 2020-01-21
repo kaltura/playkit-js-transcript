@@ -1,5 +1,5 @@
-import { h, Component } from "preact";
 import * as styles from "./search.scss";
+const { h, Component } = KalturaPlayer.ui.preact;
 
 export interface SearchProps {
     onChange(value: string): void;

@@ -1,4 +1,3 @@
-import { h } from "preact";
 import {
   ContribPluginManager,
   OnMediaLoad,
@@ -40,7 +39,7 @@ import {
 } from "./utils";
 import { DownloadPrintMenu } from "./components/download-print-menu";
 
-
+const { h } = KalturaPlayer.ui.preact;
 
 const pluginName = `transcript`;
 
