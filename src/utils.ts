@@ -1,5 +1,7 @@
 import { xml2js } from "xml-js";
 import { Cuepoint } from "@playkit-js-contrib/common";
+import { KalturaRequest, KalturaRequestArgs } from 'kaltura-typescript-client/api/kaltura-request';
+import { KalturaObjectMetadata } from 'kaltura-typescript-client/api/kaltura-object-base';
 
 export const HOUR = 3600; // seconds in 1 hour
 
@@ -141,4 +143,53 @@ export function makePlainText(captions: Array<CaptionItem>): string {
     return captions.reduce((acc: string, next: CaptionItem) => {
         return `${acc} ${next.text}`;
     }, "");
+}
+
+
+// KalturaClient uses custom CaptionAssetServeAction method,
+// once KalturaFileRequest is fixed remove custom CaptionAssetServeAction and use
+// CaptionAssetServeAction from "kaltura-typescript-client/api/types/CaptionAssetServeAction"
+interface CaptionAssetServeActionArgs extends KalturaRequestArgs {
+    captionAssetId : string;
+  }
+export class CaptionAssetServeAction extends KalturaRequest<{url: string}> {
+    captionAssetId: any;
+    constructor(data: CaptionAssetServeActionArgs)
+    {
+        super(data, { responseType: 'v', responseSubType: '', responseConstructor: null } as any);
+    }
+    protected _getMetadata(): KalturaObjectMetadata
+    {
+        const result = super._getMetadata();
+        Object.assign(
+            result.properties,
+            {
+                service : { type : 'c', default : 'caption_captionasset' },
+                action : { type : 'c', default : 'serve' },
+                captionAssetId : { type : 's' }
+            }
+        );
+        return result;
+    }
+  }
+
+  export function deepGet(obj: any, props: Array<string>, defaultValue: any): any {
+    // If we have reached an undefined/null property
+    // then stop executing and return the default value.
+    // If no default was provided it will be undefined.
+    if (obj === undefined || obj === null) {
+        return defaultValue;
+    }
+
+    // If the path array has no more elements, we've reached
+    // the intended property and return its value
+    if (props.length === 0) {
+        return obj;
+    }
+
+    // Prepare our found property and path array for recursion
+    var foundSoFar = obj[props[0]];
+    var remainingProps = props.slice(1);
+
+    return deepGet(foundSoFar, remainingProps, defaultValue);
 }

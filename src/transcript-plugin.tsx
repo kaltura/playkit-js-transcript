@@ -28,7 +28,6 @@ import {
 import { KalturaCaptionAssetFilter } from "kaltura-typescript-client/api/types/KalturaCaptionAssetFilter";
 import { CaptionAssetListAction } from "kaltura-typescript-client/api/types/CaptionAssetListAction";
 import { KalturaCaptionAsset } from "kaltura-typescript-client/api/types/KalturaCaptionAsset";
-import { CaptionAssetGetUrlAction } from "kaltura-typescript-client/api/types/CaptionAssetGetUrlAction";
 
 import { Transcript } from "./components/transcript";
 import {
@@ -36,11 +35,11 @@ import {
   CaptionItem,
   getConfigValue,
   isBoolean,
-  makePlainText
+  makePlainText,
+  CaptionAssetServeAction,
+  deepGet
 } from "./utils";
 import { DownloadPrintMenu } from "./components/download-print-menu";
-
-
 
 const pluginName = `transcript`;
 
@@ -233,9 +232,8 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
   };
 
   private _getCaptionsList = (): void => {
-    const filter: KalturaCaptionAssetFilter = new KalturaCaptionAssetFilter();
-    filter.entryIdEqual = this._entryId;
-    const request = new CaptionAssetListAction({ filter: filter });
+    const filter: KalturaCaptionAssetFilter = new KalturaCaptionAssetFilter({ entryIdEqual: this._entryId });
+    const request = new CaptionAssetListAction({ filter });
     this._initLoading();
     this._kalturaClient.request(request).then(
         data => {
@@ -253,17 +251,16 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
   };
 
   private _findCaptionAsset = (
-      lang: string = this._configs.playerConfig.playback.textLanguage || ""
-  ): KalturaCaptionAsset | null => {
-    if (lang === "off" || lang === "" || lang === "auto") {
-      // take first captions from caption-list when caption language is not defined
-      return this._captionsList[0];
+      lang: string = deepGet(this._configs, ["playerConfig", "playback", "textLanguage"], "")
+  ): KalturaCaptionAsset => {
+    const captionAsset = this._captionsList.find((ca: KalturaCaptionAsset) => {
+      return ca.languageCode === lang;
+    });
+    if (captionAsset) {
+      return captionAsset
     }
-    return (
-        this._captionsList.find((ca: KalturaCaptionAsset) => {
-          return ca.languageCode === lang;
-        }) || null
-    );
+    // take first captions from caption-list when caption language is not defined
+    return this._captionsList[0];
   };
 
   private _getCaptionsByLang = (lang?: string): void => {
@@ -272,25 +269,12 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
       return;
     }
     if (this._captionsList && this._captionsList.length > 0) {
-      const captionAsset: KalturaCaptionAsset | null = this._findCaptionAsset(lang);
+      const captionAsset: KalturaCaptionAsset = this._findCaptionAsset(lang);
       if (captionAsset) {
         this._transcriptLanguage = captionAsset.language;
-        const request = new CaptionAssetGetUrlAction({ id: captionAsset.id });
         this._initLoading();
-        this._kalturaClient.request(request).then(
-            data => {
-              if (data) {
-                this._initKitchensinkAndUpperBarItems();
-                // the data is in fact the URL of the file. Now we need to fetch it
-                this._loadCaptionsAsset(data, captionAsset);
-              } else {
-                this._onError(undefined, "Data is empty", "_getCaptionsByLang");
-              }
-            },
-            err => {
-              this._onError(err, "Failed to fetch captions", "_getCaptionsByLang");
-            }
-        );
+        this._initKitchensinkAndUpperBarItems();
+        this._loadCaptionsAsset(captionAsset);
       } else {
         this._onError(
             undefined,
@@ -303,27 +287,37 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
     }
   };
 
-  private _loadCaptionsAsset = (url: string, captionAsset: KalturaCaptionAsset) => {
-    fetch(url)
-        .then(function(response: any) {
-          if (response.ok) {
-            return response.text();
-          }
-          throw new Error("Error message.");
-        })
-        .then((data: string) => {
-          this._captions = this._parseCaptions(data, captionAsset);
+  private _loadCaptionsAsset = (captionAsset: KalturaCaptionAsset) => {
+
+    const request = new CaptionAssetServeAction({ captionAssetId: captionAsset.id });
+
+    this._kalturaClient.request(request).then(
+      data => {
+        // caption takes from error message, remove once client is fixed !
+        const rawCaptions = deepGet(data, ['error', 'message'], '');
+        if (rawCaptions) {
+          this._captions = this._parseCaptions(rawCaptions, captionAsset);
           this._isLoading = false;
           this._updateKitchenSink();
-        })
-        .catch((err: Error) => {
-          this._onError(err, "Failed to fetch caption asset", "_loadCaptionsAsset");
-        });
+        } else {
+          this._onError(undefined, "Captions data is empty", "_loadCaptionsAsset");
+        }
+      },
+      err => {
+        console.log(err);
+        this._onError(err, "Failed to fetch caption asset", "_loadCaptionsAsset");
+      }
+    )
   };
 
   private _parseCaptions = (data: string, captionAsset: KalturaCaptionAsset): CaptionItem[] => {
-    const captionFormat = this._getCaptionFormat(captionAsset);
-    return getCaptionsByFormat(data, captionFormat);
+    try {
+      const captionFormat = this._getCaptionFormat(captionAsset);
+      return getCaptionsByFormat(data, captionFormat);
+    } catch(err) {
+      this._onError(err, "Failed to parse the caption file", "_parseCaptions");
+    }
+    return [];
   };
 
   private _getCaptionFormat = (captionAsset: KalturaCaptionAsset): string => {
@@ -331,7 +325,7 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
         this._captionsList &&
         captionAsset &&
         this._captionsList.find((item: KalturaCaptionAsset) => item.id === captionAsset.id);
-    return (selectedLanguage && selectedLanguage.format) || "";
+    return deepGet(selectedLanguage, ["format"], "");
   };
 
   private _seekTo = (time: number) => {
@@ -341,7 +335,7 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
   private _handleDownload = () => {
     const { playerConfig } = this._configs;
     if (this._captions) {
-      const entryMetadata = playerConfig.sources.metadata || {};
+      const entryMetadata = deepGet(playerConfig, ["sources", "metadata"], {});
       downloadContent(
           makePlainText(this._captions),
           `${this._transcriptLanguage}${
