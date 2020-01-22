@@ -1,3 +1,4 @@
+import { ComponentChildren } from "preact";
 import {
   ContribPluginManager,
   OnMediaLoad,
@@ -23,7 +24,8 @@ import {
   downloadContent,
   printContent,
   UpperBarItem,
-  ManagedComponent
+  ManagedComponent,
+  Detached
 } from "@playkit-js-contrib/ui";
 import { KalturaCaptionAssetFilter } from "kaltura-typescript-client/api/types/KalturaCaptionAssetFilter";
 import { CaptionAssetListAction } from "kaltura-typescript-client/api/types/CaptionAssetListAction";
@@ -39,7 +41,6 @@ import {
   makePlainText
 } from "./utils";
 import { DownloadPrintMenu } from "./components/download-print-menu";
-import { Detached } from "./components/detached";
 
 const { h } = KalturaPlayer.ui.preact;
 
@@ -428,21 +429,21 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
     const { detachedTargetId } = this._configs.pluginConfig;
     return (
       <ManagedComponent
-      label={'detached-component'}
-      isShown={() => true}
-      renderChildren={() => (
-        <Detached
-        targetId={detachedTargetId}
-      >
-          <div className={styles.detachedRoot}>
-            {this._renderTranscript({ onClose: () => {}})}
-          </div>
-      </Detached>
-      )}
-      ref={node => {
-        this._detachedItem = node
-      }}
-    />
+        label={'detached-component'}
+        isShown={() => true}
+        renderChildren={() => (
+          <Detached
+            targetId={detachedTargetId}
+          >
+              <div className={styles.detachedRoot}>
+                {this._renderTranscript({ onClose: () => {}})}
+              </div>
+          </Detached>
+        )}
+        ref={node => {
+          this._detachedItem = node
+        }}
+      />
     )
   }
 }
