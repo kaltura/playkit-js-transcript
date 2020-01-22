@@ -1,5 +1,6 @@
-import { h, Component, ComponentChild } from "preact";
+import { ComponentChild } from "preact";
 import * as styles from "./popover-menu.scss";
+const { h, Component } = KalturaPlayer.ui.preact;
 
 export interface PopoverMenuItem {
     label: string;

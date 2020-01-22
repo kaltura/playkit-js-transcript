@@ -1,7 +1,7 @@
-import { h, Component } from "preact";
 import { Caption, CaptionProps } from "../caption";
 import * as styles from "./captionList.scss";
 import { CaptionItem, HOUR } from "../../utils";
+const { h, Component } = KalturaPlayer.ui.preact;
 
 
 interface CaptionListProps {

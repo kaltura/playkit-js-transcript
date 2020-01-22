@@ -1,6 +1,6 @@
-import { h, Component } from "preact";
 import * as styles from "./caption.scss";
 import { secontsToTime, HOUR, CaptionItem } from "../../utils";
+const { h, Component } = KalturaPlayer.ui.preact;
 
 export interface CaptionProps {
     showTime: boolean;
