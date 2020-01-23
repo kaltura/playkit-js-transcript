@@ -7,15 +7,17 @@
     margin-left: 10px;
     margin-right: 10px;
     color: $white-color;
-    background: inherit;
+    background-color: transparent;
     border: none;
     cursor: pointer;
     padding: 0;
+    opacity: 0.8;
     &:hover {
         opacity: 1;
     }
     &:focus {
         outline: 1px solid $focus-color;
+        opacity: 1;
     }
     .icon {
         width: 100%;
