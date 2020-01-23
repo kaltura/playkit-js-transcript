@@ -6,7 +6,7 @@ import {
   OnPluginSetup,
   ContribServices,
   ContribPluginData,
-  ContribPluginConfigs
+  ContribPluginConfigs,
 } from "@playkit-js-contrib/plugin";
 import { getContribLogger } from "@playkit-js-contrib/common";
 import * as styles from './transcript-plugin.scss';
@@ -149,7 +149,7 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
   private _addExternalTw(): void {
     this._contribServices.upperBarManager.add({
       label: "Transcript",
-      onClick: () => {},
+      onClick: () => {}, // TODO: add API for handlick click on X button (onClose event)
       renderItem: () => (
         <div
         className={styles.pluginIcon}
