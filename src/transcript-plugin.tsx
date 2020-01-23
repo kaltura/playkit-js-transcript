@@ -428,22 +428,20 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
   private _renderDetachedContent = () => {
     const { detachedTargetId } = this._configs.pluginConfig;
     return (
-      <ManagedComponent
-        label={'detached-component'}
-        isShown={() => true}
-        renderChildren={() => (
-          <Detached
-            targetId={detachedTargetId}
-          >
-              <div className={styles.detachedRoot}>
-                {this._renderTranscript({ onClose: () => {}})}
-              </div>
-          </Detached>
-        )}
-        ref={node => {
-          this._detachedItem = node
-        }}
-      />
+      <Detached
+        targetId={detachedTargetId}
+      >
+        <div className={styles.detachedRoot}>
+          <ManagedComponent
+            label={'detached-component'}
+            isShown={() => true}
+            renderChildren={() => this._renderTranscript({ onClose: () => {}})}
+            ref={node => {
+              this._detachedItem = node
+            }}
+          />
+        </div>
+    </Detached>
     )
   }
 }
