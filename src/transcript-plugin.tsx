@@ -253,8 +253,8 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
   private _findCaptionAsset = (
       lang: string = deepGet(this._configs, ["playerConfig", "playback", "textLanguage"], "")
   ): KalturaCaptionAsset => {
-    const captionAsset = this._captionsList.find((ca: KalturaCaptionAsset) => {
-      return ca.languageCode === lang;
+    const captionAsset = this._captionsList.find((kalturaCaptionAsset: KalturaCaptionAsset) => {
+      return kalturaCaptionAsset.languageCode === lang;
     });
     if (captionAsset) {
       return captionAsset
@@ -289,30 +289,41 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
 
   private _loadCaptionsAsset = (captionAsset: KalturaCaptionAsset) => {
 
+    // CaptionAssetServeAction should be imported from "kaltura-typescript-client/api/types/CaptionAssetServeAction"
+    // replace CaptionAssetServeAction while client fixed (https://kaltura.atlassian.net/browse/FEV-470)
     const request = new CaptionAssetServeAction({ captionAssetId: captionAsset.id });
 
     this._kalturaClient.request(request).then(
       data => {
-        // caption takes from error message, remove once client is fixed !
-        const rawCaptions = deepGet(data, ['error', 'message'], '');
-        if (rawCaptions) {
-          this._captions = this._parseCaptions(rawCaptions, captionAsset);
-          this._isLoading = false;
-          this._updateKitchenSink();
-        } else {
-          this._onError(undefined, "Captions data is empty", "_loadCaptionsAsset");
-        }
+        // uncomment _getCaptionData() once client fixed 
+        // this._getCaptionData(data, captionAsset);
       },
       err => {
-        console.log(err);
-        this._onError(err, "Failed to fetch caption asset", "_loadCaptionsAsset");
+        // remove getting captions from error while client fixed (https://kaltura.atlassian.net/browse/FEV-470)
+        this._getCaptionData(err, captionAsset);
+        // this._onError(err, "Failed to fetch caption asset", "_loadCaptionsAsset");
       }
     )
   };
 
+  private _getCaptionData = (data: any, captionAsset: KalturaCaptionAsset) => {
+    const rawCaptions = deepGet(data, ['error', 'message'], data);
+    if (rawCaptions) {
+      this._captions = this._parseCaptions(rawCaptions, captionAsset);
+      this._isLoading = false;
+      this._updateKitchenSink();
+    } else {
+      this._onError(undefined, "Captions data is empty", "_loadCaptionsAsset");
+    }
+  }
+
   private _parseCaptions = (data: string, captionAsset: KalturaCaptionAsset): CaptionItem[] => {
     try {
       const captionFormat = this._getCaptionFormat(captionAsset);
+      if (data.toString().indexOf("Error: ") === 0) {
+         // remove this condition once client fixed 
+        data = data.toString().replace("Error: ", "");
+      }
       return getCaptionsByFormat(data, captionFormat);
     } catch(err) {
       this._onError(err, "Failed to parse the caption file", "_parseCaptions");
