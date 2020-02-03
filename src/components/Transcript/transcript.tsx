@@ -54,6 +54,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
             method: method || "Method not defined"
         });
     };
+    private _silence = false;
     state: TranscriptState = {
         isAutoScrollEnabled: true,
         highlightedMap: {},
@@ -112,6 +113,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
 
             const transcriptUpdate = this._engine.updateTime(currentTime, forceSnapshot);
             if (transcriptUpdate.snapshot) {
+                this._silence = false;
                 const highlightedMap = transcriptUpdate.snapshot.reduce((acc, item) => {
                     return { ...acc, [item.id]: true };
                 }, {});
@@ -126,8 +128,18 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
 
             const { show, hide } = transcriptUpdate.delta;
 
+            if (show.length === 0 && hide.length > 0) {
+                this._silence = true;
+                return state;
+            }
+
             if (show.length > 0 || hide.length > 0) {
-                const newHighlightedMap = { ...state.highlightedMap };
+                let newHighlightedMap: Record<number, true> = {};
+                if (this._silence) {
+                    this._silence = false;
+                } else {
+                    newHighlightedMap = { ...state.highlightedMap };
+                }
                 show.forEach((caption: CaptionItem) => {
                     newHighlightedMap[caption.id] = true;
                 });
