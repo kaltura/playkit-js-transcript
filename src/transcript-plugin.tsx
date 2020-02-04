@@ -295,7 +295,6 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
 
     this._kalturaClient.request(request).then(
       data => {
-        // uncomment _getCaptionData() once client fixed 
         this._getCaptionData(data, captionAsset);
       },
       err => {
