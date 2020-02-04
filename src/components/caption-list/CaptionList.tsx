@@ -33,11 +33,19 @@ export class CaptionList extends Component<CaptionListProps> {
         seekTo(caption);
     };
 
+    private _getShouldMakeScroll = (captionData: CaptionItem) => {
+        const { isAutoScrollEnabled, highlightedMap, searchMap, activeSearchIndex } = this.props;
+        return (isAutoScrollEnabled && highlightedMap[captionData.id]) ||
+        (!isAutoScrollEnabled &&
+            !!(searchMap[captionData.id] || {})[
+                String(activeSearchIndex)
+            ])
+    }
+
     render() {
         const {
             captions,
             highlightedMap,
-            isAutoScrollEnabled,
             searchMap,
             activeSearchIndex,
             captionProps
@@ -45,23 +53,26 @@ export class CaptionList extends Component<CaptionListProps> {
         return (
             <div className={styles.transcriptWrapper}>
                 {captions.map(captionData => {
+                    const searchProps: any = {};
+                    if (searchMap[captionData.id]) {
+                        searchProps.indexMap = searchMap[captionData.id];
+                        searchProps.activeSearchIndex = activeSearchIndex;
+                        searchProps.searchLength = captionProps.searchLength;
+                    }
+                    const newCaptionProps = {
+                        showTime: captionProps.showTime,
+                        scrollTo: captionProps.scrollTo,
+                        key: captionData.id,
+                        onClick: this._handleClick(captionData),
+                        caption: captionData,
+                        highlighted: highlightedMap[captionData.id],
+                        longerThanHour: captionProps.videoDuration >= HOUR,
+                        shouldMakeScroll: this._getShouldMakeScroll(captionData),
+                        ...searchProps
+                    }
                     return (
                         <Caption
-                            key={captionData.id}
-                            onClick={this._handleClick(captionData)}
-                            caption={captionData}
-                            highlighted={highlightedMap[captionData.id]}
-                            isAutoScrollEnabled={
-                                (isAutoScrollEnabled && highlightedMap[captionData.id]) ||
-                                (!isAutoScrollEnabled &&
-                                    !!(searchMap[captionData.id] || {})[
-                                        String(activeSearchIndex)
-                                    ])
-                            }
-                            indexMap={searchMap[captionData.id]}
-                            activeSearchIndex={activeSearchIndex}
-                            longerThanHour={captionProps.videoDuration >= HOUR}
-                            {...captionProps}
+                            {...newCaptionProps}
                         />
                     );
                 })}
