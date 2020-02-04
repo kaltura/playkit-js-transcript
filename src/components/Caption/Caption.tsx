@@ -16,7 +16,8 @@ interface ExtendedCaptionProps extends CaptionProps {
     shouldMakeScroll: boolean;
     indexMap: Record<string, number> | undefined;
     activeSearchIndex: number;
-    longerThanHour: boolean
+    longerThanHour: boolean;
+    isAutoScrollEnabled: boolean;
 }
 
 export class Caption extends Component<ExtendedCaptionProps> {
@@ -29,13 +30,17 @@ export class Caption extends Component<ExtendedCaptionProps> {
     }
 
     shouldComponentUpdate(nextProps: ExtendedCaptionProps) {
-        if (this.props.highlighted !== nextProps.highlighted) {
+        const { indexMap, highlighted, isAutoScrollEnabled } = this.props;
+        if (highlighted !== nextProps.highlighted) {
             return true;
         }
-        if (this.props.indexMap !== nextProps.indexMap) {
+        if (highlighted && isAutoScrollEnabled !== nextProps.isAutoScrollEnabled) {
             return true;
         }
-        if (this.props.indexMap && nextProps.indexMap && this.props.indexMap[this.props.activeSearchIndex] !== nextProps.indexMap[nextProps.activeSearchIndex]) {
+        if (indexMap !== nextProps.indexMap) {
+            return true;
+        }
+        if (indexMap && nextProps.indexMap && indexMap[this.props.activeSearchIndex] !== nextProps.indexMap[nextProps.activeSearchIndex]) {
             return true;
         }
         return false;

@@ -48,7 +48,8 @@ export class CaptionList extends Component<CaptionListProps> {
             highlightedMap,
             searchMap,
             activeSearchIndex,
-            captionProps
+            captionProps,
+            isAutoScrollEnabled
         } = this.props;
         return (
             <div className={styles.transcriptWrapper}>
@@ -68,6 +69,7 @@ export class CaptionList extends Component<CaptionListProps> {
                         highlighted: highlightedMap[captionData.id],
                         longerThanHour: captionProps.videoDuration >= HOUR,
                         shouldMakeScroll: this._getShouldMakeScroll(captionData),
+                        isAutoScrollEnabled,
                         ...searchProps
                     }
                     return (
