@@ -23,7 +23,6 @@ export class Caption extends Component<ExtendedCaptionProps> {
     private _hotspotRef: HTMLElement | null = null;
 
     componentDidUpdate() {
-        console.log('Update')
         if (this._hotspotRef && this.props.shouldMakeScroll) {
             this.props.scrollTo(this._hotspotRef);
         }
