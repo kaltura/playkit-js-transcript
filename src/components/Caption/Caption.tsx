@@ -30,7 +30,12 @@ export class Caption extends Component<ExtendedCaptionProps> {
     }
 
     shouldComponentUpdate(nextProps: ExtendedCaptionProps) {
-        const { indexMap, highlighted, isAutoScrollEnabled } = this.props;
+        const {
+            indexMap,
+            highlighted,
+            isAutoScrollEnabled,
+            activeSearchIndex
+        } = this.props;
         if (highlighted !== nextProps.highlighted) {
             return true;
         }
@@ -40,7 +45,7 @@ export class Caption extends Component<ExtendedCaptionProps> {
         if (indexMap !== nextProps.indexMap) {
             return true;
         }
-        if (indexMap && nextProps.indexMap && indexMap[this.props.activeSearchIndex] !== nextProps.indexMap[nextProps.activeSearchIndex]) {
+        if (indexMap && nextProps.indexMap && indexMap[activeSearchIndex] !== nextProps.indexMap[nextProps.activeSearchIndex]) {
             return true;
         }
         return false;
