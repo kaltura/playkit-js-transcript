@@ -13,19 +13,42 @@ interface ExtendedCaptionProps extends CaptionProps {
     caption: CaptionItem;
     onClick(): void;
     highlighted: boolean;
-    isAutoScrollEnabled: boolean;
+    shouldMakeScroll: boolean;
     indexMap: Record<string, number> | undefined;
     activeSearchIndex: number;
-    longerThanHour: boolean
+    longerThanHour: boolean;
+    isAutoScrollEnabled: boolean;
 }
 
 export class Caption extends Component<ExtendedCaptionProps> {
     private _hotspotRef: HTMLElement | null = null;
 
     componentDidUpdate() {
-        if (this._hotspotRef && this.props.isAutoScrollEnabled) {
+        if (this._hotspotRef && this.props.shouldMakeScroll) {
             this.props.scrollTo(this._hotspotRef);
         }
+    }
+
+    shouldComponentUpdate(nextProps: ExtendedCaptionProps) {
+        const {
+            indexMap,
+            highlighted,
+            isAutoScrollEnabled,
+            activeSearchIndex
+        } = this.props;
+        if (highlighted !== nextProps.highlighted) {
+            return true;
+        }
+        if (highlighted && isAutoScrollEnabled !== nextProps.isAutoScrollEnabled) {
+            return true;
+        }
+        if (indexMap !== nextProps.indexMap) {
+            return true;
+        }
+        if (indexMap && nextProps.indexMap && indexMap[activeSearchIndex] !== nextProps.indexMap[nextProps.activeSearchIndex]) {
+            return true;
+        }
+        return false;
     }
 
     private _handleClick = () => {

@@ -16,12 +16,19 @@ interface CaptionListProps {
 
 export class CaptionList extends Component<CaptionListProps> {
     shouldComponentUpdate(nextProps: Readonly<CaptionListProps>) {
+        const {
+            highlightedMap,
+            captions,
+            searchMap,
+            activeSearchIndex,
+            isAutoScrollEnabled
+        } = this.props
         if (
-            this.props.highlightedMap !== nextProps.highlightedMap ||
-            this.props.captions !== nextProps.captions ||
-            this.props.searchMap !== nextProps.searchMap ||
-            this.props.activeSearchIndex !== nextProps.activeSearchIndex ||
-            this.props.isAutoScrollEnabled !== nextProps.isAutoScrollEnabled
+            highlightedMap !== nextProps.highlightedMap ||
+            captions !== nextProps.captions ||
+            searchMap !== nextProps.searchMap ||
+            activeSearchIndex !== nextProps.activeSearchIndex ||
+            isAutoScrollEnabled !== nextProps.isAutoScrollEnabled
         ) {
             return true;
         }
@@ -33,38 +40,56 @@ export class CaptionList extends Component<CaptionListProps> {
         seekTo(caption);
     };
 
-    render() {
+    private _getShouldMakeScroll = (captionId: number) => {
+        const { isAutoScrollEnabled, highlightedMap, searchMap, activeSearchIndex } = this.props;
+        return (isAutoScrollEnabled && highlightedMap[captionId]) ||
+        (!isAutoScrollEnabled &&
+            !!(searchMap[captionId] || {})[
+                String(activeSearchIndex)
+            ])
+    }
+
+    private _getSearchProps = (captionId: number) => {
+        const { searchMap, activeSearchIndex, captionProps } = this.props;
+        const searchProps: any = {};
+        if (searchMap[captionId]) {
+            searchProps.indexMap = searchMap[captionId];
+            searchProps.activeSearchIndex = activeSearchIndex;
+            searchProps.searchLength = captionProps.searchLength;
+        }
+        return searchProps;
+    }
+
+    private _getCaptionProps = (captionData: CaptionItem) => {
         const {
-            captions,
             highlightedMap,
-            isAutoScrollEnabled,
-            searchMap,
-            activeSearchIndex,
-            captionProps
+            captionProps,
+            isAutoScrollEnabled
         } = this.props;
+        const { id } = captionData;
+        const newCaptionProps = {
+            showTime: captionProps.showTime,
+            scrollTo: captionProps.scrollTo,
+            key: id,
+            onClick: this._handleClick(captionData),
+            caption: captionData,
+            highlighted: highlightedMap[id],
+            longerThanHour: captionProps.videoDuration >= HOUR,
+            shouldMakeScroll: this._getShouldMakeScroll(id),
+            isAutoScrollEnabled,
+            ...this._getSearchProps(id)
+        }
+        return newCaptionProps;
+    }
+
+    render() {
         return (
             <div className={styles.transcriptWrapper}>
-                {captions.map(captionData => {
-                    return (
-                        <Caption
-                            key={captionData.id}
-                            onClick={this._handleClick(captionData)}
-                            caption={captionData}
-                            highlighted={highlightedMap[captionData.id]}
-                            isAutoScrollEnabled={
-                                (isAutoScrollEnabled && highlightedMap[captionData.id]) ||
-                                (!isAutoScrollEnabled &&
-                                    !!(searchMap[captionData.id] || {})[
-                                        String(activeSearchIndex)
-                                    ])
-                            }
-                            indexMap={searchMap[captionData.id]}
-                            activeSearchIndex={activeSearchIndex}
-                            longerThanHour={captionProps.videoDuration >= HOUR}
-                            {...captionProps}
-                        />
-                    );
-                })}
+                {this.props.captions.map(captionData => (
+                    <Caption
+                        {...this._getCaptionProps(captionData)}
+                    />
+                ))}
             </div>
         );
     }
