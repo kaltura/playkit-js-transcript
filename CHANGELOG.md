@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.6](https://github.com/kaltura/playkit-js-transcript/compare/v0.0.5...v0.0.6) (2020-02-04)
+
 ### [0.0.5](https://github.com/kaltura/playkit-js-transcript/compare/v0.0.1...v0.0.5) (2020-01-24)
 
 * fixed styles for Edge and IE11 browsers (REACH2-746) ([f34a12](https://github.com/kaltura/playkit-js-transcript/commit/f34a12e6872ef17a4ca05cec97457c7ab6dfc16a))
