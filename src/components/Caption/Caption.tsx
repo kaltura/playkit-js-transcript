@@ -34,8 +34,12 @@ export class Caption extends Component<ExtendedCaptionProps> {
             indexMap,
             highlighted,
             isAutoScrollEnabled,
-            activeSearchIndex
+            activeSearchIndex,
+            longerThanHour
         } = this.props;
+        if (longerThanHour !== nextProps.longerThanHour) {
+            return true;
+        }
         if (highlighted !== nextProps.highlighted) {
             return true;
         }
@@ -110,7 +114,7 @@ export class Caption extends Component<ExtendedCaptionProps> {
         return (
             <div className={styles.caption}>
                 {showTime && (
-                    <div className={`${styles.captionTime} ${longerThanHour ? styles.longDuration : ""}`}>
+                    <div className={styles.captionTime}>
                         {secontsToTime(startTime, longerThanHour)}
                     </div>
                 )}

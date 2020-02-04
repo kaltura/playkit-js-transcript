@@ -21,14 +21,16 @@ export class CaptionList extends Component<CaptionListProps> {
             captions,
             searchMap,
             activeSearchIndex,
-            isAutoScrollEnabled
+            isAutoScrollEnabled,
+            captionProps
         } = this.props
         if (
             highlightedMap !== nextProps.highlightedMap ||
             captions !== nextProps.captions ||
             searchMap !== nextProps.searchMap ||
             activeSearchIndex !== nextProps.activeSearchIndex ||
-            isAutoScrollEnabled !== nextProps.isAutoScrollEnabled
+            isAutoScrollEnabled !== nextProps.isAutoScrollEnabled ||
+            captionProps.videoDuration !== nextProps.captionProps.videoDuration
         ) {
             return true;
         }
