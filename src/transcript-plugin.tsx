@@ -4,7 +4,6 @@ import {
   OnMediaLoad,
   OnMediaUnload,
   OnPluginSetup,
-
   ContribServices,
   ContribPluginData,
   ContribPluginConfigs
@@ -37,7 +36,8 @@ import {
   isBoolean,
   makePlainText,
   CaptionAssetServeAction,
-  deepGet
+  deepGet,
+  isString
 } from "./utils";
 import { DownloadPrintMenu } from "./components/download-print-menu";
 
@@ -220,15 +220,11 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
     this._updateKitchenSink();
   };
 
-  private _loadCaptions = (e?: any): void => {
+  private _loadCaptions = (event?: {}): void => {
     if (!this._entryId) {
       return;
     }
-    this._getCaptionsByLang(
-        e
-            ? e.payload.selectedTextTrack._language
-            : this._configs.playerConfig.playback.textLanguage
-    );
+    this._getCaptionsByLang(event);
   };
 
   private _getCaptionsList = (): void => {
@@ -250,26 +246,54 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
     );
   };
 
-  private _findCaptionAsset = (
-      lang: string = deepGet(this._configs, ["playerConfig", "playback", "textLanguage"], "")
-  ): KalturaCaptionAsset => {
-    const captionAsset = this._captionsList.find((kalturaCaptionAsset: KalturaCaptionAsset) => {
-      return kalturaCaptionAsset.languageCode === lang;
+  private _filterCaptionAssetsByProperty = (
+    list: KalturaCaptionAsset[],
+    match: number | string,
+    property: string
+  ): KalturaCaptionAsset[] => {
+    return list.filter((kalturaCaptionAsset: KalturaCaptionAsset) => {
+      return deepGet(kalturaCaptionAsset, [property]) === match;
     });
-    if (captionAsset) {
-      return captionAsset
+  }
+
+  private _findCaptionAsset = (
+      event: any
+  ): KalturaCaptionAsset => {
+    if (isString(event)) {
+      const filteredByLang = this._filterCaptionAssetsByProperty(this._captionsList, event, 'languageCode');
+      // take first captions from caption-list when caption language is not defined
+      return filteredByLang[0] ? filteredByLang[0] : this._captionsList[0];
     }
+    const filteredByLang = this._filterCaptionAssetsByProperty(
+      this._captionsList,
+      deepGet(event, ['payload', 'selectedTextTrack', '_language']),
+      'languageCode'
+    );
+    if (filteredByLang.length === 1) {
+      return filteredByLang[0];
+    }
+    const filteredByLabel = this._filterCaptionAssetsByProperty(
+      filteredByLang,
+      deepGet(event, ['payload', 'selectedTextTrack', '_label']),
+      'label'
+    );
+    if (filteredByLang.length === 1) {
+      return filteredByLabel[0];
+    }
+    const filteredByIndex = this._captionsList[deepGet(event, ['payload', 'selectedTextTrack', '_id'])];
     // take first captions from caption-list when caption language is not defined
-    return this._captionsList[0];
+    return filteredByIndex ? filteredByIndex : this._captionsList[0];
   };
 
-  private _getCaptionsByLang = (lang?: string): void => {
-    if (lang === "off" && this._captions.length) {
+  private _getCaptionsByLang = (
+    event: string | {} = deepGet(this._configs, ["playerConfig", "playback", "textLanguage"], "")
+  ): void => {
+    if (deepGet(event, ['payload', 'selectedTextTrack', '_language']) === "off" && this._captions.length) {
       // prevent loading of captions when user select "off" captions option
       return;
     }
     if (this._captionsList && this._captionsList.length > 0) {
-      const captionAsset: KalturaCaptionAsset = this._findCaptionAsset(lang);
+      const captionAsset: KalturaCaptionAsset = this._findCaptionAsset(event);
       if (captionAsset) {
         this._transcriptLanguage = captionAsset.language;
         this._initLoading();

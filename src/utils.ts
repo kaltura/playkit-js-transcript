@@ -173,7 +173,7 @@ export class CaptionAssetServeAction extends KalturaRequest<{url: string}> {
     }
   }
 
-  export function deepGet(obj: any, props: Array<string>, defaultValue: any): any {
+  export function deepGet(obj: any, props: Array<string>, defaultValue?: any): any {
     // If we have reached an undefined/null property
     // then stop executing and return the default value.
     // If no default was provided it will be undefined.
@@ -193,3 +193,7 @@ export class CaptionAssetServeAction extends KalturaRequest<{url: string}> {
 
     return deepGet(foundSoFar, remainingProps, defaultValue);
 }
+
+export function isString(val: any) {
+    return typeof val == 'string';
+};
