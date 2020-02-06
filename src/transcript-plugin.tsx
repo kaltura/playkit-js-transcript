@@ -87,9 +87,16 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
             endpointUrl: playerConfig.provider.env.serviceUrl
         });
 
-        this._kalturaClient.setDefaultRequestOptions({
-            ks: playerConfig.provider.ks
-        });
+        if (playerConfig.provider.ks) {
+            this._kalturaClient.setDefaultRequestOptions({
+                ks: playerConfig.provider.ks
+            });
+        } else {
+            this._kalturaClient.setDefaultRequestOptions({
+                ks: playerConfig.session.ks
+            });
+        }
+
 
         this._player.addEventListener(this._player.Event.TIME_UPDATE, this._onTimeUpdate);
         this._player.addEventListener(this._player.Event.TEXT_TRACK_CHANGED, this._loadCaptions);
@@ -239,13 +246,6 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
         filter.entryIdEqual = this._entryId;
         const request = new CaptionAssetListAction({filter: filter});
         this._initLoading();
-        if (!this._player.config.provider.ks
-            && this._player.config.session.ks) {
-            // missing KS - fill it from the session object 
-            this._kalturaClient.setDefaultRequestOptions({
-                ks: this._player.config.session.ks
-            });
-        }
         this._kalturaClient.request(request).then(
             data => {
                 if (data && Array.isArray(data.objects) && data.objects.length > 0) {
