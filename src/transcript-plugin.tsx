@@ -36,8 +36,7 @@ import {
   isBoolean,
   makePlainText,
   CaptionAssetServeAction,
-  deepGet,
-  isString
+  deepGet
 } from "./utils";
 import { DownloadPrintMenu } from "./components/download-print-menu";
 
@@ -257,9 +256,9 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
   }
 
   private _findCaptionAsset = (
-      event: any
+      event: string | {}
   ): KalturaCaptionAsset => {
-    if (isString(event)) {
+    if (typeof event === 'string') {
       const filteredByLang = this._filterCaptionAssetsByProperty(this._captionsList, event, 'languageCode');
       // take first captions from caption-list when caption language is not defined
       return filteredByLang[0] ? filteredByLang[0] : this._captionsList[0];

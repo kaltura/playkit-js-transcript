@@ -194,6 +194,3 @@ export class CaptionAssetServeAction extends KalturaRequest<{url: string}> {
     return deepGet(foundSoFar, remainingProps, defaultValue);
 }
 
-export function isString(val: any) {
-    return typeof val == 'string';
-};
