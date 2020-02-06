@@ -120,7 +120,7 @@ export class Caption extends Component<ExtendedCaptionProps> {
                 )}
                 <div
                     onClick={this._handleClick}
-                    className={`${styles.captionContent} ${highlighted ? styles.highlighted : ""}`}
+                    className={`${styles.captionContent} ${highlighted ? styles.highlighted : ""} ${showTime ? "" : styles.withoutTime}`}
                     type="button"
                     ref={node => {
                         this._hotspotRef = node;

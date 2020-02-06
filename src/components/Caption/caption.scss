@@ -41,6 +41,9 @@
         padding: 0 2px;
       }
     }
+    &.without-time {
+      margin-left: 16px;
+    }
     .caption-span {
       user-select: text;
       border-radius: 2px;
