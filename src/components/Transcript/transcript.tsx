@@ -16,7 +16,6 @@ export interface TranscriptProps {
     showTime: boolean;
     currentTime: number;
     scrollOffset: number;
-    scrollDebounceTimeout: number;
     searchDebounceTimeout: number;
     searchNextPrevDebounceTimeout: number;
     videoDuration: number;
@@ -48,7 +47,14 @@ const logger = getContribLogger({
 export class Transcript extends Component<TranscriptProps, TranscriptState> {
     private _transcriptListRef: HTMLElement | null = null;
     private _preventScrollEvent: boolean = false;
+    private _widgetRootRef: HTMLElement | null = null;
     private _engine: CuepointEngine<CaptionItem> | null = null;
+
+    private _widgetHeight: number = 0;
+    private _topAutoscrollEdge: number = 0;
+    private _bottomAutoscrollEdge: number = 0;
+    private _thirdOfWidgetHeight: number = 0;
+
     private _log = (msg: string, method: string) => {
         logger.trace(msg, {
             method: method || "Method not defined"
@@ -85,6 +91,8 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         if (previousState.search !== search) {
             this._debounced.findSearchMatches();
         }
+
+        this._setWidgetHeight();
     }
 
     componentWillUnmount(): void {
@@ -232,7 +240,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
             searchMap,
             activeSearchIndex,
             highlightedMap,
-            searchLength
+            searchLength,
         } = this.state;
         if (!captions || !captions.length) {
             return null;
@@ -259,7 +267,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         const captionProps = {
             showTime,
             searchLength,
-            scrollTo: this._debounced.scrollTo,
+            scrollTo: this._scrollTo,
             videoDuration
         };
 
@@ -276,6 +284,18 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         );
     };
 
+    private _setWidgetHeight = () => {
+        if (this._widgetRootRef) {
+            const { height, top } = this._widgetRootRef.getBoundingClientRect();
+            if (this._widgetHeight !== height) {
+                this._widgetHeight = height;
+                this._thirdOfWidgetHeight = height / 3;
+                this._topAutoscrollEdge = Math.floor(this._thirdOfWidgetHeight) + top;
+                this._bottomAutoscrollEdge = Math.ceil(this._thirdOfWidgetHeight * 2) + top;
+            }
+        }
+    }
+
     private _renderLoading = () => {
         return (
             <div className={styles.loadingWrapper}>
@@ -287,7 +307,10 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     private _scrollTo = (el: HTMLElement) => {
         if (this._transcriptListRef) {
             this._preventScrollEvent = true;
-            this._transcriptListRef.scrollTop = el.offsetTop - this.props.scrollOffset; // delta;
+            const { top } = el.getBoundingClientRect();
+            if (top >= this._topAutoscrollEdge || top <= this._bottomAutoscrollEdge) {
+                this._transcriptListRef.scrollTop = el.offsetTop - (this._topAutoscrollEdge - this._thirdOfWidgetHeight);
+            }
         }
     };
 
@@ -310,7 +333,6 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     };
 
     private _debounced = {
-        scrollTo: debounce(this._scrollTo, this.props.scrollDebounceTimeout),
         findSearchMatches: debounce(this._findSearchMatches, this.props.searchDebounceTimeout),
         onActiveSearchIndexChange: debounce(
             this._setActiveSearchIndex,
@@ -321,7 +343,12 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     render(props: TranscriptProps) {
         const { onClose, isLoading } = props;
         return (
-            <div className={styles.root}>
+            <div 
+                className={styles.root}
+                ref={node => {
+                    this._widgetRootRef = node;
+                }}
+            >
                 {this._renderHeader(onClose)}
                 {!this.state.isAutoScrollEnabled && this._renderScrollToButton()}
                 <div

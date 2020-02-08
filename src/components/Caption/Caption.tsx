@@ -112,7 +112,12 @@ export class Caption extends Component<ExtendedCaptionProps> {
         const { text, startTime } = caption;
 
         return (
-            <div className={styles.caption}>
+            <div
+                className={styles.caption}
+                ref={node => {
+                    this._hotspotRef = node;
+                }}
+            >
                 {showTime && (
                     <div className={styles.captionTime}>
                         {secontsToTime(startTime, longerThanHour)}
@@ -122,9 +127,6 @@ export class Caption extends Component<ExtendedCaptionProps> {
                     onClick={this._handleClick}
                     className={`${styles.captionContent} ${highlighted ? styles.highlighted : ""} ${showTime ? "" : styles.withoutTime}`}
                     type="button"
-                    ref={node => {
-                        this._hotspotRef = node;
-                    }}
                 >
                     {this._renderText(text)}
                 </div>
