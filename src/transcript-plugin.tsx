@@ -88,10 +88,10 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
     this._kalturaClient.setDefaultRequestOptions({
         ks: playerConfig.provider.ks ? playerConfig.provider.ks : playerConfig.session.ks
     });
-
-        
+  
     this._player.addEventListener(this._player.Event.TIME_UPDATE, this._onTimeUpdate);
     this._player.addEventListener(this._player.Event.TEXT_TRACK_CHANGED, this._loadCaptions);
+    this._player.addEventListener(this._player.Event.RESIZE, this._updateKitchenSink);
   }
 
   onRegisterUI(): void {}
