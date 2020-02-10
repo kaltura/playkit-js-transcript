@@ -30,6 +30,7 @@ interface TranscriptState {
     totalSearchResults: number;
     highlightedMap: Record<number, true>;
     searchLength: number;
+    widgetWidth: number;
 }
 
 const initialSearch = {
@@ -48,7 +49,9 @@ const logger = getContribLogger({
 export class Transcript extends Component<TranscriptProps, TranscriptState> {
     private _transcriptListRef: HTMLElement | null = null;
     private _preventScrollEvent: boolean = false;
+    private _widgetRootRef: HTMLElement | null = null;
     private _engine: CuepointEngine<CaptionItem> | null = null;
+
     private _log = (msg: string, method: string) => {
         logger.trace(msg, {
             method: method || "Method not defined"
@@ -58,6 +61,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     state: TranscriptState = {
         isAutoScrollEnabled: true,
         highlightedMap: {},
+        widgetWidth: 0,
         ...initialSearch
     };
 
@@ -85,6 +89,8 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         if (previousState.search !== search) {
             this._debounced.findSearchMatches();
         }
+
+        this._setWidgetSize();
     }
 
     componentWillUnmount(): void {
@@ -209,18 +215,28 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         });
     };
 
-    private _renderHeader = (onClose: () => void) => {
+    private _getHeaderStyles = (): string => {
+        const { widgetWidth } = this.state;
+        if (widgetWidth >= 692) {
+            return "";
+        }
+        if (widgetWidth >= 649) {
+            return styles.mediumWidth;
+        }
+        return styles.smallWidth;
+    }
+
+    private _renderHeader = () => {
         const { search, activeSearchIndex, totalSearchResults } = this.state;
         return (
-            <div className={styles.header}>
+            <div className={[styles.header, this._getHeaderStyles()].join(' ')}>
                 <Search
-                    onChange={this._onSearch}
-                    onSearchIndexChange={this._debounced.onActiveSearchIndexChange}
-                    value={search}
-                    activeSearchIndex={activeSearchIndex}
-                    totalSearchResults={totalSearchResults}
-                />
-                <div className={styles.closeButton} onClick={onClose} />
+                        onChange={this._onSearch}
+                        onSearchIndexChange={this._debounced.onActiveSearchIndexChange}
+                        value={search}
+                        activeSearchIndex={activeSearchIndex}
+                        totalSearchResults={totalSearchResults}
+                    />
             </div>
         );
     };
@@ -276,6 +292,17 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         );
     };
 
+    private _setWidgetSize = () => {
+        if (this._widgetRootRef) {
+            const { width } = this._widgetRootRef.getBoundingClientRect();
+            if (this.state.widgetWidth !== width) {
+                this.setState({
+                    widgetWidth: width
+                })
+            }
+        }
+    }
+
     private _renderLoading = () => {
         return (
             <div className={styles.loadingWrapper}>
@@ -321,18 +348,26 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     render(props: TranscriptProps) {
         const { onClose, isLoading } = props;
         return (
-            <div className={styles.root}>
-                {this._renderHeader(onClose)}
-                {!this.state.isAutoScrollEnabled && this._renderScrollToButton()}
-                <div
-                    className={styles.body}
-                    onScroll={this._onScroll}
-                    ref={node => {
-                        this._transcriptListRef = node;
-                    }}
-                >
-                    {isLoading ? this._renderLoading() : this._renderTranscript()}
+            <div
+                className={styles.root}
+                ref={node => {
+                    this._widgetRootRef = node;
+                }}
+            >
+                <div className={styles.globalContainer}>
+                    {this._renderHeader()}
+                    {!this.state.isAutoScrollEnabled && this._renderScrollToButton()}
+                    <div
+                        className={styles.body}
+                        onScroll={this._onScroll}
+                        ref={node => {
+                            this._transcriptListRef = node;
+                        }}
+                    >
+                        {isLoading ? this._renderLoading() : this._renderTranscript()}
+                    </div>
                 </div>
+                <div className={styles.closeButton} onClick={onClose} />
             </div>
         );
     }

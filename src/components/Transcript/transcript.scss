@@ -18,7 +18,7 @@
 
 .root {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   padding: 8px 4px 8px 0px;
   color: $white-color;
   height: 100%;
@@ -27,21 +27,38 @@
   background-color: $root-background;
 }
 
+.global-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  max-width: 599px;
+  width: 100%;
+}
+
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
   margin-bottom: 6px;
+  padding-left: 16px;
   font-size: 16px;
-  .close-button {
-    width: 32px;
-    height: 32px;
-    min-width: 32px;
-    margin: 0 8px;
-    cursor: pointer;
-    background-image: url('../../assets/close.svg');
+  &.small-width {
+    padding-right: 44px;
   }
+  &.medium-width {
+    padding-right: 22px;
+  }
+}
+.close-button {
+  position: absolute;
+  right: 0;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  margin: 0 8px;
+  cursor: pointer;
+  background-image: url('../../assets/close.svg');
 }
 
 .body {
