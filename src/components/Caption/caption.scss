@@ -46,6 +46,7 @@
     }
     .caption-span {
       user-select: text;
+      -ms-user-select: text;
       border-radius: 2px;
       cursor: pointer;
       &::selection {
