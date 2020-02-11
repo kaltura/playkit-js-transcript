@@ -53,7 +53,6 @@ interface TranscriptPluginConfig {
   showTime: boolean;
   position: KitchenSinkPositions;
   scrollOffset: number; // distance between top border of transcript container and active caption on auto-scroll
-  scrollDebounceTimeout: number; // debounce on scroll
   searchDebounceTimeout: number; // debounce on search
   searchNextPrevDebounceTimeout: number; // debounce on jump between prev/next search result
   downloadDisabled: boolean; // disable download menu
@@ -389,7 +388,6 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
     const {
       showTime,
       scrollOffset,
-      scrollDebounceTimeout,
       searchDebounceTimeout,
       searchNextPrevDebounceTimeout
     } = this._configs.pluginConfig;
@@ -398,7 +396,6 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
             {...props}
             showTime={getConfigValue(showTime, isBoolean, true)}
             scrollOffset={getConfigValue(scrollOffset, Number.isInteger, 0)}
-            scrollDebounceTimeout={getConfigValue(scrollDebounceTimeout, Number.isInteger, 200)}
             searchDebounceTimeout={getConfigValue(searchDebounceTimeout, Number.isInteger, 250)}
             searchNextPrevDebounceTimeout={getConfigValue(
                 searchNextPrevDebounceTimeout,
@@ -428,7 +425,6 @@ ContribPluginManager.registerPlugin(
       showTime: true,
       position: KitchenSinkPositions.Bottom,
       scrollOffset: 0,
-      scrollDebounceTimeout: 200,
       searchDebounceTimeout: 250,
       searchNextPrevDebounceTimeout: 100,
       downloadDisabled: false,

@@ -16,7 +16,6 @@ export interface TranscriptProps {
     showTime: boolean;
     currentTime: number;
     scrollOffset: number;
-    scrollDebounceTimeout: number;
     searchDebounceTimeout: number;
     searchNextPrevDebounceTimeout: number;
     videoDuration: number;
@@ -46,11 +45,18 @@ const logger = getContribLogger({
     module: "transcript-plugin"
 });
 
+const SEARCHBAR_HEIGHT = 38; // height of search bar with margins
+
 export class Transcript extends Component<TranscriptProps, TranscriptState> {
     private _transcriptListRef: HTMLElement | null = null;
     private _preventScrollEvent: boolean = false;
     private _widgetRootRef: HTMLElement | null = null;
     private _engine: CuepointEngine<CaptionItem> | null = null;
+
+    private _widgetHeight: number = 0;
+    private _topAutoscrollEdge: number = 0;
+    private _bottomAutoscrollEdge: number = 0;
+    private _thirdOfWidgetHeight: number = 0;
 
     private _log = (msg: string, method: string) => {
         logger.trace(msg, {
@@ -275,7 +281,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         const captionProps = {
             showTime,
             searchLength,
-            scrollTo: this._debounced.scrollTo,
+            scrollTo: this._scrollTo,
             videoDuration
         };
 
@@ -294,11 +300,17 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
 
     private _setWidgetSize = () => {
         if (this._widgetRootRef) {
-            const { width } = this._widgetRootRef.getBoundingClientRect();
+            const { width, height, top } = this._widgetRootRef.getBoundingClientRect();
             if (this.state.widgetWidth !== width) {
                 this.setState({
                     widgetWidth: width
                 })
+            }
+            if (this._widgetHeight !== height) {
+                this._widgetHeight = height;
+                this._thirdOfWidgetHeight = height / 3;
+                this._topAutoscrollEdge = Math.floor(this._thirdOfWidgetHeight + SEARCHBAR_HEIGHT);
+                this._bottomAutoscrollEdge = Math.ceil((this._thirdOfWidgetHeight * 2) + SEARCHBAR_HEIGHT);
             }
         }
     }
@@ -314,7 +326,10 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     private _scrollTo = (el: HTMLElement) => {
         if (this._transcriptListRef) {
             this._preventScrollEvent = true;
-            this._transcriptListRef.scrollTop = el.offsetTop - this.props.scrollOffset; // delta;
+            const { top } = el.getBoundingClientRect();
+            if (top >= this._topAutoscrollEdge || top <= this._bottomAutoscrollEdge) {
+                this._transcriptListRef.scrollTop = el.offsetTop - (this._thirdOfWidgetHeight - SEARCHBAR_HEIGHT);
+            }
         }
     };
 
@@ -337,7 +352,6 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     };
 
     private _debounced = {
-        scrollTo: debounce(this._scrollTo, this.props.scrollDebounceTimeout),
         findSearchMatches: debounce(this._findSearchMatches, this.props.searchDebounceTimeout),
         onActiveSearchIndexChange: debounce(
             this._setActiveSearchIndex,
