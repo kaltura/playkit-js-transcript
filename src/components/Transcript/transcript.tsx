@@ -45,7 +45,7 @@ const logger = getContribLogger({
     module: "transcript-plugin"
 });
 
-const SEARCHBAR_HEIGHT = 38 // height of search bar with margins
+const SEARCHBAR_HEIGHT = 38; // height of search bar with margins
 
 export class Transcript extends Component<TranscriptProps, TranscriptState> {
     private _transcriptListRef: HTMLElement | null = null;
