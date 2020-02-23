@@ -42,22 +42,32 @@
 
     <script>
         function fetchConfigs(callback) {
-            loadJSON('./env.json', (envJson) => loadJSON('./config.json', (configJson) => {
-                const [envOptions, configOptions] = [envJson, configJson].map(conf => JSON.parse(conf));
-                const env = envOptions.env[envOptions.modes.bundlerEnv];
+            loadJSON('./env.json', function(envJson) {
+                return loadJSON('./config.json', function(configJson) {
+                    const options = [envJson, configJson].map(function(conf) { return JSON.parse(conf) });
+                    const envOptions = options[0];
+                    const configOptions = options[1];
+                    const env = envOptions.env[envOptions.modes.bundlerEnv];
 
-                const bundlerUrl = env.bundler + '/p/' + configOptions.data.partnerId + '/embedPlaykitJs/uiconf_id/' + configOptions.data.uiConfId +
-                    (envOptions.modes.bundler === "uiConf"
-                        ? ''
-                        : '/versions/kaltura-ovp-player=' + envOptions.bundler.customPlayerVersion);
+                    const bundlerUrl = env.bundler + '/p/' + configOptions.data.partnerId + '/embedPlaykitJs/uiconf_id/' + configOptions.data.uiConfId +
+                        (envOptions.modes.bundler === "uiConf"
+                            ? ''
+                            : '/versions/kaltura-ovp-player=' + envOptions.bundler.customPlayerVersion);
 
-                let loaderRunner = () => callback(env, configOptions);
+                    let loaderRunner = function() {
+                        return callback(env, configOptions);
+                    }
 
-                <% for (var chunk in htmlWebpackPlugin.files.js) { %>
-                loaderRunner = ((prevLoader) => () => loadScript("<%= htmlWebpackPlugin.files.js[chunk] %>", prevLoader))(loaderRunner);
-                <% } %>
-                loadScript(bundlerUrl, loaderRunner);
-            }))
+                    <% for (var chunk in htmlWebpackPlugin.files.js) { %>
+                    loaderRunner = (function(prevLoader) {
+                        return function() {
+                            return loadScript("<%= htmlWebpackPlugin.files.js[chunk] %>", prevLoader);
+                        }
+                    })(loaderRunner);
+                    <% } %>
+                    loadScript(bundlerUrl, loaderRunner);
+                })
+            })
         }
 
         // Configuring relevant plugins
@@ -110,6 +120,7 @@
 
 <script>
     var player;
+    var switchMediaEntryId;
 
     function changeMedia() {
         player.loadMedia({
@@ -117,7 +128,9 @@
         });
     }
 
-    fetchConfigs((env, {data}) => {
+    fetchConfigs(function(env, conf) {
+        const data = conf.data;
+        switchMediaEntryId = data.switchMediaEntryId;
         let config = {
             logLevel: "DEBUG",
             targetId: "player-div",
@@ -130,10 +143,13 @@
             session: {
                 userId: data.userId
             },
-            contrib,
+            contrib: contrib,
             plugins: plugins,
             ui: {
                 debug: true
+            },
+            playback: {
+                autoplay: true
             }
         };
 
