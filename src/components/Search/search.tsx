@@ -14,6 +14,21 @@ interface SearchState {
 }
 
 export class Search extends Component<SearchProps, SearchState> {
+    shouldComponentUpdate(
+        nextProps: Readonly<SearchProps>,
+        nextState: Readonly<SearchState>
+    ) {
+        const { value, activeSearchIndex, totalSearchResults } = this.props;
+        if (
+            value !== nextProps.value ||
+            activeSearchIndex !== nextProps.activeSearchIndex ||
+            totalSearchResults !== nextProps.totalSearchResults ||
+            this.state.active !== nextState.active
+        ) {
+            return true;
+        }
+        return false;
+    }
     private _handleOnChange = (e: any) => {
         this.props.onChange(e.target.value);
     };
