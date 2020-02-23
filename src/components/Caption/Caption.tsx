@@ -6,6 +6,7 @@ export interface CaptionProps {
     showTime: boolean;
     searchLength: number;
     scrollTo(el: HTMLElement): void;
+    scrollToSearchMatch(el: HTMLElement): void;
     videoDuration: number;
 }
 
@@ -14,6 +15,7 @@ interface ExtendedCaptionProps extends CaptionProps {
     onClick(): void;
     highlighted: boolean;
     shouldMakeScroll: boolean;
+    shouldMakeScrollToSearchMatch: boolean;
     indexMap: Record<string, number> | undefined;
     activeSearchIndex: number;
     longerThanHour: boolean;
@@ -26,6 +28,8 @@ export class Caption extends Component<ExtendedCaptionProps> {
     componentDidUpdate() {
         if (this._hotspotRef && this.props.shouldMakeScroll) {
             this.props.scrollTo(this._hotspotRef);
+        } else if (this._hotspotRef && this.props.shouldMakeScrollToSearchMatch) {
+            this.props.scrollToSearchMatch(this._hotspotRef);
         }
     }
 

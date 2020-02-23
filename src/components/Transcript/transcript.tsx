@@ -282,6 +282,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
             showTime,
             searchLength,
             scrollTo: this._scrollTo,
+            scrollToSearchMatch: this._scrollToSearchMatch,
             videoDuration
         };
 
@@ -332,6 +333,13 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
             }
         }
     };
+
+    private _scrollToSearchMatch = (el: HTMLElement) => {
+        if (this._transcriptListRef) {
+            this._preventScrollEvent = true;
+            this._transcriptListRef.scrollTop = el.offsetTop - SEARCHBAR_HEIGHT;
+        }
+    }
 
     private _onScroll = () => {
         if (this._preventScrollEvent) {

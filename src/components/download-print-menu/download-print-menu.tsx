@@ -63,7 +63,7 @@ export class DownloadPrintMenu extends Component<DownloadPrintMenuProps, Downloa
             tabIndex={1}
             role="button"
             onClick={() => el.onMenuChosen()}
-            onKeyDown={e => this._onKeyDown(e, el.onMenuChosen)}
+            onKeyDown={(e: KeyboardEvent) => this._onKeyDown(e, el.onMenuChosen)}
             className={styles.popoverMenuItem}
         >
             {el.label}
