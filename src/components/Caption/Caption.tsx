@@ -1,6 +1,6 @@
 import { h, Component } from "preact";
 import * as styles from "./caption.scss";
-import { secontsToTime, HOUR, CaptionItem } from "../../utils";
+import { secontsToTime, CaptionItem } from "../../utils";
 
 export interface CaptionProps {
     showTime: boolean;
@@ -14,8 +14,8 @@ interface ExtendedCaptionProps extends CaptionProps {
     caption: CaptionItem;
     onClick(): void;
     highlighted: boolean;
-    shouldMakeScroll: boolean;
-    shouldMakeScrollToSearchMatch: boolean;
+    shouldScroll: boolean;
+    shouldScrollToSearchMatch: boolean;
     indexMap: Record<string, number> | undefined;
     activeSearchIndex: number;
     longerThanHour: boolean;
@@ -26,9 +26,9 @@ export class Caption extends Component<ExtendedCaptionProps> {
     private _hotspotRef: HTMLElement | null = null;
 
     componentDidUpdate() {
-        if (this._hotspotRef && this.props.shouldMakeScroll) {
+        if (this._hotspotRef && this.props.shouldScroll) {
             this.props.scrollTo(this._hotspotRef);
-        } else if (this._hotspotRef && this.props.shouldMakeScrollToSearchMatch) {
+        } else if (this._hotspotRef && this.props.shouldScrollToSearchMatch) {
             this.props.scrollToSearchMatch(this._hotspotRef);
         }
     }

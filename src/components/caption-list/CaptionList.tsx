@@ -42,12 +42,12 @@ export class CaptionList extends Component<CaptionListProps> {
         seekTo(caption);
     };
 
-    private _getShouldMakeScroll = (captionId: number) => {
+    private _getShouldScroll = (captionId: number) => {
         const { isAutoScrollEnabled, highlightedMap } = this.props;
         return isAutoScrollEnabled && highlightedMap[captionId];
     }
 
-    private _getShouldMakeScrollToSearchMatch = (captionId: number) => {
+    private _getShouldScrollToSearchMatch = (captionId: number) => {
         const { isAutoScrollEnabled, searchMap, activeSearchIndex } = this.props;
         return !isAutoScrollEnabled && (deepGet(searchMap, [captionId, String(activeSearchIndex)], null) !== null);
     }
@@ -79,8 +79,8 @@ export class CaptionList extends Component<CaptionListProps> {
             caption: captionData,
             highlighted: highlightedMap[id],
             longerThanHour: captionProps.videoDuration >= HOUR,
-            shouldMakeScroll: this._getShouldMakeScroll(id),
-            shouldMakeScrollToSearchMatch: this._getShouldMakeScrollToSearchMatch(id),
+            shouldScroll: this._getShouldScroll(id),
+            shouldScrollToSearchMatch: this._getShouldScrollToSearchMatch(id),
             isAutoScrollEnabled,
             ...this._getSearchProps(id)
         }
