@@ -8,7 +8,7 @@ import {
   ContribPluginData,
   ContribPluginConfigs
 } from "@playkit-js-contrib/plugin";
-import { getContribLogger } from "@playkit-js-contrib/common";
+import { getContribLogger, ObjectUtils } from "@playkit-js-contrib/common";
 import * as styles from './transcript-plugin.scss';
 import {
   KalturaClient,
@@ -36,7 +36,6 @@ import {
   isBoolean,
   makePlainText,
   CaptionAssetServeAction,
-  deepGet
 } from "./utils";
 import { DownloadPrintMenu } from "./components/download-print-menu";
 
@@ -247,11 +246,11 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
 
   private _filterCaptionAssetsByProperty = (
     list: KalturaCaptionAsset[],
-    match: number | string,
+    match: unknown,
     property: string
   ): KalturaCaptionAsset[] => {
     return list.filter((kalturaCaptionAsset: KalturaCaptionAsset) => {
-      return deepGet(kalturaCaptionAsset, [property]) === match;
+      return ObjectUtils.get(kalturaCaptionAsset, property, null) === match;
     });
   }
 
@@ -265,7 +264,7 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
     }
     const filteredByLang = this._filterCaptionAssetsByProperty(
       this._captionsList,
-      deepGet(event, ['payload', 'selectedTextTrack', '_language']),
+      ObjectUtils.get(event, 'payload.selectedTextTrack._language', null),
       'languageCode'
     );
     if (filteredByLang.length === 1) {
@@ -273,21 +272,21 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
     }
     const filteredByLabel = this._filterCaptionAssetsByProperty(
       filteredByLang,
-      deepGet(event, ['payload', 'selectedTextTrack', '_label']),
+      ObjectUtils.get(event, 'payload.selectedTextTrack._label', null),
       'label'
     );
     if (filteredByLang.length === 1) {
       return filteredByLabel[0];
     }
-    const filteredByIndex = this._captionsList[deepGet(event, ['payload', 'selectedTextTrack', '_id'])];
+    const filteredByIndex = this._captionsList[ObjectUtils.get(event, 'payload.selectedTextTrack._id', null)];
     // take first captions from caption-list when caption language is not defined
     return filteredByIndex ? filteredByIndex : this._captionsList[0];
   };
 
   private _getCaptionsByLang = (
-    event: string | {} = deepGet(this._configs, ["playerConfig", "playback", "textLanguage"], "")
+    event: string | {} = ObjectUtils.get(this._configs, 'playerConfig.playback.textLanguage', "")
   ): void => {
-    if (deepGet(event, ['payload', 'selectedTextTrack', '_language']) === "off" && this._captions.length) {
+    if (ObjectUtils.get(event, 'payload.selectedTextTrack._language', null) === "off" && this._captions.length) {
       // prevent loading of captions when user select "off" captions option
       return;
     }
@@ -329,7 +328,7 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
   };
 
   private _getCaptionData = (data: any, captionAsset: KalturaCaptionAsset) => {
-    const rawCaptions = deepGet(data, ['error', 'message'], data);
+    const rawCaptions = ObjectUtils.get(data, 'error.message', data);
     if (rawCaptions) {
       this._captions = this._parseCaptions(rawCaptions, captionAsset);
       this._isLoading = false;
@@ -358,7 +357,7 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
         this._captionsList &&
         captionAsset &&
         this._captionsList.find((item: KalturaCaptionAsset) => item.id === captionAsset.id);
-    return deepGet(selectedLanguage, ["format"], "");
+    return ObjectUtils.get(selectedLanguage, 'format', '');
   };
 
   private _seekTo = (time: number) => {
@@ -368,7 +367,7 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
   private _handleDownload = () => {
     const { playerConfig } = this._configs;
     if (this._captions) {
-      const entryMetadata = deepGet(playerConfig, ["sources", "metadata"], {});
+      const entryMetadata = ObjectUtils.get(playerConfig, 'sources.metadata', {});
       downloadContent(
           makePlainText(this._captions),
           `${this._transcriptLanguage}${
