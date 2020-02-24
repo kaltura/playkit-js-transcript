@@ -8,7 +8,10 @@ import {
   ContribPluginData,
   ContribPluginConfigs
 } from "@playkit-js-contrib/plugin";
-import { getContribLogger, ObjectUtils } from "@playkit-js-contrib/common";
+import {
+  getContribLogger,
+  ObjectUtils
+} from "@playkit-js-contrib/common";
 import * as styles from './transcript-plugin.scss';
 import {
   KalturaClient,
@@ -255,7 +258,7 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
   }
 
   private _findCaptionAsset = (
-      event: string | {}
+      event: string | Record<string, any>
   ): KalturaCaptionAsset => {
     if (typeof event === 'string') {
       const filteredByLang = this._filterCaptionAssetsByProperty(this._captionsList, event, 'languageCode');
@@ -278,15 +281,22 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
     if (filteredByLang.length === 1) {
       return filteredByLabel[0];
     }
-    const filteredByIndex = this._captionsList[ObjectUtils.get(event, 'payload.selectedTextTrack._id', null)];
+
+    const index: number = ObjectUtils.get(event, 'payload.selectedTextTrack._id', -1);
+    const filteredByIndex = this._captionsList[index];
     // take first captions from caption-list when caption language is not defined
     return filteredByIndex ? filteredByIndex : this._captionsList[0];
   };
 
   private _getCaptionsByLang = (
-    event: string | {} = ObjectUtils.get(this._configs, 'playerConfig.playback.textLanguage', "")
+    event: string | Record<string, any> = ObjectUtils.get(this._configs, 'playerConfig.playback.textLanguage', "")
   ): void => {
-    if (ObjectUtils.get(event, 'payload.selectedTextTrack._language', null) === "off" && this._captions.length) {
+    if (
+      (typeof event === "string" ?
+        event :
+        ObjectUtils.get(event, 'payload.selectedTextTrack._language', null)
+      ) === "off" && this._captions.length
+    ) {
       // prevent loading of captions when user select "off" captions option
       return;
     }
@@ -353,10 +363,10 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
   };
 
   private _getCaptionFormat = (captionAsset: KalturaCaptionAsset): string => {
-    const selectedLanguage =
+    const selectedLanguage: Record<string, any> =
         this._captionsList &&
         captionAsset &&
-        this._captionsList.find((item: KalturaCaptionAsset) => item.id === captionAsset.id);
+        (this._captionsList.find((item: KalturaCaptionAsset) => item.id === captionAsset.id) || {});
     return ObjectUtils.get(selectedLanguage, 'format', '');
   };
 
