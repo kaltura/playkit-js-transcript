@@ -83,13 +83,13 @@ export class Search extends Component<SearchProps, SearchState> {
                 />
                 {value && <button className={styles.clearIcon} onClick={this._onClear} />}
                 {value && (
-                    <p className={styles.searchResults}>
+                    <div className={styles.searchResults}>
                         {`${
                             totalSearchResults > 0
                                 ? `${activeSearchIndex}/${totalSearchResults}`
                                 : "0/0"
                         }`}
-                    </p>
+                    </div>
                 )}
                 <div className={styles.prevNextWrapper}>
                     {value && (
