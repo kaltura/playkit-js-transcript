@@ -50,6 +50,7 @@ const SEARCHBAR_HEIGHT = 38; // height of search bar with margins
 export class Transcript extends Component<TranscriptProps, TranscriptState> {
     private _transcriptListRef: HTMLElement | null = null;
     private _preventScrollEvent: boolean = false;
+    private _scrollToSearchMatchEnabled: boolean = false;
     private _widgetRootRef: HTMLElement | null = null;
     private _engine: CuepointEngine<CaptionItem> | null = null;
 
@@ -215,6 +216,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     };
 
     private _setActiveSearchIndex = (index: number) => {
+        this._scrollToSearchMatchEnabled = true;
         this.setState({
             activeSearchIndex: index,
             isAutoScrollEnabled: false
@@ -282,6 +284,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
             showTime,
             searchLength,
             scrollTo: this._scrollTo,
+            scrollToSearchMatch: this._scrollToSearchMatch,
             videoDuration
         };
 
@@ -332,6 +335,14 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
             }
         }
     };
+
+    private _scrollToSearchMatch = (el: HTMLElement) => {
+        if (this._transcriptListRef && this._scrollToSearchMatchEnabled) {
+            this._scrollToSearchMatchEnabled = false;
+            this._preventScrollEvent = true;
+            this._transcriptListRef.scrollTop = el.offsetTop - SEARCHBAR_HEIGHT;
+        }
+    }
 
     private _onScroll = () => {
         if (this._preventScrollEvent) {

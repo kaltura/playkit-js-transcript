@@ -1,7 +1,7 @@
 import { h, Component } from "preact";
 import { Caption, CaptionProps } from "../caption";
 import * as styles from "./captionList.scss";
-import { CaptionItem, HOUR } from "../../utils";
+import { CaptionItem, HOUR, deepGet } from "../../utils";
 
 
 interface CaptionListProps {
@@ -42,13 +42,14 @@ export class CaptionList extends Component<CaptionListProps> {
         seekTo(caption);
     };
 
-    private _getShouldMakeScroll = (captionId: number) => {
-        const { isAutoScrollEnabled, highlightedMap, searchMap, activeSearchIndex } = this.props;
-        return (isAutoScrollEnabled && highlightedMap[captionId]) ||
-        (!isAutoScrollEnabled &&
-            !!(searchMap[captionId] || {})[
-                String(activeSearchIndex)
-            ])
+    private _getShouldScroll = (captionId: number) => {
+        const { isAutoScrollEnabled, highlightedMap } = this.props;
+        return isAutoScrollEnabled && highlightedMap[captionId];
+    }
+
+    private _getShouldScrollToSearchMatch = (captionId: number) => {
+        const { isAutoScrollEnabled, searchMap, activeSearchIndex } = this.props;
+        return !isAutoScrollEnabled && (deepGet(searchMap, [captionId, String(activeSearchIndex)], null) !== null);
     }
 
     private _getSearchProps = (captionId: number) => {
@@ -72,12 +73,14 @@ export class CaptionList extends Component<CaptionListProps> {
         const newCaptionProps = {
             showTime: captionProps.showTime,
             scrollTo: captionProps.scrollTo,
+            scrollToSearchMatch: captionProps.scrollToSearchMatch,
             key: id,
             onClick: this._handleClick(captionData),
             caption: captionData,
             highlighted: highlightedMap[id],
             longerThanHour: captionProps.videoDuration >= HOUR,
-            shouldMakeScroll: this._getShouldMakeScroll(id),
+            shouldScroll: this._getShouldScroll(id),
+            shouldScrollToSearchMatch: this._getShouldScrollToSearchMatch(id),
             isAutoScrollEnabled,
             ...this._getSearchProps(id)
         }
