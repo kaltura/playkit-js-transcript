@@ -250,7 +250,7 @@ export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSet
 
   private _filterCaptionAssetsByProperty = (
     list: KalturaCaptionAsset[],
-    match: unknown,
+    match: string | null,
     property: string
   ): KalturaCaptionAsset[] => {
     return list.filter((kalturaCaptionAsset: KalturaCaptionAsset) => {
