@@ -1,8 +1,10 @@
 import { h, Component } from "preact";
+import { ObjectUtils } from "@playkit-js-contrib/common";
 import { Caption, CaptionProps } from "../caption";
 import * as styles from "./captionList.scss";
-import { CaptionItem, HOUR, deepGet } from "../../utils";
+import { CaptionItem, HOUR } from "../../utils";
 
+const { get } = ObjectUtils;
 
 interface CaptionListProps {
     highlightedMap: Record<number, true>;
@@ -49,7 +51,7 @@ export class CaptionList extends Component<CaptionListProps> {
 
     private _getShouldScrollToSearchMatch = (captionId: number) => {
         const { isAutoScrollEnabled, searchMap, activeSearchIndex } = this.props;
-        return !isAutoScrollEnabled && (deepGet(searchMap, [captionId, String(activeSearchIndex)], null) !== null);
+        return !isAutoScrollEnabled && (get(searchMap, `${captionId}.${String(activeSearchIndex)}`, null) !== null);
     }
 
     private _getSearchProps = (captionId: number) => {
