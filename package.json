@@ -1,6 +1,6 @@
 {
   "name": "@playkit-js/transcript-plugin",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "license": "AGPL-3.0",
   "private": false,
   "bugs": {
@@ -12,9 +12,9 @@
     "url": "git+https://github.com/kaltura/playkit-js-transcript.git"
   },
   "dependencies": {
-    "@playkit-js-contrib/common": "^3.2.0",
-    "@playkit-js-contrib/plugin": "^3.2.0",
-    "@playkit-js-contrib/ui": "^3.2.0",
+    "@playkit-js-contrib/common": "^3.2.2",
+    "@playkit-js-contrib/plugin": "^3.2.2",
+    "@playkit-js-contrib/ui": "^3.2.2",
     "@types/classnames": "2.2.9",
     "@types/node": "12.12.21",
     "classnames": "2.2.6",
@@ -46,6 +46,7 @@
     "deploy:prepare": "kcontrib deploy --prepare",
     "deploy:publish-to-npm": "kcontrib deploy --publish",
     "deploy:next:prepare": "kcontrib deploy --prepare --prerelease next",
+    "contrib:latest": "kcontrib contrib --type=latest",
     "infra:latest": "kcontrib infra --type=latest",
     "infra:next": "kcontrib infra --type=next",
     "infra:local": "kcontrib infra --type=local",
