@@ -25,7 +25,7 @@
   "devDependencies": {
     "@commitlint/cli": "8.2.0",
     "@commitlint/config-conventional": "8.2.0",
-    "@playkit-js-contrib/cli": "^1.1.0",
+    "@playkit-js-contrib/cli": "1.1.0",
     "@typescript-eslint/eslint-plugin": "2.12.0",
     "@typescript-eslint/parser": "2.12.0",
     "husky": "3.1.0",
@@ -46,9 +46,10 @@
     "deploy:prepare": "kcontrib deploy --prepare",
     "deploy:publish-to-npm": "kcontrib deploy --publish",
     "deploy:next:prepare": "kcontrib deploy --prepare --prerelease next",
-    "contrib:latest": "kcontrib contrib --type=latest",
-    "contrib:next": "kcontrib contrib --type=next",
-    "contrib:local": "kcontrib contrib --type=local"
+    "infra:latest": "kcontrib infra --type=latest",
+    "infra:next": "kcontrib infra --type=next",
+    "infra:local": "kcontrib infra --type=local",
+    "infra:add": "kcontrib infra --add"
   },
   "browserslist": {
     "production": [
