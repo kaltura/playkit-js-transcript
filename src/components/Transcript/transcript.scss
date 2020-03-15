@@ -19,7 +19,7 @@
 .root {
   display: flex;
   justify-content: center;
-  padding: 8px 4px 8px 0px;
+  padding: 8px 4px 8px 1px;
   color: $white-color;
   height: 100%;
   width: 100%;
@@ -59,6 +59,9 @@
   margin: 0 8px;
   cursor: pointer;
   background-image: url('../../assets/close.svg');
+  background-color: initial;
+  border: none;
+  padding: 0;
 }
 
 .body {
@@ -67,6 +70,9 @@
   overflow-y: auto;
   text-align: center;
   overflow-x: hidden;
+  &:focus {
+    box-shadow: 0px 0px 0px 1px $focus-color;
+  }
 }
 
 .loading-wrapper,

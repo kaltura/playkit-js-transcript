@@ -69,6 +69,9 @@
     border: none;
     overflow: hidden;
     text-overflow: ellipsis;
+    &:focus {
+      outline: none !important; // overwrites player styles
+    }
     &::placeholder {
       color: $gray-color;
     }
@@ -91,5 +94,6 @@
   &.active {
     color: $gray-color;
     background: $black-color;
+    box-shadow: 0px 0px 0px 1px $focus-color;
   }
 }

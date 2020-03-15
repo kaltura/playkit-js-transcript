@@ -80,6 +80,7 @@ export class Search extends Component<SearchProps, SearchState> {
                     onInput={this._handleOnChange}
                     onFocus={this._onFocus}
                     onBlur={this._onBlur}
+                    tabIndex={0}
                 />
                 {value && <button className={styles.clearIcon} onClick={this._onClear} />}
                 {value && (

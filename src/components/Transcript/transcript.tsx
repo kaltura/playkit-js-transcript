@@ -381,6 +381,11 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
             >
                 <div className={styles.globalContainer}>
                     {this._renderHeader()}
+                    <button
+                        className={styles.closeButton}
+                        onClick={onClose}
+                        tabIndex={0}
+                    />
                     {!this.state.isAutoScrollEnabled && this._renderScrollToButton()}
                     <div
                         className={styles.body}
@@ -388,11 +393,11 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
                         ref={node => {
                             this._transcriptListRef = node;
                         }}
+                        tabIndex={0}
                     >
                         {isLoading ? this._renderLoading() : this._renderTranscript()}
                     </div>
                 </div>
-                <div className={styles.closeButton} onClick={onClose} />
             </div>
         );
     }
