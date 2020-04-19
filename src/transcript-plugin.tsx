@@ -42,7 +42,7 @@ import {
 } from "./utils";
 import { DownloadPrintMenu } from "./components/download-print-menu";
 
-const pluginName = `transcript`;
+const pluginName = `playkit-js-transcript`;
 
 const logger = getContribLogger({
   class: "TranscriptPlugin",
