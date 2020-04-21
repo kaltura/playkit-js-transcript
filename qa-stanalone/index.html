@@ -7,13 +7,13 @@
 
         <script src="https://qa-apache-php7.dev.kaltura.com/p/6560/embedPlaykitJs/uiconf_id/15224252/versions/kaltura-ovp-player=0.50.0-vamb.1"></script>
         <script src="playkit-js-transcript.js"></script>
-
+        <script src="../latest.js"></script>
+        <link rel="stylesheet" style="text/css" href="assets/styles/bootstrap.css" />
         <style>
-            /*#player-div {*/
-            /*    width: 800px;*/
-            /*    height: 480px;*/
-            /*}*/
-
+            h1,
+            #player-div {
+                margin-left: 1%;
+            }
             .test-form {
                 font-family: Lato, -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
                     "Ubuntu", "Helvetica Neue", Arial, sans-serif;
@@ -22,136 +22,47 @@
                 max-width: 800px;
             }
 
-            .test-form div {
+            .test-form > div {
+                display: flex;
+                flex-wrap: wrap;
                 margin: 0 22px 4px 4px;
             }
 
-            .test-form .marginRight {
-                margin-right: 40px;
+            .test-form .form-group {
+                min-width: 30%;
+                margin: 4px 1%;
             }
 
-            .test-form .field-name {
-                width: 85px;
-                display: inline-block;
+            .test-form .form-group ._jsonform-array-ul {
+                padding: 0;
+                display: flex;
+                flex-wrap: wrap;
+            }
+            .test-form .form-group li {
+                margin-right: 8px;
             }
 
-            .test-form input {
-                border-radius: 12px;
-                border: 1px solid #ababab;
-                outline: none;
-                padding: 2px 8px;
+            .test-form .form-group ._jsonform-array-buttons {
+                display: flex;
             }
 
-            .test-form input:focus {
-                border-color: #01accd;
+            .test-form div:not(.form-group):not(.controls) {
+                display: flex;
+                align-items: flex-end;
+                flex-wrap: wrap;
+                min-width: 100%;
+                margin: 8px 1%;
             }
-
-            .submit {
-                border: 2px solid #01accd;
-                border-radius: 12px;
-                color: #01accd;
-                font-size: 12px;
-                font-weight: bolder;
-                cursor: pointer;
-                padding: 2px 12px;
-                margin-top: 6px;
-                outline: none;
-            }
-
-            .submit:hover,
-            .submit:active,
-            .submit:focus {
-                background-color: #01accd;
-                color: #ffffff;
-                border-color: #01accd;
-            }
-
-            .action-buttons {
-                flex-basis: 100%;
-                max-width: 100%;
+            .change-media-button {
+                margin-left: 1%;
+                margin-top: 12px;
             }
         </style>
     </head>
 
     <body>
-        <h1>Transcript - Player V7</h1>
-
-        <form action="" class="test-form">
-            <div>
-                <span class="field-name">EntryId:</span>
-                <input type="text" id="entryId" name="entryId" placeholder="entryId" required /><br />
-            </div>
-
-            <div>
-                <span class="field-name">ks:</span>
-                <input type="text" id="ks" name="ks" placeholder="ks" /><br />
-            </div>
-
-            <div>
-                <span class="field-name">partnerId:</span>
-                <input type="text" id="partnerId" name="partnerId" placeholder="partnerId" required /><br />
-            </div>
-
-            <div>
-                <span class="field-name">uiConfId:</span>
-                <input type="text" id="uiConfId" name="uiConfId" placeholder="uiConfId" required /><br />
-            </div>
-
-            <div>
-                <span class="field-name">width:</span>
-                <input type="text" id="width" name="width" placeholder="width" value="800" /><br />
-            </div>
-
-            <div>
-                <span class="field-name">height:</span>
-                <input
-                    type="text"
-                    id="height"
-                    name="height"
-                    placeholder="height"
-                    value="480"
-                /><br />
-            </div>
-
-            <div>
-                <input type="radio" name="prodOrQA" id="prod" value="prod" checked="checked" />
-                Prod
-                <input type="radio" name="prodOrQA" id="qa" value="qa" />
-                QA (php7)<br />
-            </div>
-
-            <div>
-                <input type="checkbox" name="expandOnFirstPlay" id="expandOnFirstPlay" checked />
-                ExpandOnFirstPlay
-            </div>
-
-            <div>
-                <input type="checkbox" name="showTime" id="showTime" checked />
-                ShowTranscriptTime
-            </div>
-
-            <div>
-                <input type="checkbox" name="showPrint" id="showPrint" checked />
-                Show Print option
-            </div>
-
-            <div>
-                <input type="checkbox" name="showDownload" id="showDownload" checked />
-                Show Download option
-            </div>
-
-            <div>
-                <span class="field-name">Position:</span>
-                <select id="position" name="position" value="Right">
-                    <option value="right">Right</option>
-                    <option value="bottom">Bottom</option>
-                </select>
-            </div>
-
-            <div class="action-buttons">
-                <button type="submit" class="submit">Submit</button>
-            </div>
-        </form>
+        <h1>Info - Player V7 [ <span id="latest-id"></span> ]</h1>
+        <form action="" class="test-form"></form>
         <br />
         <div id="errorMsg" style="display: none; color: darkred; margin-left: 4px;">
             Please fill all the params above!
@@ -161,46 +72,144 @@
         <div style="position:relative;margin-top:10px">
             <div id="player-div"></div>
         </div>
+        
+        <div class="change-media-button">
+            <input class="btn btn-info " value="Change Media">
+        </div>
 
-        <script>
+        <script type="text/javascript" src="assets/jquery.min.js"></script>
+        <script type="text/javascript" src="assets/underscore.js"></script>
+        <script type="text/javascript" src="assets/jsonform.js"></script>
+
+        <script type="text/javascript">
+            var version = "0.0.12";
+
+            // schema documentation:
+            // https://github.com/jsonform/jsonform/wiki#previous
+            var generalSchema = {
+                entryId: {
+                  type: 'string',
+                  title: 'EntryId',
+                  required: true
+                },
+                changeMediaEntryId: {
+                  type: 'string',
+                  title: 'Change media EntryId'
+                },
+                ks: {
+                  type: 'string',
+                  title: 'KS'
+                },
+                partnerId: {
+                  type: 'string',
+                  title: 'partnerId',
+                  required: true
+                },
+                uiConfId: {
+                  type: 'string',
+                  title: 'uiConfId',
+                  required: true
+                },
+                width: {
+                  type: 'number',
+                  title: 'width',
+                  default: 800
+                },
+                height: {
+                  type: 'number',
+                  title: 'height',
+                  default: 480
+                },
+                prodOrQA: {
+                    type: "string",
+                    title: "Envinroment",
+                    enum: ["qa", "prod"],
+                    default: "qa"
+                },
+                autoplay: {
+                    type: "boolean",
+                    title: "Autoplay",
+                    default: false
+                },
+            };
+            var pluginConfSchema = {
+                showTime: {
+                    type: "boolean",
+                    title: "Show time",
+                    default: true
+                },
+                expandOnFirstPlay: {
+                    type: "boolean",
+                    title: "Expand on play",
+                    default: true
+                },
+                position: {
+                    type: "string",
+                    title: "Position",
+                    enum: ["bottom", "right"],
+                    default: "bottom"
+                },
+                printDisabled: {
+                    type: "boolean",
+                    title: "Disable print",
+                    default: false
+                },
+                downloadDisabled: {
+                    type: "boolean",
+                    title: "Disable download",
+                    default: false
+                },
+            };
+            $('form.test-form').submit(function(event) {
+                event.preventDefault();
+                document.location.reload(true);
+            })
+            var mergedSchema = Object.assign({}, generalSchema, pluginConfSchema);
+            var formValues = parseHash(location.hash);
+            // set default values
+            _.each(mergedSchema, function(value, key) {
+                if (formValues[key] === undefined && value.default !== undefined) {
+                    formValues[key] = value.default;
+                }
+            })
+            $('form.test-form').jsonForm({
+              schema: mergedSchema,
+              value: formValues,
+              onSubmit: function (errors, values) {
+                var errorMsg = document.getElementById("errorMsg");
+                var val = JSON.stringify(values);
+                if(history.pushState) {
+                    history.pushState(null, null, '#' + val);
+                }
+                else {
+                    location.hash = '#' + val;
+                }
+                if (errors) {
+                    errorMsg.style.display = "block";
+                }
+                else {
+                    errorMsg.style.display = "none";
+                    document.location.reload(true);
+                }
+              }
+            });
+
+            var pluginConfiguration = _.omit(formValues, _.keys(generalSchema));
+
             var errorMsg = document.getElementById("errorMsg");
             var isValid = false;
 
-            // get search params from url string
-            var urlParams = new urlParamParse(window.location.search);
-
-            var entryId = urlParams.get("entryId");
-            var ks = urlParams.get("ks");
-            var partnerId = urlParams.get("partnerId");
-            var uiConfId = urlParams.get("uiConfId");
-            var width = urlParams.get("width") >>> 0;
-            var height = urlParams.get("height") >>> 0;
-            var prodOrQA = urlParams.get("prodOrQA");
+            var entryId = formValues.entryId;
+            var ks = formValues.ks;
+            var partnerId = formValues.partnerId;
+            var uiConfId = formValues.uiConfId;
+            var width = formValues.width >>> 0;
+            var height = formValues.height >>> 0;
+            var prodOrQA = formValues.prodOrQA;
+            var autoplay = formValues.autoplay;
             var env;
-            var expandOnFirstPlay = urlParams.get("expandOnFirstPlay");
-            var showTime = urlParams.get("showTime");
-            var showPrint = urlParams.get("showPrint");
-            var showDownload = urlParams.get("showDownload");
-            var position = urlParams.get("position");
-
-            // Insert params to form and put default values when needed
-            if (entryId) document.getElementById("entryId").value = entryId;
-            if (ks && ks !== "0") document.getElementById("ks").value = ks;
-            if (partnerId) document.getElementById("partnerId").value = partnerId;
-            if (uiConfId) document.getElementById("uiConfId").value = uiConfId;
-
-            if (!width) {
-                width = 800;
-            }
-            document.getElementById("width").value = width;
-
-            if (!height) {
-                height = 480;
-            }
-            document.getElementById("height").value = height;
 
             if (prodOrQA && prodOrQA === "qa") {
-                document.getElementById("qa").checked = true;
                 env = {
                     serviceUrl: "https://qa-apache-php7.dev.kaltura.com/api_v3",
                     cdnUrl: "https://qa-nginx-vod.dev.kaltura.com"
@@ -208,7 +217,6 @@
             } else {
                 // default
                 prodOrQA = "prod";
-                document.getElementById("prod").checked = true;
                 env = {
                     serviceUrl: "https://www.kaltura.com/api_v3",
                     cdnUrl: "https://www.kaltura.com"
@@ -223,45 +231,6 @@
                 errorMsg.style.display = "block";
             }
 
-            if (expandOnFirstPlay && expandOnFirstPlay === "on") {
-                document.getElementById("expandOnFirstPlay").checked = true;
-                expandOnFirstPlay = true;
-            } else {
-                document.getElementById("expandOnFirstPlay").checked = false;
-                expandOnFirstPlay = false;
-            }
-
-            if (showTime && showTime === "on") {
-                document.getElementById("showTime").checked = true;
-                showTime = true;
-            } else {
-                document.getElementById("showTime").checked = false;
-                showTime = false;
-            }
-
-            if (position && position === "right") {
-                document.getElementById("position").value = "right";
-            } else {
-                document.getElementById("position").value = "bottom";
-                position = "bottom";
-            }
-
-            if (showPrint && showPrint === "on") {
-                document.getElementById("showPrint").checked = true;
-                showPrint = true;
-            } else {
-                document.getElementById("showPrint").checked = false;
-                showPrint = false;
-            }
-
-            if (showDownload && showDownload === "on") {
-                document.getElementById("showDownload").checked = true;
-                showDownload = true;
-            } else {
-                document.getElementById("showDownload").checked = false;
-                showDownload = false;
-            }
-
             // init player size:
             var playerDiv = document.getElementById("player-div");
             playerDiv.style.width = width + "px";
@@ -269,24 +238,17 @@
 
             if (isValid) {
                 var plugins = {
-                    transcript: {
-                        showTime: showTime,
-                        expandOnFirstPlay: expandOnFirstPlay,
-                        position: position,
-                        printDisabled: !showPrint,
-                        downloadDisabled: !showDownload
-                    }
+                    "playkit-js-transcript": pluginConfiguration
                 };
 
                 var player;
-
-                function changeMedia() {
+                $('.change-media-button input').click(function(){
                     player.loadMedia({
-                        entryId: switchMediaEntryId
+                        entryId: formValues.changeMediaEntryId
                     });
-                }
+                })
 
-                const contrib = {
+                var contrib = {
                     ui: {
                         fonts: {
                             fontFamily: "Lato, sans-serif",
@@ -310,6 +272,9 @@
                     session: {},
                     contrib: contrib,
                     plugins: plugins,
+                    playback: {
+                        autoplay: autoplay
+                    },
                     ui: {
                         debug: true
                     }
@@ -331,22 +296,30 @@
                 };
             }
 
-            /*
-             * Get url params
-             * replace the URLSearchParams as IE doesn't support it
-             * */
-            function urlParamParse(url) {
-                this.url = url;
-
-                this.get = function(name) {
-                    var results = new RegExp("[\?&]" + name + "=([^&#]*)").exec(this.url);
-                    if (results == null) {
-                        return null;
-                    } else {
-                        return unescape(decodeURI(results[1]) || 0);
-                    }
-                };
+        function parseHash(queryString) {
+            var query = {};
+            try {
+                var cleanedString = queryString.slice(1).replace(/%22/g, '"');
+                if (cleanedString) {
+                    query = JSON.parse(cleanedString);
+                }
+            } catch(e) {
+                console.error(e);
             }
+            return query;
+        }
+        </script>
+        <script>
+            var color = "#FF0000";
+            if (this.latest && this.latest === this.version ){
+                document.getElementById("latest-id").innerText = " LATEST - "+ this.latest;
+                color = "#1c7b22"
+            }else if(this.latest){
+                document.getElementById("latest-id").innerText = this.latest+ " - NOT LATEST"
+            }else{
+                document.getElementById("latest-id").innerText = "dev mode"
+            }
+            document.getElementById("latest-id").style.color = color;
         </script>
     </body>
 </html>
