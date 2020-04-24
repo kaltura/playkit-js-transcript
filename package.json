@@ -19,7 +19,7 @@
     "@types/node": "12.12.21",
     "classnames": "2.2.6",
     "kaltura-typescript-client": "file:libs/kaltura-typescript-client-14.3.0-v20180717-150817.tgz",
-    "preact": "^8.4.2",
+    "preact": "^10.3.4",
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
