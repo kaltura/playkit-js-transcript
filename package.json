@@ -19,7 +19,6 @@
     "@types/node": "12.12.21",
     "classnames": "2.2.6",
     "kaltura-typescript-client": "file:libs/kaltura-typescript-client-14.3.0-v20180717-150817.tgz",
-    "preact": "^10.3.4",
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
@@ -29,6 +28,7 @@
     "@typescript-eslint/eslint-plugin": "2.12.0",
     "@typescript-eslint/parser": "2.12.0",
     "husky": "3.1.0",
+    "preact": "^10.4.1",
     "tslint": "5.20.1",
     "typescript": "3.7.4"
   },
