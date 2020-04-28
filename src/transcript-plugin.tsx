@@ -62,7 +62,7 @@ interface TranscriptPluginConfig {
   printDisabled: boolean; // disable print menu
 }
 
-export class TranscriptPlugin implements OnMediaLoad, OnMediaUnload, OnPluginSetup, OnMediaUnload {
+export class TranscriptPlugin implements OnMediaLoad, OnPluginSetup, OnMediaUnload {
   private _kitchenSinkItem: KitchenSinkItem | null = null;
   private _upperBarItem: UpperBarItem | null = null;
   private _isLoading = false;
