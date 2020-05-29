@@ -19,6 +19,8 @@ export interface TranscriptProps {
     searchDebounceTimeout: number;
     searchNextPrevDebounceTimeout: number;
     videoDuration: number;
+    kitchenSinkActive: boolean;
+    toggledWithEnter: boolean;
 }
 
 interface TranscriptState {
@@ -239,12 +241,14 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         return (
             <div className={[styles.header, this._getHeaderStyles()].join(' ')}>
                 <Search
-                        onChange={this._onSearch}
-                        onSearchIndexChange={this._debounced.onActiveSearchIndexChange}
-                        value={search}
-                        activeSearchIndex={activeSearchIndex}
-                        totalSearchResults={totalSearchResults}
-                    />
+                    onChange={this._onSearch}
+                    onSearchIndexChange={this._debounced.onActiveSearchIndexChange}
+                    value={search}
+                    activeSearchIndex={activeSearchIndex}
+                    totalSearchResults={totalSearchResults}
+                    kitchenSinkActive={this.props.kitchenSinkActive}
+                    toggledWithEnter={this.props.toggledWithEnter}
+                />
             </div>
         );
     };

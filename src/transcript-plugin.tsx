@@ -25,7 +25,9 @@ import {
   KitchenSinkPositions,
   KitchenSinkExpandModes,
   downloadContent,
-  printContent, UpperBarItem
+  printContent,
+  UpperBarItem,
+  KeyboardKeys
 } from "@playkit-js-contrib/ui";
 import { KalturaCaptionAssetFilter } from "kaltura-typescript-client/api/types/KalturaCaptionAssetFilter";
 import { CaptionAssetListAction } from "kaltura-typescript-client/api/types/CaptionAssetListAction";
@@ -72,6 +74,7 @@ export class TranscriptPlugin implements OnMediaLoad, OnPluginSetup, OnMediaUnlo
   private _captions: CaptionItem[] = []; // parsed captions
   private _kalturaClient = new KalturaClient();
   private _transcriptLanguage = "default";
+  private _pluginOpenedWithKeyboard  = false;
 
   constructor(
       private _contribServices: ContribServices,
@@ -157,6 +160,14 @@ export class TranscriptPlugin implements OnMediaLoad, OnPluginSetup, OnMediaUnlo
     });
   }
 
+  private _handleKeyPress = (event: KeyboardEvent) => {
+    if (event.keyCode === KeyboardKeys.Enter) {
+      this._pluginOpenedWithKeyboard = true;
+    } else {
+      this._pluginOpenedWithKeyboard = false;
+    }
+  }
+
   private _addKitchenSinkItem(): void {
     const { position, expandOnFirstPlay } = this._configs.pluginConfig;
     this._contribServices.upperBarManager.remove;
@@ -164,10 +175,10 @@ export class TranscriptPlugin implements OnMediaLoad, OnPluginSetup, OnMediaUnlo
       label: "Transcript",
       expandMode: KitchenSinkExpandModes.AlongSideTheVideo,
       renderIcon: () => (
-        <div
-          className={styles.pluginIcon}
-          role="button"
+        <button
+          className={styles.transcriptIcon}
           tabIndex={1}
+          onKeyPress={this._handleKeyPress}
         />
       ),
       position: getConfigValue(
@@ -401,6 +412,7 @@ export class TranscriptPlugin implements OnMediaLoad, OnPluginSetup, OnMediaUnlo
       searchDebounceTimeout,
       searchNextPrevDebounceTimeout
     } = this._configs.pluginConfig;
+    const isKitchenSinkActive = this._kitchenSinkItem ? this._kitchenSinkItem.isActive() : false;
     return (
         <Transcript
             {...props}
@@ -419,6 +431,8 @@ export class TranscriptPlugin implements OnMediaLoad, OnPluginSetup, OnMediaUnlo
             onRetryLoad={this._loadCaptions}
             currentTime={this._player.currentTime}
             videoDuration={this._player.duration}
+            kitchenSinkActive={isKitchenSinkActive}
+            toggledWithEnter={this._pluginOpenedWithKeyboard}
         />
     );
   };

@@ -7,6 +7,8 @@ export interface SearchProps {
     value: string;
     activeSearchIndex: number;
     totalSearchResults: number;
+    kitchenSinkActive: boolean;
+    toggledWithEnter: boolean;
 }
 
 interface SearchState {
@@ -14,20 +16,28 @@ interface SearchState {
 }
 
 export class Search extends Component<SearchProps, SearchState> {
+    private _inputRef: null | HTMLInputElement = null;
     shouldComponentUpdate(
         nextProps: Readonly<SearchProps>,
         nextState: Readonly<SearchState>
     ) {
-        const { value, activeSearchIndex, totalSearchResults } = this.props;
+        const { value, activeSearchIndex, totalSearchResults, kitchenSinkActive } = this.props;
         if (
             value !== nextProps.value ||
             activeSearchIndex !== nextProps.activeSearchIndex ||
             totalSearchResults !== nextProps.totalSearchResults ||
+            kitchenSinkActive !== nextProps.kitchenSinkActive ||
             this.state.active !== nextState.active
         ) {
             return true;
         }
         return false;
+    }
+    componentDidUpdate(previousProps: Readonly<SearchProps>): void {
+        const { kitchenSinkActive, toggledWithEnter } = this.props;
+        if (!previousProps.kitchenSinkActive && kitchenSinkActive && toggledWithEnter) {
+          this._inputRef?.focus();
+        }
     }
     private _handleOnChange = (e: any) => {
         this.props.onChange(e.target.value);
@@ -69,7 +79,7 @@ export class Search extends Component<SearchProps, SearchState> {
         onSearchIndexChange(index);
     };
     render() {
-        const { value, activeSearchIndex, totalSearchResults } = this.props;
+        const { value, activeSearchIndex, totalSearchResults, kitchenSinkActive } = this.props;
         return (
             <div className={`${styles.searchWrapper} ${(value || this.state.active) ? styles.active : ""}`}>
                 <div className={styles.searchIcon} />
@@ -80,8 +90,12 @@ export class Search extends Component<SearchProps, SearchState> {
                     onInput={this._handleOnChange}
                     onFocus={this._onFocus}
                     onBlur={this._onBlur}
+                    tabIndex={kitchenSinkActive ? 1 : -1}
+                    ref={(node) => {
+                        this._inputRef = node;
+                    }}
                 />
-                {value && <button className={styles.clearIcon} onClick={this._onClear} />}
+                {value && <button className={styles.clearIcon} onClick={this._onClear} tabIndex={kitchenSinkActive ? 1 : -1} />}
                 {value && (
                     <div className={styles.searchResults}>
                         {`${
@@ -94,6 +108,7 @@ export class Search extends Component<SearchProps, SearchState> {
                 <div className={styles.prevNextWrapper}>
                     {value && (
                         <button
+                            tabIndex={kitchenSinkActive ? 1 : -1}
                             className={`${styles.prevNextButton} ${styles.prevButton} ${
                                 totalSearchResults === 0 ? styles.disabled : ""
                             }`}
@@ -102,6 +117,7 @@ export class Search extends Component<SearchProps, SearchState> {
                     )}
                     {value && (
                         <button
+                            tabIndex={kitchenSinkActive ? 1 : -1}
                             className={`${styles.prevNextButton} ${styles.nextButton} ${
                                 totalSearchResults === 0 ? styles.disabled : ""
                             }`}
