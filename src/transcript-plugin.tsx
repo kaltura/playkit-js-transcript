@@ -26,8 +26,7 @@ import {
   KitchenSinkExpandModes,
   downloadContent,
   printContent,
-  UpperBarItem,
-  KeyboardKeys
+  UpperBarItem
 } from "@playkit-js-contrib/ui";
 import { KalturaCaptionAssetFilter } from "kaltura-typescript-client/api/types/KalturaCaptionAssetFilter";
 import { CaptionAssetListAction } from "kaltura-typescript-client/api/types/CaptionAssetListAction";
@@ -158,10 +157,20 @@ export class TranscriptPlugin implements OnMediaLoad, OnPluginSetup, OnMediaUnlo
           />
       )
     });
+    this._contribServices.upperBarManager.add({
+      label: 'Info',
+      onClick: () => {},
+      renderItem: () => (
+        <button
+          className={styles.transcriptIcon}
+          tabIndex={1}
+      />
+      ),
+    });
   }
 
-  private _handleKeyPress = (event: KeyboardEvent) => {
-    if (event.keyCode === KeyboardKeys.Enter) {
+  private _handleIconClick = (event: MouseEvent) => {
+    if (event.x === 0 && event.y === 0) {
       this._pluginOpenedWithKeyboard = true;
     } else {
       this._pluginOpenedWithKeyboard = false;
@@ -178,7 +187,7 @@ export class TranscriptPlugin implements OnMediaLoad, OnPluginSetup, OnMediaUnlo
         <button
           className={styles.transcriptIcon}
           tabIndex={1}
-          onKeyPress={this._handleKeyPress}
+          onClick={this._handleIconClick}
         />
       ),
       position: getConfigValue(

@@ -59,6 +59,9 @@
   margin: 0 8px;
   cursor: pointer;
   background-image: url('../../assets/close.svg');
+  background-color: inherit;
+  border: none;
+  padding: 0;
 }
 
 .body {
@@ -67,6 +70,7 @@
   overflow-y: auto;
   text-align: center;
   overflow-x: hidden;
+  margin-left: 1px;
 }
 
 .loading-wrapper,

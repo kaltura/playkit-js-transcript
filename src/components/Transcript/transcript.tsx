@@ -180,7 +180,13 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     };
 
     private _renderScrollToButton = () => {
-        return <button className={styles.gotoButton} onClick={this._enableAutoScroll} />;
+        return (
+            <button
+                className={styles.gotoButton}
+                onClick={this._enableAutoScroll}
+                tabIndex={this.props.kitchenSinkActive ? 1 : -1}
+            />
+        );
     };
 
     private _onSearch = (search: string) => {
@@ -375,7 +381,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     };
 
     render(props: TranscriptProps) {
-        const { onClose, isLoading } = props;
+        const { onClose, isLoading, kitchenSinkActive } = props;
         return (
             <div
                 className={styles.root}
@@ -385,18 +391,23 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
             >
                 <div className={styles.globalContainer}>
                     {this._renderHeader()}
-                    {!this.state.isAutoScrollEnabled && this._renderScrollToButton()}
+                    <button
+                        className={styles.closeButton}
+                        tabIndex={kitchenSinkActive ? 1 : -1}
+                        onClick={onClose}
+                    />
                     <div
                         className={styles.body}
                         onScroll={this._onScroll}
                         ref={node => {
                             this._transcriptListRef = node;
                         }}
+                        tabIndex={kitchenSinkActive ? 1 : -1}
                     >
                         {isLoading ? this._renderLoading() : this._renderTranscript()}
                     </div>
+                    {!this.state.isAutoScrollEnabled && this._renderScrollToButton()}
                 </div>
-                <div className={styles.closeButton} onClick={onClose} />
             </div>
         );
     }
