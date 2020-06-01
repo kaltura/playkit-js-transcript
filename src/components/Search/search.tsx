@@ -50,7 +50,11 @@ export class Search extends Component<SearchProps, SearchState> {
         this.props.onChange(e.target.value);
     };
 
-    private _onClear = () => {
+    private _onClear = (event: MouseEvent) => {
+        if (event.x !== 0 && event.y !== 0) {
+            this._focusedByMouse = true;
+        }
+        this._inputRef?.focus();
         this.props.onChange("");
     };
 
@@ -119,7 +123,13 @@ export class Search extends Component<SearchProps, SearchState> {
                         this._inputRef = node;
                     }}
                 />
-                {value && <button className={styles.clearIcon} onClick={this._onClear} tabIndex={kitchenSinkActive ? 1 : -1} />}
+                {value && (
+                    <button
+                        className={styles.clearIcon}
+                        onClick={this._onClear}
+                        tabIndex={kitchenSinkActive ? 1 : -1}
+                    />
+                )}
                 {value && (
                     <div className={styles.searchResults}>
                         {`${
