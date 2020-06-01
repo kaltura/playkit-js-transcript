@@ -13,10 +13,17 @@ export interface SearchProps {
 
 interface SearchState {
     active: boolean;
+    focused: boolean;
 }
 
 export class Search extends Component<SearchProps, SearchState> {
+    state: SearchState = {
+        active: false,
+        focused: false,
+    };
     private _inputRef: null | HTMLInputElement = null;
+    private _focusedByMouse = false;
+
     shouldComponentUpdate(
         nextProps: Readonly<SearchProps>,
         nextState: Readonly<SearchState>
@@ -36,7 +43,7 @@ export class Search extends Component<SearchProps, SearchState> {
     componentDidUpdate(previousProps: Readonly<SearchProps>): void {
         const { kitchenSinkActive, toggledWithEnter } = this.props;
         if (!previousProps.kitchenSinkActive && kitchenSinkActive && toggledWithEnter) {
-          this._inputRef?.focus();
+            this._inputRef?.focus();
         }
     }
     private _handleOnChange = (e: any) => {
@@ -48,11 +55,18 @@ export class Search extends Component<SearchProps, SearchState> {
     };
 
     private _onFocus = () => {
-        this.setState({ active: true })
+        this.setState({
+            active: true,
+            focused: !this._focusedByMouse,
+        });
+        this._focusedByMouse = false;
     }
 
     private _onBlur = () => {
-        this.setState({ active: false })
+        this.setState({
+            active: false,
+            focused: false
+        });
     }
 
     private _goToNextSearchResult = () => {
@@ -78,10 +92,19 @@ export class Search extends Component<SearchProps, SearchState> {
         }
         onSearchIndexChange(index);
     };
+
+    _handleMouseDown = () => {
+        this._focusedByMouse = true;
+    };
+
     render() {
         const { value, activeSearchIndex, totalSearchResults, kitchenSinkActive } = this.props;
         return (
-            <div className={`${styles.searchWrapper} ${(value || this.state.active) ? styles.active : ""}`}>
+            <div className={[
+                styles.searchWrapper,
+                (value || this.state.active) ? styles.active : "",
+                this.state.focused ? styles.focused : "",
+            ].join(" ")}>
                 <div className={styles.searchIcon} />
                 <input
                     className={styles.searchInput}
@@ -90,6 +113,7 @@ export class Search extends Component<SearchProps, SearchState> {
                     onInput={this._handleOnChange}
                     onFocus={this._onFocus}
                     onBlur={this._onBlur}
+                    onMouseDown={this._handleMouseDown}
                     tabIndex={kitchenSinkActive ? 1 : -1}
                     ref={(node) => {
                         this._inputRef = node;
