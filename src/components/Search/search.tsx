@@ -102,7 +102,7 @@ export class Search extends Component<SearchProps, SearchState> {
     };
 
     render() {
-        const { value, activeSearchIndex, totalSearchResults, kitchenSinkActive } = this.props;
+        const { value, activeSearchIndex, totalSearchResults } = this.props;
         return (
             <div className={[
                 styles.searchWrapper,
@@ -118,7 +118,7 @@ export class Search extends Component<SearchProps, SearchState> {
                     onFocus={this._onFocus}
                     onBlur={this._onBlur}
                     onMouseDown={this._handleMouseDown}
-                    tabIndex={kitchenSinkActive ? 1 : -1}
+                    tabIndex={1}
                     ref={(node) => {
                         this._inputRef = node;
                     }}
@@ -127,7 +127,7 @@ export class Search extends Component<SearchProps, SearchState> {
                     <button
                         className={styles.clearIcon}
                         onClick={this._onClear}
-                        tabIndex={kitchenSinkActive ? 1 : -1}
+                        tabIndex={1}
                     />
                 )}
                 {value && (
@@ -142,7 +142,7 @@ export class Search extends Component<SearchProps, SearchState> {
                 <div className={styles.prevNextWrapper}>
                     {value && (
                         <button
-                            tabIndex={kitchenSinkActive ? 1 : -1}
+                            tabIndex={1}
                             className={`${styles.prevNextButton} ${styles.prevButton} ${
                                 totalSearchResults === 0 ? styles.disabled : ""
                             }`}
@@ -151,7 +151,7 @@ export class Search extends Component<SearchProps, SearchState> {
                     )}
                     {value && (
                         <button
-                            tabIndex={kitchenSinkActive ? 1 : -1}
+                            tabIndex={1}
                             className={`${styles.prevNextButton} ${styles.nextButton} ${
                                 totalSearchResults === 0 ? styles.disabled : ""
                             }`}

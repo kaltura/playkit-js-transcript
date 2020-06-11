@@ -1,4 +1,5 @@
 import { h, Component } from "preact";
+import { KeyboardKeys } from "@playkit-js-contrib/ui";
 import * as styles from "./caption.scss";
 import { secontsToTime, CaptionItem } from "../../utils";
 
@@ -39,7 +40,7 @@ export class Caption extends Component<ExtendedCaptionProps> {
             highlighted,
             isAutoScrollEnabled,
             activeSearchIndex,
-            longerThanHour
+            longerThanHour,
         } = this.props;
         if (longerThanHour !== nextProps.longerThanHour) {
             return true;
@@ -59,12 +60,24 @@ export class Caption extends Component<ExtendedCaptionProps> {
         return false;
     }
 
-    private _handleClick = () => {
+    private _handleKeyPress = (event: KeyboardEvent) => {
+        if (
+            event.keyCode === KeyboardKeys.Enter ||
+            event.keyCode === KeyboardKeys.Space
+        ) {
+            event.preventDefault();
+            event.stopPropagation();
+            this._gotoCurrentTime();
+            return;
+        }
+    }
+
+    private _gotoCurrentTime = () => {
         const { caption, onClick } = this.props;
         if (caption.text.length) {
             onClick();
         }
-    };
+    }
 
     private _renderText = (text: string) => {
         const { activeSearchIndex, searchLength, indexMap } = this.props;
@@ -116,19 +129,23 @@ export class Caption extends Component<ExtendedCaptionProps> {
         const { text, startTime } = caption;
 
         return (
-            <div className={styles.caption}>
+            <div
+                className={styles.caption}
+                tabIndex={1}
+                ref={node => {
+                    this._hotspotRef = node;
+                }}
+                onKeyPress={this._handleKeyPress}
+            >
                 {showTime && (
                     <div className={styles.captionTime}>
                         {secontsToTime(startTime, longerThanHour)}
                     </div>
                 )}
                 <div
-                    onClick={this._handleClick}
+                    onClick={this._gotoCurrentTime}
                     className={`${styles.captionContent} ${highlighted ? styles.highlighted : ""} ${showTime ? "" : styles.withoutTime}`}
-                    type="button"
-                    ref={node => {
-                        this._hotspotRef = node;
-                    }}
+                    role="button"
                 >
                     {this._renderText(text)}
                 </div>

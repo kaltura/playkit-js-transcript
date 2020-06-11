@@ -16,6 +16,10 @@
   background-color: rgba(255, 255, 255, 0.3);
 }
 
+.hidden {
+  visibility: hidden;
+}
+
 .root {
   display: flex;
   justify-content: center;
@@ -25,6 +29,27 @@
   width: 100%;
   position: absolute;
   background-color: $root-background;
+  .skip-transcript-button {
+    position: fixed;
+    top: -1000px;
+    left: -1000px;
+    z-index: 1;
+    width: 120px;
+    height: 32px;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.3);
+    border: solid 1px $main-color;
+    background-color: $semiblack-color;
+    font-size: 15px;
+    line-height: 1.27;
+    text-align: center;
+    color: $white-color;
+    &:focus {
+      top: auto;
+      left: auto;
+      outline: none !important; // prevent focus styles inherited from playkit-player.playkit-nav
+    }
+  }
 }
 
 .global-container {
@@ -70,7 +95,6 @@
   overflow-y: auto;
   text-align: center;
   overflow-x: hidden;
-  margin-left: 1px;
 }
 
 .loading-wrapper,
@@ -111,7 +135,8 @@
   }
 }
 
-.goto-button {
+.autoscroll-button {
+  opacity: 0;
   position: absolute;
   right: 12px;
   bottom: 12px;
@@ -128,4 +153,8 @@
   background-image: url('../../assets/arrow-up.svg');
   cursor: pointer;
   z-index: 1;
+}
+
+.autoscroll-button-visible {
+  opacity: 1;
 }

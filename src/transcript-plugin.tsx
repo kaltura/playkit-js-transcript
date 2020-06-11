@@ -421,7 +421,6 @@ export class TranscriptPlugin implements OnMediaLoad, OnPluginSetup, OnMediaUnlo
       searchDebounceTimeout,
       searchNextPrevDebounceTimeout
     } = this._configs.pluginConfig;
-    const isKitchenSinkActive = this._kitchenSinkItem ? this._kitchenSinkItem.isActive() : false;
     return (
         <Transcript
             {...props}
@@ -440,7 +439,7 @@ export class TranscriptPlugin implements OnMediaLoad, OnPluginSetup, OnMediaUnlo
             onRetryLoad={this._loadCaptions}
             currentTime={this._player.currentTime}
             videoDuration={this._player.duration}
-            kitchenSinkActive={isKitchenSinkActive}
+            kitchenSinkActive={!!this._kitchenSinkItem?.isActive()}
             toggledWithEnter={this._pluginOpenedWithKeyboard}
         />
     );

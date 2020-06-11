@@ -1,4 +1,5 @@
 import { h, Component } from "preact";
+import { KeyboardKeys } from "@playkit-js-contrib/ui";
 import * as styles from "./transcript.scss";
 import { getContribLogger, CuepointEngine, debounce } from "@playkit-js-contrib/common";
 import { Spinner } from "../spinner";
@@ -51,6 +52,9 @@ const SEARCHBAR_HEIGHT = 38; // height of search bar with margins
 
 export class Transcript extends Component<TranscriptProps, TranscriptState> {
     private _transcriptListRef: HTMLElement | null = null;
+    private _captionListRef: any = null;
+    private _skipTranscriptButtonRef: HTMLButtonElement | null = null;
+    private _autoscrollButtonRef: HTMLButtonElement | null = null;
     private _preventScrollEvent: boolean = false;
     private _scrollToSearchMatchEnabled: boolean = false;
     private _widgetRootRef: HTMLElement | null = null;
@@ -171,20 +175,30 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         });
     };
 
-    private _enableAutoScroll = (e: any) => {
-        e.preventDefault();
+    private _enableAutoScroll = (event: MouseEvent) => {
+        event.preventDefault();
+        if (this.state.isAutoScrollEnabled) {
+          return;
+        }
         this._preventScrollEvent = true;
         this.setState({
             isAutoScrollEnabled: true
         });
+        if (event.x === 0 && event.y === 0) {
+          this._skipTranscriptButtonRef?.focus();
+        }
     };
 
     private _renderScrollToButton = () => {
+        const { isAutoScrollEnabled } = this.state;
         return (
             <button
-                className={styles.gotoButton}
+                className={`${styles.autoscrollButton} ${isAutoScrollEnabled ? "" : styles.autoscrollButtonVisible}`}
                 onClick={this._enableAutoScroll}
-                tabIndex={this.props.kitchenSinkActive ? 1 : -1}
+                tabIndex={isAutoScrollEnabled ? -1 : 1}
+                ref={node => {
+                  this._autoscrollButtonRef = node;
+                }}
             />
         );
     };
@@ -243,6 +257,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     }
 
     private _renderHeader = () => {
+        const { toggledWithEnter, kitchenSinkActive } = this.props;
         const { search, activeSearchIndex, totalSearchResults } = this.state;
         return (
             <div className={[styles.header, this._getHeaderStyles()].join(' ')}>
@@ -252,11 +267,45 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
                     value={search}
                     activeSearchIndex={activeSearchIndex}
                     totalSearchResults={totalSearchResults}
-                    kitchenSinkActive={this.props.kitchenSinkActive}
-                    toggledWithEnter={this.props.toggledWithEnter}
+                    toggledWithEnter={toggledWithEnter}
+                    kitchenSinkActive={kitchenSinkActive}
                 />
             </div>
         );
+    };
+
+    private _handleKeyDown = (event: KeyboardEvent) => {
+      if (event.keyCode === KeyboardKeys.Tab && !event.shiftKey) {
+        this.setState({
+          isAutoScrollEnabled: false
+        });
+        const captionRef = this._captionListRef?._currentCaptionRef?._hotspotRef;
+        if (captionRef) {
+          event.preventDefault();
+          captionRef.focus();
+        }
+      } else if (
+        event.keyCode === KeyboardKeys.Enter ||
+        event.keyCode === KeyboardKeys.Space
+      ) {
+        event.preventDefault();
+        this._autoscrollButtonRef?.focus();
+      }
+    };
+
+    private _renderSkipTranscriptButton = () => {
+      return (
+        <button
+          ref={node => {
+            this._skipTranscriptButtonRef = node;
+          }}
+          className={styles.skipTranscriptButton}
+          onKeyDown={this._handleKeyDown}
+          tabIndex={1}
+        >
+          Skip transcript
+        </button>
+      );
     };
 
     private _renderTranscript = () => {
@@ -300,6 +349,9 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
 
         return (
             <CaptionList
+                ref={node => {
+                  this._captionListRef = node;
+                }}
                 highlightedMap={highlightedMap}
                 captions={captions}
                 seekTo={this._handleSeek}
@@ -380,20 +432,27 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         )
     };
 
+    private _handleClose = (event: KeyboardEvent) => {
+      if (event.keyCode === KeyboardKeys.Esc) {
+        this.props.onClose();
+      }
+    };
+
     render(props: TranscriptProps) {
         const { onClose, isLoading, kitchenSinkActive } = props;
         return (
             <div
-                className={styles.root}
+                className={`${styles.root} ${kitchenSinkActive ? '' : styles.hidden}`}
                 ref={node => {
                     this._widgetRootRef = node;
                 }}
+                onKeyUp={this._handleClose}
             >
                 <div className={styles.globalContainer}>
                     {this._renderHeader()}
                     <button
                         className={styles.closeButton}
-                        tabIndex={kitchenSinkActive ? 1 : -1}
+                        tabIndex={1}
                         onClick={onClose}
                     />
                     <div
@@ -402,11 +461,11 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
                         ref={node => {
                             this._transcriptListRef = node;
                         }}
-                        tabIndex={kitchenSinkActive ? 1 : -1}
                     >
+                        {!isLoading && this._renderSkipTranscriptButton()}
                         {isLoading ? this._renderLoading() : this._renderTranscript()}
                     </div>
-                    {!this.state.isAutoScrollEnabled && this._renderScrollToButton()}
+                    {this._renderScrollToButton()}
                 </div>
             </div>
         );
