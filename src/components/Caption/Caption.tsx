@@ -66,7 +66,6 @@ export class Caption extends Component<ExtendedCaptionProps> {
             event.keyCode === KeyboardKeys.Space
         ) {
             event.preventDefault();
-            event.stopPropagation();
             this._gotoCurrentTime();
             return;
         }

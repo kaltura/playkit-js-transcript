@@ -73,7 +73,7 @@ export class TranscriptPlugin implements OnMediaLoad, OnPluginSetup, OnMediaUnlo
   private _captions: CaptionItem[] = []; // parsed captions
   private _kalturaClient = new KalturaClient();
   private _transcriptLanguage = "default";
-  private _pluginOpenedWithKeyboard  = false;
+  private _triggeredByKeyboard  = false;
 
   constructor(
       private _contribServices: ContribServices,
@@ -171,9 +171,9 @@ export class TranscriptPlugin implements OnMediaLoad, OnPluginSetup, OnMediaUnlo
 
   private _handleIconClick = (event: MouseEvent) => {
     if (event.x === 0 && event.y === 0) {
-      this._pluginOpenedWithKeyboard = true;
+      this._triggeredByKeyboard = true;
     } else {
-      this._pluginOpenedWithKeyboard = false;
+      this._triggeredByKeyboard = false;
     }
   }
 
@@ -440,7 +440,7 @@ export class TranscriptPlugin implements OnMediaLoad, OnPluginSetup, OnMediaUnlo
             currentTime={this._player.currentTime}
             videoDuration={this._player.duration}
             kitchenSinkActive={!!this._kitchenSinkItem?.isActive()}
-            toggledWithEnter={this._pluginOpenedWithKeyboard}
+            toggledWithEnter={this._triggeredByKeyboard}
         />
     );
   };
