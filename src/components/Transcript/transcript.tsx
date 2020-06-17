@@ -455,6 +455,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
                         tabIndex={1}
                         onClick={onClose}
                     />
+                    {!isLoading && this._renderSkipTranscriptButton()}
                     <div
                         className={styles.body}
                         onScroll={this._onScroll}
@@ -462,7 +463,6 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
                             this._transcriptListRef = node;
                         }}
                     >
-                        {!isLoading && this._renderSkipTranscriptButton()}
                         {isLoading ? this._renderLoading() : this._renderTranscript()}
                     </div>
                     {this._renderScrollToButton()}
