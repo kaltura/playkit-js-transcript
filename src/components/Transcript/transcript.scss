@@ -30,9 +30,8 @@
   position: absolute;
   background-color: $root-background;
   .skip-transcript-button {
-    position: fixed;
+    position: absolute;
     top: -1000px;
-    left: -1000px;
     z-index: 1;
     width: 120px;
     height: 32px;
@@ -45,8 +44,8 @@
     text-align: center;
     color: $white-color;
     &:focus {
-      top: auto;
-      left: auto;
+      top: 46px;
+      right: 12px;
       outline: none !important; // prevent focus styles inherited from playkit-player.playkit-nav
     }
   }
@@ -91,6 +90,7 @@
 
 .body {
   position: relative;
+  padding-top: 1px;
   flex: 1;
   overflow-y: auto;
   text-align: center;
