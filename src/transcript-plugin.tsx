@@ -25,7 +25,8 @@ import {
   KitchenSinkPositions,
   KitchenSinkExpandModes,
   downloadContent,
-  printContent, UpperBarItem
+  printContent,
+  UpperBarItem
 } from "@playkit-js-contrib/ui";
 import { KalturaCaptionAssetFilter } from "kaltura-typescript-client/api/types/KalturaCaptionAssetFilter";
 import { CaptionAssetListAction } from "kaltura-typescript-client/api/types/CaptionAssetListAction";
@@ -72,6 +73,7 @@ export class TranscriptPlugin implements OnMediaLoad, OnPluginSetup, OnMediaUnlo
   private _captions: CaptionItem[] = []; // parsed captions
   private _kalturaClient = new KalturaClient();
   private _transcriptLanguage = "default";
+  private _triggeredByKeyboard  = false;
 
   constructor(
       private _contribServices: ContribServices,
@@ -155,6 +157,24 @@ export class TranscriptPlugin implements OnMediaLoad, OnPluginSetup, OnMediaUnlo
           />
       )
     });
+    this._contribServices.upperBarManager.add({
+      label: 'Info',
+      onClick: () => {},
+      renderItem: () => (
+        <button
+          className={styles.transcriptIcon}
+          tabIndex={1}
+      />
+      ),
+    });
+  }
+
+  private _handleIconClick = (event: MouseEvent) => {
+    if (event.x === 0 && event.y === 0) {
+      this._triggeredByKeyboard = true;
+    } else {
+      this._triggeredByKeyboard = false;
+    }
   }
 
   private _addKitchenSinkItem(): void {
@@ -164,10 +184,10 @@ export class TranscriptPlugin implements OnMediaLoad, OnPluginSetup, OnMediaUnlo
       label: "Transcript",
       expandMode: KitchenSinkExpandModes.AlongSideTheVideo,
       renderIcon: () => (
-        <div
-          className={styles.pluginIcon}
-          role="button"
+        <button
+          className={styles.transcriptIcon}
           tabIndex={1}
+          onClick={this._handleIconClick}
         />
       ),
       position: getConfigValue(
@@ -419,6 +439,8 @@ export class TranscriptPlugin implements OnMediaLoad, OnPluginSetup, OnMediaUnlo
             onRetryLoad={this._loadCaptions}
             currentTime={this._player.currentTime}
             videoDuration={this._player.duration}
+            kitchenSinkActive={!!this._kitchenSinkItem?.isActive()}
+            toggledWithEnter={this._triggeredByKeyboard}
         />
     );
   };

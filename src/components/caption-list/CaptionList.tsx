@@ -1,5 +1,6 @@
 import { h, Component } from "preact";
 import { ObjectUtils } from "@playkit-js-contrib/common";
+import { KeyboardKeys } from "@playkit-js-contrib/ui";
 import { Caption, CaptionProps } from "../caption";
 import * as styles from "./captionList.scss";
 import { CaptionItem, HOUR } from "../../utils";
@@ -17,6 +18,9 @@ interface CaptionListProps {
 }
 
 export class CaptionList extends Component<CaptionListProps> {
+    private _currentCaptionRef: any = null;
+    private _firstCaptionRef: any = null;
+    private _lastCaptionRef: any = null;
     shouldComponentUpdate(nextProps: Readonly<CaptionListProps>) {
         const {
             highlightedMap,
@@ -89,14 +93,39 @@ export class CaptionList extends Component<CaptionListProps> {
         return newCaptionProps;
     }
 
+    private _handleKeyUp = (event: KeyboardEvent) => {
+        if (event.keyCode === KeyboardKeys.End) {
+            this._lastCaptionRef?._hotspotRef?.focus();
+        } else if (event.keyCode === KeyboardKeys.Home) {
+            this._firstCaptionRef?._hotspotRef?.focus();
+        }
+    }
+
     render() {
+        const { captions } = this.props;
         return (
-            <div className={styles.transcriptWrapper}>
-                {this.props.captions.map(captionData => (
-                    <Caption
-                        {...this._getCaptionProps(captionData)}
-                    />
-                ))}
+            <div
+                className={styles.transcriptWrapper}
+                onKeyUp={this._handleKeyUp}
+            >
+                {captions.map((captionData, index) => {
+                    const captionProps = this._getCaptionProps(captionData);
+                    return (
+                        <Caption
+                            ref={node => {
+                                if (index === 0) {
+                                    this._firstCaptionRef = node;
+                                } else if (index === captions.length - 1) {
+                                    this._lastCaptionRef = node;
+                                }
+                                if (captionProps.highlighted) {
+                                    this._currentCaptionRef = node;
+                                }
+                            }}
+                            {...captionProps}
+                        />
+                    )
+                })}
             </div>
         );
     }

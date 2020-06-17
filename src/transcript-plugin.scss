@@ -1,9 +1,12 @@
-.plugin-icon {
+.transcript-icon {
   background-image: url("./assets/transcript.svg");
   width: 32px;
   height: 32px;
   opacity: 0.8;
   cursor: pointer;
+  background-color: inherit;
+  border: none;
+  padding: 0;
   &:hover,
   &:focus {
     opacity: 1;

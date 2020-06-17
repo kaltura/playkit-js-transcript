@@ -1,4 +1,5 @@
 import { h, Component } from "preact";
+import { KeyboardKeys } from "@playkit-js-contrib/ui";
 import * as styles from "./transcript.scss";
 import { getContribLogger, CuepointEngine, debounce } from "@playkit-js-contrib/common";
 import { Spinner } from "../spinner";
@@ -19,6 +20,8 @@ export interface TranscriptProps {
     searchDebounceTimeout: number;
     searchNextPrevDebounceTimeout: number;
     videoDuration: number;
+    kitchenSinkActive: boolean;
+    toggledWithEnter: boolean;
 }
 
 interface TranscriptState {
@@ -49,6 +52,9 @@ const SEARCHBAR_HEIGHT = 38; // height of search bar with margins
 
 export class Transcript extends Component<TranscriptProps, TranscriptState> {
     private _transcriptListRef: HTMLElement | null = null;
+    private _captionListRef: any = null;
+    private _skipTranscriptButtonRef: HTMLButtonElement | null = null;
+    private _autoscrollButtonRef: HTMLButtonElement | null = null;
     private _preventScrollEvent: boolean = false;
     private _scrollToSearchMatchEnabled: boolean = false;
     private _widgetRootRef: HTMLElement | null = null;
@@ -169,16 +175,32 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         });
     };
 
-    private _enableAutoScroll = (e: any) => {
-        e.preventDefault();
+    private _enableAutoScroll = (event: MouseEvent) => {
+        event.preventDefault();
+        if (this.state.isAutoScrollEnabled) {
+          return;
+        }
         this._preventScrollEvent = true;
         this.setState({
             isAutoScrollEnabled: true
         });
+        if (event.x === 0 && event.y === 0) {
+          this._skipTranscriptButtonRef?.focus();
+        }
     };
 
     private _renderScrollToButton = () => {
-        return <button className={styles.gotoButton} onClick={this._enableAutoScroll} />;
+        const { isAutoScrollEnabled } = this.state;
+        return (
+            <button
+                className={`${styles.autoscrollButton} ${isAutoScrollEnabled ? "" : styles.autoscrollButtonVisible}`}
+                onClick={this._enableAutoScroll}
+                tabIndex={isAutoScrollEnabled ? -1 : 1}
+                ref={node => {
+                  this._autoscrollButtonRef = node;
+                }}
+            />
+        );
     };
 
     private _onSearch = (search: string) => {
@@ -235,18 +257,55 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     }
 
     private _renderHeader = () => {
+        const { toggledWithEnter, kitchenSinkActive } = this.props;
         const { search, activeSearchIndex, totalSearchResults } = this.state;
         return (
             <div className={[styles.header, this._getHeaderStyles()].join(' ')}>
                 <Search
-                        onChange={this._onSearch}
-                        onSearchIndexChange={this._debounced.onActiveSearchIndexChange}
-                        value={search}
-                        activeSearchIndex={activeSearchIndex}
-                        totalSearchResults={totalSearchResults}
-                    />
+                    onChange={this._onSearch}
+                    onSearchIndexChange={this._debounced.onActiveSearchIndexChange}
+                    value={search}
+                    activeSearchIndex={activeSearchIndex}
+                    totalSearchResults={totalSearchResults}
+                    toggledWithEnter={toggledWithEnter}
+                    kitchenSinkActive={kitchenSinkActive}
+                />
             </div>
         );
+    };
+
+    private _handleKeyDown = (event: KeyboardEvent) => {
+      if (event.keyCode === KeyboardKeys.Tab && !event.shiftKey) {
+        this.setState({
+          isAutoScrollEnabled: false
+        });
+        const captionRef = this._captionListRef?._currentCaptionRef?._hotspotRef;
+        if (captionRef) {
+          event.preventDefault();
+          captionRef.focus();
+        }
+      } else if (
+        event.keyCode === KeyboardKeys.Enter ||
+        event.keyCode === KeyboardKeys.Space
+      ) {
+        event.preventDefault();
+        this._autoscrollButtonRef?.focus();
+      }
+    };
+
+    private _renderSkipTranscriptButton = () => {
+      return (
+        <button
+          ref={node => {
+            this._skipTranscriptButtonRef = node;
+          }}
+          className={styles.skipTranscriptButton}
+          onKeyDown={this._handleKeyDown}
+          tabIndex={1}
+        >
+          Skip transcript
+        </button>
+      );
     };
 
     private _renderTranscript = () => {
@@ -290,6 +349,9 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
 
         return (
             <CaptionList
+                ref={node => {
+                  this._captionListRef = node;
+                }}
                 highlightedMap={highlightedMap}
                 captions={captions}
                 seekTo={this._handleSeek}
@@ -370,18 +432,29 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         )
     };
 
+    private _handleClose = (event: KeyboardEvent) => {
+      if (event.keyCode === KeyboardKeys.Esc) {
+        this.props.onClose();
+      }
+    };
+
     render(props: TranscriptProps) {
-        const { onClose, isLoading } = props;
+        const { onClose, isLoading, kitchenSinkActive } = props;
         return (
             <div
-                className={styles.root}
+                className={`${styles.root} ${kitchenSinkActive ? '' : styles.hidden}`}
                 ref={node => {
                     this._widgetRootRef = node;
                 }}
+                onKeyUp={this._handleClose}
             >
                 <div className={styles.globalContainer}>
                     {this._renderHeader()}
-                    {!this.state.isAutoScrollEnabled && this._renderScrollToButton()}
+                    <button
+                        className={styles.closeButton}
+                        tabIndex={1}
+                        onClick={onClose}
+                    />
                     <div
                         className={styles.body}
                         onScroll={this._onScroll}
@@ -389,10 +462,11 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
                             this._transcriptListRef = node;
                         }}
                     >
+                        {!isLoading && this._renderSkipTranscriptButton()}
                         {isLoading ? this._renderLoading() : this._renderTranscript()}
                     </div>
+                    {this._renderScrollToButton()}
                 </div>
-                <div className={styles.closeButton} onClick={onClose} />
             </div>
         );
     }
