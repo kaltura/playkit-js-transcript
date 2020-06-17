@@ -1,6 +1,6 @@
 {
   "name": "@playkit-js/transcript-plugin",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "license": "AGPL-3.0",
   "private": false,
   "bugs": {
@@ -13,9 +13,9 @@
   },
   "dependencies": {
     "@playkit-js-contrib/cli": "1.1.0",
-    "@playkit-js-contrib/common": "^4.0.0",
-    "@playkit-js-contrib/plugin": "^4.0.0",
-    "@playkit-js-contrib/ui": "^4.0.0",
+    "@playkit-js-contrib/common": "^4.0.2",
+    "@playkit-js-contrib/plugin": "^4.0.3",
+    "@playkit-js-contrib/ui": "^4.0.3",
     "classnames": "2.2.6",
     "kaltura-typescript-client": "file:libs/kaltura-typescript-client-14.3.0-v20180717-150817.tgz",
     "xml-js": "^1.6.11"
