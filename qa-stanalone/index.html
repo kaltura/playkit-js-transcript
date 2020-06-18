@@ -300,6 +300,8 @@
             var query = {};
             try {
                 var cleanedString = queryString.slice(1).replace(/%22/g, '"');
+                cleanedString = cleanedString.replace(/%7B/g, '{');
+                cleanedString = cleanedString.replace(/%7D/g, '}');
                 if (cleanedString) {
                     query = JSON.parse(cleanedString);
                 }
