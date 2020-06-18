@@ -302,6 +302,8 @@
                 var cleanedString = queryString.slice(1).replace(/%22/g, '"');
                 if (cleanedString) {
                     query = JSON.parse(cleanedString);
+                    query = query.replace(/%7B/g, '{');
+                    query = query.replace(/%7D/g, '}');
                 }
             } catch(e) {
                 console.error(e);

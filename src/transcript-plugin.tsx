@@ -157,16 +157,6 @@ export class TranscriptPlugin implements OnMediaLoad, OnPluginSetup, OnMediaUnlo
           />
       )
     });
-    this._contribServices.upperBarManager.add({
-      label: 'Info',
-      onClick: () => {},
-      renderItem: () => (
-        <button
-          className={styles.transcriptIcon}
-          tabIndex={1}
-      />
-      ),
-    });
   }
 
   private _handleIconClick = (event: MouseEvent) => {
