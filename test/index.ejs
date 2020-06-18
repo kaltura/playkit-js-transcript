@@ -49,10 +49,7 @@
                     const configOptions = options[1];
                     const env = envOptions.env[envOptions.modes.bundlerEnv];
 
-                    const bundlerUrl = env.bundler + '/p/' + configOptions.data.partnerId + '/embedPlaykitJs/uiconf_id/' + configOptions.data.uiConfId +
-                        (envOptions.modes.bundler === "uiConf"
-                            ? ''
-                            : '/versions/kaltura-ovp-player=' + envOptions.bundler.customPlayerVersion);
+                    const bundlerUrl = "https://qa-apache-php7.dev.kaltura.com/p/6560/embedPlaykitJs/uiconf_id/15224252/versions/kaltura-ovp-player=0.54.1-canary-0-edbcf9d.0"
 
                     let loaderRunner = function() {
                         return callback(env, configOptions);
@@ -73,7 +70,8 @@
         // Configuring relevant plugins
         const plugins = {
             'playkit-js-transcript': {
-                position: 'bottom',
+                position: 'right',
+                expandOnFirstPlay: true
             }
         };
 
@@ -136,10 +134,13 @@
             logLevel: "DEBUG",
             targetId: "player-div",
             provider: {
-                env: env,
-                partnerId: data.partnerId,
-                uiConfId: data.uiConfId,
-                ks: data.ks
+                env: {
+                    cdnUrl: "https://www.kaltura.com",
+                    serviceUrl: "https://www.kaltura.com/api_v3"
+                },
+                partnerId: "27017",
+                uiConfId: "44221991",
+                ks: ""
             },
             session: {
                 userId: data.userId
@@ -154,7 +155,7 @@
             }
         };
 
-        let mediaInfo = {entryId: data.entryId};
+        let mediaInfo = {entryId: "0_mbnqekld"};
 
         player = KalturaPlayer.setup(config);
         player.loadMedia(mediaInfo);
