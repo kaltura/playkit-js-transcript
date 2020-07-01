@@ -55,7 +55,7 @@ export class CaptionList extends Component<CaptionListProps> {
 
     private _getShouldScrollToSearchMatch = (captionId: number) => {
         const { isAutoScrollEnabled, searchMap, activeSearchIndex } = this.props;
-        return !isAutoScrollEnabled && (get(searchMap, `${captionId}.${String(activeSearchIndex)}`, null) !== null);
+        return !isAutoScrollEnabled && (searchMap[captionId] && searchMap[captionId][activeSearchIndex] !== undefined);
     }
 
     private _getSearchProps = (captionId: number) => {
