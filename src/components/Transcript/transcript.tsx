@@ -53,8 +53,8 @@ const SEARCHBAR_HEIGHT = 38; // height of search bar with margins
 export class Transcript extends Component<TranscriptProps, TranscriptState> {
     private _transcriptListRef: HTMLElement | null = null;
     private _captionListRef: any = null;
-    private _skipTranscriptButtonRef: HTMLButtonElement | null = null;
-    private _autoscrollButtonRef: HTMLButtonElement | null = null;
+    private _skipTranscriptButtonRef: HTMLDivElement | null = null;
+    private _autoscrollButtonRef: HTMLDivElement | null = null;
     private _preventScrollEvent: boolean = false;
     private _scrollToSearchMatchEnabled: boolean = false;
     private _widgetRootRef: HTMLElement | null = null;
@@ -192,7 +192,8 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     private _renderScrollToButton = () => {
         const { isAutoScrollEnabled } = this.state;
         return (
-            <button
+            <div
+                role="button"
                 className={`${styles.autoscrollButton} ${isAutoScrollEnabled ? "" : styles.autoscrollButtonVisible}`}
                 onClick={this._enableAutoScroll}
                 tabIndex={isAutoScrollEnabled ? -1 : 1}
@@ -295,8 +296,9 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
 
     private _renderSkipTranscriptButton = () => {
       return (
-        <button
-          ref={node => {
+        <div
+          role="button"
+          ref={(node) => {
             this._skipTranscriptButtonRef = node;
           }}
           className={styles.skipTranscriptButton}
@@ -304,7 +306,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
           tabIndex={1}
         >
           Skip transcript
-        </button>
+        </div>
       );
     };
 
@@ -450,7 +452,8 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
             >
                 <div className={styles.globalContainer}>
                     {this._renderHeader()}
-                    <button
+                    <div
+                        role="button"
                         className={styles.closeButton}
                         tabIndex={1}
                         onClick={onClose}
