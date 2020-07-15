@@ -72,6 +72,12 @@ export class Caption extends Component<ExtendedCaptionProps> {
         }
     }
 
+    private _handleClick = (event: MouseEvent) => {
+        event.stopPropagation();
+        this._hotspotRef?.focus();
+        this._gotoCurrentTime();
+    }
+
     private _gotoCurrentTime = () => {
         const { caption, onClick } = this.props;
         if (caption.text.length) {
@@ -143,7 +149,7 @@ export class Caption extends Component<ExtendedCaptionProps> {
                     </div>
                 )}
                 <div
-                    onClick={this._gotoCurrentTime}
+                    onClick={this._handleClick}
                     className={`${styles.captionContent} ${highlighted ? styles.highlighted : ""} ${showTime ? "" : styles.withoutTime}`}
                     role="button"
                 >
