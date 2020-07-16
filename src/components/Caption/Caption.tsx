@@ -61,14 +61,21 @@ export class Caption extends Component<ExtendedCaptionProps> {
     }
 
     private _handleKeyPress = (event: KeyboardEvent) => {
+        const keyCode = event.which || event.keyCode;
         if (
-            event.keyCode === KeyboardKeys.Enter ||
-            event.keyCode === KeyboardKeys.Space
+            keyCode === KeyboardKeys.Enter ||
+            keyCode === KeyboardKeys.Space
         ) {
             event.preventDefault();
             this._gotoCurrentTime();
             return;
         }
+    }
+
+    private _handleClick = (event: MouseEvent) => {
+        event.stopPropagation();
+        this._hotspotRef?.focus();
+        this._gotoCurrentTime();
     }
 
     private _gotoCurrentTime = () => {
@@ -134,7 +141,7 @@ export class Caption extends Component<ExtendedCaptionProps> {
                 ref={node => {
                     this._hotspotRef = node;
                 }}
-                onKeyPress={this._handleKeyPress}
+                onKeyDown={this._handleKeyPress}
             >
                 {showTime && (
                     <div className={styles.captionTime}>
@@ -142,7 +149,7 @@ export class Caption extends Component<ExtendedCaptionProps> {
                     </div>
                 )}
                 <div
-                    onClick={this._gotoCurrentTime}
+                    onClick={this._handleClick}
                     className={`${styles.captionContent} ${highlighted ? styles.highlighted : ""} ${showTime ? "" : styles.withoutTime}`}
                     role="button"
                 >

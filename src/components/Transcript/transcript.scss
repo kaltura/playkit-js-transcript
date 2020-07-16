@@ -78,6 +78,7 @@
 }
 .close-button {
   position: absolute;
+  top: 8px;
   right: 0;
   width: 32px;
   height: 32px;
@@ -85,7 +86,7 @@
   margin: 0 8px;
   cursor: pointer;
   background-image: url('../../assets/close.svg');
-  background-color: inherit;
+  background-color: transparent;
   border: none;
   padding: 0;
 }
