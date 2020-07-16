@@ -13,7 +13,7 @@ export interface CaptionItem extends Cuepoint {
 export const toSeconds = (val: any, vtt = false): number => {
     const regex = vtt
         ? /(\d+):(\d{2}):(\d{2}).(\d{2,3}|\d{2})/
-        : /(\d+):(\d{2}):(\d{2})(,(\d{2,3}|\d{2}|\d{1}))?/;
+        : /(\d+):(\d{2}):(\d{2}),((\d{2,3}|\d{2}|\d{1}))?/;
     const parts: any | null[] = regex.exec(val);
     if (parts === null) {
         return 0;
