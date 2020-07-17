@@ -175,17 +175,23 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         });
     };
 
-    private _enableAutoScroll = (event: MouseEvent) => {
+    private _enableAutoScroll = (event: any) => {
         event.preventDefault();
         if (this.state.isAutoScrollEnabled) {
           return;
         }
-        this._preventScrollEvent = true;
-        this.setState({
-            isAutoScrollEnabled: true
-        });
-        if (event.x === 0 && event.y === 0) {
-          this._skipTranscriptButtonRef?.focus();
+        if (
+            event.type === "click" ||
+            event.keyCode === KeyboardKeys.Space ||
+            event.keyCode === KeyboardKeys.Enter
+        ) {
+            this._preventScrollEvent = true;
+            this.setState({
+                isAutoScrollEnabled: true
+            });
+            if (event.type !== "click") {
+                this._skipTranscriptButtonRef?.focus();
+            }
         }
     };
 
@@ -196,6 +202,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
                 role="button"
                 className={`${styles.autoscrollButton} ${isAutoScrollEnabled ? "" : styles.autoscrollButtonVisible}`}
                 onClick={this._enableAutoScroll}
+                onKeyDown={this._enableAutoScroll}
                 tabIndex={isAutoScrollEnabled ? -1 : 1}
                 ref={node => {
                   this._autoscrollButtonRef = node;
@@ -434,21 +441,31 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         )
     };
 
-    private _handleClose = (event: KeyboardEvent) => {
+    private _handleEsc = (event: KeyboardEvent) => {
       if (event.keyCode === KeyboardKeys.Esc) {
         this.props.onClose();
       }
     };
 
+    private _handleClose = (event: any) => {
+        if (
+            event.type === "click" ||
+            event.keyCode === KeyboardKeys.Space ||
+            event.keyCode === KeyboardKeys.Enter
+        ) {
+            this.props.onClose();
+        }
+    };
+
     render(props: TranscriptProps) {
-        const { onClose, isLoading, kitchenSinkActive } = props;
+        const { isLoading, kitchenSinkActive } = props;
         return (
             <div
                 className={`${styles.root} ${kitchenSinkActive ? '' : styles.hidden}`}
                 ref={node => {
                     this._widgetRootRef = node;
                 }}
-                onKeyUp={this._handleClose}
+                onKeyUp={this._handleEsc}
             >
                 <div className={styles.globalContainer}>
                     {this._renderHeader()}
@@ -456,7 +473,8 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
                         role="button"
                         className={styles.closeButton}
                         tabIndex={1}
-                        onClick={onClose}
+                        onClick={this._handleClose}
+                        onKeyUp={this._handleClose}
                     />
                     {!isLoading && this._renderSkipTranscriptButton()}
                     <div
