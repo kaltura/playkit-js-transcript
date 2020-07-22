@@ -10,14 +10,16 @@ export interface CaptionItem extends Cuepoint {
     id: number;
 }
 
+
 export const toSeconds = (val: any, vtt = false): number => {
     const regex = vtt
         ? /(\d+):(\d{2}):(\d{2}).(\d{2,3}|\d{2})/
-        : /(\d+):(\d{2}):(\d{2}),((\d{2,3}|\d{2}|\d{1}))?/;
+        : /(\d+):(\d{2}):(\d{2})(,(\d{2,3}|\d{2}|\d{1}))?/;
     const parts: any | null[] = regex.exec(val);
     if (parts === null) {
         return 0;
-    }
+    } 
+    
     for (var i = 1; i < 5; i++) {
         parts[i] = parseInt(parts[i], 10);
         if (isNaN(parts[i])) {
@@ -51,18 +53,34 @@ export const getCaptionsByFormat = (captions: any, captionsFormat: string): Capt
 
 const fromVtt = (data: string): CaptionItem[] => {
     let source: string | string[] = data.replace(/\r/g, "");
+    // remove webvtt metadata first line/s if exist 
+    // the 200 is optimization - no point break all string to lines and join them together
+    let linesBefore = source.substring(0, 200);
+    const linesAfter = source.substring(200);
+    const lines =  linesBefore.split(/\r?\n/);
+    for (let i = 0; i < 4 ; i++) {
+        // find first numeric char 
+        if (!/^\d+$/.test(linesBefore[0].charAt(0))) {
+            // first char in the line is not numeric - this line needs to be removed
+            lines.shift()
+        }
+    }
+    // re-join
+    linesBefore = lines.join("\n");
+    source = linesBefore + linesAfter;
+    // parse 
     const regex = /(\d+)?\n?(\d{2}:\d{2}:\d{2}[,.]\d{3}) --> (\d{2}:\d{2}:\d{2}[,.]\d{3}).*\n/g;
-    source = source.replace(/[\s\S]*.*(?=00:00:00.000)/, "");
     source = source.split(regex);
     source.shift();
     const result = [];
     for (let i = 0; i < source.length; i += 4) {
-        result.push({
+        const item:any = {
             id: result.length + 1,
             startTime: toSeconds(source[i + 1].trim(), true),
             endTime: toSeconds(source[i + 2].trim(), true),
             text: source[i + 3].trim()
-        });
+        }
+        result.push(item);
     }
     return result;
 };
