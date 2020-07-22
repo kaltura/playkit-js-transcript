@@ -74,13 +74,12 @@ const fromVtt = (data: string): CaptionItem[] => {
     source.shift();
     const result = [];
     for (let i = 0; i < source.length; i += 4) {
-        const item:any = {
+        result.push({
             id: result.length + 1,
             startTime: toSeconds(source[i + 1].trim(), true),
             endTime: toSeconds(source[i + 2].trim(), true),
             text: source[i + 3].trim()
-        }
-        result.push(item);
+        });
     }
     return result;
 };
