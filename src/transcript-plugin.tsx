@@ -40,6 +40,7 @@ import {
   isBoolean,
   makePlainText,
   CaptionAssetServeAction,
+  parseExpandMode
 } from "./utils";
 import { DownloadPrintMenu } from "./components/download-print-menu";
 
@@ -61,6 +62,7 @@ interface TranscriptPluginConfig {
   searchNextPrevDebounceTimeout: number; // debounce on jump between prev/next search result
   downloadDisabled: boolean; // disable download menu
   printDisabled: boolean; // disable print menu
+  expandMode: KitchenSinkExpandModes; // over or pushing the player
 }
 
 export class TranscriptPlugin implements OnMediaLoad, OnPluginSetup, OnMediaUnload {
@@ -160,25 +162,22 @@ export class TranscriptPlugin implements OnMediaLoad, OnPluginSetup, OnMediaUnlo
   }
 
   private _handleIconClick = (event: MouseEvent) => {
-    if (event.x === 0 && event.y === 0) {
-      this._triggeredByKeyboard = true;
-    } else {
-      this._triggeredByKeyboard = false;
-    }
+    this._triggeredByKeyboard = event.x === 0 && event.y === 0;
   }
 
   private _addKitchenSinkItem(): void {
-    const { position, expandOnFirstPlay } = this._configs.pluginConfig;
-    this._contribServices.upperBarManager.remove;
+    const { expandMode, position, expandOnFirstPlay } = this._configs.pluginConfig;
     this._kitchenSinkItem = this._contribServices.kitchenSinkManager.add({
       label: "Transcript",
-      expandMode: KitchenSinkExpandModes.AlongSideTheVideo,
+      expandMode: parseExpandMode(expandMode),
       renderIcon: () => (
         <button
-          className={styles.transcriptIcon}
+          className={styles.pluginButton}
           tabIndex={1}
           onClick={this._handleIconClick}
-        />
+        >
+        <div className={styles.transcriptIcon} />
+        </button>
       ),
       position: getConfigValue(
           position,
@@ -240,13 +239,14 @@ export class TranscriptPlugin implements OnMediaLoad, OnPluginSetup, OnMediaUnlo
   };
 
   private _getCaptionsList = (): void => {
-    const filter: KalturaCaptionAssetFilter = new KalturaCaptionAssetFilter({ entryIdEqual: this._entryId });
+    const filter: KalturaCaptionAssetFilter = new KalturaCaptionAssetFilter({ entryIdEqual: this._entryId});
     const request = new CaptionAssetListAction({ filter });
     this._initLoading();
     this._kalturaClient.request(request).then(
         data => {
           if (data && Array.isArray(data.objects) && data.objects.length > 0) {
-            this._captionsList = data.objects;
+            // cover both displayOnPlayer=true, as well as non-existence of the attribute
+            this._captionsList = data.objects.filter(caption => caption.displayOnPlayer !== false)
             this._loadCaptions();
           } else {
             this._onError(undefined, "Data is empty", "_getCaptionsList");
@@ -443,6 +443,7 @@ ContribPluginManager.registerPlugin(
   },
   {
     defaultConfig: {
+      expandMode: KitchenSinkExpandModes.AlongSideTheVideo,
       expandOnFirstPlay: true,
       showTime: true,
       position: KitchenSinkPositions.Bottom,

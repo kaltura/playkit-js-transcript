@@ -1,14 +1,30 @@
-.transcript-icon {
-  background-image: url("./assets/transcript.svg");
-  width: 32px;
-  height: 32px;
+.transcriptIcon {
+  top: 3px;
+  left: 2px;
+  position: relative;
+  background-image: url("./assets/transcript-icon.svg");
+  background-repeat: no-repeat;
   opacity: 0.8;
-  cursor: pointer;
-  background-color: transparent;
-  border: none;
+  :active > & {
+    /* todo - find a better way that maintains one asset and fill changes by CSS */
+    background-image: url("./assets/transcript-icon-over.svg");
+  }
+  :disabled > & {
+    opacity: 0.4;
+  }
+}
+.pluginButton,
+.transcriptIcon {
+  min-height: 36px;
+  min-width: 36px;
+}
+.pluginButton {
   padding: 0;
+  border: none;
+  background: none;
   &:hover,
-  &:focus {
-    opacity: 1;
+  &:active {
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.8);
   }
 }
