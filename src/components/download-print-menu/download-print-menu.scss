@@ -2,22 +2,21 @@
 
 .download-print-button {
     display: inline-block;
-    width: 32px;
-    height: 32px;
-    margin-left: 10px;
-    margin-right: 10px;
+    width: 36px;
+    height: 36px;
     color: $white-color;
-    background-color: transparent;
     border: none;
     cursor: pointer;
     padding: 0;
     opacity: 0.8;
-    &:hover {
-        opacity: 1;
+    background: none;
+    &:hover,
+    &:active {
+        border-radius: 4px;
+        background-color: rgba(0, 0, 0, 0.8);
     }
     &:focus {
         outline: 1px solid $focus-color;
-        opacity: 1;
     }
     .icon {
         width: 100%;
@@ -27,9 +26,15 @@
     }
     .download-icon {
         background-image: url('../../assets/download.svg');
+         &:active {
+            background-image: url('../../assets/download-over.svg');
+         }
     }
     .print-icon {
         background-image: url('../../assets/print.svg');
+         &:active {
+            background-image: url('../../assets/print-over.svg');
+         }
     }
 }
 .popover-menu-item {
