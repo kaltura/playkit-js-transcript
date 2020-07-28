@@ -240,13 +240,14 @@ export class TranscriptPlugin implements OnMediaLoad, OnPluginSetup, OnMediaUnlo
   };
 
   private _getCaptionsList = (): void => {
-    const filter: KalturaCaptionAssetFilter = new KalturaCaptionAssetFilter({ entryIdEqual: this._entryId });
+    const filter: KalturaCaptionAssetFilter = new KalturaCaptionAssetFilter({ entryIdEqual: this._entryId});
     const request = new CaptionAssetListAction({ filter });
     this._initLoading();
     this._kalturaClient.request(request).then(
         data => {
           if (data && Array.isArray(data.objects) && data.objects.length > 0) {
-            this._captionsList = data.objects;
+            // cover both displayOnPlayer=true, as well as non-existence of the attribute
+            this._captionsList = data.objects.filter(caption => caption.displayOnPlayer !== false)
             this._loadCaptions();
           } else {
             this._onError(undefined, "Data is empty", "_getCaptionsList");
