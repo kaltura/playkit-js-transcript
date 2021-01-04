@@ -135,7 +135,9 @@
         const data = conf.data;
         switchMediaEntryId = data.switchMediaEntryId;
         let config = {
-            logLevel: "DEBUG",
+            log: {
+                logLevel: "DEBUG",
+            },
             targetId: "player-div",
             provider: {
                 env: env,

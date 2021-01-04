@@ -4,7 +4,7 @@
   position: relative;
   background-image: url("./assets/transcript-icon.svg");
   background-repeat: no-repeat;
-  opacity: 0.8;
+  cursor: pointer;
   :active > & {
     /* todo - find a better way that maintains one asset and fill changes by CSS */
     background-image: url("./assets/transcript-icon-over.svg");
@@ -17,6 +17,7 @@
 .transcriptIcon {
   min-height: 36px;
   min-width: 36px;
+  opacity: 0.8;
 }
 .pluginButton {
   padding: 0;
