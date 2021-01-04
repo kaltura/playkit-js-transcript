@@ -82,7 +82,7 @@
         <script type="text/javascript" src="assets/jsonform.js"></script>
 
         <script type="text/javascript">
-            var version = "2.0.5";
+            var version = "2.1.0";
 
             // schema documentation:
             // https://github.com/jsonform/jsonform/wiki#previous
@@ -267,7 +267,9 @@
                 };
 
                 var config = {
-                    logLevel: "DEBUG",
+                    log: {
+                        logLevel: "DEBUG",
+                    },
                     targetId: "player-div",
                     session: {},
                     contrib: contrib,
