@@ -15,10 +15,10 @@ export interface CaptionItem extends Cuepoint {
 // TODO: consider move to contrib
 export const parseExpandMode = (value: string): KitchenSinkExpandModes => {
   switch (value) {
-    case "AlongSideTheVideo":
-      return KitchenSinkExpandModes.AlongSideTheVideo;
+    case KitchenSinkExpandModes.OverTheVideo:
+        return KitchenSinkExpandModes.OverTheVideo;
     default:
-      return KitchenSinkExpandModes.OverTheVideo;
+        return KitchenSinkExpandModes.AlongSideTheVideo;
   }
 }
 
