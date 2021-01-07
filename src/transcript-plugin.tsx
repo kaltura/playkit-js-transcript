@@ -40,7 +40,6 @@ import {
   isBoolean,
   makePlainText,
   CaptionAssetServeAction,
-  parseExpandMode
 } from "./utils";
 import { DownloadPrintMenu } from "./components/download-print-menu";
 
@@ -169,7 +168,9 @@ export class TranscriptPlugin implements OnMediaLoad, OnPluginSetup, OnMediaUnlo
     const { expandMode, position, expandOnFirstPlay } = this._configs.pluginConfig;
     this._kitchenSinkItem = this._contribServices.kitchenSinkManager.add({
       label: "Transcript",
-      expandMode: parseExpandMode(expandMode),
+      expandMode: expandMode === KitchenSinkExpandModes.OverTheVideo ?
+        KitchenSinkExpandModes.OverTheVideo :
+        KitchenSinkExpandModes.AlongSideTheVideo,
       renderIcon: () => (
         <button
           className={styles.pluginButton}

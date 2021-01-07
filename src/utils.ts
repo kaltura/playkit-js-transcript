@@ -2,24 +2,12 @@ import { xml2js } from "xml-js";
 import { Cuepoint } from "@playkit-js-contrib/common";
 import { KalturaRequest, KalturaRequestArgs } from 'kaltura-typescript-client/api/kaltura-request';
 import { KalturaObjectMetadata } from 'kaltura-typescript-client/api/kaltura-object-base';
-import {KitchenSinkExpandModes} from '@playkit-js-contrib/ui/';
 
 export const HOUR = 3600; // seconds in 1 hour
 
 export interface CaptionItem extends Cuepoint {
     text: string;
     id: number;
-}
-
-
-// TODO: consider move to contrib
-export const parseExpandMode = (value: string): KitchenSinkExpandModes => {
-  switch (value) {
-    case KitchenSinkExpandModes.OverTheVideo:
-        return KitchenSinkExpandModes.OverTheVideo;
-    default:
-        return KitchenSinkExpandModes.AlongSideTheVideo;
-  }
 }
 
 export const toSeconds = (val: any, vtt = false): number => {
