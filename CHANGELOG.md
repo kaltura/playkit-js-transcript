@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.1.2](https://github.com/kaltura/playkit-js-transcript/compare/v2.1.1...v2.1.2) (2021-02-16)
+
+
+### Bug Fixes
+
+* **REACH2-1004:** use player enums to define plugin expand mode ([#70](https://github.com/kaltura/playkit-js-transcript/issues/70)) ([6c8c727](https://github.com/kaltura/playkit-js-transcript/commit/6c8c72738390754a40af88a8c01bf9aa2008c91e))
+
 ### [2.1.1](https://github.com/kaltura/playkit-js-transcript/compare/v2.1.0...v2.1.1) (2021-01-05)
 
 ### [2.1.0](https://github.com/kaltura/playkit-js-transcript/compare/v2.0.8...v2.1.0) (2021-01-04)
