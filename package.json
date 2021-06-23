@@ -38,6 +38,7 @@
     "reset": "npm run clean && rm -rf node_modules",
     "build": "kcontrib build",
     "build:dev": "kcontrib build --dev",
+    "bump-canary": "standard-version --prerelease canary --skip.commit=true --skip.tag=true",
     "serve": "kcontrib serve",
     "analyze": "npm run build && npx source-map-explorer dist/playkit-js-transcript.js",
     "lint": "tsc --noEmit && eslint ./src --ext .ts,.tsx",
