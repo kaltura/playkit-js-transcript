@@ -40,7 +40,7 @@
     "build:dev": "kcontrib build --dev",
     "bump-canary": "standard-version --prerelease canary --skip.commit=true --skip.tag=true",
     "serve": "kcontrib serve",
-    "analyze": "npm run build && npx source-map-explorer dist/playkit-js-transcript.js",
+    "analyze": "npm run build && npx source-map-explorer dist/playkit-transcript.js",
     "lint": "tsc --noEmit && eslint ./src --ext .ts,.tsx",
     "lint:fix": "tsc --noEmit && eslint ./src --ext .ts,.tsx --fix",
     "husky:pre-commit": "lint-staged",
