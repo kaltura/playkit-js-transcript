@@ -82,3 +82,4 @@ jobs:
       if: (branch = master) OR (tag IS present) OR (type = pull_request)
       name: 'Running lint'
       env: TRAVIS_MODE=Tests
+      CI: false
