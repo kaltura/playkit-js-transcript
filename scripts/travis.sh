@@ -48,6 +48,6 @@ else
     rm package.jsonE
     rm CHANGELOG.mdE
     echo "Building..."
-    CI=false npm run build
+    CI='' npm run build
     echo "Finish building"
 fi
