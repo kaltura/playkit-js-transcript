@@ -3,7 +3,7 @@ sudo: required
 dist: xenial
 language: node_js
 node_js:
-  - '13'
+  - '12'
 
 addons:
   chrome: stable
@@ -23,7 +23,6 @@ before_install:
 script: ./scripts/travis.sh
 
 stages:
-  - Tests
   - Release canary
   - Release
   - Deploy
@@ -78,7 +77,3 @@ jobs:
           branch: master
       after_deploy:
         - ./scripts/after_deploy.sh "$JENKINS_CANARY_TOKEN"
-    - stage: Tests
-      if: (branch = master) OR (tag IS present) OR (type = pull_request)
-      name: 'Running lint'
-      env: TRAVIS_MODE=Tests
