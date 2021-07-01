@@ -24,7 +24,7 @@ yarn-error.log*
 test.ejs
 
 build/
-/.idea
+.idea
 /.vscode
 .rpt2_cache
 dist/
