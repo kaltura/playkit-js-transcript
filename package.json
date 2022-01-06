@@ -14,8 +14,8 @@
   "dependencies": {
     "@playkit-js-contrib/cli": "1.1.0",
     "@playkit-js-contrib/common": "^4.1.10",
-    "@playkit-js-contrib/plugin": "^4.1.10",
-    "@playkit-js-contrib/ui": "^4.1.10",
+    "@playkit-js-contrib/plugin": "^4.1.13",
+    "@playkit-js-contrib/ui": "^4.1.13",
     "classnames": "2.2.6",
     "kaltura-typescript-client": "file:libs/kaltura-typescript-client-7.0.2-v20201028-171103.tgz",
     "xml-js": "^1.6.11"
