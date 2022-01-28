@@ -12,7 +12,7 @@
     "url": "git+https://github.com/kaltura/playkit-js-transcript.git"
   },
   "dependencies": {
-    "@playkit-js-contrib/cli": "1.1.0",
+    "@playkit-js-contrib/cli": "1.1.4",
     "@playkit-js-contrib/common": "^4.1.10",
     "@playkit-js-contrib/plugin": "^4.1.13",
     "@playkit-js-contrib/ui": "^4.1.13",
