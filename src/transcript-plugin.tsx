@@ -9,10 +9,7 @@ import {
 } from "kaltura-typescript-client";
 import {ui} from 'kaltura-player-js';
 const {SidePanelModes, SidePanelPositions, ReservedPresetNames, ReservedPresetAreas} = ui;
-import {
-  downloadContent,
-  printContent,
-} from "@playkit-js-contrib/ui";
+
 import { KalturaCaptionAssetFilter } from "kaltura-typescript-client/api/types/KalturaCaptionAssetFilter";
 import { CaptionAssetListAction } from "kaltura-typescript-client/api/types/CaptionAssetListAction";
 import { KalturaCaptionAsset } from "kaltura-typescript-client/api/types/KalturaCaptionAsset";
@@ -31,7 +28,7 @@ import {
   PluginPositions,
   PluginStates
 } from './types';
-import { DownloadPrintMenu } from "./components/download-print-menu";
+import { DownloadPrintMenu, downloadContent, printContent } from "./components/download-print-menu";
 
 const { get } = ObjectUtils;
 const {Tooltip} = KalturaPlayer.ui.components;
