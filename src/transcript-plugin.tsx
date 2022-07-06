@@ -1,37 +1,22 @@
 import { h } from "preact";
 import {
-  ContribPluginManager,
-  OnMediaLoad,
-  OnMediaUnload,
-  OnPluginSetup,
-  ContribServices,
-  ContribPluginData,
-  ContribPluginConfigs
-} from "@playkit-js-contrib/plugin";
-import {
-  getContribLogger,
   ObjectUtils
 } from "@playkit-js-contrib/common";
-import * as styles from './transcript-plugin.scss';
 import {
   KalturaClient,
   KalturaClientException,
   KalturaAPIException
 } from "kaltura-typescript-client";
-
+import {ui} from 'kaltura-player-js';
+const {SidePanelModes, SidePanelPositions, ReservedPresetNames, ReservedPresetAreas} = ui;
 import {
-  KitchenSinkContentRendererProps,
-  KitchenSinkItem,
-  KitchenSinkPositions,
-  KitchenSinkExpandModes,
   downloadContent,
   printContent,
-  UpperBarItem
 } from "@playkit-js-contrib/ui";
 import { KalturaCaptionAssetFilter } from "kaltura-typescript-client/api/types/KalturaCaptionAssetFilter";
 import { CaptionAssetListAction } from "kaltura-typescript-client/api/types/CaptionAssetListAction";
 import { KalturaCaptionAsset } from "kaltura-typescript-client/api/types/KalturaCaptionAsset";
-
+import {PluginButton} from './components/plugin-button/plugin-button';
 import { Transcript } from "./components/transcript";
 import {
   getCaptionsByFormat,
@@ -41,32 +26,33 @@ import {
   makePlainText,
   CaptionAssetServeAction,
 } from "./utils";
+import {
+  TranscriptConfig,
+  PluginPositions,
+  PluginStates
+} from './types';
 import { DownloadPrintMenu } from "./components/download-print-menu";
 
-const pluginName = `playkit-js-transcript`;
-
-const logger = getContribLogger({
-  class: "TranscriptPlugin",
-  module: "transcript-plugin"
-});
-
 const { get } = ObjectUtils;
+const {Tooltip} = KalturaPlayer.ui.components;
 
-interface TranscriptPluginConfig {
-  expandOnFirstPlay: boolean;
-  showTime: boolean;
-  position: KitchenSinkPositions;
-  scrollOffset: number; // distance between top border of transcript container and active caption on auto-scroll
-  searchDebounceTimeout: number; // debounce on search
-  searchNextPrevDebounceTimeout: number; // debounce on jump between prev/next search result
-  downloadDisabled: boolean; // disable download menu
-  printDisabled: boolean; // disable print menu
-  expandMode: KitchenSinkExpandModes; // over or pushing the player
-}
+// @ts-ignore
 
-export class TranscriptPlugin implements OnMediaLoad, OnPluginSetup, OnMediaUnload {
-  private _kitchenSinkItem: KitchenSinkItem | null = null;
-  private _upperBarItem: UpperBarItem | null = null;
+export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
+  static defaultConfig: TranscriptConfig = {
+    // @ts-ignore
+    expandMode: SidePanelModes.ALONGSIDE,
+    expandOnFirstPlay: true,
+    showTime: true,
+    // @ts-ignore
+    position: SidePanelPositions.BOTTOM,
+    scrollOffset: 0,
+    searchDebounceTimeout: 250,
+    searchNextPrevDebounceTimeout: 100,
+    downloadDisabled: false,
+    printDisabled: false
+  };
+
   private _isLoading = false;
   private _hasError = false;
   private _entryId = "";
@@ -76,133 +62,172 @@ export class TranscriptPlugin implements OnMediaLoad, OnPluginSetup, OnMediaUnlo
   private _transcriptLanguage = "default";
   private _triggeredByKeyboard  = false;
 
-  constructor(
-      private _contribServices: ContribServices,
-      private _configs: ContribPluginConfigs<TranscriptPluginConfig>,
-      private _player: KalturaPlayerTypes.Player
-  ) {}
+  private _removePopoverIcon: null | Function = null;
+
+  private _transcriptPanel = null;
+  private _pluginState: PluginStates | null = null;
+
+
+  constructor(name: string, player: KalturaPlayerTypes.Player, config: TranscriptConfig) {
+    super(name, player, config);
+    this.onPluginSetup();
+  }
+
+  get sidePanelsManager() {
+// @ts-ignore
+    return this.player.getService('sidePanelsManager') as any;
+  }
 
   onPluginSetup(): void {
-    const { playerConfig } = this._configs;
-
+    const { config } = this.player;
     this._kalturaClient.setOptions({
-      clientTag: "playkit-js-transcript",
-      endpointUrl: playerConfig.provider.env.serviceUrl
+      clientTag: 'playkit-js-transcript',
+      endpointUrl: this.player.config.provider.env.serviceUrl
     });
 
     this._kalturaClient.setDefaultRequestOptions({
-        ks: playerConfig.provider.ks ? playerConfig.provider.ks : playerConfig.session.ks
+        ks: config.provider.ks ? config.provider.ks : config.session.ks
     });
   
-    this._player.addEventListener(this._player.Event.TIME_UPDATE, this._onTimeUpdate);
-    this._player.addEventListener(this._player.Event.TEXT_TRACK_CHANGED, this._loadCaptions);
-    this._player.addEventListener(this._player.Event.RESIZE, this._updateKitchenSink);
+    this.player.addEventListener(this.player.Event.TIME_UPDATE, this._onTimeUpdate);
+    this.player.addEventListener(this.player.Event.TEXT_TRACK_CHANGED, this._loadCaptions);
+    this.player.addEventListener(this.player.Event.RESIZE, this._updateTranscriptPanel);
   }
 
   onRegisterUI(): void {}
 
-  onMediaLoad(): void {
-    const { playerConfig } = this._configs;
-    this._entryId = playerConfig.sources.id;
+  loadMedia(): void {
+    // @ts-ignore
+
+    const { config } = this.player;
+    this._entryId = config.sources.id;
     this._getCaptionsList();
   }
 
-  onMediaUnload(): void {
-    this._reset();
+  private onClose = () =>{
+    if (this.sidePanelsManager.isItemActive(this._transcriptPanel)) {
+      this._pluginState = PluginStates.CLOSED;
+      this.sidePanelsManager.deactivateItem(this._transcriptPanel);
+    } else {
+      this.sidePanelsManager.activateItem(this._transcriptPanel);
+    }
   }
 
-  private _reset(): void {
-    if (this._kitchenSinkItem) {
-      this._contribServices.kitchenSinkManager.remove(this._kitchenSinkItem);
-      this._kitchenSinkItem = null;
-    }
-    if (this._upperBarItem) {
-      this._contribServices.upperBarManager.remove(this._upperBarItem);
-      this._upperBarItem = null;
-    }
-    this._captionsList = [];
-    this._captions = [];
-    this._isLoading = false;
-    this._hasError = false;
-    this._entryId = "";
-    this._transcriptLanguage = "default";
-  }
-
-  private _initKitchensinkAndUpperBarItems(): void {
-    if (!this._upperBarItem && !this._kitchenSinkItem) {
+  private _initTranscriptPanelItems(): void {
+    if (!this._transcriptPanel && !this._removePopoverIcon) {
       this._addPopoverIcon();
-      this._addKitchenSinkItem();
+      this._addTranscriptItem();
     }
   }
 
   private _addPopoverIcon(): void {
-    const { downloadDisabled, printDisabled } = this._configs.pluginConfig;
-    this._upperBarItem = this._contribServices.upperBarManager.add({
-      label: "Download transcript",
-      onClick: () => {},
-      renderItem: () => (
-          <DownloadPrintMenu
-              onDownload={this._handleDownload}
-              onPrint={this._handlePrint}
-              downloadDisabled={getConfigValue(downloadDisabled, isBoolean, false)}
-              printDisabled={getConfigValue(printDisabled, isBoolean, false)}
-              dropdownAriaLabel={`Download or print ${
-                  this._captionsList.length > 1 ? "current " : ""
-                  }transcript`}
-              printButtonAriaLabel={`Print ${
-                  this._captionsList.length > 1 ? "current " : ""
-                  }transcript`}
-              downloadButtonAriaLabel={`Download ${
-                  this._captionsList.length > 1 ? "current " : ""
-                  }transcript`}
+    const { downloadDisabled, printDisabled } = this.config;
+    if (this._removePopoverIcon) {
+      return;
+    }
+// @ts-ignore
+
+    this._removePopoverIcon = this.player.ui.addComponent({
+      label: 'Download transcript',
+      area: ReservedPresetAreas.TopBarRightControls,
+      presets: [ReservedPresetNames.Playback, ReservedPresetNames.Live],
+      get: () => (
+        <DownloadPrintMenu
+          onDownload={this._handleDownload}
+          onPrint={this._handlePrint}
+          downloadDisabled={getConfigValue(downloadDisabled, isBoolean, false)}
+          printDisabled={getConfigValue(printDisabled, isBoolean, false)}
+          dropdownAriaLabel={`Download or print ${
+              this._captionsList.length > 1 ? "current " : ""
+              }transcript`}
+          printButtonAriaLabel={`Print ${
+              this._captionsList.length > 1 ? "current " : ""
+              }transcript`}
+          downloadButtonAriaLabel={`Download ${
+              this._captionsList.length > 1 ? "current " : ""
+              }transcript`}
+        />)
+    });
+  }
+
+  private _addTranscriptItem(): void {
+    const buttonLabel = 'Transcript';
+    const isLive = this.player.isLive();
+    const { expandMode, position, expandOnFirstPlay } = this.config;
+    const pluginMode: PluginPositions = [SidePanelPositions.RIGHT, SidePanelPositions.LEFT].includes(position)
+      ? PluginPositions.VERTICAL
+      : PluginPositions.HORIZONTAL;
+    const {
+      showTime,
+      scrollOffset,
+      searchDebounceTimeout,
+      searchNextPrevDebounceTimeout
+    } = this.config;
+
+
+    this._transcriptPanel = this.sidePanelsManager.addItem({
+      label: 'Transcript',
+      panelComponent: () => {
+        let props = {} as any;
+        return (
+          <Transcript
+              {...props}
+              showTime={getConfigValue(showTime, isBoolean, true)}
+              scrollOffset={getConfigValue(scrollOffset, Number.isInteger, 0)}
+              searchDebounceTimeout={getConfigValue(searchDebounceTimeout, Number.isInteger, 250)}
+              searchNextPrevDebounceTimeout={getConfigValue(
+                  searchNextPrevDebounceTimeout,
+                  Number.isInteger,
+                  100
+              )}
+              onSeek={this._seekTo}
+              pluginMode={pluginMode}
+              captions={this._captions}
+              isLoading={this._isLoading}
+              hasError={this._hasError}
+              onRetryLoad={this._loadCaptions}
+              currentTime={this.player.currentTime}
+              videoDuration={this.player.duration}
+              kitchenSinkActive={!!this.sidePanelsManager.isItemActive(this._transcriptPanel)}
+              toggledWithEnter={this._triggeredByKeyboard}
+              isLive={isLive}
+              onClose={this.onClose}
           />
-      )
-    });
-  }
-
-  private _handleIconClick = (event: MouseEvent) => {
-    this._triggeredByKeyboard = event.x === 0 && event.y === 0;
-  }
-
-  private _addKitchenSinkItem(): void {
-    const { expandMode, position, expandOnFirstPlay } = this._configs.pluginConfig;
-    this._kitchenSinkItem = this._contribServices.kitchenSinkManager.add({
-      label: "Transcript",
-      expandMode: expandMode === KitchenSinkExpandModes.OverTheVideo ?
-        KitchenSinkExpandModes.OverTheVideo :
-        KitchenSinkExpandModes.AlongSideTheVideo,
-      renderIcon: () => (
-        <button
-          className={styles.pluginButton}
-          tabIndex={1}
-          onClick={this._handleIconClick}
-        >
-        <div className={styles.transcriptIcon} />
-        </button>
-      ),
-      position: getConfigValue(
-          position,
-          position =>
-              typeof position === "string" &&
-              (position === KitchenSinkPositions.Bottom ||
-                  position === KitchenSinkPositions.Right),
-          KitchenSinkPositions.Bottom
-      ),
-      renderContent: this._renderKitchenSinkContent
+        );
+      },
+      iconComponent: () => {
+        return (
+          <Tooltip label={buttonLabel} type="bottom">
+            <PluginButton
+              onClick={this.onClose}
+              label={buttonLabel}
+            />
+          </Tooltip>
+        );
+      },
+      presets: [ReservedPresetNames.Playback, ReservedPresetNames.Live, ReservedPresetNames.Ads],
+      position: position,
+      expandMode: expandMode,
+      onActivate: () => {
+        this._pluginState = PluginStates.OPENED;
+      }
     });
 
-    if (expandOnFirstPlay) {
-      this._kitchenSinkItem.activate();
+    if ((expandOnFirstPlay && !this._pluginState) || this._pluginState === PluginStates.OPENED) {
+      // @ts-ignore
+      this.ready.then(() => {
+        this.sidePanelsManager.activateItem(this._transcriptPanel);
+      });
     }
   }
 
   private _onTimeUpdate = (): void => {
-    this._updateKitchenSink();
+    this._updateTranscriptPanel();
   };
 
-  private _updateKitchenSink() {
-    if (this._kitchenSinkItem) {
-      this._kitchenSinkItem.update();
+  private _updateTranscriptPanel() {
+    if (this._transcriptPanel) {
+      this.sidePanelsManager.update(this._transcriptPanel);
     }
   }
 
@@ -210,7 +235,7 @@ export class TranscriptPlugin implements OnMediaLoad, OnPluginSetup, OnMediaUnlo
     if (!this._isLoading || this._hasError) {
       this._isLoading = true;
       this._hasError = false;
-      this._updateKitchenSink();
+      this._updateTranscriptPanel();
     }
   }
 
@@ -221,15 +246,14 @@ export class TranscriptPlugin implements OnMediaLoad, OnPluginSetup, OnMediaUnlo
     } else if (error instanceof KalturaAPIException) {
       msg = `${msg} (api exception)`;
     }
-    logger.error(msg, {
-      method: method || "Method not defined",
-      data: {
-        error
-      }
+
+// @ts-ignore
+    this.logger.debug('Method not defined', {
+      method: '_onError'
     });
     this._isLoading = false;
     this._hasError = true;
-    this._updateKitchenSink();
+    this._updateTranscriptPanel();
   };
 
   private _loadCaptions = (event?: {}): void => {
@@ -301,7 +325,7 @@ export class TranscriptPlugin implements OnMediaLoad, OnPluginSetup, OnMediaUnlo
   };
 
   private _getCaptionsByLang = (
-    event: string | Record<string, any> = get(this._configs, 'playerConfig.playback.textLanguage', "")
+    event: string | Record<string, any> = get(this.player, 'config.playback.textLanguage', "")
   ): void => {
     if (
       (typeof event === "string" ?
@@ -317,7 +341,7 @@ export class TranscriptPlugin implements OnMediaLoad, OnPluginSetup, OnMediaUnlo
       if (captionAsset) {
         this._transcriptLanguage = captionAsset.language;
         this._initLoading();
-        this._initKitchensinkAndUpperBarItems();
+        this._initTranscriptPanelItems();
         this._loadCaptionsAsset(captionAsset);
       } else {
         this._onError(
@@ -354,7 +378,7 @@ export class TranscriptPlugin implements OnMediaLoad, OnPluginSetup, OnMediaUnlo
     if (rawCaptions) {
       this._captions = this._parseCaptions(rawCaptions, captionAsset);
       this._isLoading = false;
-      this._updateKitchenSink();
+      this._updateTranscriptPanel();
     } else {
       this._onError(undefined, "Captions data is empty", "_loadCaptionsAsset");
     }
@@ -369,6 +393,7 @@ export class TranscriptPlugin implements OnMediaLoad, OnPluginSetup, OnMediaUnlo
       }
       return getCaptionsByFormat(data, captionFormat);
     } catch(err) {
+// @ts-ignore
       this._onError(err, "Failed to parse the caption file", "_parseCaptions");
     }
     return [];
@@ -377,19 +402,19 @@ export class TranscriptPlugin implements OnMediaLoad, OnPluginSetup, OnMediaUnlo
   private _getCaptionFormat = (captionAsset: KalturaCaptionAsset): string => {
     const selectedLanguage: Record<string, any> =
         this._captionsList &&
-        captionAsset &&
+        captionAsset &&  
         (this._captionsList.find((item: KalturaCaptionAsset) => item.id === captionAsset.id) || {});
     return get(selectedLanguage, 'format', '');
   };
 
   private _seekTo = (time: number) => {
-    this._player.currentTime = time;
+    this.player.currentTime = time;
   };
 
   private _handleDownload = () => {
-    const { playerConfig } = this._configs;
+    const { config } = this.player;
     if (this._captions) {
-      const entryMetadata = get(playerConfig, 'sources.metadata', {});
+      const entryMetadata = get(config, 'sources.metadata', {});
       downloadContent(
           makePlainText(this._captions),
           `${this._transcriptLanguage}${
@@ -405,54 +430,30 @@ export class TranscriptPlugin implements OnMediaLoad, OnPluginSetup, OnMediaUnlo
     }
   };
 
-  private _renderKitchenSinkContent = (props: KitchenSinkContentRendererProps) => {
-    const {
-      showTime,
-      scrollOffset,
-      searchDebounceTimeout,
-      searchNextPrevDebounceTimeout
-    } = this._configs.pluginConfig;
-    return (
-        <Transcript
-            {...props}
-            showTime={getConfigValue(showTime, isBoolean, true)}
-            scrollOffset={getConfigValue(scrollOffset, Number.isInteger, 0)}
-            searchDebounceTimeout={getConfigValue(searchDebounceTimeout, Number.isInteger, 250)}
-            searchNextPrevDebounceTimeout={getConfigValue(
-                searchNextPrevDebounceTimeout,
-                Number.isInteger,
-                100
-            )}
-            onSeek={this._seekTo}
-            captions={this._captions}
-            isLoading={this._isLoading}
-            hasError={this._hasError}
-            onRetryLoad={this._loadCaptions}
-            currentTime={this._player.currentTime}
-            videoDuration={this._player.duration}
-            kitchenSinkActive={!!this._kitchenSinkItem?.isActive()}
-            toggledWithEnter={this._triggeredByKeyboard}
-        />
-    );
-  };
-}
-
-ContribPluginManager.registerPlugin(
-  pluginName,
-  (data: ContribPluginData<TranscriptPluginConfig>) => {
-    return new TranscriptPlugin(data.contribServices, data.configs, data.player);
-  },
-  {
-    defaultConfig: {
-      expandMode: KitchenSinkExpandModes.AlongSideTheVideo,
-      expandOnFirstPlay: true,
-      showTime: true,
-      position: KitchenSinkPositions.Bottom,
-      scrollOffset: 0,
-      searchDebounceTimeout: 250,
-      searchNextPrevDebounceTimeout: 100,
-      downloadDisabled: false,
-      printDisabled: false
-    }
+  static isValid(): boolean {
+    return true;
   }
-);
+
+  reset(): void {
+    if (this._removePopoverIcon) {
+      this._removePopoverIcon();
+      this._removePopoverIcon = null;
+    }
+    
+    this._captionsList = [];
+    this._captions = [];
+    this._isLoading = false;
+    this._hasError = false;
+    this._entryId = "";
+    this._transcriptLanguage = "default";
+  }
+
+  destroy(): void {
+    if (this._removePopoverIcon) {
+      this._removePopoverIcon();
+      this._removePopoverIcon = null;
+    }
+    this._pluginState = null;
+  }
+
+}

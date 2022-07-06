@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "experimentalDecorators": true,
         "skipLibCheck": true,
         "target": "ES5",
         "module": "commonjs",
@@ -12,9 +13,10 @@
         "baseUrl": "./src",
         "preserveSymlinks": true,
         "paths": {
-            "*": ["../node_modules/*"]
-        }
+          "*": ["../node_modules/*"]
+        },
+        "types": ["node"],
+        "lib": ["es2015", "dom"]
     },
     "include": ["src/**/*.tsx", "src/**/*.ts", "custom.d.ts"],
-    "exclude": ["node_modules"]
 }
