@@ -1,22 +1,22 @@
 {
-    "compilerOptions": {
-        "experimentalDecorators": true,
-        "skipLibCheck": true,
-        "target": "ES5",
-        "module": "commonjs",
-        "allowJs": false,
-        "jsx": "react",
-        "jsxFactory": "h",
-        "sourceMap": true,
-        "strict": true,
-        "moduleResolution": "Node",
-        "baseUrl": "./src",
-        "preserveSymlinks": true,
-        "paths": {
-          "*": ["../node_modules/*"]
-        },
-        "types": ["node"],
-        "lib": ["es2015", "dom"]
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "target": "ES5",
+    "module": "commonjs",
+    "allowJs": false,
+    "jsx": "react",
+    "jsxFactory": "h",
+    "sourceMap": true,
+    "strict": true,
+    "moduleResolution": "Node",
+    "baseUrl": "./src",
+    "preserveSymlinks": true,
+    "paths": {
+      "*": ["../node_modules/*"]
     },
-    "include": ["src/**/*.tsx", "src/**/*.ts", "custom.d.ts"],
+    "types": ["node"],
+    "lib": ["es2015", "dom"]
+  },
+  "include": ["src/**/*.tsx", "src/**/*.ts", "custom.d.ts", "node_modules/kaltura-player-js/ts-typed"]
 }

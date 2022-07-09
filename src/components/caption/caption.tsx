@@ -1,7 +1,6 @@
 import { h, Component } from "preact";
-import { KeyboardKeys } from "@playkit-js-contrib/ui";
 import * as styles from "./caption.scss";
-import { secontsToTime, CaptionItem } from "../../utils";
+import { secontsToTime, CaptionItem, KeyboardKeys } from "../../utils";
 
 export interface CaptionProps {
     showTime: boolean;

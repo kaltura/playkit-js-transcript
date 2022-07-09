@@ -4,7 +4,7 @@ import {
     PopoverHorizontalPositions,
     PopoverVerticalPositions,
     KeyboardKeys
-} from "@playkit-js-contrib/ui";
+} from "../../utils";
 import { PopoverMenu, PopoverMenuItem } from "../popover-menu";
 import * as styles from "./download-print-menu.scss";
 

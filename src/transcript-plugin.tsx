@@ -1,7 +1,7 @@
 import { h } from "preact";
 import {
   ObjectUtils
-} from "@playkit-js-contrib/common";
+} from "./utils";
 import {
   KalturaClient,
   KalturaClientException,
@@ -22,7 +22,7 @@ import {
   isBoolean,
   makePlainText,
   CaptionAssetServeAction,
-} from "./utils";
+} from "./utils/utils";
 import {
   TranscriptConfig,
   PluginPositions,
@@ -33,15 +33,12 @@ import { DownloadPrintMenu, downloadContent, printContent } from "./components/d
 const { get } = ObjectUtils;
 const {Tooltip} = KalturaPlayer.ui.components;
 
-// @ts-ignore
 
 export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   static defaultConfig: TranscriptConfig = {
-    // @ts-ignore
     expandMode: SidePanelModes.ALONGSIDE,
     expandOnFirstPlay: true,
     showTime: true,
-    // @ts-ignore
     position: SidePanelPositions.BOTTOM,
     scrollOffset: 0,
     searchDebounceTimeout: 250,
@@ -71,7 +68,6 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   }
 
   get sidePanelsManager() {
-// @ts-ignore
     return this.player.getService('sidePanelsManager') as any;
   }
 
@@ -94,8 +90,6 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   onRegisterUI(): void {}
 
   loadMedia(): void {
-    // @ts-ignore
-
     const { config } = this.player;
     this._entryId = config.sources.id;
     this._getCaptionsList();
@@ -122,8 +116,6 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     if (this._removePopoverIcon) {
       return;
     }
-// @ts-ignore
-
     this._removePopoverIcon = this.player.ui.addComponent({
       label: 'Download transcript',
       area: ReservedPresetAreas.TopBarRightControls,
@@ -211,7 +203,6 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     });
 
     if ((expandOnFirstPlay && !this._pluginState) || this._pluginState === PluginStates.OPENED) {
-      // @ts-ignore
       this.ready.then(() => {
         this.sidePanelsManager.activateItem(this._transcriptPanel);
       });
@@ -244,10 +235,6 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       msg = `${msg} (api exception)`;
     }
 
-// @ts-ignore
-    this.logger.debug('Method not defined', {
-      method: '_onError'
-    });
     this._isLoading = false;
     this._hasError = true;
     this._updateTranscriptPanel();

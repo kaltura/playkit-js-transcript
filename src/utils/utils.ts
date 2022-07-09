@@ -1,7 +1,7 @@
 import { xml2js } from "xml-js";
-import { Cuepoint } from "@playkit-js-contrib/common";
 import { KalturaRequest, KalturaRequestArgs } from 'kaltura-typescript-client/api/kaltura-request';
 import { KalturaObjectMetadata } from 'kaltura-typescript-client/api/kaltura-object-base';
+import {Cuepoint} from './cuepoint-engine';
 
 export const HOUR = 3600; // seconds in 1 hour
 

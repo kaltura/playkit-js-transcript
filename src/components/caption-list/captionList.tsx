@@ -1,9 +1,8 @@
 import { h, Component } from "preact";
-import { ObjectUtils } from "@playkit-js-contrib/common";
-import { KeyboardKeys } from "@playkit-js-contrib/ui";
+import { ObjectUtils, KeyboardKeys } from "../../utils";
 import { Caption, CaptionProps } from "../caption";
 import * as styles from "./captionList.scss";
-import { CaptionItem, HOUR } from "../../utils";
+import { CaptionItem, HOUR } from "../../utils/utils";
 
 const { get } = ObjectUtils;
 

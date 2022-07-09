@@ -168,8 +168,3 @@
 .autoscroll-button-visible {
   opacity: 1;
 }
-
-:global(.playkit-player .playkit-top-bar .playkit-right-controls) {
-  display: flex;
-  flex-direction: row;
-}

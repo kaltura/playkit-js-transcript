@@ -1,9 +1,7 @@
 import { h, Component } from "preact";
-import { KeyboardKeys } from "@playkit-js-contrib/ui";
+import { KeyboardKeys, CuepointEngine, debounce, CaptionItem} from "../../utils";
 import * as styles from "./transcript.scss";
-import { getContribLogger, CuepointEngine, debounce } from "@playkit-js-contrib/common";
 import { Spinner } from "../spinner";
-import { CaptionItem } from "../../utils";
 import { Search } from "../search";
 import { CaptionList } from "../caption-list";
 
@@ -43,11 +41,6 @@ const initialSearch = {
     searchLength: 0
 };
 
-const logger = getContribLogger({
-    class: "Transcript",
-    module: "transcript-plugin"
-});
-
 const SEARCHBAR_HEIGHT = 38; // height of search bar with margins
 
 export class Transcript extends Component<TranscriptProps, TranscriptState> {
@@ -65,11 +58,6 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     private _bottomAutoscrollEdge: number = 0;
     private _thirdOfWidgetHeight: number = 0;
 
-    private _log = (msg: string, method: string) => {
-        logger.trace(msg, {
-            method: method || "Method not defined"
-        });
-    };
     private _silence = false;
     state: TranscriptState = {
         isAutoScrollEnabled: true,
@@ -79,7 +67,6 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     };
 
     componentDidMount(): void {
-        this._log("Creating engine", "componentDidMount");
         this._createEngine();
     }
 
@@ -90,7 +77,6 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         const { captions, currentTime } = this.props;
         const { search } = this.state;
         if (previousProps.captions !== captions) {
-            this._log("Re-creating engine", "componentDidUpdate");
             this._createEngine();
             this.setState({ search: "", isAutoScrollEnabled: true });
         }
@@ -107,7 +93,6 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     }
 
     componentWillUnmount(): void {
-        this._log("Removing engine", "componentWillUnmount");
         this._engine = null;
     }
 
