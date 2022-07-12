@@ -92,7 +92,6 @@
   min-width: 32px;
   margin: 0 8px;
   cursor: pointer;
-  background-image: url('../../assets/close.svg');
   background-color: transparent;
   border: none;
   padding: 0;
@@ -124,7 +123,6 @@
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    background-image: url('../../assets/error.svg');
   }
   .error-main-text {
     font-size: 1.3em;
@@ -160,7 +158,6 @@
   background-position: center;
   background-repeat: no-repeat;
   background-size: 22px;
-  background-image: url('../../assets/arrow-up.svg');
   cursor: pointer;
   z-index: 1;
 }

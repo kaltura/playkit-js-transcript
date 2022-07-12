@@ -184,10 +184,11 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
           />
         );
       },
-      iconComponent: () => {
+      iconComponent: ({isActive}: {isActive: boolean}) => {
         return (
           <Tooltip label={buttonLabel} type="bottom">
             <PluginButton
+              isActive={isActive}
               onClick={this.onClose}
               label={buttonLabel}
             />
