@@ -1,23 +1,58 @@
-import {ComponentChild, JSX} from 'preact';
-export interface TranscriptContentRendererProps {
-  onClose: () => void;
+export type HighlightedMap = Record<string, boolean>;
+
+export enum GroupTypes {
+  mid = 'mid',
+  first = 'first',
+  last = 'last'
 }
-export declare enum TranscriptExpandModes {
-  AlongSideTheVideo = 'alongside',
-  Hidden = 'hidden',
-  OverTheVideo = 'over'
+
+export interface CaptionItem {
+  text: string;
+  id: string;
+  startTime: number;
+  endTime?: number;
 }
-export declare enum TranscriptPositions {
-  Top = 'top',
-  Left = 'left',
-  Right = 'right',
-  Bottom = 'bottom'
+
+export interface RawItemData {
+  cuePointType: ItemTypes;
+  text?: string;
+  description?: string;
+  title?: string;
+  assetId?: string;
+  subType?: ItemTypes;
+  partnerData?: string;
+  tags?: string;
+  assetUrl?: string;
+  relatedObjects?: {
+    QandA_ResponseProfile?: {
+      objects: Array<{xml: string}>;
+    };
+  };
 }
-export interface TranscriptItemData {
-  label: string;
-  renderIcon: (isActive: boolean) => ComponentChild | JSX.Element;
-  expandMode: TranscriptExpandModes;
-  position: TranscriptPositions;
-  fillContainer?: boolean;
-  renderContent: (props: TranscriptContentRendererProps) => ComponentChild;
+
+export interface ItemData extends RawItemData {
+  id: string;
+  startTime: number;
+  previewImage: string | null;
+  itemType: ItemTypes;
+  displayTime?: number;
+  groupData: GroupTypes | null;
+  displayTitle: string;
+  shorthandTitle?: string;
+  displayDescription: string | null;
+  shorthandDescription?: string;
+  hasShowMore: boolean;
+}
+
+export enum ItemTypes {
+  Caption = 'Caption'
+}
+
+export interface CuePoint {
+  startTime: number;
+  endTime?: number;
+  id: string;
+  type: string;
+  metadata: RawItemData;
+  text?: string;
 }

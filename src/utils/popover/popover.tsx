@@ -3,15 +3,15 @@ import * as styles from './popover.scss';
 
 export enum PopoverVerticalPositions {
   Top = 'top',
-  Bottom = 'bottom',
+  Bottom = 'bottom'
 }
 export enum PopoverHorizontalPositions {
   Left = 'left',
-  Right = 'right',
+  Right = 'right'
 }
 export enum PopoverTriggerMode {
   Click = 'click',
-  Hover = 'hover',
+  Hover = 'hover'
 }
 
 export enum KeyboardKeys {
@@ -20,7 +20,7 @@ export enum KeyboardKeys {
   Tab = 9,
   Space = 32,
   End = 35,
-  Home = 36,
+  Home = 36
 }
 
 const CLOSE_ON_HOVER_DELAY = 500;
@@ -31,7 +31,7 @@ const defaultProps = {
   triggerMode: PopoverTriggerMode.Click,
   className: 'popover',
   closeOnEsc: true,
-  closeOnClick: true,
+  closeOnClick: true
 };
 
 interface PopoverProps {
@@ -55,10 +55,10 @@ export class Popover extends Component<PopoverProps, PopoverState> {
   private _closeTimeout: any = null;
   private _controlElement: HTMLDivElement | null = null;
   static defaultProps = {
-    ...defaultProps,
+    ...defaultProps
   };
   state = {
-    open: false,
+    open: false
   };
 
   componentWillUnmount() {
@@ -71,26 +71,17 @@ export class Popover extends Component<PopoverProps, PopoverState> {
   };
 
   private _handleMouseEvent = (event: MouseEvent) => {
-    if (
-      !this._controlElement?.contains(event.target as Node | null) &&
-      this.props.closeOnClick
-    ) {
+    if (!this._controlElement?.contains(event.target as Node | null) && this.props.closeOnClick) {
       this._closePopover();
     }
   };
 
   private _handleKeyboardEvent = (event: KeyboardEvent) => {
-    if (
-      this._controlElement?.contains(event.target as Node | null) &&
-      event.keyCode === KeyboardKeys.Enter
-    ) {
+    if (this._controlElement?.contains(event.target as Node | null) && event.keyCode === KeyboardKeys.Enter) {
       // handle Enter key pressed on Target icon to prevent triggering of _closePopover twice
       return;
     }
-    if (
-      (this.props.closeOnEsc && event.keyCode === KeyboardKeys.Esc) ||
-      event.keyCode === KeyboardKeys.Enter
-    ) {
+    if ((this.props.closeOnEsc && event.keyCode === KeyboardKeys.Esc) || event.keyCode === KeyboardKeys.Enter) {
       // handle if ESC or Enter button presesd
       this._closePopover();
     }
@@ -153,12 +144,12 @@ export class Popover extends Component<PopoverProps, PopoverState> {
       return {
         targetEvents: {
           onMouseEnter: this._handleMouseEnter,
-          onMouseLeave: this._handleMouseLeave,
+          onMouseLeave: this._handleMouseLeave
         },
         popoverEvents: {
           onMouseEnter: this._handleHoverOnPopover,
-          onMouseLeave: this._handleHoverOnPopover,
-        },
+          onMouseLeave: this._handleHoverOnPopover
+        }
       };
     }
     return {targetEvents: {onClick: this._togglePopover}, popoverEvents: {}};
@@ -175,19 +166,16 @@ export class Popover extends Component<PopoverProps, PopoverState> {
           ref={node => {
             this._controlElement = node;
           }}
-          {...targetEvents}>
+          {...targetEvents}
+        >
           {props.children}
         </div>
         {this.state.open && (
           <div
             aria-expanded="true"
-            className={[
-              props.className,
-              styles.popoverComponent,
-              styles[props.verticalPosition],
-              styles[props.horizontalPosition],
-            ].join(' ')}
-            {...popoverEvents}>
+            className={[props.className, styles.popoverComponent, styles[props.verticalPosition], styles[props.horizontalPosition]].join(' ')}
+            {...popoverEvents}
+          >
             {props.content}
           </div>
         )}

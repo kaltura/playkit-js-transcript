@@ -8,7 +8,7 @@ export function debounce<F extends Procedure>(
   func: F,
   waitMilliseconds = 50,
   options: Options = {
-    isImmediate: false,
+    isImmediate: false
   }
 ): F {
   let timeoutId: any;

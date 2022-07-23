@@ -2,12 +2,12 @@
   top: 3px;
   left: 2px;
   position: relative;
-  background-image: url("./assets/transcript-icon.svg");
+  background-image: url('./assets/transcript-icon.svg');
   background-repeat: no-repeat;
   cursor: pointer;
   :active > & {
     /* todo - find a better way that maintains one asset and fill changes by CSS */
-    background-image: url("./assets/transcript-icon-over.svg");
+    background-image: url('./assets/transcript-icon-over.svg');
   }
   :disabled > & {
     opacity: 0.4;
