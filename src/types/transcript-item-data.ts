@@ -1,18 +1,5 @@
 export type HighlightedMap = Record<string, boolean>;
 
-export enum GroupTypes {
-  mid = 'mid',
-  first = 'first',
-  last = 'last'
-}
-
-export interface CaptionItem {
-  text: string;
-  id: string;
-  startTime: number;
-  endTime?: number;
-}
-
 export interface RawItemData {
   cuePointType: ItemTypes;
   text?: string;
@@ -36,7 +23,6 @@ export interface ItemData extends RawItemData {
   previewImage: string | null;
   itemType: ItemTypes;
   displayTime?: number;
-  groupData: GroupTypes | null;
   displayTitle: string;
   shorthandTitle?: string;
   displayDescription: string | null;

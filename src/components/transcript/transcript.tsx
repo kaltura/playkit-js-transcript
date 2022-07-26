@@ -1,11 +1,13 @@
 import {h, Component} from 'preact';
-import {KeyboardKeys, debounce} from '../../utils';
+import {debounce} from '../../utils';
 import * as styles from './transcript.scss';
 import {Spinner} from '../spinner';
 import {Search} from '../search';
 import {CaptionList} from '../caption-list';
-import {HighlightedMap, ItemData} from '../../types';
+import {HighlightedMap, ItemData, PluginPositions} from '../../types';
+import { A11yWrapper } from '../a11y-wrapper';
 
+const {ENTER, Space, Tab, Esc} = KalturaPlayer.ui.utils.KeyMap;
 export interface TranscriptProps {
   onSeek(time: number): void;
   onClose: () => void;
@@ -22,6 +24,8 @@ export interface TranscriptProps {
   kitchenSinkActive: boolean;
   toggledWithEnter: boolean;
   highlightedMap: HighlightedMap;
+  pluginMode: PluginPositions
+  onItemClicked: (n:number) => void
 }
 
 interface TranscriptState {
@@ -83,7 +87,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     if (this.state.isAutoScrollEnabled) {
       return;
     }
-    if (event.type === 'click' || event.keyCode === KeyboardKeys.Space || event.keyCode === KeyboardKeys.Enter) {
+    if (event.type === 'click' || event.keyCode === Space || event.keyCode === ENTER) {
       this._preventScrollEvent = true;
       this.setState({
         isAutoScrollEnabled: true
@@ -97,16 +101,17 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
   private _renderScrollToButton = () => {
     const {isAutoScrollEnabled} = this.state;
     return (
-      <div
-        role="button"
-        className={`${styles.autoscrollButton} ${isAutoScrollEnabled ? '' : styles.autoscrollButtonVisible}`}
-        onClick={this._enableAutoScroll}
-        onKeyDown={this._enableAutoScroll}
-        tabIndex={isAutoScrollEnabled ? -1 : 1}
-        ref={node => {
-          this._autoscrollButtonRef = node;
-        }}
-      />
+      <A11yWrapper onClick={this._enableAutoScroll}>
+        <div
+          role="button"
+          className={`${styles.autoscrollButton} ${isAutoScrollEnabled ? '' : styles.autoscrollButtonVisible}`}
+          onKeyDown={this._enableAutoScroll}
+          tabIndex={isAutoScrollEnabled ? -1 : 1}
+          ref={node => {
+            this._autoscrollButtonRef = node;
+          }}
+        />
+      </A11yWrapper>
     );
   };
 
@@ -184,7 +189,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
   };
 
   private _handleKeyDown = (event: KeyboardEvent) => {
-    if (event.keyCode === KeyboardKeys.Tab && !event.shiftKey) {
+    if (event.keyCode === Tab && !event.shiftKey) {
       this.setState({
         isAutoScrollEnabled: false
       });
@@ -193,7 +198,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         event.preventDefault();
         captionRef.focus();
       }
-    } else if (event.keyCode === KeyboardKeys.Enter || event.keyCode === KeyboardKeys.Space) {
+    } else if (event.keyCode === ENTER || event.keyCode === Space) {
       event.preventDefault();
       this._autoscrollButtonRef?.focus();
     }
@@ -332,13 +337,13 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
   };
 
   private _handleEsc = (event: KeyboardEvent) => {
-    if (event.keyCode === KeyboardKeys.Esc) {
+    if (event.keyCode === Esc) {
       this.props.onClose();
     }
   };
 
   private _handleClose = (event: any) => {
-    if (event.type === 'click' || event.keyCode === KeyboardKeys.Space || event.keyCode === KeyboardKeys.Enter) {
+    if (event.type === 'click' || event.keyCode === Space || event.keyCode === ENTER) {
       this.props.onClose();
     }
   };

@@ -1,8 +1,11 @@
 import {h, Component} from 'preact';
-import {KeyboardKeys, HOUR} from '../../utils';
+import {HOUR} from '../../utils';
 import {Caption} from '../caption';
 import * as styles from './captionList.scss';
 import {HighlightedMap, ItemData} from '../../types';
+
+const {End, Home} = KalturaPlayer.ui.utils.KeyMap;
+
 
 export interface CaptionProps {
   showTime: boolean;
@@ -93,9 +96,9 @@ export class CaptionList extends Component<Props> {
   };
 
   private _handleKeyUp = (event: KeyboardEvent) => {
-    if (event.keyCode === KeyboardKeys.End) {
+    if (event.keyCode === End) {
       this._lastCaptionRef?._hotspotRef?.focus();
-    } else if (event.keyCode === KeyboardKeys.Home) {
+    } else if (event.keyCode === Home) {
       this._firstCaptionRef?._hotspotRef?.focus();
     }
   };

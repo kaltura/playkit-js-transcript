@@ -1,16 +1,18 @@
 import {h, Component, ComponentChild} from 'preact';
-import {Popover, PopoverHorizontalPositions, PopoverVerticalPositions, KeyboardKeys} from '../../utils';
+import {Popover, PopoverHorizontalPositions, PopoverVerticalPositions} from '../../utils';
 import {PopoverMenu, PopoverMenuItem} from '../popover-menu';
 import * as styles from './download-print-menu.scss';
+
+const {ENTER, Esc} = KalturaPlayer.ui.utils.KeyMap;
 
 export function downloadContent(content: string, name: string): void {
   const blob = new Blob([content], {type: 'text/plain;charset=utf-8;'});
   const anchor = document.createElement('a');
-  // @ts-ignore
-  if (window.navigator.msSaveBlob) {
+  const {navigator} = window as any;
+
+  if (navigator.msSaveBlob) {
     // IE
-    // @ts-ignore
-    window.navigator.msSaveOrOpenBlob(blob, name);
+    navigator.msSaveOrOpenBlob(blob, name);
     return;
   }
   if (navigator.userAgent.search('Firefox') !== -1) {
@@ -78,7 +80,7 @@ export class DownloadPrintMenu extends Component<DownloadPrintMenuProps, Downloa
     this.props.onPrint();
   };
   private _onKeyDown = (e: KeyboardEvent, callBack: Function) => {
-    if (e.keyCode !== KeyboardKeys.Enter && e.keyCode !== KeyboardKeys.Esc) {
+    if (e.keyCode !== ENTER && e.keyCode !== Esc) {
       // don't stopPropagation on ESC and Enter pressed as it prevent the popup closing
       e.stopPropagation();
     }

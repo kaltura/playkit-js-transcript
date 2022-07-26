@@ -2,7 +2,6 @@ import {h} from 'preact';
 import * as styles from './plugin-button.scss';
 import {icons} from '../icons';
 import {A11yWrapper, OnClick} from '../a11y-wrapper';
-// @ts-ignore
 const {Tooltip, Icon} = KalturaPlayer.ui.components;
 
 interface PluginButtonProps {

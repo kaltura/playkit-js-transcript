@@ -1,6 +1,8 @@
 import * as styles from './caption.scss';
-import {secontsToTime, KeyboardKeys} from '../../utils';
+import {secontsToTime} from '../../utils';
 import {ItemData} from '../../types';
+
+const {ENTER, Space} = KalturaPlayer.ui.utils.KeyMap;
 
 import {Component, h} from 'preact';
 
@@ -57,7 +59,7 @@ export class Caption extends Component<ExtendedCaptionProps> {
 
   private _handleKeyPress = (event: KeyboardEvent) => {
     const keyCode = event.which || event.keyCode;
-    if (keyCode === KeyboardKeys.Enter || keyCode === KeyboardKeys.Space) {
+    if (keyCode === ENTER || keyCode === Space) {
       event.preventDefault();
       this._gotoCurrentTime();
       return;

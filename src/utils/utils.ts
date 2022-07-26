@@ -1,6 +1,3 @@
-import {KalturaRequest, KalturaRequestArgs} from 'kaltura-typescript-client/api/kaltura-request';
-import {KalturaObjectMetadata} from 'kaltura-typescript-client/api/kaltura-object-base';
-import {CaptionItem} from '../types';
 export const HOUR = 3600; // seconds in 1 hour
 
 export const toSeconds = (val: any, vtt = false): number => {
@@ -53,37 +50,14 @@ export function isBoolean(value: any) {
   return typeof value === 'boolean';
 }
 
-export function makePlainText(captions: Array<CaptionItem>): string {
-  return captions.reduce((acc: string, next: CaptionItem) => {
-    return `${acc} ${next.text}`;
+export function makePlainText(captions: Array<ItemData>): string {
+  return captions.reduce((acc: string, next: ItemData) => {
+    return `${acc} ${next.displayTitle}`;
   }, '');
-}
-
-// KalturaClient uses custom CaptionAssetServeAction method,
-// once KalturaFileRequest is fixed remove custom CaptionAssetServeAction and use
-// CaptionAssetServeAction from "kaltura-typescript-client/api/types/CaptionAssetServeAction"
-interface CaptionAssetServeActionArgs extends KalturaRequestArgs {
-  captionAssetId: string;
-}
-export class CaptionAssetServeAction extends KalturaRequest<{url: string}> {
-  captionAssetId: any;
-  constructor(data: CaptionAssetServeActionArgs) {
-    super(data, {responseType: 'v', responseSubType: '', responseConstructor: null} as any);
-  }
-  protected _getMetadata(): KalturaObjectMetadata {
-    const result = super._getMetadata();
-    Object.assign(result.properties, {
-      service: {type: 'c', default: 'caption_captionasset'},
-      action: {type: 'c', default: 'serve'},
-      captionAssetId: {type: 's'}
-    });
-    return result;
-  }
 }
 
 import {ItemTypes, ItemData, CuePoint} from '../types';
 
-// @ts-ignore
 const {toHHMMSS} = KalturaPlayer.ui.utils;
 const MAX_CHARACTERS = 77;
 
@@ -99,19 +73,18 @@ export const decodeString = (content: any): string => {
     .replace(/&quot;/gi, '"');
 };
 
-export const prepareCuePoint = (cuePoint: CuePoint, cuePointType: ItemTypes, isLive: boolean): ItemData => {
+export const prepareCuePoint = (cuePoint: CuePoint, cuePointType: ItemTypes): ItemData => {
   const {metadata} = cuePoint;
   const itemData: ItemData = {
     cuePointType,
     id: cuePoint.id,
     startTime: cuePoint.startTime,
-    displayTime: isLive ? '' : toHHMMSS(Math.floor(cuePoint.startTime)),
+    displayTime:Math.floor(cuePoint.startTime),
     itemType: cuePointType,
     displayTitle: '',
     displayDescription: decodeString(metadata.description),
     previewImage: null,
     hasShowMore: false,
-    groupData: null
   };
 
   itemData.displayTitle = decodeString(metadata.text);
@@ -128,8 +101,4 @@ export const prepareCuePoint = (cuePoint: CuePoint, cuePointType: ItemTypes, isL
   itemData.hasShowMore = Boolean(itemData.displayDescription || itemData.shorthandDescription);
 
   return itemData;
-};
-
-export const itemTypesOrder: Record<string, number> = {
-  [ItemTypes.Caption]: 1
 };

@@ -1,5 +1,4 @@
 import {cloneElement, VNode} from 'preact';
-// @ts-ignore
 
 const {ENTER, SPACE} = KalturaPlayer.ui.utils.KeyMap;
 

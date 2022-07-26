@@ -1,11 +1,10 @@
 import {h} from 'preact';
 import {ObjectUtils} from './utils';
 import {ui} from 'kaltura-player-js';
-import {KalturaCaptionAsset} from 'kaltura-typescript-client/api/types/KalturaCaptionAsset';
 import {PluginButton} from './components/plugin-button/plugin-button';
 import {Transcript} from './components/transcript';
-import {getConfigValue, isBoolean, makePlainText, itemTypesOrder, prepareCuePoint} from './utils';
-import {TranscriptConfig, PluginPositions, PluginStates, HighlightedMap, CaptionItem, ItemData, ItemTypes, CuePoint} from './types';
+import {getConfigValue, isBoolean, makePlainText, prepareCuePoint} from './utils';
+import {TranscriptConfig, PluginPositions, PluginStates, HighlightedMap, ItemData, ItemTypes, CuePoint} from './types';
 import {DownloadPrintMenu, downloadContent, printContent} from './components/download-print-menu';
 
 const {SidePanelModes, SidePanelPositions, ReservedPresetNames, ReservedPresetAreas} = ui;
@@ -36,11 +35,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   private _captionMap: Map<string, Array<ItemData>> = new Map();
   private _isLoading = false;
   private _hasError = false;
-  private _captionsList: KalturaCaptionAsset[] = []; // list of captions
-  private _captions: CaptionItem[] = []; // parsed captions
-  private _transcriptLanguage = 'default';
   private _triggeredByKeyboard = false;
-  private _itemsFilter = itemTypesOrder;
 
   private _removePopoverIcon: null | Function = null;
 
@@ -70,10 +65,6 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     }
     this.onPluginSetup();
     this._registerCuePointTypes();
-
-    if (this.player.isLive()) {
-      this._addTranscriptItem();
-    }
   }
 
   onPluginSetup(): void {
@@ -99,11 +90,10 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   }
 
   private _onTimedMetadataAdded = ({payload}: TimedMetadataEvent) => {
-    const isLive = this.player.isLive();
     const captionData: ItemData[] = [];
     payload.cues.forEach((cue: CuePoint) => {
-      if (this._getCuePointType(cue) === ItemTypes.Caption && this._itemsFilter[ItemTypes.Caption]) {
-        captionData.push(prepareCuePoint(cue, ItemTypes.Caption, isLive));
+      if (this.isCaptionType(cue)) {
+        captionData.push(prepareCuePoint(cue, ItemTypes.Caption));
       }
     });
     if (captionData.length) {
@@ -115,24 +105,18 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     const transcriptCuePoints: Array<CuePoint> = payload.cues;
     this._activeCuePointsMap = {};
     if (transcriptCuePoints.length) {
-      if (this.player.isLive()) {
-        const latestTranscriptCuePoint = transcriptCuePoints[transcriptCuePoints.length - 1];
-        this._activeCuePointsMap[latestTranscriptCuePoint.id] = true;
-        this._updateTranscriptPanel();
-      } else {
-        const latestTranscriptCuePoint = transcriptCuePoints[transcriptCuePoints.length - 1];
-        // define transcript item group
-        const relevantTranscriptItem = this._data.find(item => item.id === latestTranscriptCuePoint.id);
-        if (relevantTranscriptItem) {
-          this._highlightedGroup = this._data.filter(item => {
-            return item.displayTime === relevantTranscriptItem.displayTime;
+      const latestTranscriptCuePoint = transcriptCuePoints[transcriptCuePoints.length - 1];
+      // define transcript item group
+      const relevantTranscriptItem = this._data.find(item => item.id === latestTranscriptCuePoint.id);
+      if (relevantTranscriptItem) {
+        this._highlightedGroup = this._data.filter(item => {
+          return item.displayTime === relevantTranscriptItem.displayTime;
+        });
+        if (this._highlightedGroup.length) {
+          this._highlightedGroup.forEach(item => {
+            this._activeCuePointsMap[item.id] = true;
           });
-          if (this._highlightedGroup.length) {
-            this._highlightedGroup.forEach(item => {
-              this._activeCuePointsMap[item.id] = true;
-            });
-            this._updateTranscriptPanel();
-          }
+          this._updateTranscriptPanel();
         }
       }
     }
@@ -140,10 +124,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
 
   private _registerCuePointTypes = () => {
     const cuePointTypes: Array<string> = [];
-
-    if (this._itemsFilter[ItemTypes.Caption]) {
-      cuePointTypes.push(this.cuePointManager.CuepointType.CAPTION);
-    }
+    cuePointTypes.push(this.cuePointManager.CuepointType.CAPTION);
     this.cuePointManager.registerTypes(cuePointTypes);
   };
 
@@ -163,13 +144,11 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     return '';
   };
 
-  private _getCuePointType = (cue: CuePoint): ItemTypes | null => {
+  private isCaptionType = (cue: CuePoint): boolean | null => {
     const {metadata} = cue;
     const {KalturaCuePointType} = this.cuePointManager;
-    if (metadata?.cuePointType === KalturaCuePointType.CAPTION) {
-      return ItemTypes.Caption;
-    }
-    return null;
+
+    return metadata?.cuePointType === KalturaCuePointType.CAPTION;
   };
 
   private onClose = () => {
@@ -183,6 +162,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
 
   private _addPopoverIcon(): void {
     const {downloadDisabled, printDisabled} = this.config;
+    console.log(this._captionMap, 333)
     if (this._removePopoverIcon) {
       return;
     }
@@ -196,9 +176,9 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
           onPrint={this._handlePrint}
           downloadDisabled={getConfigValue(downloadDisabled, isBoolean, false)}
           printDisabled={getConfigValue(printDisabled, isBoolean, false)}
-          dropdownAriaLabel={`Download or print ${this._captionsList.length > 1 ? 'current ' : ''}transcript`}
-          printButtonAriaLabel={`Print ${this._captionsList.length > 1 ? 'current ' : ''}transcript`}
-          downloadButtonAriaLabel={`Download ${this._captionsList.length > 1 ? 'current ' : ''}transcript`}
+          dropdownAriaLabel={`Download or print transcript`}
+          printButtonAriaLabel={`Print transcript`}
+          downloadButtonAriaLabel={`Download transcript`}
         />
       )
     });
@@ -216,7 +196,6 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
 
   private _addTranscriptItem(): void {
     const buttonLabel = 'Transcript';
-    const isLive = this.player.isLive();
     const {expandMode, position, expandOnFirstPlay} = this.config;
     const pluginMode: PluginPositions = [SidePanelPositions.RIGHT, SidePanelPositions.LEFT].includes(position)
       ? PluginPositions.VERTICAL
@@ -225,10 +204,8 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     this._transcriptPanel = this.sidePanelsManager.addItem({
       label: 'Transcript',
       panelComponent: () => {
-        let props = {} as any;
         return (
           <Transcript
-            {...props}
             showTime={getConfigValue(showTime, isBoolean, true)}
             scrollOffset={getConfigValue(scrollOffset, Number.isInteger, 0)}
             searchDebounceTimeout={getConfigValue(searchDebounceTimeout, Number.isInteger, 250)}
@@ -245,7 +222,6 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
             videoDuration={this.player.duration}
             kitchenSinkActive={!!this.sidePanelsManager.isItemActive(this._transcriptPanel)}
             toggledWithEnter={this._triggeredByKeyboard}
-            isLive={isLive}
             onClose={this.onClose}
           />
         );
@@ -286,15 +262,21 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
 
   private _handleDownload = () => {
     const {config} = this.player;
-    if (this._captions) {
+    const captions = this._captionMap.get(this._activeCaptionMapId) || []
+
+    if (captions) {
       const entryMetadata = get(config, 'sources.metadata', {});
-      downloadContent(makePlainText(this._captions), `${this._transcriptLanguage}${entryMetadata.name ? `-${entryMetadata.name}` : ''}.txt`);
+      const language = this._getCaptionMapId();
+      
+      downloadContent(makePlainText(captions), `${language}${entryMetadata.name ? `-${entryMetadata.name}` : ''}.txt`);
     }
   };
 
   private _handlePrint = () => {
-    if (this._captions) {
-      printContent(makePlainText(this._captions));
+    const captions = this._captionMap.get(this._activeCaptionMapId) || []
+
+    if (captions) {
+      printContent(makePlainText(captions));
     }
   };
 
@@ -308,13 +290,10 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       this._removePopoverIcon = null;
     }
 
-    this._captionsList = [];
     this._captionMap = new Map();
     this._activeCaptionMapId = '';
-    this._captions = [];
     this._isLoading = false;
     this._hasError = false;
-    this._transcriptLanguage = 'default';
   }
 
   destroy(): void {

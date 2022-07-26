@@ -1,6 +1,8 @@
 import {h, Component, ComponentChild} from 'preact';
 import * as styles from './popover.scss';
 
+const {ENTER, Esc} = KalturaPlayer.ui.utils.KeyMap;
+
 export enum PopoverVerticalPositions {
   Top = 'top',
   Bottom = 'bottom'
@@ -12,15 +14,6 @@ export enum PopoverHorizontalPositions {
 export enum PopoverTriggerMode {
   Click = 'click',
   Hover = 'hover'
-}
-
-export enum KeyboardKeys {
-  Esc = 27,
-  Enter = 13,
-  Tab = 9,
-  Space = 32,
-  End = 35,
-  Home = 36
 }
 
 const CLOSE_ON_HOVER_DELAY = 500;
@@ -77,11 +70,11 @@ export class Popover extends Component<PopoverProps, PopoverState> {
   };
 
   private _handleKeyboardEvent = (event: KeyboardEvent) => {
-    if (this._controlElement?.contains(event.target as Node | null) && event.keyCode === KeyboardKeys.Enter) {
+    if (this._controlElement?.contains(event.target as Node | null) && event.keyCode === ENTER) {
       // handle Enter key pressed on Target icon to prevent triggering of _closePopover twice
       return;
     }
-    if ((this.props.closeOnEsc && event.keyCode === KeyboardKeys.Esc) || event.keyCode === KeyboardKeys.Enter) {
+    if ((this.props.closeOnEsc && event.keyCode === Esc) || event.keyCode === ENTER) {
       // handle if ESC or Enter button presesd
       this._closePopover();
     }
