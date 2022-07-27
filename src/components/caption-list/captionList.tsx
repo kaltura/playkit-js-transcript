@@ -2,7 +2,7 @@ import {h, Component} from 'preact';
 import {HOUR} from '../../utils';
 import {Caption} from '../caption';
 import * as styles from './captionList.scss';
-import {HighlightedMap, ItemData} from '../../types';
+import {HighlightedMap, CuePointData} from '../../types';
 
 const {End, Home} = KalturaPlayer.ui.utils.KeyMap;
 
@@ -16,8 +16,8 @@ export interface CaptionProps {
 }
 
 export interface Props {
-  data: Array<ItemData>;
-  onSeek: (n: ItemData) => void;
+  data: Array<CuePointData>;
+  onSeek: (n: CuePointData) => void;
   autoScroll?: boolean;
   onScroll: (n: number) => void;
   widgetWidth: number;
@@ -49,7 +49,7 @@ export class CaptionList extends Component<Props> {
     return false;
   }
 
-  private _handleClick = (caption: ItemData) => () => {
+  private _handleClick = (caption: CuePointData) => () => {
     const {onSeek} = this.props;
     onSeek(caption);
   };
@@ -75,7 +75,7 @@ export class CaptionList extends Component<Props> {
     return searchProps;
   };
 
-  private _getCaptionProps = (captionData: ItemData) => {
+  private _getCaptionProps = (captionData: CuePointData) => {
     const {highlightedMap, captionProps, isAutoScrollEnabled} = this.props;
     const {id}: {id: string} = captionData;
     const newCaptionProps = {

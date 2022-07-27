@@ -1,6 +1,6 @@
 import * as styles from './caption.scss';
 import {secontsToTime} from '../../utils';
-import {ItemData} from '../../types';
+import {CuePointData} from '../../types';
 
 const {ENTER, Space} = KalturaPlayer.ui.utils.KeyMap;
 
@@ -15,7 +15,7 @@ export interface CaptionProps {
 }
 
 interface ExtendedCaptionProps extends CaptionProps {
-  caption: ItemData;
+  caption: CuePointData;
   onClick: () => void;
   highlighted: boolean;
   shouldScroll: boolean;
@@ -74,7 +74,7 @@ export class Caption extends Component<ExtendedCaptionProps> {
 
   private _gotoCurrentTime = () => {
     const {caption, onClick} = this.props;
-    if (caption.displayTitle.length) {
+    if (caption.text.length) {
       onClick();
     }
   };
@@ -85,7 +85,7 @@ export class Caption extends Component<ExtendedCaptionProps> {
     if (indexMap) {
       indexArray = Object.keys(indexMap).sort((a, b) => Number(a) - Number(b));
     }
-    if (text.length === 0) {
+    if (text?.length === 0) {
       return null;
     }
     return (
@@ -115,6 +115,7 @@ export class Caption extends Component<ExtendedCaptionProps> {
     const {caption, highlighted, showTime, longerThanHour} = this.props;
     const {startTime, id} = caption;
     const isHighlighted = Object.keys(highlighted)[0] === id;
+
     return (
       <div
         className={styles.caption}
@@ -130,7 +131,7 @@ export class Caption extends Component<ExtendedCaptionProps> {
           className={`${styles.captionContent} ${isHighlighted ? styles.highlighted : ''} ${showTime ? '' : styles.withoutTime}`}
           role="button"
         >
-          {this._renderText(caption.displayTitle)}
+          {this._renderText(caption.text)}
         </div>
       </div>
     );

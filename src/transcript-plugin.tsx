@@ -4,7 +4,7 @@ import {ui} from 'kaltura-player-js';
 import {PluginButton} from './components/plugin-button/plugin-button';
 import {Transcript} from './components/transcript';
 import {getConfigValue, isBoolean, makePlainText, prepareCuePoint} from './utils';
-import {TranscriptConfig, PluginPositions, PluginStates, HighlightedMap, ItemData, ItemTypes, CuePoint} from './types';
+import {TranscriptConfig, PluginPositions, PluginStates, HighlightedMap, CuePointData, ItemTypes, CuePoint} from './types';
 import {DownloadPrintMenu, downloadContent, printContent} from './components/download-print-menu';
 
 const {SidePanelModes, SidePanelPositions, ReservedPresetNames, ReservedPresetAreas} = ui;
@@ -22,7 +22,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     expandMode: SidePanelModes.ALONGSIDE,
     expandOnFirstPlay: true,
     showTime: true,
-    position: SidePanelPositions.BOTTOM,
+    position: SidePanelPositions.RIGHT,
     scrollOffset: 0,
     searchDebounceTimeout: 250,
     searchNextPrevDebounceTimeout: 100,
@@ -31,8 +31,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   };
   private _activeCaptionMapId: string = '';
   private _activeCuePointsMap: HighlightedMap = {};
-  private _highlightedGroup: Array<ItemData> = [];
-  private _captionMap: Map<string, Array<ItemData>> = new Map();
+  private _captionMap: Map<string, Array<CuePointData>> = new Map();
   private _isLoading = false;
   private _hasError = false;
   private _triggeredByKeyboard = false;
@@ -64,7 +63,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       return;
     }
     this.onPluginSetup();
-    this._registerCuePointTypes();
+    this.cuePointManager.registerTypes([this.cuePointManager.CuepointType.CAPTION]);
   }
 
   onPluginSetup(): void {
@@ -90,11 +89,9 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   }
 
   private _onTimedMetadataAdded = ({payload}: TimedMetadataEvent) => {
-    const captionData: ItemData[] = [];
+    const captionData: CuePointData[] = [];
     payload.cues.forEach((cue: CuePoint) => {
-      if (this.isCaptionType(cue)) {
-        captionData.push(prepareCuePoint(cue, ItemTypes.Caption));
-      }
+      captionData.push(prepareCuePoint(cue, ItemTypes.Caption)); 
     });
     if (captionData.length) {
       this._addCaptionData(captionData);
@@ -106,29 +103,15 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     this._activeCuePointsMap = {};
     if (transcriptCuePoints.length) {
       const latestTranscriptCuePoint = transcriptCuePoints[transcriptCuePoints.length - 1];
-      // define transcript item group
       const relevantTranscriptItem = this._data.find(item => item.id === latestTranscriptCuePoint.id);
       if (relevantTranscriptItem) {
-        this._highlightedGroup = this._data.filter(item => {
-          return item.displayTime === relevantTranscriptItem.displayTime;
-        });
-        if (this._highlightedGroup.length) {
-          this._highlightedGroup.forEach(item => {
-            this._activeCuePointsMap[item.id] = true;
-          });
-          this._updateTranscriptPanel();
-        }
+        this._activeCuePointsMap[relevantTranscriptItem.id] = true;
+        this._updateTranscriptPanel();
       }
     }
   };
 
-  private _registerCuePointTypes = () => {
-    const cuePointTypes: Array<string> = [];
-    cuePointTypes.push(this.cuePointManager.CuepointType.CAPTION);
-    this.cuePointManager.registerTypes(cuePointTypes);
-  };
-
-  private _addCaptionData = (newData: ItemData[]) => {
+  private _addCaptionData = (newData: CuePointData[]) => {
     this._activeCaptionMapId = this._getCaptionMapId();
     this._captionMap.set(this._activeCaptionMapId, newData);
     this._createOrUpdatePlugin();
@@ -144,13 +127,6 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     return '';
   };
 
-  private isCaptionType = (cue: CuePoint): boolean | null => {
-    const {metadata} = cue;
-    const {KalturaCuePointType} = this.cuePointManager;
-
-    return metadata?.cuePointType === KalturaCuePointType.CAPTION;
-  };
-
   private onClose = () => {
     if (this.sidePanelsManager.isItemActive(this._transcriptPanel)) {
       this._pluginState = PluginStates.CLOSED;
@@ -162,7 +138,6 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
 
   private _addPopoverIcon(): void {
     const {downloadDisabled, printDisabled} = this.config;
-    console.log(this._captionMap, 333)
     if (this._removePopoverIcon) {
       return;
     }
@@ -297,10 +272,6 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   }
 
   destroy(): void {
-    if (this._removePopoverIcon) {
-      this._removePopoverIcon();
-      this._removePopoverIcon = null;
-    }
-    this._pluginState = null;
+    this.reset();
   }
 }

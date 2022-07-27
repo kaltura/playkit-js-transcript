@@ -1,33 +1,18 @@
 export type HighlightedMap = Record<string, boolean>;
 
 export interface RawItemData {
-  cuePointType: ItemTypes;
+  content?: Array<{text: string}>;
+  cuePointType?: string;
+  label?: string;
+  language?: string;
   text?: string;
-  description?: string;
-  title?: string;
-  assetId?: string;
-  subType?: ItemTypes;
-  partnerData?: string;
-  tags?: string;
-  assetUrl?: string;
-  relatedObjects?: {
-    QandA_ResponseProfile?: {
-      objects: Array<{xml: string}>;
-    };
-  };
 }
 
-export interface ItemData extends RawItemData {
+export interface CuePointData {
   id: string;
   startTime: number;
-  previewImage: string | null;
-  itemType: ItemTypes;
   displayTime?: number;
-  displayTitle: string;
-  shorthandTitle?: string;
-  displayDescription: string | null;
-  shorthandDescription?: string;
-  hasShowMore: boolean;
+  text: string;
 }
 
 export enum ItemTypes {

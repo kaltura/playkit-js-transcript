@@ -50,13 +50,13 @@ export function isBoolean(value: any) {
   return typeof value === 'boolean';
 }
 
-export function makePlainText(captions: Array<ItemData>): string {
-  return captions.reduce((acc: string, next: ItemData) => {
-    return `${acc} ${next.displayTitle}`;
+export function makePlainText(captions: Array<CuePointData>): string {
+  return captions.reduce((acc: string, next: CuePointData) => {
+    return `${acc} ${next.text}`;
   }, '');
 }
 
-import {ItemTypes, ItemData, CuePoint} from '../types';
+import {ItemTypes, CuePointData, CuePoint} from '../types';
 
 const {toHHMMSS} = KalturaPlayer.ui.utils;
 const MAX_CHARACTERS = 77;
@@ -73,32 +73,14 @@ export const decodeString = (content: any): string => {
     .replace(/&quot;/gi, '"');
 };
 
-export const prepareCuePoint = (cuePoint: CuePoint, cuePointType: ItemTypes): ItemData => {
+export const prepareCuePoint = (cuePoint: CuePoint, cuePointType: ItemTypes): CuePointData => {
   const {metadata} = cuePoint;
-  const itemData: ItemData = {
-    cuePointType,
+  const itemData: CuePointData = {
     id: cuePoint.id,
     startTime: cuePoint.startTime,
     displayTime:Math.floor(cuePoint.startTime),
-    itemType: cuePointType,
-    displayTitle: '',
-    displayDescription: decodeString(metadata.description),
-    previewImage: null,
-    hasShowMore: false,
+    text: decodeString(metadata.text),
   };
-
-  itemData.displayTitle = decodeString(metadata.text);
-  if (itemData.displayTitle && itemData.displayTitle.length > MAX_CHARACTERS && itemData.itemType !== ItemTypes.Caption) {
-    let elipsisString = itemData.displayTitle.slice(0, MAX_CHARACTERS);
-    elipsisString = elipsisString.trim();
-    itemData.shorthandTitle = elipsisString + '... ';
-  }
-  if (!itemData.displayTitle && itemData.displayDescription && itemData.displayDescription.length > 79) {
-    let elipsisDescription = itemData.displayTitle.slice(0, MAX_CHARACTERS);
-    elipsisDescription = elipsisDescription.trim();
-    itemData.shorthandDescription = elipsisDescription + '... ';
-  }
-  itemData.hasShowMore = Boolean(itemData.displayDescription || itemData.shorthandDescription);
 
   return itemData;
 };

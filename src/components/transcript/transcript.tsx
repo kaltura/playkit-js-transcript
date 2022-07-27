@@ -4,17 +4,18 @@ import * as styles from './transcript.scss';
 import {Spinner} from '../spinner';
 import {Search} from '../search';
 import {CaptionList} from '../caption-list';
-import {HighlightedMap, ItemData, PluginPositions} from '../../types';
+import {HighlightedMap, CuePointData, PluginPositions} from '../../types';
 import { A11yWrapper } from '../a11y-wrapper';
+import {CloseButton} from '../close-button';
 
-const {ENTER, Space, Tab, Esc} = KalturaPlayer.ui.utils.KeyMap;
+const {ENTER, Space, Tab, Esc, click} = KalturaPlayer.ui.utils.KeyMap;
 export interface TranscriptProps {
   onSeek(time: number): void;
   onClose: () => void;
   onRetryLoad: () => void;
   isLoading: boolean;
   hasError: boolean;
-  captions: Array<ItemData>;
+  captions: Array<CuePointData>;
   showTime: boolean;
   currentTime: number;
   scrollOffset: number;
@@ -82,19 +83,17 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     this._setWidgetSize();
   }
 
-  private _enableAutoScroll = (event: any) => {
+  private _enableAutoScroll = (event: any, byKeyboard?: boolean) => {
     event.preventDefault();
     if (this.state.isAutoScrollEnabled) {
       return;
     }
-    if (event.type === 'click' || event.keyCode === Space || event.keyCode === ENTER) {
-      this._preventScrollEvent = true;
-      this.setState({
-        isAutoScrollEnabled: true
-      });
-      if (event.type !== 'click') {
-        this._skipTranscriptButtonRef?.focus();
-      }
+    this._preventScrollEvent = true;
+    this.setState({
+      isAutoScrollEnabled: true
+    });
+    if (event.type !== 'click') {
+      this._skipTranscriptButtonRef?.focus();
     }
   };
 
@@ -105,7 +104,6 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         <div
           role="button"
           className={`${styles.autoscrollButton} ${isAutoScrollEnabled ? '' : styles.autoscrollButtonVisible}`}
-          onKeyDown={this._enableAutoScroll}
           tabIndex={isAutoScrollEnabled ? -1 : 1}
           ref={node => {
             this._autoscrollButtonRef = node;
@@ -127,13 +125,12 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
       let index = 0;
       const loSearch = state.search.toLowerCase();
       const searchMap: Record<string, Record<string, number>> = {};
-      this.props.captions.forEach((caption: ItemData) => {
-        const text = caption?.displayTitle?.toLowerCase() || '';
+      this.props.captions.forEach((caption: CuePointData) => {
+        const text = caption?.text?.toLowerCase() || '';
         const regex = new RegExp(loSearch, 'gi');
         let result;
         const indices = [];
         while ((result = regex.exec(text))) {
-          console.log(result.index, 999);
           indices.push(result.index);
         }
         indices.forEach((i: number) => {
@@ -323,7 +320,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     });
   };
 
-  private _handleSeek = (caption: ItemData) => {
+  private _handleSeek = (caption: CuePointData) => {
     const {onSeek} = this.props;
     const selection = window.getSelection();
     if (selection && selection.type !== 'Range') {
@@ -342,12 +339,6 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     }
   };
 
-  private _handleClose = (event: any) => {
-    if (event.type === 'click' || event.keyCode === Space || event.keyCode === ENTER) {
-      this.props.onClose();
-    }
-  };
-
   render(props: TranscriptProps) {
     const {isLoading, kitchenSinkActive} = props;
     return (
@@ -360,7 +351,9 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
       >
         <div className={styles.globalContainer}>
           {this._renderHeader()}
-          <div role="button" className={styles.closeButton} tabIndex={1} onClick={this._handleClose} onKeyUp={this._handleClose} />
+
+          <CloseButton onClick={this.props.onClose} />
+
           {!isLoading && this._renderSkipTranscriptButton()}
           <div
             className={styles.body}
