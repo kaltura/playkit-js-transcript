@@ -91,8 +91,9 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   private _onTimedMetadataAdded = ({payload}: TimedMetadataEvent) => {
     const captionData: CuePointData[] = [];
     payload.cues.forEach((cue: CuePoint) => {
-      if (cue.metadata.cuePointType !== ItemTypes.Caption) return;
-      captionData.push(prepareCuePoint(cue));
+      if (cue.metadata.cuePointType === ItemTypes.Caption) {
+        captionData.push(prepareCuePoint(cue));
+      }
     });
     if (captionData.length) {
       this._addCaptionData(captionData);
@@ -100,16 +101,14 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   };
 
   private _onTimedMetadataChange = ({payload}: TimedMetadataEvent) => {
-    const transcriptCuePoints: Array<CuePoint> = payload.cues;
+    const transcriptCuePoints: Array<CuePoint> = payload.cues.filter((cue: CuePoint) => {
+      return cue.metadata.cuePointType === ItemTypes.Caption;
+    });
     this._activeCuePointsMap = {};
-    if (transcriptCuePoints.length) {
-      const latestTranscriptCuePoint = transcriptCuePoints[transcriptCuePoints.length - 1];
-      const relevantTranscriptItem = this._data.find(item => item.id === latestTranscriptCuePoint.id);
-      if (relevantTranscriptItem) {
-        this._activeCuePointsMap[relevantTranscriptItem.id] = true;
-        this._updateTranscriptPanel();
-      }
-    }
+    transcriptCuePoints.forEach(cue => {
+      this._activeCuePointsMap[cue.id] = true;
+    });
+    this._updateTranscriptPanel();
   };
 
   private _addCaptionData = (newData: CuePointData[]) => {
