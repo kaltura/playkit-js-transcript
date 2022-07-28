@@ -9,6 +9,8 @@
   cursor: pointer;
   padding: 0;
   background: none;
+  border-radius: 4px;
+  outline-offset: 0 -1px;
   &:hover,
   &:active {
     border-radius: 4px;

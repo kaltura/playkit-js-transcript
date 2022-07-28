@@ -10,7 +10,7 @@ interface CloseButtonProps {
 
 export const CloseButton = (props: CloseButtonProps) => (
   <A11yWrapper onClick={props.onClick}>
-    <button className={styles.closeBtn} tabIndex={0}>
+    <button className={styles.closeBtn} tabIndex={1}>
       <Icon
         id="transcript-plugin-close-button"
         height={icons.BigSize}

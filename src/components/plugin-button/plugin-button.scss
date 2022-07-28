@@ -1,4 +1,4 @@
-@import '../../theme.scss';
+@import '../../variables.scss';
 
 .navigationPluginButton,
 .navigationPluginIcon {
@@ -16,7 +16,7 @@
   border-radius: 4px;
   cursor: pointer;
   &.active {
-    background-color: map-get($theme-colors, 'gray');
+    background-color: $darken-gray;
   }
 }
 

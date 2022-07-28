@@ -1,21 +1,5 @@
 @import '../../variables.scss';
 
-/* TODO: (1) remove this once 3rd party cross-browser custom scroll bar is Added */
-.body::-webkit-scrollbar {
-  width: 4px;
-}
-
-/* Track TODO: as (1)*/
-.body::-webkit-scrollbar-track {
-  background: rgba(33, 33, 33, 0.9);
-}
-
-/* Handle TODO: as (1) */
-.body::-webkit-scrollbar-thumb {
-  border-radius: 3px;
-  background-color: rgba(255, 255, 255, 0.3);
-}
-
 .hidden {
   visibility: hidden;
 }
@@ -82,20 +66,6 @@
     padding-right: 22px;
   }
 }
-.close-button {
-  position: absolute;
-  display: flex;
-  top: 8px;
-  right: 0;
-  width: 32px;
-  height: 32px;
-  min-width: 32px;
-  margin: 0 8px;
-  cursor: pointer;
-  background-color: transparent;
-  border: none;
-  padding: 0;
-}
 
 .body {
   position: relative;
@@ -104,6 +74,7 @@
   overflow-y: auto;
   text-align: center;
   overflow-x: hidden;
+  @include plugin-scrollbar();
 }
 
 .loading-wrapper,

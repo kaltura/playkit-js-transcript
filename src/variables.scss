@@ -1,6 +1,7 @@
 $main-color: #01accd;
 $white-color: #ffffff;
 $gray-color: #cccccc;
+$darken-gray: #444444;
 $darkgray-color: #333333;
 $semigray-color: #666666;
 $lightgray-color: #999999;
@@ -12,3 +13,16 @@ $text-selection-color: #5b80a7;
 $main-color-darken: darken($main-color, 10%);
 $root-background: #000000a1;
 $focus-color: #00cbff;
+
+@mixin plugin-scrollbar {
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: rgba(33, 33, 33, 0.9);
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+}

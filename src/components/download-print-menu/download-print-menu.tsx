@@ -115,7 +115,7 @@ export class DownloadPrintMenu extends Component<DownloadPrintMenuProps, Downloa
     ];
   };
 
-  private _renderIcon = ({buttonStyles, tabIndex = 1, iconStyles, ...props}: ButtonProperties): ComponentChild => {
+  private _renderIcon = ({buttonStyles, tabIndex = 0, iconStyles, ...props}: ButtonProperties): ComponentChild => {
     return (
       <button className={buttonStyles} tabIndex={tabIndex} {...props}>
         <div className={iconStyles} />
