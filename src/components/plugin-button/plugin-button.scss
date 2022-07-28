@@ -1,0 +1,26 @@
+@import '../../variables.scss';
+
+.navigationPluginButton,
+.navigationPluginIcon {
+  min-height: 36px;
+  min-width: 36px;
+}
+
+.pluginButton {
+  display: flex;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  &.active {
+    background-color: $darken-gray;
+  }
+}
+
+// TODO: remove once core team fix alignment of plugin icons
+:global(.playkit-player .playkit-top-bar .playkit-right-controls) {
+  display: flex;
+}

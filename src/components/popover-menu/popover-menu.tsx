@@ -1,15 +1,15 @@
-import { h, Component, ComponentChild } from "preact";
-import * as styles from "./popover-menu.scss";
+import {h, Component, ComponentChild} from 'preact';
+import * as styles from './popover-menu.scss';
 
 export interface PopoverMenuItem {
-    label: string;
-    onMenuChosen: Function;
-    customRenderer?: (el: PopoverMenuItem) => ComponentChild;
+  label: string;
+  onMenuChosen: Function;
+  customRenderer?: (el: PopoverMenuItem) => ComponentChild;
 }
 
 interface PopoverMenuProps {
-    options: Array<PopoverMenuItem>;
-    itemRenderer?: (el: PopoverMenuItem) => ComponentChild;
+  options: Array<PopoverMenuItem>;
+  itemRenderer?: (el: PopoverMenuItem) => ComponentChild;
 }
 
 /**
@@ -30,23 +30,23 @@ interface PopoverMenuProps {
  */
 
 export class PopoverMenu extends Component<PopoverMenuProps> {
-    render(props: any) {
-        return (
-            <div className={styles.popoverMenu}>
-                {props.options.map((el: PopoverMenuItem) => {
-                    if (el.customRenderer) {
-                        return el.customRenderer(el);
-                    }
-                    if (props.itemRenderer) {
-                        return props.itemRenderer(el);
-                    }
-                    return (
-                        <div className="popover-menu-item" onClick={() => el.onMenuChosen(el)}>
-                            {el.label}
-                        </div>
-                    );
-                })}
+  render(props: any) {
+    return (
+      <div className={styles.popoverMenu}>
+        {props.options.map((el: PopoverMenuItem) => {
+          if (el.customRenderer) {
+            return el.customRenderer(el);
+          }
+          if (props.itemRenderer) {
+            return props.itemRenderer(el);
+          }
+          return (
+            <div className="popover-menu-item" onClick={() => el.onMenuChosen(el)}>
+              {el.label}
             </div>
-        );
-    }
+          );
+        })}
+      </div>
+    );
+  }
 }
