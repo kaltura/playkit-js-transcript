@@ -20,10 +20,8 @@ elif [ "${TRAVIS_MODE}" = "release" ] || [ "${TRAVIS_MODE}" = "releaseCanary" ];
     echo "Current version ${currentVersion}"
     newVersion=$(echo $currentVersion | sed -e "s/canary\.[[:digit:]]/canary.${commitNumberAfterTag}-${sha}/g")
     echo "New version ${newVersion}"
-    sed -iE "s/$currentVersion/$newVersion/g" package-lock.json
     sed -iE "s/$currentVersion/$newVersion/g" package.json
     sed -iE "s/$currentVersion/$newVersion/g" CHANGELOG.md
-    rm package-lock.jsonE
     rm package.jsonE
     rm CHANGELOG.mdE
   else
