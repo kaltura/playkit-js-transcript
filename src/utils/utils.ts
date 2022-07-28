@@ -56,7 +56,7 @@ export function makePlainText(captions: Array<CuePointData>): string {
   }, '');
 }
 
-import {ItemTypes, CuePointData, CuePoint} from '../types';
+import {CuePointData, CuePoint} from '../types';
 
 const {toHHMMSS} = KalturaPlayer.ui.utils;
 const MAX_CHARACTERS = 77;
@@ -73,13 +73,13 @@ export const decodeString = (content: any): string => {
     .replace(/&quot;/gi, '"');
 };
 
-export const prepareCuePoint = (cuePoint: CuePoint, cuePointType: ItemTypes): CuePointData => {
+export const prepareCuePoint = (cuePoint: CuePoint): CuePointData => {
   const {metadata} = cuePoint;
   const itemData: CuePointData = {
     id: cuePoint.id,
     startTime: cuePoint.startTime,
-    displayTime:Math.floor(cuePoint.startTime),
-    text: decodeString(metadata.text),
+    displayTime: Math.floor(cuePoint.startTime),
+    text: decodeString(metadata.text)
   };
 
   return itemData;

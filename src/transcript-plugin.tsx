@@ -91,7 +91,8 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   private _onTimedMetadataAdded = ({payload}: TimedMetadataEvent) => {
     const captionData: CuePointData[] = [];
     payload.cues.forEach((cue: CuePoint) => {
-      captionData.push(prepareCuePoint(cue, ItemTypes.Caption)); 
+      if (cue.metadata.cuePointType !== ItemTypes.Caption) return;
+      captionData.push(prepareCuePoint(cue));
     });
     if (captionData.length) {
       this._addCaptionData(captionData);
@@ -237,18 +238,18 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
 
   private _handleDownload = () => {
     const {config} = this.player;
-    const captions = this._captionMap.get(this._activeCaptionMapId) || []
+    const captions = this._captionMap.get(this._activeCaptionMapId) || [];
 
     if (captions) {
       const entryMetadata = get(config, 'sources.metadata', {});
       const language = this._getCaptionMapId();
-      
+
       downloadContent(makePlainText(captions), `${language}${entryMetadata.name ? `-${entryMetadata.name}` : ''}.txt`);
     }
   };
 
   private _handlePrint = () => {
-    const captions = this._captionMap.get(this._activeCaptionMapId) || []
+    const captions = this._captionMap.get(this._activeCaptionMapId) || [];
 
     if (captions) {
       printContent(makePlainText(captions));

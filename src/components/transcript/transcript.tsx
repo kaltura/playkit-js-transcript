@@ -5,7 +5,7 @@ import {Spinner} from '../spinner';
 import {Search} from '../search';
 import {CaptionList} from '../caption-list';
 import {HighlightedMap, CuePointData, PluginPositions} from '../../types';
-import { A11yWrapper } from '../a11y-wrapper';
+import {A11yWrapper} from '../a11y-wrapper';
 import {CloseButton} from '../close-button';
 
 const {ENTER, Space, Tab, Esc, click} = KalturaPlayer.ui.utils.KeyMap;
@@ -25,8 +25,8 @@ export interface TranscriptProps {
   kitchenSinkActive: boolean;
   toggledWithEnter: boolean;
   highlightedMap: HighlightedMap;
-  pluginMode: PluginPositions
-  onItemClicked: (n:number) => void
+  pluginMode: PluginPositions;
+  onItemClicked: (n: number) => void;
 }
 
 interface TranscriptState {
@@ -341,6 +341,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
 
   render(props: TranscriptProps) {
     const {isLoading, kitchenSinkActive} = props;
+
     return (
       <div
         className={`${styles.root} ${kitchenSinkActive ? '' : styles.hidden}`}

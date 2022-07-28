@@ -6,7 +6,6 @@ import {HighlightedMap, CuePointData} from '../../types';
 
 const {End, Home} = KalturaPlayer.ui.utils.KeyMap;
 
-
 export interface CaptionProps {
   showTime: boolean;
   searchLength: number;

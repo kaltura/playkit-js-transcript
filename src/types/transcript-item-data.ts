@@ -16,7 +16,7 @@ export interface CuePointData {
 }
 
 export enum ItemTypes {
-  Caption = 'Caption'
+  Caption = 'kalturaCaption'
 }
 
 export interface CuePoint {
