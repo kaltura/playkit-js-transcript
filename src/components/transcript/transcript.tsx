@@ -1,14 +1,15 @@
 import {h, Component} from 'preact';
+import {A11yWrapper} from '@playkit-js/common';
 import {debounce} from '../../utils';
 import * as styles from './transcript.scss';
 import {Spinner} from '../spinner';
 import {Search} from '../search';
 import {CaptionList} from '../caption-list';
 import {HighlightedMap, CuePointData, PluginPositions} from '../../types';
-import {A11yWrapper} from '../a11y-wrapper';
 import {CloseButton} from '../close-button';
+import {ErrorIcon} from './error-icon';
+const {ENTER, Space, Tab, Esc} = KalturaPlayer.ui.utils.KeyMap;
 
-const {ENTER, Space, Tab, Esc, click} = KalturaPlayer.ui.utils.KeyMap;
 export interface TranscriptProps {
   onSeek(time: number): void;
   onClose: () => void;
@@ -107,8 +108,23 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
           tabIndex={isAutoScrollEnabled ? -1 : 1}
           ref={node => {
             this._autoscrollButtonRef = node;
-          }}
-        />
+          }}>
+          <svg
+            width="32px"
+            height="32px"
+            viewBox="0 0 16 16"
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlnsXlink="http://www.w3.org/1999/xlink">
+            <g id="Icons/16/Arrowline/up" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+              <path
+                d="M8.0000393,2 C8.55232405,2 9.0000393,2.44771525 9.0000393,3 L9.0000393,3 L9,10.17 L11.216782,7.37830235 C11.5337243,6.97899674 12.0940739,6.88664831 12.5186429,7.14486093 L12.6217369,7.21674268 C13.054318,7.56009681 13.1266507,8.18911658 12.7832966,8.62169765 L12.7832966,8.62169765 L8.78329662,13.6611718 C8.3829349,14.165575 7.61714369,14.165575 7.21678198,13.6611718 L7.21678198,13.6611718 L3.21678198,8.62169765 C2.87342784,8.18911658 2.94576057,7.56009681 3.37834164,7.21674268 C3.81092272,6.87338855 4.43994248,6.94572127 4.78329662,7.37830235 L4.78329662,7.37830235 L7,10.17 L7.0000393,3 C7.0000393,2.48716416 7.38607949,2.06449284 7.88341817,2.00672773 Z"
+                id="Combined-Shape"
+                fill="#ffffff"
+                transform="translate(8.000039, 8.019737) scale(1, -1) translate(-8.000039, -8.019737) "></path>
+            </g>
+          </svg>
+        </div>
       </A11yWrapper>
     );
   };
@@ -210,8 +226,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         }}
         className={styles.skipTranscriptButton}
         onKeyDown={this._handleKeyDown}
-        tabIndex={1}
-      >
+        tabIndex={1}>
         Skip transcript
       </div>
     );
@@ -227,7 +242,9 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     if (hasError) {
       return (
         <div className={styles.errorWrapper}>
-          <div className={styles.errorIcon} />
+          <div className={styles.errorIcon}>
+            <ErrorIcon />
+          </div>
           <p className={styles.errorMainText}>Whoops!</p>
           <p className={styles.errorDescriptionText}>
             Failed to get transcript, please try again
@@ -348,8 +365,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         ref={node => {
           this._widgetRootRef = node;
         }}
-        onKeyUp={this._handleEsc}
-      >
+        onKeyUp={this._handleEsc}>
         <div className={styles.globalContainer}>
           {this._renderHeader()}
 
@@ -361,8 +377,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
             onScroll={this._onScroll}
             ref={node => {
               this._transcriptListRef = node;
-            }}
-          >
+            }}>
             {isLoading ? this._renderLoading() : this._renderTranscript()}
           </div>
           {this._renderScrollToButton()}

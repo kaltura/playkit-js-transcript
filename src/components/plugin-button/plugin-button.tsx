@@ -1,7 +1,7 @@
 import {h} from 'preact';
 import * as styles from './plugin-button.scss';
 import {icons} from '../icons';
-import {A11yWrapper, OnClick} from '../a11y-wrapper';
+import {A11yWrapper, OnClick} from '@playkit-js/common';
 const {Tooltip, Icon} = KalturaPlayer.ui.components;
 
 interface PluginButtonProps {

@@ -17,8 +17,6 @@
   .search-icon {
     flex: 0 0 32px;
     background-color: transparent;
-    background-position: center;
-    background-image: url('../../assets/search.svg');
     width: 32px;
     height: 32px;
     margin: 0 2px;
@@ -36,22 +34,17 @@
     display: flex;
     flex-direction: column;
     justify-content: space-around;
+    max-height: 100%;
     height: 100%;
+    width: 14px;
     margin-right: 8px;
     .prev-next-button {
-      width: 14px;
-      height: 6px;
+      padding: 0;
       background-color: transparent;
       background-position: center;
       background-size: cover;
       border: none;
       cursor: pointer;
-      &.prev-button {
-        background-image: url('../../assets/up.svg');
-      }
-      &.next-button {
-        background-image: url('../../assets/down.svg');
-      }
       &.disabled {
         opacity: 0.4;
         cursor: default;
@@ -80,12 +73,11 @@
     }
   }
   .clear-icon {
+    padding: 0;
     flex: 0 0 32px;
     max-width: 32px;
     max-height: 32px;
     background-color: transparent;
-    background-position: center;
-    background-image: url('../../assets/clear.svg');
     width: 32px;
     height: 32px;
     border: none;

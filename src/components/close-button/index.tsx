@@ -1,6 +1,6 @@
 import {h} from 'preact';
 import * as styles from './close-button.scss';
-import {A11yWrapper} from '../a11y-wrapper/a11y-wrapper';
+import {A11yWrapper} from '@playkit-js/common';
 import {icons} from '../icons';
 const {Icon} = KalturaPlayer.ui.components;
 
