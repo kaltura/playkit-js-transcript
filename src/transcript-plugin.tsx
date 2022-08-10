@@ -210,7 +210,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       },
       presets: [ReservedPresetNames.Playback, ReservedPresetNames.Live, ReservedPresetNames.Ads],
       position: position,
-      expandMode: expandMode,
+      expandMode: expandMode === SidePanelModes.ALONGSIDE ? SidePanelModes.ALONGSIDE : SidePanelModes.OVER,
       onActivate: () => {
         this._pluginState = PluginStates.OPENED;
       }
