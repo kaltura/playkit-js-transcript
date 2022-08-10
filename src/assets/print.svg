@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 59 (86127) - https://sketch.com -->
-    <title>Icons/32/print</title>
-    <desc>Created with Sketch.</desc>
-    <g id="Icons/32/print" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <path d="M21,3 C22.0543618,3 22.9181651,3.81587779 22.9945143,4.85073766 L23,5 L23,9 L26,9 C27.1045695,9 28,9.8954305 28,11 L28,21 C28,22.1045695 27.1045695,23 26,23 L23,23 L23,28 C23,29.1045695 22.1045695,30 21,30 L11,30 C9.8954305,30 9,29.1045695 9,28 L9,23 L6,23 C4.8954305,23 4,22.1045695 4,21 L4,11 C4,9.8954305 4.8954305,9 6,9 L9,9 L9,5 C9,3.9456382 9.81587779,3.08183488 10.8507377,3.00548574 L11,3 L21,3 Z M21,19 L11,19 L11,28 L21,28 L21,19 Z M26,11 L6,11 L6,21 L9,21 L9,19 C8.44771525,19 8,18.5522847 8,18 C8,17.4477153 8.44771525,17 9,17 L23,17 C23.5522847,17 24,17.4477153 24,18 C24,18.5522847 23.5522847,19 23,19 L23,21 L26,21 L26,11 Z M21,5 L11,5 L11,9 L21,9 L21,5 Z" id="Combined-Shape" fill="#fff"></path>
-    </g>
-</svg>

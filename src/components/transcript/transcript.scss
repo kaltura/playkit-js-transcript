@@ -104,9 +104,10 @@
     margin: 0;
   }
   .retry-button {
-    width: 30px;
+    width: 36px;
+    display: block;
     padding: 0;
-    margin-left: 20px;
+    margin: 4px auto 0 auto;
     border: none;
     background: inherit;
     color: white;
@@ -126,10 +127,6 @@
   border-radius: 50%;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
   background-color: #01819a;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: 22px;
-  background-image: url('../../assets/arrow-up.svg');
   cursor: pointer;
   z-index: 1;
 }

@@ -1,7 +1,8 @@
-import {h, Component, ComponentChild} from 'preact';
+import {h, Component, ComponentChild, VNode} from 'preact';
 import {Popover, PopoverHorizontalPositions, PopoverVerticalPositions} from '../../utils';
 import {PopoverMenu, PopoverMenuItem} from '../popover-menu';
 import * as styles from './download-print-menu.scss';
+import {DownloadIcon, PrintIcon} from './download-print-icons';
 
 const {ENTER, Esc} = KalturaPlayer.ui.utils.KeyMap;
 
@@ -56,6 +57,7 @@ interface ButtonProperties {
   onClick?: () => void;
   tabIndex?: number;
   iconStyles: string;
+  icon: VNode;
 }
 
 interface DownloadPrintMenuState {
@@ -96,8 +98,7 @@ export class DownloadPrintMenu extends Component<DownloadPrintMenuProps, Downloa
       role="button"
       onClick={() => el.onMenuChosen()}
       onKeyDown={(e: KeyboardEvent) => this._onKeyDown(e, el.onMenuChosen)}
-      className={styles.popoverMenuItem}
-    >
+      className={styles.popoverMenuItem}>
       {el.label}
     </div>
   );
@@ -115,10 +116,10 @@ export class DownloadPrintMenu extends Component<DownloadPrintMenuProps, Downloa
     ];
   };
 
-  private _renderIcon = ({buttonStyles, tabIndex = 0, iconStyles, ...props}: ButtonProperties): ComponentChild => {
+  private _renderIcon = ({buttonStyles, tabIndex = 0, iconStyles, icon, ...props}: ButtonProperties): ComponentChild => {
     return (
       <button className={buttonStyles} tabIndex={tabIndex} {...props}>
-        <div className={iconStyles} />
+        <div className={iconStyles}>{icon}</div>
       </button>
     );
   };
@@ -135,12 +136,12 @@ export class DownloadPrintMenu extends Component<DownloadPrintMenuProps, Downloa
           className="download-print-popover"
           verticalPosition={PopoverVerticalPositions.Bottom}
           horizontalPosition={PopoverHorizontalPositions.Left}
-          content={this._popoverContent()}
-        >
+          content={this._popoverContent()}>
           {this._renderIcon({
             ['aria-label']: props.dropdownAriaLabel,
             buttonStyles: styles.downloadPrintButton,
-            iconStyles: [styles.icon, styles.downloadIcon].join(' ')
+            iconStyles: styles.icon,
+            icon: <DownloadIcon />
           })}
         </Popover>
       );
@@ -149,16 +150,18 @@ export class DownloadPrintMenu extends Component<DownloadPrintMenuProps, Downloa
       return this._renderIcon({
         ['aria-label']: props.downloadButtonAriaLabel,
         buttonStyles: styles.downloadPrintButton,
-        iconStyles: [styles.icon, styles.downloadIcon].join(' '),
-        onClick: this._onDownloadClicked
+        iconStyles: styles.icon,
+        onClick: this._onDownloadClicked,
+        icon: <DownloadIcon />
       });
     }
     if (downloadDisabled && !printDisabled) {
       return this._renderIcon({
         ['aria-label']: props.printButtonAriaLabel,
         buttonStyles: styles.downloadPrintButton,
-        iconStyles: [styles.icon, styles.printIcon].join(' '),
-        onClick: this._onPrintClicked
+        iconStyles: styles.icon,
+        onClick: this._onPrintClicked,
+        icon: <PrintIcon />
       });
     }
     return null;

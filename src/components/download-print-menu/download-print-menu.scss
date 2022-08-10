@@ -25,18 +25,6 @@
     background-position: center;
     background-size: cover;
   }
-  .download-icon {
-    background-image: url('../../assets/download.svg');
-    &:active {
-      background-image: url('../../assets/download-over.svg');
-    }
-  }
-  .print-icon {
-    background-image: url('../../assets/print.svg');
-    &:active {
-      background-image: url('../../assets/print-over.svg');
-    }
-  }
 }
 .popover-menu-item {
   display: flex;
