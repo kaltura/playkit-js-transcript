@@ -1,6 +1,7 @@
 import {h} from 'preact';
-import {ObjectUtils} from './utils';
+import {OnClickEvent} from '@playkit-js/common';
 import {ui} from 'kaltura-player-js';
+import {ObjectUtils} from './utils';
 import {PluginButton} from './components/plugin-button/plugin-button';
 import {Transcript} from './components/transcript';
 import {getConfigValue, isBoolean, makePlainText, prepareCuePoint} from './utils';
@@ -69,27 +70,34 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       this.logger.warn("kalturaCuepoints or sidePanelsManager haven't registered");
       return;
     }
-    this.onPluginSetup();
+    this._initListeners();
     this.cuePointManager.registerTypes([this.cuePointManager.CuepointType.CAPTION]);
   }
 
-  onPluginSetup(): void {
+  private _initListeners(): void {
+    this.eventManager.listen(this.player, this.player.Event.FIRST_PLAYING, () => {
+      if ((this.player.getTracks(this.player.Track.TEXT) || []).length) {
+        this._isLoading = true;
+        this._addPopoverIcon();
+        this._addTranscriptItem();
+      }
+    });
     this.eventManager.listen(this.player, this.player.Event.TIMED_METADATA_CHANGE, this._onTimedMetadataChange);
     this.eventManager.listen(this.player, this.player.Event.TIMED_METADATA_ADDED, this._onTimedMetadataAdded);
     this.eventManager.listen(this.player, this.player.Event.TEXT_TRACK_CHANGED, this._handleLanguageChange);
   }
 
-  onRegisterUI(): void {}
-
   private _handleLanguageChange = () => {
     this._activeCaptionMapId = this._getCaptionMapId();
     if (this._captionMap.has(this._activeCaptionMapId)) {
-      this._updateTranscriptPanel();
+      this._isLoading = false;
+    } else {
+      this._isLoading = true;
     }
+    this._updateTranscriptPanel();
   };
 
   private _updateTranscriptPanel() {
-    this._isLoading = false;
     if (this._transcriptPanel) {
       this.sidePanelsManager.update(this._transcriptPanel);
     }
@@ -121,7 +129,8 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   private _addCaptionData = (newData: CuePointData[]) => {
     this._activeCaptionMapId = this._getCaptionMapId();
     this._captionMap.set(this._activeCaptionMapId, newData);
-    this._createOrUpdatePlugin();
+    this._isLoading = false;
+    this._updateTranscriptPanel();
   };
 
   private _getCaptionMapId = (): string => {
@@ -134,13 +143,9 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     return '';
   };
 
-  private onClose = () => {
-    if (this.sidePanelsManager.isItemActive(this._transcriptPanel)) {
-      this._pluginState = PluginStates.CLOSED;
-      this.sidePanelsManager.deactivateItem(this._transcriptPanel);
-    } else {
-      this.sidePanelsManager.activateItem(this._transcriptPanel);
-    }
+  private _handleCloseClick = () => {
+    this.sidePanelsManager.deactivateItem(this._transcriptPanel);
+    this._pluginState = PluginStates.CLOSED;
   };
 
   private _addPopoverIcon(): void {
@@ -166,16 +171,6 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     });
   }
 
-  private _createOrUpdatePlugin = () => {
-    if (this._transcriptPanel) {
-      this._updateTranscriptPanel();
-    } else {
-      this._initLoading();
-      this._addPopoverIcon();
-      this._addTranscriptItem();
-    }
-  };
-
   private _addTranscriptItem(): void {
     const buttonLabel = 'Transcript';
     const {expandMode, position, expandOnFirstPlay} = this.config;
@@ -199,19 +194,31 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
             captions={this._data}
             isLoading={this._isLoading}
             hasError={this._hasError}
-            onRetryLoad={this._createOrUpdatePlugin}
+            onRetryLoad={this._updateTranscriptPanel}
             currentTime={this.player.currentTime}
             videoDuration={this.player.duration}
             kitchenSinkActive={!!this.sidePanelsManager.isItemActive(this._transcriptPanel)}
             toggledWithEnter={this._triggeredByKeyboard}
-            onClose={this.onClose}
+            onClose={this._handleCloseClick}
           />
         );
       },
       iconComponent: ({isActive}: {isActive: boolean}) => {
         return (
           <Tooltip label={buttonLabel} type="bottom">
-            <PluginButton isActive={isActive} onClick={this.onClose} label={buttonLabel} />
+            <PluginButton
+              isActive={isActive}
+              label={buttonLabel}
+              onClick={(e: OnClickEvent, byKeyboard?: boolean) => {
+                if (this.sidePanelsManager.isItemActive(this._transcriptPanel)) {
+                  this._triggeredByKeyboard = false;
+                  this._handleCloseClick();
+                } else {
+                  this._triggeredByKeyboard = Boolean(byKeyboard);
+                  this.sidePanelsManager.activateItem(this._transcriptPanel);
+                }
+              }}
+            />
           </Tooltip>
         );
       },
@@ -227,14 +234,6 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       this.ready.then(() => {
         this.sidePanelsManager.activateItem(this._transcriptPanel);
       });
-    }
-  }
-
-  private _initLoading() {
-    if (!this._isLoading || this._hasError) {
-      this._isLoading = true;
-      this._hasError = false;
-      this._updateTranscriptPanel();
     }
   }
 
@@ -267,15 +266,20 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   }
 
   reset(): void {
+    this.eventManager.removeAll();
     if (this._removePopoverIcon) {
       this._removePopoverIcon();
       this._removePopoverIcon = null;
     }
-
+    if (this._transcriptPanel) {
+      this.sidePanelsManager.removeItem(this._transcriptPanel);
+      this._transcriptPanel = null;
+    }
     this._captionMap = new Map();
     this._activeCaptionMapId = '';
     this._isLoading = false;
     this._hasError = false;
+    this._triggeredByKeyboard = false;
   }
 
   destroy(): void {

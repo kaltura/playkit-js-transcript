@@ -4,7 +4,7 @@ import * as styles from './spinner.scss';
 export class Spinner extends Component {
   render() {
     return (
-      <div className={styles.spinnerBall}>
+      <div className={styles.transcriptSpinnerBall}>
         <svg
           width="184px"
           height="184px"
