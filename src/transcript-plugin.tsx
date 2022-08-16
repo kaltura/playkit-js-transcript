@@ -10,6 +10,13 @@ import {DownloadPrintMenu, downloadContent, printContent} from './components/dow
 const {SidePanelModes, SidePanelPositions, ReservedPresetNames, ReservedPresetAreas} = ui;
 const {get} = ObjectUtils;
 const {Tooltip} = KalturaPlayer.ui.components;
+const {withText, Text} = KalturaPlayer.ui.preacti18n;
+
+const translates = () => ({
+  printDownloadAreaLabel: <Text id="transcript.print_download_area_label">Download or print current transcript</Text>,
+  printTranscript: <Text id="transcript.print_transcript">Print current transcript</Text>,
+  downloadTranscript: <Text id="transcript.download_transcript">Download current transcript</Text>
+});
 
 interface TimedMetadataEvent {
   payload: {
@@ -142,20 +149,20 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       return;
     }
     this._removePopoverIcon = this.player.ui.addComponent({
-      label: 'Download transcript',
+      label: 'Download or print transcript',
       area: ReservedPresetAreas.TopBarRightControls,
       presets: [ReservedPresetNames.Playback, ReservedPresetNames.Live],
-      get: () => (
+      get: withText(translates)(({printDownloadAreaLabel, printTranscript, downloadTranscript}: Record<string, string>) => (
         <DownloadPrintMenu
           onDownload={this._handleDownload}
           onPrint={this._handlePrint}
           downloadDisabled={getConfigValue(downloadDisabled, isBoolean, false)}
           printDisabled={getConfigValue(printDisabled, isBoolean, false)}
-          dropdownAriaLabel={`Download or print transcript`}
-          printButtonAriaLabel={`Print transcript`}
-          downloadButtonAriaLabel={`Download transcript`}
+          dropdownAriaLabel={printDownloadAreaLabel}
+          printButtonAriaLabel={printTranscript}
+          downloadButtonAriaLabel={downloadTranscript}
         />
-      )
+      ))
     });
   }
 

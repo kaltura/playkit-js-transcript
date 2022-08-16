@@ -65,11 +65,6 @@ interface DownloadPrintMenuState {
 }
 
 export class DownloadPrintMenu extends Component<DownloadPrintMenuProps, DownloadPrintMenuState> {
-  static defaultProps = {
-    dropdownAriaLabel: 'Download or print current transcript',
-    printButtonAriaLabel: 'Print current transcript',
-    downloadButtonAriaLabel: 'Download current transcript'
-  };
   state: DownloadPrintMenuState = {
     popoverOpen: false
   };
