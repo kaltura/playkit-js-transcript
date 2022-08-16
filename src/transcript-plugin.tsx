@@ -89,11 +89,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
 
   private _handleLanguageChange = () => {
     this._activeCaptionMapId = this._getCaptionMapId();
-    if (this._captionMap.has(this._activeCaptionMapId)) {
-      this._isLoading = false;
-    } else {
-      this._isLoading = true;
-    }
+    this._isLoading = !this._captionMap.has(this._activeCaptionMapId);
     this._updateTranscriptPanel();
   };
 
