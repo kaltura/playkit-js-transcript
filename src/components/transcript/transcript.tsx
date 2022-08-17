@@ -1,5 +1,5 @@
 import {h, Component} from 'preact';
-import {A11yWrapper} from '@playkit-js/common';
+import {A11yWrapper, OnClickEvent} from '@playkit-js/common';
 import {debounce} from '../../utils';
 import * as styles from './transcript.scss';
 import {Spinner} from '../spinner';
@@ -84,7 +84,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     this._setWidgetSize();
   }
 
-  private _enableAutoScroll = (event: any, byKeyboard?: boolean) => {
+  private _enableAutoScroll = (event: OnClickEvent, byKeyboard?: boolean) => {
     event.preventDefault();
     if (this.state.isAutoScrollEnabled) {
       return;
@@ -93,7 +93,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     this.setState({
       isAutoScrollEnabled: true
     });
-    if (event.type !== 'click') {
+    if (byKeyboard) {
       this._skipTranscriptButtonRef?.focus();
     }
   };
