@@ -77,7 +77,11 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   private _initListeners(): void {
     this.eventManager.listen(this.player, this.player.Event.FIRST_PLAYING, () => {
       if ((this.player.getTracks(this.player.Track.TEXT) || []).length) {
-        this._isLoading = true;
+        // check if captions already added in TextTrack
+        if (!this._captionMap.size) {
+          // turn on loading animation till captions added to TextTrack
+          this._isLoading = true;
+        }
         this._addPopoverIcon();
         this._addTranscriptItem();
       }
