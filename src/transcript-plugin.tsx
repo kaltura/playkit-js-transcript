@@ -70,6 +70,10 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       this.logger.warn("kalturaCuepoints or sidePanelsManager haven't registered");
       return;
     }
+    if (this.player.isLive()) {
+      // transcript plugin is not supported for live entries
+      return;
+    }
     this._initListeners();
     this.cuePointManager.registerTypes([this.cuePointManager.CuepointType.CAPTION]);
   }
