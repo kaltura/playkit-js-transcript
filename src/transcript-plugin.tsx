@@ -235,7 +235,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     });
 
     if ((expandOnFirstPlay && !this._pluginState) || this._pluginState === PluginStates.OPENED) {
-      this.ready.then(() => {
+      this.player.ready().then(() => {
         this.sidePanelsManager.activateItem(this._transcriptPanel);
       });
     }
