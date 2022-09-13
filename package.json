@@ -77,5 +77,10 @@
   "dependencies": {
     "@playkit-js/common": "^1.0.2",
     "stream-browserify": "^3.0.0"
-  }
+  },
+  "kalturaDependencies" : [
+    "playkit-kaltura-cuepoints",
+    "playkit-ui-managers"
+  ]
+  
 }
