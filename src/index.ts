@@ -10,4 +10,5 @@ export {TranscriptPlugin as Plugin};
 export {VERSION, NAME};
 
 const pluginName: string = 'playkit-js-transcript';
+
 KalturaPlayer.core.registerPlugin(pluginName, TranscriptPlugin);
