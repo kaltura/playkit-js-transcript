@@ -120,17 +120,16 @@ export class Caption extends Component<ExtendedCaptionProps> {
       <div
         className={styles.caption}
         tabIndex={1}
+        area-label={caption.text}
         ref={node => {
           this._hotspotRef = node;
         }}
-        onKeyDown={this._handleKeyPress}
-      >
+        role="listitem"
+        onKeyDown={this._handleKeyPress}>
         {showTime && <div className={styles.captionTime}>{secontsToTime(startTime, longerThanHour)}</div>}
         <div
           onClick={this._handleClick}
-          className={`${styles.captionContent} ${isHighlighted ? styles.highlighted : ''} ${showTime ? '' : styles.withoutTime}`}
-          role="button"
-        >
+          className={`${styles.captionContent} ${isHighlighted ? styles.highlighted : ''} ${showTime ? '' : styles.withoutTime}`}>
           {this._renderText(caption.text)}
         </div>
       </div>

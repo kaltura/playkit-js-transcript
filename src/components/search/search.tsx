@@ -1,7 +1,16 @@
 import {h, Component} from 'preact';
+import {A11yWrapper, OnClickEvent} from '@playkit-js/common';
 import * as styles from './search.scss';
 import {debounce} from '../../utils';
 const DEBOUNCE_TIMEOUT = 300;
+
+const {withText, Text} = KalturaPlayer.ui.preacti18n;
+const translates = {
+  searchLabel: <Text id="transcript.search">Search in Transcript</Text>,
+  clearSearchLabel: <Text id="transcript.clear_search">Clear search"</Text>,
+  nextMatchLabel: <Text id="transcript.next_search_match">Next</Text>,
+  prevMatchLabel: <Text id="transcript.prev_search_match">Previous</Text>
+};
 
 export interface SearchProps {
   onChange(value: string): void;
@@ -13,6 +22,11 @@ export interface SearchProps {
   value: string;
   activeSearchIndex: number;
   totalSearchResults: number;
+
+  searchLabel?: string;
+  clearSearchLabel?: string;
+  nextMatchLabel?: string;
+  prevMatchLabel?: string;
 }
 
 interface SearchState {
@@ -20,7 +34,7 @@ interface SearchState {
   focused: boolean;
 }
 
-export class Search extends Component<SearchProps, SearchState> {
+class SearchComponent extends Component<SearchProps, SearchState> {
   state: SearchState = {
     active: false,
     focused: false
@@ -61,8 +75,8 @@ export class Search extends Component<SearchProps, SearchState> {
     this.props.onChange(e.target.value);
   };
 
-  private _onClear = (event: MouseEvent) => {
-    if (event.x !== 0 && event.y !== 0) {
+  private _onClear = (event: OnClickEvent) => {
+    if (!(event instanceof KeyboardEvent)) {
       this._focusedByMouse = true;
     }
     this._inputRef?.focus();
@@ -135,7 +149,8 @@ export class Search extends Component<SearchProps, SearchState> {
         </div>
         <input
           className={styles.searchInput}
-          placeholder={'Search in Transcript'}
+          aria-label={this.props.searchLabel}
+          placeholder={this.props.searchLabel}
           value={searchQuery}
           onInput={this._handleOnChange}
           onFocus={this._onFocus}
@@ -147,72 +162,82 @@ export class Search extends Component<SearchProps, SearchState> {
           }}
         />
         {searchQuery && (
-          <button className={styles.clearIcon} onClick={this._onClear} tabIndex={1}>
-            <svg
-              width="32px"
-              height="32px"
-              viewBox="0 0 32 32"
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlnsXlink="http://www.w3.org/1999/xlink">
-              <g id="Icons/32/Clere" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                <path
-                  d="M16,8 C20.418278,8 24,11.581722 24,16 C24,20.418278 20.418278,24 16,24 C11.581722,24 8,20.418278 8,16 C8,11.581722 11.581722,8 16,8 Z M19.8665357,12.1334643 C19.6885833,11.9555119 19.4000655,11.9555119 19.2221131,12.1334643 L16,15.356 L12.7778869,12.1334643 L12.7064039,12.0750737 C12.5295326,11.9582924 12.2891726,11.977756 12.1334643,12.1334643 L12.0750737,12.2049473 C11.9582924,12.3818186 11.977756,12.6221786 12.1334643,12.7778869 L15.356,16 L12.1334643,19.2221131 C11.9555119,19.4000655 11.9555119,19.6885833 12.1334643,19.8665357 C12.3114167,20.0444881 12.5999345,20.0444881 12.7778869,19.8665357 L16,16.644 L19.2221131,19.8665357 L19.2935961,19.9249263 C19.4704674,20.0417076 19.7108274,20.022244 19.8665357,19.8665357 L19.9249263,19.7950527 C20.0417076,19.6181814 20.022244,19.3778214 19.8665357,19.2221131 L16.644,16 L19.8665357,12.7778869 C20.0444881,12.5999345 20.0444881,12.3114167 19.8665357,12.1334643 Z"
-                  id="Shape"
-                  fill="#cccccc"></path>
-              </g>
-            </svg>
-          </button>
-        )}
-        {searchQuery && (
-          <div className={styles.searchResults}>{`${totalSearchResults > 0 ? `${activeSearchIndex}/${totalSearchResults}` : '0/0'}`}</div>
-        )}
-        <div className={styles.prevNextWrapper}>
-          {searchQuery && (
-            <button
-              tabIndex={1}
-              className={`${styles.prevNextButton} ${totalSearchResults === 0 ? styles.disabled : ''}`}
-              onClick={this._goToPrevSearchResult}>
+          <A11yWrapper onClick={this._onClear}>
+            <button className={styles.clearIcon} tabIndex={1} area-label={this.props.clearSearchLabel}>
               <svg
-                width="14px"
-                height="12px"
-                viewBox="1 0 14 12"
+                width="32px"
+                height="32px"
+                viewBox="0 0 32 32"
                 version="1.1"
                 xmlns="http://www.w3.org/2000/svg"
                 xmlnsXlink="http://www.w3.org/1999/xlink">
-                <g id="Icons/16/Arrow/-up" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                <g id="Icons/32/Clere" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                   <path
-                    d="M4.78325732,5.37830235 C4.43990319,4.94572127 3.81088342,4.87338855 3.37830235,5.21674268 C2.94572127,5.56009681 2.87338855,6.18911658 3.21674268,6.62169765 L7.21674268,11.6611718 C7.61710439,12.165575 8.38289561,12.165575 8.78325732,11.6611718 L12.7832573,6.62169765 C13.1266115,6.18911658 13.0542787,5.56009681 12.6216977,5.21674268 C12.1891166,4.87338855 11.5600968,4.94572127 11.2167427,5.37830235 L8,9.43097528 L4.78325732,5.37830235 Z"
-                    id="Path-2"
-                    fill="#cccccc"
-                    transform="translate(8.000000, 8.519717) scale(1, -1) translate(-8.000000, -8.519717) "></path>
-                </g>
-              </svg>
-            </button>
-          )}
-          {searchQuery && (
-            <button
-              tabIndex={1}
-              className={`${styles.prevNextButton} ${totalSearchResults === 0 ? styles.disabled : ''}`}
-              onClick={this._goToNextSearchResult}>
-              <svg
-                width="14px"
-                height="12px"
-                viewBox="1 2 14 12"
-                version="1.1"
-                xmlns="http://www.w3.org/2000/svg"
-                xmlnsXlink="http://www.w3.org/1999/xlink">
-                <g id="Icons/16/Arrow/down" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                  <path
-                    d="M4.78325732,5.37830235 C4.43990319,4.94572127 3.81088342,4.87338855 3.37830235,5.21674268 C2.94572127,5.56009681 2.87338855,6.18911658 3.21674268,6.62169765 L7.21674268,11.6611718 C7.61710439,12.165575 8.38289561,12.165575 8.78325732,11.6611718 L12.7832573,6.62169765 C13.1266115,6.18911658 13.0542787,5.56009681 12.6216977,5.21674268 C12.1891166,4.87338855 11.5600968,4.94572127 11.2167427,5.37830235 L8,9.43097528 L4.78325732,5.37830235 Z"
-                    id="Path-2"
+                    d="M16,8 C20.418278,8 24,11.581722 24,16 C24,20.418278 20.418278,24 16,24 C11.581722,24 8,20.418278 8,16 C8,11.581722 11.581722,8 16,8 Z M19.8665357,12.1334643 C19.6885833,11.9555119 19.4000655,11.9555119 19.2221131,12.1334643 L16,15.356 L12.7778869,12.1334643 L12.7064039,12.0750737 C12.5295326,11.9582924 12.2891726,11.977756 12.1334643,12.1334643 L12.0750737,12.2049473 C11.9582924,12.3818186 11.977756,12.6221786 12.1334643,12.7778869 L15.356,16 L12.1334643,19.2221131 C11.9555119,19.4000655 11.9555119,19.6885833 12.1334643,19.8665357 C12.3114167,20.0444881 12.5999345,20.0444881 12.7778869,19.8665357 L16,16.644 L19.2221131,19.8665357 L19.2935961,19.9249263 C19.4704674,20.0417076 19.7108274,20.022244 19.8665357,19.8665357 L19.9249263,19.7950527 C20.0417076,19.6181814 20.022244,19.3778214 19.8665357,19.2221131 L16.644,16 L19.8665357,12.7778869 C20.0444881,12.5999345 20.0444881,12.3114167 19.8665357,12.1334643 Z"
+                    id="Shape"
                     fill="#cccccc"></path>
                 </g>
               </svg>
             </button>
+          </A11yWrapper>
+        )}
+        {searchQuery && (
+          <div className={styles.searchResults} aria-live="polite">{`${
+            totalSearchResults > 0 ? `${activeSearchIndex}/${totalSearchResults}` : '0/0'
+          }`}</div>
+        )}
+        <div className={styles.prevNextWrapper}>
+          {searchQuery && (
+            <A11yWrapper onClick={this._goToPrevSearchResult}>
+              <button
+                tabIndex={1}
+                className={`${styles.prevNextButton} ${totalSearchResults === 0 ? styles.disabled : ''}`}
+                area-label={this.props.prevMatchLabel}>
+                <svg
+                  width="14px"
+                  height="12px"
+                  viewBox="1 0 14 12"
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlnsXlink="http://www.w3.org/1999/xlink">
+                  <g id="Icons/16/Arrow/-up" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <path
+                      d="M4.78325732,5.37830235 C4.43990319,4.94572127 3.81088342,4.87338855 3.37830235,5.21674268 C2.94572127,5.56009681 2.87338855,6.18911658 3.21674268,6.62169765 L7.21674268,11.6611718 C7.61710439,12.165575 8.38289561,12.165575 8.78325732,11.6611718 L12.7832573,6.62169765 C13.1266115,6.18911658 13.0542787,5.56009681 12.6216977,5.21674268 C12.1891166,4.87338855 11.5600968,4.94572127 11.2167427,5.37830235 L8,9.43097528 L4.78325732,5.37830235 Z"
+                      id="Path-2"
+                      fill="#cccccc"
+                      transform="translate(8.000000, 8.519717) scale(1, -1) translate(-8.000000, -8.519717) "></path>
+                  </g>
+                </svg>
+              </button>
+            </A11yWrapper>
+          )}
+          {searchQuery && (
+            <A11yWrapper onClick={this._goToNextSearchResult}>
+              <button
+                tabIndex={1}
+                className={`${styles.prevNextButton} ${totalSearchResults === 0 ? styles.disabled : ''}`}
+                area-label={this.props.nextMatchLabel}>
+                <svg
+                  width="14px"
+                  height="12px"
+                  viewBox="1 2 14 12"
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlnsXlink="http://www.w3.org/1999/xlink">
+                  <g id="Icons/16/Arrow/down" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <path
+                      d="M4.78325732,5.37830235 C4.43990319,4.94572127 3.81088342,4.87338855 3.37830235,5.21674268 C2.94572127,5.56009681 2.87338855,6.18911658 3.21674268,6.62169765 L7.21674268,11.6611718 C7.61710439,12.165575 8.38289561,12.165575 8.78325732,11.6611718 L12.7832573,6.62169765 C13.1266115,6.18911658 13.0542787,5.56009681 12.6216977,5.21674268 C12.1891166,4.87338855 11.5600968,4.94572127 11.2167427,5.37830235 L8,9.43097528 L4.78325732,5.37830235 Z"
+                      id="Path-2"
+                      fill="#cccccc"></path>
+                  </g>
+                </svg>
+              </button>
+            </A11yWrapper>
           )}
         </div>
       </div>
     );
   }
 }
+
+export const Search = withText(translates)(SearchComponent);
