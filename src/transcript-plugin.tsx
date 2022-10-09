@@ -13,12 +13,6 @@ const {get} = ObjectUtils;
 const {Tooltip} = KalturaPlayer.ui.components;
 const {withText, Text} = KalturaPlayer.ui.preacti18n;
 
-const translates = () => ({
-  printDownloadAreaLabel: <Text id="transcript.print_download_area_label">Download or print current transcript</Text>,
-  printTranscript: <Text id="transcript.print_transcript">Print current transcript</Text>,
-  downloadTranscript: <Text id="transcript.download_transcript">Download current transcript</Text>
-});
-
 interface TimedMetadataEvent {
   payload: {
     cues: Array<CuePoint>;
@@ -161,17 +155,14 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       label: 'Download or print transcript',
       area: ReservedPresetAreas.TopBarRightControls,
       presets: [ReservedPresetNames.Playback, ReservedPresetNames.Live],
-      get: withText(translates)(({printDownloadAreaLabel, printTranscript, downloadTranscript}: Record<string, string>) => (
+      get: () => (
         <DownloadPrintMenu
           onDownload={this._handleDownload}
           onPrint={this._handlePrint}
           downloadDisabled={getConfigValue(downloadDisabled, isBoolean, false)}
           printDisabled={getConfigValue(printDisabled, isBoolean, false)}
-          dropdownAriaLabel={printDownloadAreaLabel}
-          printButtonAriaLabel={printTranscript}
-          downloadButtonAriaLabel={downloadTranscript}
         />
-      ))
+      )
     });
   }
 
@@ -209,21 +200,18 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       },
       iconComponent: ({isActive}: {isActive: boolean}) => {
         return (
-          <Tooltip label={buttonLabel} type="bottom">
-            <PluginButton
-              isActive={isActive}
-              label={buttonLabel}
-              onClick={(e: OnClickEvent, byKeyboard?: boolean) => {
-                if (this.sidePanelsManager.isItemActive(this._transcriptPanel)) {
-                  this._triggeredByKeyboard = false;
-                  this._handleCloseClick();
-                } else {
-                  this._triggeredByKeyboard = Boolean(byKeyboard);
-                  this.sidePanelsManager.activateItem(this._transcriptPanel);
-                }
-              }}
-            />
-          </Tooltip>
+          <PluginButton
+            isActive={isActive}
+            onClick={(e: OnClickEvent, byKeyboard?: boolean) => {
+              if (this.sidePanelsManager.isItemActive(this._transcriptPanel)) {
+                this._triggeredByKeyboard = false;
+                this._handleCloseClick();
+              } else {
+                this._triggeredByKeyboard = Boolean(byKeyboard);
+                this.sidePanelsManager.activateItem(this._transcriptPanel);
+              }
+            }}
+          />
         );
       },
       presets: [ReservedPresetNames.Playback, ReservedPresetNames.Live, ReservedPresetNames.Ads],
