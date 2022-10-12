@@ -5,12 +5,22 @@ import {debounce} from '../../utils';
 const DEBOUNCE_TIMEOUT = 300;
 
 const {withText, Text} = KalturaPlayer.ui.preacti18n;
-const translates = {
+const translates = ({activeSearchIndex, totalSearchResults}: SearchProps) => ({
   searchLabel: <Text id="transcript.search">Search in Transcript</Text>,
-  clearSearchLabel: <Text id="transcript.clear_search">Clear search"</Text>,
+  clearSearchLabel: <Text id="transcript.clear_search">Clear search</Text>,
   nextMatchLabel: <Text id="transcript.next_search_match">Next</Text>,
-  prevMatchLabel: <Text id="transcript.prev_search_match">Previous</Text>
-};
+  prevMatchLabel: <Text id="transcript.prev_search_match">Previous</Text>,
+  searchResultsLabel: (
+    <Text
+      id="transcript.prev_search_match"
+      fields={{
+        current: totalSearchResults > 0 ? activeSearchIndex : 0,
+        total: totalSearchResults
+      }}>
+      {`Result ${totalSearchResults > 0 ? activeSearchIndex : 0} of ${totalSearchResults}`}
+    </Text>
+  )
+});
 
 export interface SearchProps {
   onChange(value: string): void;
@@ -27,6 +37,7 @@ export interface SearchProps {
   clearSearchLabel?: string;
   nextMatchLabel?: string;
   prevMatchLabel?: string;
+  searchResultsLabel?: string;
 }
 
 interface SearchState {
@@ -75,8 +86,8 @@ class SearchComponent extends Component<SearchProps, SearchState> {
     this.props.onChange(e.target.value);
   };
 
-  private _onClear = (event: OnClickEvent) => {
-    if (!(event instanceof KeyboardEvent)) {
+  private _onClear = (event: OnClickEvent, byKeyboard?: boolean) => {
+    if (!byKeyboard) {
       this._focusedByMouse = true;
     }
     this._inputRef?.focus();
@@ -163,7 +174,7 @@ class SearchComponent extends Component<SearchProps, SearchState> {
         />
         {searchQuery && (
           <A11yWrapper onClick={this._onClear}>
-            <button className={styles.clearIcon} tabIndex={1} area-label={this.props.clearSearchLabel}>
+            <button className={styles.clearIcon} tabIndex={1} aria-label={this.props.clearSearchLabel}>
               <svg
                 width="32px"
                 height="32px"
@@ -182,7 +193,7 @@ class SearchComponent extends Component<SearchProps, SearchState> {
           </A11yWrapper>
         )}
         {searchQuery && (
-          <div className={styles.searchResults} aria-live="polite">{`${
+          <div className={styles.searchResults} aria-live="polite" aria-label={this.props.searchResultsLabel}>{`${
             totalSearchResults > 0 ? `${activeSearchIndex}/${totalSearchResults}` : '0/0'
           }`}</div>
         )}
@@ -192,7 +203,7 @@ class SearchComponent extends Component<SearchProps, SearchState> {
               <button
                 tabIndex={1}
                 className={`${styles.prevNextButton} ${totalSearchResults === 0 ? styles.disabled : ''}`}
-                area-label={this.props.prevMatchLabel}>
+                aria-label={this.props.prevMatchLabel}>
                 <svg
                   width="14px"
                   height="12px"
@@ -216,7 +227,7 @@ class SearchComponent extends Component<SearchProps, SearchState> {
               <button
                 tabIndex={1}
                 className={`${styles.prevNextButton} ${totalSearchResults === 0 ? styles.disabled : ''}`}
-                area-label={this.props.nextMatchLabel}>
+                aria-label={this.props.nextMatchLabel}>
                 <svg
                   width="14px"
                   height="12px"

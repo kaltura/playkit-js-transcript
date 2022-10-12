@@ -46,7 +46,7 @@ export class Popover extends Component<PopoverProps, PopoverState> {
       return;
     }
     if (this._popoverElementRef?.contains(event.target as Node | null) && event.keyCode !== ESC) {
-      // close popover if ESC pressed
+      // use handler of popover element
       return;
     }
     this._closePopover();
@@ -115,13 +115,13 @@ export class Popover extends Component<PopoverProps, PopoverState> {
             this._popoverElementRef = node;
           }}
           className={['popover', styles.popoverComponent, styles.bottom, styles.left, open ? '' : styles.hidden].join(' ')}>
-          <div className={styles.popoverMenu}>
+          <div className={styles.popoverMenu} role="menu">
             {props.options.map((el, index) => {
               return (
                 <A11yWrapper onClick={this._handleClickOnOptoin(el.onMenuChosen)}>
                   <div
                     tabIndex={0}
-                    role="button"
+                    role="menuitem"
                     aria-label={el.label}
                     className={styles.popoverMenuItem}
                     ref={node => {
