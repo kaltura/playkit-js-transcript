@@ -10,6 +10,14 @@ import {DownloadPrintMenu, downloadContent, printContent} from './components/dow
 
 const {SidePanelModes, SidePanelPositions, ReservedPresetNames, ReservedPresetAreas} = ui;
 const {get} = ObjectUtils;
+const {Tooltip} = KalturaPlayer.ui.components;
+const {withText, Text} = KalturaPlayer.ui.preacti18n;
+
+const translates = () => ({
+  printDownloadAreaLabel: <Text id="transcript.print_download_area_label">Download or print current transcript</Text>,
+  printTranscript: <Text id="transcript.print_transcript">Print current transcript</Text>,
+  downloadTranscript: <Text id="transcript.download_transcript">Download current transcript</Text>
+});
 
 interface TimedMetadataEvent {
   payload: {
@@ -112,15 +120,9 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   };
 
   private _onTimedMetadataChange = ({payload}: TimedMetadataEvent) => {
-    const transcriptCuePoints: Array<CuePoint> = payload.cues
-      .filter((cue: CuePoint) => {
-        return cue.metadata.cuePointType === ItemTypes.Caption;
-      })
-      .filter((cue, index, array) => {
-        // filter out captions that has endTime eq to next caption startTime
-        const nextCue = array[index + 1];
-        return !nextCue || cue.endTime !== nextCue.startTime;
-      });
+    const transcriptCuePoints: Array<CuePoint> = payload.cues.filter((cue: CuePoint) => {
+      return cue.metadata.cuePointType === ItemTypes.Caption;
+    });
     this._activeCuePointsMap = {};
     transcriptCuePoints.forEach(cue => {
       this._activeCuePointsMap[cue.id] = true;
@@ -159,14 +161,17 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       label: 'Download or print transcript',
       area: ReservedPresetAreas.TopBarRightControls,
       presets: [ReservedPresetNames.Playback, ReservedPresetNames.Live],
-      get: () => (
+      get: withText(translates)(({printDownloadAreaLabel, printTranscript, downloadTranscript}: Record<string, string>) => (
         <DownloadPrintMenu
           onDownload={this._handleDownload}
           onPrint={this._handlePrint}
           downloadDisabled={getConfigValue(downloadDisabled, isBoolean, false)}
           printDisabled={getConfigValue(printDisabled, isBoolean, false)}
+          dropdownAriaLabel={printDownloadAreaLabel}
+          printButtonAriaLabel={printTranscript}
+          downloadButtonAriaLabel={downloadTranscript}
         />
-      )
+      ))
     });
   }
 
@@ -204,18 +209,21 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       },
       iconComponent: ({isActive}: {isActive: boolean}) => {
         return (
-          <PluginButton
-            isActive={isActive}
-            onClick={(e: OnClickEvent, byKeyboard?: boolean) => {
-              if (this.sidePanelsManager.isItemActive(this._transcriptPanel)) {
-                this._triggeredByKeyboard = false;
-                this._handleCloseClick();
-              } else {
-                this._triggeredByKeyboard = Boolean(byKeyboard);
-                this.sidePanelsManager.activateItem(this._transcriptPanel);
-              }
-            }}
-          />
+          <Tooltip label={buttonLabel} type="bottom">
+            <PluginButton
+              isActive={isActive}
+              label={buttonLabel}
+              onClick={(e: OnClickEvent, byKeyboard?: boolean) => {
+                if (this.sidePanelsManager.isItemActive(this._transcriptPanel)) {
+                  this._triggeredByKeyboard = false;
+                  this._handleCloseClick();
+                } else {
+                  this._triggeredByKeyboard = Boolean(byKeyboard);
+                  this.sidePanelsManager.activateItem(this._transcriptPanel);
+                }
+              }}
+            />
+          </Tooltip>
         );
       },
       presets: [ReservedPresetNames.Playback, ReservedPresetNames.Live, ReservedPresetNames.Ads],

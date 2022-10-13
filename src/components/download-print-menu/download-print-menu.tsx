@@ -1,11 +1,10 @@
-import {h, Component, VNode} from 'preact';
-import {A11yWrapper} from '@playkit-js/common';
-import {Popover, PopoverMenuItem} from '../popover';
+import {h, Component, ComponentChild, VNode} from 'preact';
+import {Popover, PopoverHorizontalPositions, PopoverVerticalPositions} from '../../utils';
+import {PopoverMenu, PopoverMenuItem} from '../popover-menu';
 import * as styles from './download-print-menu.scss';
 import {DownloadIcon, PrintIcon} from './download-print-icons';
 
-const {Tooltip} = KalturaPlayer.ui.components;
-const {withText, Text} = KalturaPlayer.ui.preacti18n;
+const {ENTER, Esc} = KalturaPlayer.ui.utils.KeyMap;
 
 export function downloadContent(content: string, name: string): void {
   const blob = new Blob([content], {type: 'text/plain;charset=utf-8;'});
@@ -30,6 +29,7 @@ export function downloadContent(content: string, name: string): void {
   anchor.click();
   anchor.remove();
 }
+
 export function printContent(content: string): void {
   const printWindow = window.open('', '', 'width=400,height=600');
   if (printWindow) {
@@ -42,9 +42,9 @@ export function printContent(content: string): void {
 }
 
 interface DownloadPrintMenuProps {
-  printDownloadAreaLabel?: string;
-  printTranscript?: string;
-  downloadTranscript?: string;
+  dropdownAriaLabel: string;
+  printButtonAriaLabel: string;
+  downloadButtonAriaLabel: string;
   onDownload: () => void;
   onPrint: () => void;
   downloadDisabled: boolean;
@@ -52,77 +52,113 @@ interface DownloadPrintMenuProps {
 }
 
 interface ButtonProperties {
-  ['aria-label']?: string;
+  ['aria-label']: string;
+  buttonStyles: string;
+  onClick?: () => void;
   tabIndex?: number;
+  iconStyles: string;
   icon: VNode;
 }
 
-const translates = () => ({
-  printDownloadAreaLabel: <Text id="transcript.print_download_area_label">Download or print current transcript</Text>,
-  printTranscript: <Text id="transcript.print_transcript">Print current transcript</Text>,
-  downloadTranscript: <Text id="transcript.download_transcript">Download current transcript</Text>
-});
+interface DownloadPrintMenuState {
+  popoverOpen: boolean;
+}
 
-export class DownloadPrintMenuComponent extends Component<DownloadPrintMenuProps> {
-  private _getPopoverMenuOptions = (): Array<PopoverMenuItem> => {
+export class DownloadPrintMenu extends Component<DownloadPrintMenuProps, DownloadPrintMenuState> {
+  state: DownloadPrintMenuState = {
+    popoverOpen: false
+  };
+
+  private _onDownloadClicked = () => {
+    this.props.onDownload();
+  };
+
+  private _onPrintClicked = () => {
+    this.props.onPrint();
+  };
+  private _onKeyDown = (e: KeyboardEvent, callBack: Function) => {
+    if (e.keyCode !== ENTER && e.keyCode !== Esc) {
+      // don't stopPropagation on ESC and Enter pressed as it prevent the popup closing
+      e.stopPropagation();
+    }
+    switch (e.keyCode) {
+      case 13: // Enter pressed
+        callBack();
+        break;
+    }
+  };
+  private _popoverMenuItemRenderer = (el: PopoverMenuItem) => (
+    <div
+      tabIndex={1}
+      role="button"
+      onClick={() => el.onMenuChosen()}
+      onKeyDown={(e: KeyboardEvent) => this._onKeyDown(e, el.onMenuChosen)}
+      className={styles.popoverMenuItem}>
+      {el.label}
+    </div>
+  );
+
+  private _getPopoverMenuOptions = () => {
     return [
       {
-        label: this.props.downloadTranscript,
-        onMenuChosen: this.props.onDownload
+        label: this.props.downloadButtonAriaLabel,
+        onMenuChosen: this._onDownloadClicked
       },
       {
-        label: this.props.printTranscript,
-        onMenuChosen: this.props.onPrint
+        label: this.props.printButtonAriaLabel,
+        onMenuChosen: this._onPrintClicked
       }
     ];
   };
 
-  private _renderIcon = ({tabIndex = 0, icon, ...props}: ButtonProperties): VNode => {
+  private _renderIcon = ({buttonStyles, tabIndex = 0, iconStyles, icon, ...props}: ButtonProperties): ComponentChild => {
     return (
-      <button className={styles.downloadPrintButton} tabIndex={tabIndex} {...props}>
-        <div className={styles.icon}>{icon}</div>
+      <button className={buttonStyles} tabIndex={tabIndex} {...props}>
+        <div className={iconStyles}>{icon}</div>
       </button>
     );
   };
 
+  private _popoverContent = () => {
+    return <PopoverMenu itemRenderer={this._popoverMenuItemRenderer} options={this._getPopoverMenuOptions()} />;
+  };
+
   render(props: DownloadPrintMenuProps) {
-    const {downloadDisabled, printDisabled, printDownloadAreaLabel, printTranscript, downloadTranscript} = props;
+    const {downloadDisabled, printDisabled} = props;
     if (!downloadDisabled && !printDisabled) {
       return (
-        <Popover label={printDownloadAreaLabel!} options={this._getPopoverMenuOptions()}>
+        <Popover
+          className="download-print-popover"
+          verticalPosition={PopoverVerticalPositions.Bottom}
+          horizontalPosition={PopoverHorizontalPositions.Left}
+          content={this._popoverContent()}>
           {this._renderIcon({
-            ['aria-label']: printDownloadAreaLabel,
+            ['aria-label']: props.dropdownAriaLabel,
+            buttonStyles: styles.downloadPrintButton,
+            iconStyles: styles.icon,
             icon: <DownloadIcon />
           })}
         </Popover>
       );
     }
     if (!downloadDisabled && printDisabled) {
-      return (
-        <Tooltip label={downloadTranscript} type="bottom">
-          <A11yWrapper onClick={this.props.onDownload}>
-            {this._renderIcon({
-              ['aria-label']: downloadTranscript,
-              icon: <DownloadIcon />
-            })}
-          </A11yWrapper>
-        </Tooltip>
-      );
+      return this._renderIcon({
+        ['aria-label']: props.downloadButtonAriaLabel,
+        buttonStyles: styles.downloadPrintButton,
+        iconStyles: styles.icon,
+        onClick: this._onDownloadClicked,
+        icon: <DownloadIcon />
+      });
     }
     if (downloadDisabled && !printDisabled) {
-      return (
-        <Tooltip label={printTranscript} type="bottom">
-          <A11yWrapper onClick={this.props.onPrint}>
-            {this._renderIcon({
-              ['aria-label']: printTranscript,
-              icon: <PrintIcon />
-            })}
-          </A11yWrapper>
-        </Tooltip>
-      );
+      return this._renderIcon({
+        ['aria-label']: props.printButtonAriaLabel,
+        buttonStyles: styles.downloadPrintButton,
+        iconStyles: styles.icon,
+        onClick: this._onPrintClicked,
+        icon: <PrintIcon />
+      });
     }
     return null;
   }
 }
-
-export const DownloadPrintMenu = withText(translates)(DownloadPrintMenuComponent);

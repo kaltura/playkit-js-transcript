@@ -1,8 +1,10 @@
-import {Component, h} from 'preact';
-import {A11yWrapper, OnClickEvent} from '@playkit-js/common';
+import * as styles from './caption.scss';
 import {secontsToTime} from '../../utils';
 import {CuePointData} from '../../types';
-import * as styles from './caption.scss';
+
+const {ENTER, Space} = KalturaPlayer.ui.utils.KeyMap;
+
+import {Component, h} from 'preact';
 
 export interface CaptionProps {
   showTime: boolean;
@@ -55,10 +57,12 @@ export class Caption extends Component<ExtendedCaptionProps> {
     return false;
   }
 
-  private _handleKeyDown = (event: OnClickEvent, byKeyboard?: boolean) => {
-    if (byKeyboard) {
+  private _handleKeyPress = (event: KeyboardEvent) => {
+    const keyCode = event.which || event.keyCode;
+    if (keyCode === ENTER || keyCode === Space) {
       event.preventDefault();
       this._gotoCurrentTime();
+      return;
     }
   };
 
@@ -113,23 +117,23 @@ export class Caption extends Component<ExtendedCaptionProps> {
     const isHighlighted = Object.keys(highlighted)[0] === id;
 
     return (
-      <A11yWrapper onClick={this._handleKeyDown}>
+      <div
+        className={styles.caption}
+        tabIndex={1}
+        ref={node => {
+          this._hotspotRef = node;
+        }}
+        onKeyDown={this._handleKeyPress}
+      >
+        {showTime && <div className={styles.captionTime}>{secontsToTime(startTime, longerThanHour)}</div>}
         <div
-          className={styles.caption}
-          tabIndex={1}
-          area-label={caption.text}
-          ref={node => {
-            this._hotspotRef = node;
-          }}
-          role="listitem">
-          {showTime && <div className={styles.captionTime}>{secontsToTime(startTime, longerThanHour)}</div>}
-          <div
-            onClick={this._handleClick}
-            className={`${styles.captionContent} ${isHighlighted ? styles.highlighted : ''} ${showTime ? '' : styles.withoutTime}`}>
-            {this._renderText(caption.text)}
-          </div>
+          onClick={this._handleClick}
+          className={`${styles.captionContent} ${isHighlighted ? styles.highlighted : ''} ${showTime ? '' : styles.withoutTime}`}
+          role="button"
+        >
+          {this._renderText(caption.text)}
         </div>
-      </A11yWrapper>
+      </div>
     );
   }
 }

@@ -2,15 +2,7 @@ import {h} from 'preact';
 import * as styles from './plugin-button.scss';
 import {icons} from '../icons';
 import {A11yWrapper, OnClick} from '@playkit-js/common';
-
 const {Tooltip, Icon} = KalturaPlayer.ui.components;
-const {withText, Text} = KalturaPlayer.ui.preacti18n;
-
-const translates = ({isActive}: PluginButtonProps) => {
-  return {
-    label: isActive ? <Text id="transcript.hide_plugin">Hide Transcript</Text> : <Text id="transcript.show_plugin">Show Transcript</Text>
-  };
-};
 
 interface PluginButtonProps {
   isActive: boolean;
@@ -18,7 +10,7 @@ interface PluginButtonProps {
   label?: string;
 }
 
-export const PluginButton = withText(translates)(({isActive, onClick, label}: PluginButtonProps) => {
+export const PluginButton = ({isActive, onClick, label}: PluginButtonProps) => {
   return (
     <Tooltip label={label} type="bottom">
       <A11yWrapper onClick={onClick}>
@@ -34,4 +26,4 @@ export const PluginButton = withText(translates)(({isActive, onClick, label}: Pl
       </A11yWrapper>
     </Tooltip>
   );
-});
+};

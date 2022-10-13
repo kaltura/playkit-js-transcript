@@ -4,7 +4,7 @@ import {Caption} from '../caption';
 import * as styles from './captionList.scss';
 import {HighlightedMap, CuePointData} from '../../types';
 
-const {END, HOME} = KalturaPlayer.ui.utils.KeyMap;
+const {End, Home} = KalturaPlayer.ui.utils.KeyMap;
 
 export interface CaptionProps {
   showTime: boolean;
@@ -95,9 +95,9 @@ export class CaptionList extends Component<Props> {
   };
 
   private _handleKeyUp = (event: KeyboardEvent) => {
-    if (event.keyCode === END) {
+    if (event.keyCode === End) {
       this._lastCaptionRef?._hotspotRef?.focus();
-    } else if (event.keyCode === HOME) {
+    } else if (event.keyCode === Home) {
       this._firstCaptionRef?._hotspotRef?.focus();
     }
   };
@@ -105,7 +105,7 @@ export class CaptionList extends Component<Props> {
   render() {
     const {data} = this.props;
     return (
-      <div className={styles.transcriptWrapper} onKeyUp={this._handleKeyUp} role="list">
+      <div className={styles.transcriptWrapper} onKeyUp={this._handleKeyUp}>
         {data.map((captionData, index) => {
           const captionProps = this._getCaptionProps(captionData);
           return (
@@ -116,7 +116,7 @@ export class CaptionList extends Component<Props> {
                 } else if (index === data.length - 1) {
                   this._lastCaptionRef = node;
                 }
-                if (captionProps.highlighted[captionData.id]) {
+                if (captionProps.highlighted) {
                   this._currentCaptionRef = node;
                 }
               }}

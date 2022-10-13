@@ -8,13 +8,7 @@ import {CaptionList} from '../caption-list';
 import {HighlightedMap, CuePointData, PluginPositions} from '../../types';
 import {CloseButton} from '../close-button';
 import {ErrorIcon} from './error-icon';
-
-const {ENTER, SPACE, TAB, ESC} = KalturaPlayer.ui.utils.KeyMap;
-const {withText, Text} = KalturaPlayer.ui.preacti18n;
-
-const translates = {
-  autoScrollLabel: <Text id="transcript.auto_scroll">Enable auto scroll</Text>
-};
+const {ENTER, Space, Tab, Esc} = KalturaPlayer.ui.utils.KeyMap;
 
 export interface TranscriptProps {
   onSeek(time: number): void;
@@ -34,7 +28,6 @@ export interface TranscriptProps {
   highlightedMap: HighlightedMap;
   pluginMode: PluginPositions;
   onItemClicked: (n: number) => void;
-  autoScrollLabel?: string;
 }
 
 interface TranscriptState {
@@ -57,7 +50,7 @@ const initialSearch = {
 
 const SEARCHBAR_HEIGHT = 38; // height of search bar with margins
 
-export class TranscriptComponent extends Component<TranscriptProps, TranscriptState> {
+export class Transcript extends Component<TranscriptProps, TranscriptState> {
   private _transcriptListRef: HTMLElement | null = null;
   private _captionListRef: any = null;
   private _skipTranscriptButtonRef: HTMLDivElement | null = null;
@@ -113,7 +106,6 @@ export class TranscriptComponent extends Component<TranscriptProps, TranscriptSt
           role="button"
           className={`${styles.autoscrollButton} ${isAutoScrollEnabled ? '' : styles.autoscrollButtonVisible}`}
           tabIndex={isAutoScrollEnabled ? -1 : 1}
-          aria-label={this.props.autoScrollLabel}
           ref={node => {
             this._autoscrollButtonRef = node;
           }}>
@@ -209,13 +201,8 @@ export class TranscriptComponent extends Component<TranscriptProps, TranscriptSt
     );
   };
 
-  private _handleClick = (event: MouseEvent | KeyboardEvent) => {
-    event.preventDefault();
-    this._autoscrollButtonRef?.focus();
-  };
-
   private _handleKeyDown = (event: KeyboardEvent) => {
-    if (event.keyCode === TAB && !event.shiftKey) {
+    if (event.keyCode === Tab && !event.shiftKey) {
       this.setState({
         isAutoScrollEnabled: false
       });
@@ -224,8 +211,9 @@ export class TranscriptComponent extends Component<TranscriptProps, TranscriptSt
         event.preventDefault();
         captionRef.focus();
       }
-    } else if (event.keyCode === ENTER || event.keyCode === SPACE) {
-      this._handleClick(event);
+    } else if (event.keyCode === ENTER || event.keyCode === Space) {
+      event.preventDefault();
+      this._autoscrollButtonRef?.focus();
     }
   };
 
@@ -238,7 +226,6 @@ export class TranscriptComponent extends Component<TranscriptProps, TranscriptSt
         }}
         className={styles.skipTranscriptButton}
         onKeyDown={this._handleKeyDown}
-        onClick={this._handleClick}
         tabIndex={1}>
         Skip transcript
       </div>
@@ -364,7 +351,7 @@ export class TranscriptComponent extends Component<TranscriptProps, TranscriptSt
   };
 
   private _handleEsc = (event: KeyboardEvent) => {
-    if (event.keyCode === ESC) {
+    if (event.keyCode === Esc) {
       this.props.onClose();
     }
   };
@@ -399,5 +386,3 @@ export class TranscriptComponent extends Component<TranscriptProps, TranscriptSt
     );
   }
 }
-
-export const Transcript = withText(translates)(TranscriptComponent);
