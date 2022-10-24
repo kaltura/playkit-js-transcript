@@ -122,6 +122,11 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   private _onTimedMetadataChange = ({payload}: TimedMetadataEvent) => {
     const transcriptCuePoints: Array<CuePoint> = payload.cues.filter((cue: CuePoint) => {
       return cue.metadata.cuePointType === ItemTypes.Caption;
+      })
+      .filter((cue, index, array) => {
+        // filter out captions that has endTime eq to next caption startTime
+        const nextCue = array[index + 1];
+        return !nextCue || cue.endTime !== nextCue.startTime;
     });
     this._activeCuePointsMap = {};
     transcriptCuePoints.forEach(cue => {
