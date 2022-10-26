@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.0.1](https://github.com/kaltura/playkit-js-transcript/compare/v2.1.4...v3.0.1) (2022-10-26)
+
+
+### Bug Fixes
+
+* **FEV-1173:** remove contrib kitchen sink ([fb40b3e](https://github.com/kaltura/playkit-js-transcript/commit/fb40b3e10a99cd2cf7ffb41ac5721ab6b3210501))
+* **FEV-1273:** handle timed metadata, remove kaltura-client ([357f8b5](https://github.com/kaltura/playkit-js-transcript/commit/357f8b53cffe64b0da1152f96c6c54f677142bfb))
+* **FEV-1273:** tiny style changes ([4967668](https://github.com/kaltura/playkit-js-transcript/commit/49676686b24cd36a0881e2f5897c472a7e555b94))
+* **FEV-1346:** style fix for transcript body ([1578af8](https://github.com/kaltura/playkit-js-transcript/commit/1578af8cf01c954e15cfc38cfd8ffbbd3dd4b905))
+* **FEV-1346:** style-loader fix ([#99](https://github.com/kaltura/playkit-js-transcript/issues/99)) ([c901bf0](https://github.com/kaltura/playkit-js-transcript/commit/c901bf08054df133274bf2e5fcf8568009a936c6))
+* **FEV-1355:** Transcript only works for first language in videos that contain multiple captions ([#101](https://github.com/kaltura/playkit-js-transcript/issues/101)) ([c308f5e](https://github.com/kaltura/playkit-js-transcript/commit/c308f5ef101b5dedbb318f57be6bf3c5c71c71b3))
+* **FEV-1356:** transcript print/download labels ([#100](https://github.com/kaltura/playkit-js-transcript/issues/100)) ([9f26a4a](https://github.com/kaltura/playkit-js-transcript/commit/9f26a4a86e63d130d30b398003771e71fa8fa4cd))
+* **FEV-1362:** resolve race condition between API call and FirstPlaying event ([#103](https://github.com/kaltura/playkit-js-transcript/issues/103)) ([e28422e](https://github.com/kaltura/playkit-js-transcript/commit/e28422ef5822aee23f193e9f9ddd49ad49195a1b))
+* **FEV-1362:** use 1st language from list if captions switched to "off" ([a954dce](https://github.com/kaltura/playkit-js-transcript/commit/a954dcefa22660e29ef5e68a2384d01859436133))
+* **FEV-1363:** disable transcript plugin for live entries ([1ea40a3](https://github.com/kaltura/playkit-js-transcript/commit/1ea40a3f23c181d42e7cce84183c22b64fe457e2))
+* **FEV-1418:** add plugin dependencies ([100671c](https://github.com/kaltura/playkit-js-transcript/commit/100671c650cd0f4eb22371d60e9ed1c6e5da3d44))
+* **FEV-1419:** register to player ready event instead of plugin ready event ([#106](https://github.com/kaltura/playkit-js-transcript/issues/106)) ([8163cc8](https://github.com/kaltura/playkit-js-transcript/commit/8163cc89e8868a2c5eb2e50c89dd167165a75940))
+* **FEV-1448:** a11y changes ([#113](https://github.com/kaltura/playkit-js-transcript/issues/113)) ([4c445bb](https://github.com/kaltura/playkit-js-transcript/commit/4c445bb2052b308892eadf63ca35afddb819f4ea))
+
 ### [2.1.4](https://github.com/kaltura/playkit-js-transcript/compare/v2.1.3...v2.1.4) (2022-01-19)
 
 ### [2.1.3](https://github.com/kaltura/playkit-js-transcript/compare/v2.1.2...v2.1.3) (2021-07-05)
