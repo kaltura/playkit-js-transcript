@@ -26,19 +26,3 @@
     background-size: cover;
   }
 }
-.popover-menu-item {
-  display: flex;
-  align-items: center;
-  padding: 9px 24px 9px 16px;
-  white-space: nowrap;
-  min-height: 30px;
-  line-height: 18px;
-  font-size: 15px;
-  &:hover {
-    cursor: pointer;
-    background-color: $semigray-color;
-  }
-  &:focus {
-    outline: 1px solid $focus-color;
-  }
-}
