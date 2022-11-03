@@ -5,7 +5,7 @@ import * as styles from './transcript.scss';
 import {Spinner} from '../spinner';
 import {Search} from '../search';
 import {CaptionList} from '../caption-list';
-import {HighlightedMap, CuePointData, PluginPositions} from '../../types';
+import {HighlightedMap, CuePointData} from '../../types';
 import {CloseButton} from '../close-button';
 import {ErrorIcon} from './error-icon';
 
@@ -32,7 +32,6 @@ export interface TranscriptProps {
   kitchenSinkActive: boolean;
   toggledWithEnter: boolean;
   highlightedMap: HighlightedMap;
-  pluginMode: PluginPositions;
   onItemClicked: (n: number) => void;
   autoScrollLabel?: string;
 }
