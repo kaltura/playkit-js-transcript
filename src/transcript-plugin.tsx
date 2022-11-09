@@ -1,14 +1,16 @@
 import {h} from 'preact';
 import {OnClickEvent} from '@playkit-js/common';
 import {ui} from 'kaltura-player-js';
-import {ObjectUtils} from './utils';
+import {UpperBarManager, SidePanelsManager} from '@playkit-js/ui-managers';
+import {ObjectUtils, downloadContent, printContent} from './utils';
+import {icons} from './components/icons';
 import {PluginButton} from './components/plugin-button/plugin-button';
 import {Transcript} from './components/transcript';
 import {getConfigValue, isBoolean, makePlainText, prepareCuePoint} from './utils';
-import {TranscriptConfig, PluginPositions, PluginStates, HighlightedMap, CuePointData, ItemTypes, CuePoint} from './types';
-import {DownloadPrintMenu, downloadContent, printContent} from './components/download-print-menu';
+import {TranscriptConfig, PluginStates, HighlightedMap, CuePointData, ItemTypes, CuePoint} from './types';
 
 const {SidePanelModes, SidePanelPositions, ReservedPresetNames, ReservedPresetAreas} = ui;
+const {withText, Text} = KalturaPlayer.ui.preacti18n;
 const {get} = ObjectUtils;
 
 interface TimedMetadataEvent {
@@ -36,9 +38,10 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   private _hasError = false;
   private _triggeredByKeyboard = false;
 
-  private _removePopoverIcon: null | Function = null;
-
-  private _transcriptPanel = null;
+  private _transcriptPanel = -1;
+  private _transcriptIcon = -1;
+  private _printIcon = -1;
+  private _downloadIcon = -1;
   private _pluginState: PluginStates | null = null;
 
   constructor(name: string, player: KalturaPlayerTypes.Player, config: TranscriptConfig) {
@@ -46,7 +49,11 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   }
 
   get sidePanelsManager() {
-    return this.player.getService('sidePanelsManager') as any;
+    return this.player.getService('sidePanelsManager') as SidePanelsManager | undefined;
+  }
+
+  get upperBarManager() {
+    return this.player.getService('upperBarManager') as UpperBarManager | undefined;
   }
 
   get cuePointManager() {
@@ -58,8 +65,8 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   }
 
   loadMedia(): void {
-    if (!this.cuePointManager || !this.sidePanelsManager) {
-      this.logger.warn("kalturaCuepoints or sidePanelsManager haven't registered");
+    if (!this.cuePointManager || !this.sidePanelsManager || !this.upperBarManager) {
+      this.logger.warn("kalturaCuepoints, sidePanelsManager or upperBarManager haven't registered");
       return;
     }
     if (this.player.isLive()) {
@@ -78,7 +85,8 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
           // turn on loading animation till captions added to TextTrack
           this._isLoading = true;
         }
-        this._addPopoverIcon();
+        this._addDownloadIcon();
+        this._addPrintIcon();
         this._addTranscriptItem();
       }
     });
@@ -95,7 +103,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
 
   private _updateTranscriptPanel() {
     if (this._transcriptPanel) {
-      this.sidePanelsManager.update(this._transcriptPanel);
+      this.sidePanelsManager?.update(this._transcriptPanel);
     }
   }
 
@@ -145,39 +153,76 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     return `${activeTextTrack?.language}-${activeTextTrack?.label}`;
   };
 
-  private _handleCloseClick = () => {
-    this.sidePanelsManager.deactivateItem(this._transcriptPanel);
-    this._pluginState = PluginStates.CLOSED;
+  private _activatePlugin = () => {
+    this.ready.then(() => {
+      this.sidePanelsManager?.activateItem(this._transcriptPanel);
+      this._pluginState === PluginStates.OPENED;
+      this.upperBarManager?.update(this._transcriptIcon);
+    });
   };
 
-  private _addPopoverIcon(): void {
-    const {downloadDisabled, printDisabled} = this.config;
-    if (this._removePopoverIcon) {
+  private _deactivatePlugin = () => {
+    this.ready.then(() => {
+      this.sidePanelsManager?.deactivateItem(this._transcriptPanel);
+      this._pluginState = PluginStates.CLOSED;
+      this.upperBarManager?.update(this._transcriptIcon);
+    });
+  };
+
+  private _isPluginActive = () => {
+    return this.sidePanelsManager!.isItemActive(this._transcriptPanel);
+  };
+
+  private _handleClickOnPluginIcon = (e: OnClickEvent, byKeyboard?: boolean) => {
+    if (this._isPluginActive()) {
+      this._triggeredByKeyboard = false;
+      this._deactivatePlugin();
+    } else {
+      this._triggeredByKeyboard = Boolean(byKeyboard);
+      this._activatePlugin();
+    }
+  };
+
+  private _addDownloadIcon(): void {
+    const {downloadDisabled} = this.config;
+    if (this._downloadIcon > 0 || downloadDisabled) {
       return;
     }
-    this._removePopoverIcon = this.player.ui.addComponent({
-      label: 'Download or print transcript',
-      area: ReservedPresetAreas.TopBarRightControls,
-      presets: [ReservedPresetNames.Playback, ReservedPresetNames.Live],
-      get: () => (
-        <DownloadPrintMenu
-          onDownload={this._handleDownload}
-          onPrint={this._handlePrint}
-          downloadDisabled={getConfigValue(downloadDisabled, isBoolean, false)}
-          printDisabled={getConfigValue(printDisabled, isBoolean, false)}
-        />
-      )
-    });
+    const translate = {
+      label: <Text id="transcript.download_transcript">Download current transcript</Text>
+    };
+    this._downloadIcon = this.upperBarManager!.add({
+      label: translate.label as any,
+      svgIcon: {path: icons.DOWNLOAD_ICON, viewBox: `0 0 ${icons.BigSize} ${icons.BigSize}`},
+      onClick: this._handleDownload,
+      component: withText(translate)((props: {label: string}) => (
+        <PluginButton isActive={false} onClick={this._handleDownload} id={'download-transcript'} icon={icons.DOWNLOAD_ICON} label={props.label} />
+      ))
+    }) as number;
+  }
+  private _addPrintIcon(): void {
+    const {printDisabled} = this.config;
+    if (this._printIcon > 0 || printDisabled) {
+      return;
+    }
+    const translate = {
+      label: <Text id="transcript.print_transcript">Print current transcript</Text>
+    };
+    this._printIcon = this.upperBarManager!.add({
+      label: translate.label as any,
+      svgIcon: {path: icons.PRINT_ICON, viewBox: `0 0 ${icons.BigSize} ${icons.BigSize}`},
+      onClick: this._handlePrint,
+      component: withText(translate)((props: {label: string}) => (
+        <PluginButton isActive={false} onClick={this._handlePrint} id={'print-transcript'} icon={icons.PRINT_ICON} label={props.label} />
+      ))
+    }) as number;
   }
 
   private _addTranscriptItem(): void {
-    const buttonLabel = 'Transcript';
     const {expandMode, position, expandOnFirstPlay} = this.config;
-    const pluginMode: PluginPositions = [SidePanelPositions.RIGHT, SidePanelPositions.LEFT].includes(position)
-      ? PluginPositions.VERTICAL
-      : PluginPositions.HORIZONTAL;
     const {showTime, scrollOffset, searchDebounceTimeout, searchNextPrevDebounceTimeout} = this.config;
-    this._transcriptPanel = this.sidePanelsManager.addItem({
+
+    this._transcriptPanel = this.sidePanelsManager!.add({
       label: 'Transcript',
       panelComponent: () => {
         return (
@@ -188,7 +233,6 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
             searchNextPrevDebounceTimeout={getConfigValue(searchNextPrevDebounceTimeout, Number.isInteger, 100)}
             highlightedMap={this._activeCuePointsMap}
             onSeek={this._seekTo}
-            pluginMode={pluginMode}
             onItemClicked={this._seekTo}
             captions={this._data}
             isLoading={this._isLoading}
@@ -196,40 +240,36 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
             onRetryLoad={this._updateTranscriptPanel}
             currentTime={this.player.currentTime}
             videoDuration={this.player.duration}
-            kitchenSinkActive={!!this.sidePanelsManager.isItemActive(this._transcriptPanel)}
+            kitchenSinkActive={this._isPluginActive()}
             toggledWithEnter={this._triggeredByKeyboard}
-            onClose={this._handleCloseClick}
-          />
-        );
-      },
-      iconComponent: ({isActive}: {isActive: boolean}) => {
-        return (
-          <PluginButton
-            isActive={isActive}
-            onClick={(e: OnClickEvent, byKeyboard?: boolean) => {
-              if (this.sidePanelsManager.isItemActive(this._transcriptPanel)) {
-                this._triggeredByKeyboard = false;
-                this._handleCloseClick();
-              } else {
-                this._triggeredByKeyboard = Boolean(byKeyboard);
-                this.sidePanelsManager.activateItem(this._transcriptPanel);
-              }
-            }}
+            onClose={this._deactivatePlugin}
           />
         );
       },
       presets: [ReservedPresetNames.Playback, ReservedPresetNames.Live, ReservedPresetNames.Ads],
       position: position,
       expandMode: expandMode === SidePanelModes.ALONGSIDE ? SidePanelModes.ALONGSIDE : SidePanelModes.OVER,
-      onActivate: () => {
-        this._pluginState = PluginStates.OPENED;
-      }
-    });
+      onDeactivate: this._deactivatePlugin
+    }) as number;
+    const translates = {
+      showTranscript: <Text id="transcript.show_plugin">Show Transcript</Text>,
+      hideTranscript: <Text id="transcript.hide_plugin">Hide Transcript</Text>
+    };
+    this._transcriptIcon = this.upperBarManager!.add({
+      label: 'Transcript',
+      svgIcon: {path: icons.PLUGIN_ICON, viewBox: `0 0 ${icons.BigSize} ${icons.BigSize}`},
+      onClick: this._handleClickOnPluginIcon as () => void,
+      component: withText(translates)((props: {showTranscript: string; hideTranscript: string}) => {
+        const isActive = this._isPluginActive();
+        const label = isActive ? props.hideTranscript : props.showTranscript;
+        return (
+          <PluginButton isActive={isActive} onClick={this._handleClickOnPluginIcon} id="transcript-icon" label={label} icon={icons.PLUGIN_ICON} />
+        );
+      })
+    }) as number;
 
     if ((expandOnFirstPlay && !this._pluginState) || this._pluginState === PluginStates.OPENED) {
-      this.player.ready().then(() => {
-        this.sidePanelsManager.activateItem(this._transcriptPanel);
-      });
+      this._activatePlugin();
     }
   }
 
@@ -263,13 +303,19 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
 
   reset(): void {
     this.eventManager.removeAll();
-    if (this._removePopoverIcon) {
-      this._removePopoverIcon();
-      this._removePopoverIcon = null;
+    if (Math.max(this._transcriptPanel, this._transcriptIcon) > 0) {
+      this.sidePanelsManager?.remove(this._transcriptPanel);
+      this.upperBarManager!.remove(this._transcriptIcon);
+      this._transcriptPanel = -1;
+      this._transcriptIcon = -1;
     }
-    if (this._transcriptPanel) {
-      this.sidePanelsManager.removeItem(this._transcriptPanel);
-      this._transcriptPanel = null;
+    if (this._printIcon > 0) {
+      this.upperBarManager!.remove(this._printIcon);
+      this._printIcon = -1;
+    }
+    if (this._downloadIcon > 0) {
+      this.upperBarManager!.remove(this._downloadIcon);
+      this._downloadIcon = -1;
     }
     this._captionMap = new Map();
     this._activeCaptionMapId = '';

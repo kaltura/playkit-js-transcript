@@ -76,13 +76,14 @@
   ],
   "dependencies": {
     "@playkit-js/common": "^1.0.7",
+    "@playkit-js/ui-managers": "^1.3.0",
     "stream-browserify": "^3.0.0"
   },
   "kaltura": {
     "name": "playkit-js-transcript",
     "dependencies": {
       "playkit-kaltura-cuepoints": "3.0.0",
-      "playkit-ui-managers": "1.2.2"
+      "playkit-ui-managers": "1.3.0"
     }
   }
 }
