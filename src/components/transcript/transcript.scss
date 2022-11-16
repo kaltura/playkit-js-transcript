@@ -22,7 +22,7 @@
     justify-content: center;
     width: 120px;
     height: 32px;
-    border-radius: 16px;
+    border-radius: $roundness-3;
     box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.3);
     border: solid 1px $brand-color;
     background-color: $tone-7;

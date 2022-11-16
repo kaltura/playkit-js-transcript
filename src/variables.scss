@@ -9,6 +9,9 @@ $secondary-color: #ffaa00;
 $primary-text-contrast: #ffffff;
 $secondary-text-contrast: #ffffff;
 
+$roundness-1: 4px;
+$roundness-3: 16px;
+
 @mixin plugin-scrollbar {
   &::-webkit-scrollbar {
     width: 4px;
