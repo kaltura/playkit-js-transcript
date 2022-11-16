@@ -1,11 +1,13 @@
 @import '~@playkit-js/playkit-js-ui';
 
 $brand-color: #006efa;
-$brand-color-dark: #004cad;
-$focus-color: #4798ff;
-$text-selected-color: #5b80a7;
+$brand-color-dark: darken($brand-color, 15%);
+$text-selected-color: lighten($brand-color, 15%);
 
-$text-match-color: #fdd304;
+$secondary-color: #ffaa00;
+
+$primary-text-contrast: #ffffff;
+$secondary-text-contrast: #ffffff;
 
 @mixin plugin-scrollbar {
   &::-webkit-scrollbar {

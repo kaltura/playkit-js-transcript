@@ -36,6 +36,7 @@
     }
     &.highlighted {
       .caption-span {
+        color: $primary-text-contrast;
         background-color: $brand-color;
         padding: 0 2px;
       }
@@ -57,16 +58,16 @@
       }
     }
     .highlight-search {
-      color: $tone-8;
-      background-color: $text-match-color;
+      color: $secondary-text-contrast;
+      background-color: $secondary-color;
       border-radius: 2px;
       &::selection {
         background-color: $text-selected-color;
       }
     }
     .active-search {
-      color: $tone-8;
-      background-color: $brand-color;
+      color: $secondary-text-contrast;
+      background-color: $brand-color-dark;
       border-radius: 2px;
       &::selection {
         background-color: $text-selected-color;

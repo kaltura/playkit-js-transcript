@@ -13,19 +13,12 @@
   height: 32px;
   border: solid 1px rgba(255, 255, 255, 0.4);
   border-radius: 4px;
-  .search-icon {
-    flex: 0 0 32px;
-    background-color: transparent;
-    width: 32px;
-    height: 32px;
-    margin: 0 2px;
-  }
   .search-results {
     display: flex;
     justify-content: flex-end;
     align-items: center;
     flex-shrink: 0;
-    margin: 0 8px;
+    margin: 0 8px 0 6px;
     font-size: 12px;
     text-overflow: ellipsis;
   }
@@ -35,13 +28,15 @@
     justify-content: space-around;
     max-height: 100%;
     height: 100%;
-    width: 14px;
+    width: 8px;
+    flex: 0 0 8px;
     margin-right: 8px;
     .prev-next-button {
+      display: flex;
+      align-items: center;
+      height: 50%;
       padding: 0;
       background-color: transparent;
-      background-position: center;
-      background-size: cover;
       border: none;
       cursor: pointer;
       &.disabled {
@@ -55,8 +50,8 @@
     flex-grow: 1;
     flex-shrink: 1;
     font-size: 15px;
-    padding: 0 6px 1px 0;
-    color: $tone-2;
+    padding: 0 6px 1px 6px;
+    color: $tone-1;
     background: transparent;
     border: none;
     overflow: hidden;
@@ -73,21 +68,19 @@
   }
   .clear-icon {
     padding: 0;
-    flex: 0 0 32px;
-    max-width: 32px;
-    max-height: 32px;
+    flex: 0 0 12px;
+    max-width: 12px;
+    max-height: 12px;
     background-color: transparent;
-    width: 32px;
-    height: 32px;
+    width: 12px;
+    height: 12px;
+    outline-offset: 4px;
     border: none;
     cursor: pointer;
   }
   &.active {
     color: $tone-2;
     background: $tone-8;
-  }
-  &.focused {
-    box-shadow: 0 0 0 1px $focus-color;
-    border-radius: 4px;
+    border-color: $tone-1;
   }
 }
