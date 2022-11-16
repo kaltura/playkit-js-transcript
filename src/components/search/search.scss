@@ -11,7 +11,6 @@
   width: 100%;
   max-width: 599px;
   height: 32px;
-  background-color: rgba(255, 255, 255, 0.24);
   border: solid 1px rgba(255, 255, 255, 0.4);
   border-radius: 4px;
   .search-icon {
@@ -57,7 +56,7 @@
     flex-shrink: 1;
     font-size: 15px;
     padding: 0 6px 1px 0;
-    color: $gray-color;
+    color: $tone-2;
     background: transparent;
     border: none;
     overflow: hidden;
@@ -66,10 +65,10 @@
       outline: none !important; // prevent focus styles inherited from playkit-player.playkit-nav
     }
     &::placeholder {
-      color: $gray-color;
+      color: $tone-2;
     }
     &::selection {
-      background-color: $text-selection-color;
+      background-color: $text-selected-color;
     }
   }
   .clear-icon {
@@ -84,8 +83,8 @@
     cursor: pointer;
   }
   &.active {
-    color: $gray-color;
-    background: $black-color;
+    color: $tone-2;
+    background: $tone-8;
   }
   &.focused {
     box-shadow: 0 0 0 1px $focus-color;

@@ -655,6 +655,16 @@
     react-redux "^7.2.0"
     redux "^4.0.5"
 
+"@playkit-js/playkit-js-ui@^0.72.3":
+  version "0.72.3"
+  resolved "https://registry.yarnpkg.com/@playkit-js/playkit-js-ui/-/playkit-js-ui-0.72.3.tgz#6997cf8246d241c9242d229bff179aaa3497bdbd"
+  integrity sha512-BiNMTdQtqiXqbSTCmOAWmqfjDUkFGVWtmNMoUSFceH6BWF3WvQL2dlvxQcogQewPhiXDGI5hja7gwxWze/EcYg==
+  dependencies:
+    preact "^10.3.4"
+    preact-i18n "^2.0.0-preactx.2"
+    react-redux "^7.2.0"
+    redux "^4.0.5"
+
 "@playkit-js/playkit-js@^0.80.3":
   version "0.80.3"
   resolved "https://registry.yarnpkg.com/@playkit-js/playkit-js/-/playkit-js-0.80.3.tgz#07e47e560aeadc6ca3b20afde87dfdf4ab8f7ac0"

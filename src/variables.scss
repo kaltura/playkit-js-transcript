@@ -1,18 +1,11 @@
-$main-color: #01accd;
-$white-color: #ffffff;
-$gray-color: #cccccc;
-$darken-gray: #444444;
-$darkgray-color: #333333;
-$semigray-color: #666666;
-$lightgray-color: #999999;
-$black-color: #000000;
-$semiblack-color: #222222;
+@import '~@playkit-js/playkit-js-ui';
+
+$brand-color: #006efa;
+$brand-color-dark: #004cad;
+$focus-color: #4798ff;
+$text-selected-color: #5b80a7;
+
 $text-match-color: #fdd304;
-$text-current-match-color: #1687ff;
-$text-selection-color: #5b80a7;
-$main-color-darken: darken($main-color, 10%);
-$root-background: #000000a1;
-$focus-color: #00cbff;
 
 @mixin plugin-scrollbar {
   &::-webkit-scrollbar {
