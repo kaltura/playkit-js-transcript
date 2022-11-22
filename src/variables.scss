@@ -1,13 +1,18 @@
-@import '~@playkit-js/playkit-js-ui';
+$brand-color: var(--playkit-primary-color);
+$brand-color-dark: var(--playkit-primary-darker-color);
+$text-selected-color: var(--playkit-primary-brighter-color);
 
-$brand-color: #006efa;
-$brand-color-dark: darken($brand-color, 15%);
-$text-selected-color: lighten($brand-color, 15%);
+$secondary-color: var(--playkit-secondary-color);
 
-$secondary-color: #ffaa00;
+$primary-text-contrast: var(--playkit-primary-text-contrast-color);
+$secondary-text-contrast: var(--playkit-secondary-text-contrast-color);
 
-$primary-text-contrast: #ffffff;
-$secondary-text-contrast: #ffffff;
+$tone-1: var(--playkit-tone-1-color);
+$tone-2: var(--playkit-tone-2-color);
+$tone-3: var(--playkit-tone-3-color);
+$tone-6: var(--playkit-tone-6-color);
+$tone-7: var(--playkit-tone-7-color);
+$tone-8: var(--playkit-tone-8-color);
 
 $roundness-1: 4px;
 $roundness-3: 16px;
