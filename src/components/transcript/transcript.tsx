@@ -179,7 +179,6 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
           totalSearchResults={totalSearchResults}
           toggledWithEnter={toggledWithEnter}
           kitchenSinkActive={kitchenSinkActive}
-          searchQuery={search}
         />
       </div>
     );
