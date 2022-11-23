@@ -111,7 +111,7 @@ export class TranscriptComponent extends Component<TranscriptProps, TranscriptSt
         <div
           role="button"
           className={`${styles.autoscrollButton} ${isAutoScrollEnabled ? '' : styles.autoscrollButtonVisible}`}
-          tabIndex={isAutoScrollEnabled ? -1 : 1}
+          tabIndex={isAutoScrollEnabled ? -1 : 0}
           aria-label={this.props.autoScrollLabel}
           ref={node => {
             this._autoscrollButtonRef = node;
@@ -238,7 +238,7 @@ export class TranscriptComponent extends Component<TranscriptProps, TranscriptSt
         className={styles.skipTranscriptButton}
         onKeyDown={this._handleKeyDown}
         onClick={this._handleClick}
-        tabIndex={1}>
+        tabIndex={0}>
         Skip transcript
       </div>
     );

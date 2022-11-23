@@ -167,14 +167,14 @@ class SearchComponent extends Component<SearchProps, SearchState> {
           onFocus={this._onFocus}
           onBlur={this._onBlur}
           onMouseDown={this._handleMouseDown}
-          tabIndex={1}
+          tabIndex={0}
           ref={node => {
             this._inputRef = node;
           }}
         />
         {searchQuery && (
           <A11yWrapper onClick={this._onClear}>
-            <button className={styles.clearIcon} tabIndex={1} aria-label={this.props.clearSearchLabel}>
+            <button className={styles.clearIcon} tabIndex={0} aria-label={this.props.clearSearchLabel}>
               <svg
                 width="32px"
                 height="32px"
@@ -201,7 +201,7 @@ class SearchComponent extends Component<SearchProps, SearchState> {
           {searchQuery && (
             <A11yWrapper onClick={this._goToPrevSearchResult}>
               <button
-                tabIndex={1}
+                tabIndex={0}
                 className={`${styles.prevNextButton} ${totalSearchResults === 0 ? styles.disabled : ''}`}
                 aria-label={this.props.prevMatchLabel}>
                 <svg
@@ -225,7 +225,7 @@ class SearchComponent extends Component<SearchProps, SearchState> {
           {searchQuery && (
             <A11yWrapper onClick={this._goToNextSearchResult}>
               <button
-                tabIndex={1}
+                tabIndex={0}
                 className={`${styles.prevNextButton} ${totalSearchResults === 0 ? styles.disabled : ''}`}
                 aria-label={this.props.nextMatchLabel}>
                 <svg

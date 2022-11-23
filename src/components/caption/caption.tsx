@@ -116,8 +116,8 @@ export class Caption extends Component<ExtendedCaptionProps> {
       <A11yWrapper onClick={this._handleKeyDown}>
         <div
           className={styles.caption}
-          tabIndex={1}
-          area-label={caption.text}
+          tabIndex={0}
+          aria-label={caption.text}
           ref={node => {
             this._hotspotRef = node;
           }}
