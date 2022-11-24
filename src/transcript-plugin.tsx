@@ -13,6 +13,8 @@ const {SidePanelModes, SidePanelPositions, ReservedPresetNames, ReservedPresetAr
 const {withText, Text} = KalturaPlayer.ui.preacti18n;
 const {get} = ObjectUtils;
 
+const LOADING_TIMEOUT = 10000;
+
 interface TimedMetadataEvent {
   payload: {
     cues: Array<CuePoint>;
@@ -35,6 +37,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   private _activeCuePointsMap: HighlightedMap = {};
   private _captionMap: Map<string, Array<CuePointData>> = new Map();
   private _isLoading = false;
+  private _loadingTimeoutId?: ReturnType<typeof setTimeout>;
   private _hasError = false;
   private _triggeredByKeyboard = false;
 
@@ -78,27 +81,39 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   }
 
   private _initListeners(): void {
-    this.eventManager.listen(this.player, this.player.Event.FIRST_PLAYING, () => {
-      if ((this.player.getTracks(this.player.Track.TEXT) || []).length) {
-        // check if captions already added in TextTrack
-        if (!this._captionMap.size) {
-          // turn on loading animation till captions added to TextTrack
-          this._isLoading = true;
-        }
+    this.eventManager.listenOnce(this.player, this.player.Event.TRACKS_CHANGED, () => {
+      if (this._getTextTracks().length) {
+        this.eventManager.listen(this.player, this.player.Event.TIMED_METADATA_CHANGE, this._onTimedMetadataChange);
+        this.eventManager.listen(this.player, this.player.Event.TIMED_METADATA_ADDED, this._onTimedMetadataAdded);
+        this.eventManager.listen(this.player, this.player.Event.TEXT_TRACK_CHANGED, this._handleLanguageChange);
         this._addDownloadIcon();
         this._addPrintIcon();
         this._addTranscriptItem();
+        this._initLoading();
       }
     });
-    this.eventManager.listen(this.player, this.player.Event.TIMED_METADATA_CHANGE, this._onTimedMetadataChange);
-    this.eventManager.listen(this.player, this.player.Event.TIMED_METADATA_ADDED, this._onTimedMetadataAdded);
-    this.eventManager.listen(this.player, this.player.Event.TEXT_TRACK_CHANGED, this._handleLanguageChange);
   }
+
+  private _initLoading = () => {
+    clearTimeout(this._loadingTimeoutId);
+    this._isLoading = false;
+    this._hasError = false;
+    if (!this._captionMap.has(this._activeCaptionMapId)) {
+      // turn on loading animation till captions added to TextTrack
+      this._isLoading = true;
+      this._loadingTimeoutId = setTimeout(() => {
+        // display error slate
+        this._isLoading = false;
+        this._hasError = true;
+        this._updateTranscriptPanel();
+      }, LOADING_TIMEOUT);
+    }
+    this._updateTranscriptPanel();
+  };
 
   private _handleLanguageChange = () => {
     this._activeCaptionMapId = this._getCaptionMapId();
-    this._isLoading = !this._captionMap.has(this._activeCaptionMapId);
-    this._updateTranscriptPanel();
+    this._initLoading();
   };
 
   private _updateTranscriptPanel() {
@@ -140,11 +155,16 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     this._activeCaptionMapId = this._getCaptionMapId();
     this._captionMap.set(this._activeCaptionMapId, newData);
     this._isLoading = false;
+    clearTimeout(this._loadingTimeoutId);
     this._updateTranscriptPanel();
   };
 
+  private _getTextTracks = () => {
+    return this.player.getTracks(this.player.Track.TEXT) || [];
+  };
+
   private _getCaptionMapId = (): string => {
-    const allTextTracks = this.player.getTracks(this.player.Track.TEXT) || [];
+    const allTextTracks = this._getTextTracks();
     const activeTextTrack = allTextTracks.find(track => track.active);
     if (activeTextTrack?.language === 'off') {
       // use 1st captions from text-track list
@@ -221,6 +241,9 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   private _addTranscriptItem(): void {
     const {expandMode, position, expandOnFirstPlay} = this.config;
     const {showTime, scrollOffset, searchDebounceTimeout, searchNextPrevDebounceTimeout} = this.config;
+    if (this._transcriptPanel > 0) {
+      return;
+    }
 
     this._transcriptPanel = this.sidePanelsManager!.add({
       label: 'Transcript',
@@ -320,6 +343,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     this._captionMap = new Map();
     this._activeCaptionMapId = '';
     this._isLoading = false;
+    clearTimeout(this._loadingTimeoutId);
     this._hasError = false;
     this._triggeredByKeyboard = false;
   }
