@@ -130,7 +130,6 @@ export class Caption extends Component<ExtendedCaptionProps, CaptionState> {
     const {startTime, id} = caption;
     const isHighlighted = Object.keys(highlighted)[0] === id;
 
-    const captionTime = secontsToTime(startTime, longerThanHour);
     const captionA11yProps: Record<string, any> = {
       role: isHighlighted ? 'text' : 'listitem',
       ariaCurrent: isHighlighted,
@@ -148,7 +147,7 @@ export class Caption extends Component<ExtendedCaptionProps, CaptionState> {
             this._hotspotRef = node;
           }}
           {...captionA11yProps}>
-          {showTime && <div className={styles.captionTime}>{captionTime}</div>}
+          {showTime && <div className={styles.captionTime}>{secontsToTime(startTime, longerThanHour)}</div>}
           <div
             onClick={this._handleClick}
             className={`${styles.captionContent} ${isHighlighted ? styles.highlighted : ''} ${showTime ? '' : styles.withoutTime}`}>
