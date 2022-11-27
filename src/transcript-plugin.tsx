@@ -239,12 +239,11 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   }
 
   private _addTranscriptItem(): void {
-    const {expandMode, position, expandOnFirstPlay} = this.config;
-    const {showTime, scrollOffset, searchDebounceTimeout, searchNextPrevDebounceTimeout} = this.config;
     if (this._transcriptPanel > 0) {
       return;
     }
 
+    const {expandMode, position, expandOnFirstPlay, showTime, scrollOffset, searchDebounceTimeout, searchNextPrevDebounceTimeout} = this.config;
     this._transcriptPanel = this.sidePanelsManager!.add({
       label: 'Transcript',
       panelComponent: () => {
