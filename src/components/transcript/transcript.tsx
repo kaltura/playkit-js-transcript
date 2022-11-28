@@ -13,7 +13,10 @@ const {ENTER, SPACE, TAB, ESC} = KalturaPlayer.ui.utils.KeyMap;
 const {withText, Text} = KalturaPlayer.ui.preacti18n;
 
 const translates = {
-  autoScrollLabel: <Text id="transcript.auto_scroll">Enable auto scroll</Text>
+  autoScrollLabel: <Text id="transcript.auto_scroll">Enable auto scroll</Text>,
+  errorTitle: <Text id="transcript.whoops">Whoops!</Text>,
+  errorDescripton: <Text id="transcript.load_failed">Failed to load transcript</Text>,
+  skipTranscript: <Text id="transcript.skip_transcript">Skip transcript</Text>
 };
 
 export interface TranscriptProps {
@@ -34,6 +37,9 @@ export interface TranscriptProps {
   highlightedMap: HighlightedMap;
   onItemClicked: (n: number) => void;
   autoScrollLabel?: string;
+  errorTitle?: string;
+  errorDescripton?: string;
+  skipTranscript?: string;
 }
 
 interface TranscriptState {
@@ -239,7 +245,7 @@ export class TranscriptComponent extends Component<TranscriptProps, TranscriptSt
         onKeyDown={this._handleKeyDown}
         onClick={this._handleClick}
         tabIndex={0}>
-        Skip transcript
+        {this.props.skipTranscript}
       </div>
     );
   };
@@ -247,9 +253,6 @@ export class TranscriptComponent extends Component<TranscriptProps, TranscriptSt
   private _renderTranscript = () => {
     const {captions, hasError, onRetryLoad, showTime, videoDuration, highlightedMap} = this.props;
     const {isAutoScrollEnabled, searchMap, activeSearchIndex, searchLength} = this.state;
-    if (!captions || !captions.length) {
-      return null;
-    }
 
     if (hasError) {
       return (
@@ -257,15 +260,14 @@ export class TranscriptComponent extends Component<TranscriptProps, TranscriptSt
           <div className={styles.errorIcon}>
             <ErrorIcon />
           </div>
-          <p className={styles.errorMainText}>Whoops!</p>
-          <p className={styles.errorDescriptionText}>
-            Failed to get transcript, please try again
-            <button className={styles.retryButton} onClick={onRetryLoad}>
-              Retry
-            </button>
-          </p>
+          <p className={styles.errorMainText}>{this.props.errorTitle}</p>
+          <p className={styles.errorDescriptionText}>{this.props.errorDescripton}</p>
         </div>
       );
+    }
+
+    if (!captions || !captions.length) {
+      return null;
     }
 
     const captionProps = {
@@ -369,8 +371,8 @@ export class TranscriptComponent extends Component<TranscriptProps, TranscriptSt
   };
 
   render(props: TranscriptProps) {
-    const {isLoading, kitchenSinkActive} = props;
-
+    const {isLoading, kitchenSinkActive, hasError} = props;
+    const renderTranscriptButtons = !(isLoading || hasError);
     return (
       <div
         className={`${styles.root} ${kitchenSinkActive ? '' : styles.hidden}`}
@@ -383,7 +385,7 @@ export class TranscriptComponent extends Component<TranscriptProps, TranscriptSt
 
           <CloseButton onClick={this.props.onClose} />
 
-          {!isLoading && this._renderSkipTranscriptButton()}
+          {renderTranscriptButtons && this._renderSkipTranscriptButton()}
           <div
             className={styles.body}
             onScroll={this._onScroll}
@@ -392,7 +394,7 @@ export class TranscriptComponent extends Component<TranscriptProps, TranscriptSt
             }}>
             {isLoading ? this._renderLoading() : this._renderTranscript()}
           </div>
-          {this._renderScrollToButton()}
+          {renderTranscriptButtons && this._renderScrollToButton()}
         </div>
       </div>
     );
