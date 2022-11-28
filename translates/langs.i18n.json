@@ -11,7 +11,10 @@
       "next_search_match": "Next",
       "prev_search_match": "Previous",
       "search_results": "Result {{current}} of {{total}}",
-      "auto_scroll": "Enable auto scroll"
+      "auto_scroll": "Enable auto scroll",
+      "whoops": "Whoops!",
+      "load_failed": "Failed to load transcript",
+      "skip_transcript": "Skip transcript"
     }
   }
 }
