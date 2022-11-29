@@ -24,8 +24,14 @@ interface ExtendedCaptionProps extends CaptionProps {
   isAutoScrollEnabled: boolean;
 }
 
-export class Caption extends Component<ExtendedCaptionProps> {
+interface CaptionState {
+  focused: boolean;
+}
+
+export class Caption extends Component<ExtendedCaptionProps, CaptionState> {
   private _hotspotRef: HTMLElement | null = null;
+
+  state = {focused: false};
 
   componentDidUpdate() {
     if (this._hotspotRef && this.props.shouldScroll) {
@@ -35,12 +41,12 @@ export class Caption extends Component<ExtendedCaptionProps> {
     }
   }
 
-  shouldComponentUpdate(nextProps: ExtendedCaptionProps) {
+  shouldComponentUpdate(nextProps: ExtendedCaptionProps, nextState: CaptionState) {
     const {indexMap, highlighted, isAutoScrollEnabled, activeSearchIndex, longerThanHour, caption} = this.props;
     if (longerThanHour !== nextProps.longerThanHour) {
       return true;
     }
-    if (highlighted !== nextProps.highlighted) {
+    if (highlighted !== nextProps.highlighted || this.state.focused !== nextState.focused) {
       return true;
     }
     if (highlighted && isAutoScrollEnabled !== nextProps.isAutoScrollEnabled) {
@@ -107,21 +113,40 @@ export class Caption extends Component<ExtendedCaptionProps> {
     );
   };
 
+  private _handleFocus = () => {
+    this.setState({
+      focused: true
+    });
+  };
+
+  private _handleBlur = () => {
+    this.setState({
+      focused: false
+    });
+  };
+
   render() {
     const {caption, highlighted, showTime, longerThanHour} = this.props;
     const {startTime, id} = caption;
     const isHighlighted = Object.keys(highlighted)[0] === id;
 
+    const captionA11yProps: Record<string, any> = {
+      role: isHighlighted ? 'text' : 'listitem',
+      ariaCurrent: isHighlighted,
+      onFocus: this._handleFocus,
+      onBlur: this._handleBlur,
+      tabIndex: 0,
+      ariaHidden: !(isHighlighted || this.state.focused)
+    };
+
     return (
       <A11yWrapper onClick={this._handleKeyDown}>
         <div
           className={styles.caption}
-          tabIndex={0}
-          aria-label={caption.text}
           ref={node => {
             this._hotspotRef = node;
           }}
-          role="listitem">
+          {...captionA11yProps}>
           {showTime && <div className={styles.captionTime}>{secontsToTime(startTime, longerThanHour)}</div>}
           <div
             onClick={this._handleClick}
