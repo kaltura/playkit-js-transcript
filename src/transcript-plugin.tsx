@@ -86,10 +86,6 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
         this.eventManager.listen(this.player, this.player.Event.TIMED_METADATA_CHANGE, this._onTimedMetadataChange);
         this.eventManager.listen(this.player, this.player.Event.TIMED_METADATA_ADDED, this._onTimedMetadataAdded);
         this.eventManager.listen(this.player, this.player.Event.TEXT_TRACK_CHANGED, this._handleLanguageChange);
-        this._addDownloadIcon();
-        this._addPrintIcon();
-        this._addTranscriptItem();
-        this._initLoading();
       }
     });
   }
@@ -131,6 +127,9 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     });
     if (captionData.length) {
       this._addCaptionData(captionData);
+      this._addDownloadIcon();
+      this._addPrintIcon();
+      this._addTranscriptItem();
     }
   };
 
@@ -206,6 +205,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   private _addDownloadIcon(): void {
     const {downloadDisabled} = this.config;
     if (this._downloadIcon > 0 || downloadDisabled) {
+      // download icon already exist or download disabled
       return;
     }
     const translate = {
@@ -223,6 +223,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   private _addPrintIcon(): void {
     const {printDisabled} = this.config;
     if (this._printIcon > 0 || printDisabled) {
+      // print icon already exist or download disabled
       return;
     }
     const translate = {
@@ -239,7 +240,8 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   }
 
   private _addTranscriptItem(): void {
-    if (this._transcriptPanel > 0) {
+    if (Math.max(this._transcriptPanel, this._transcriptIcon) > 0) {
+      // transcript panel or icon already exist
       return;
     }
 
