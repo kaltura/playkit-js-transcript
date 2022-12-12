@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.0](https://github.com/kaltura/playkit-js-transcript/compare/v3.0.1...v3.1.0) (2022-12-12)
+
+
+### Features
+
+* **FEV-1554:** Add support to the More plugin ([#114](https://github.com/kaltura/playkit-js-transcript/issues/114)) ([d22690c](https://github.com/kaltura/playkit-js-transcript/commit/d22690cac6210b322a51fde1665ad89f9bf6b9a5))
+
+
+### Bug Fixes
+
+* **FEV-1531:** when transcript panel is open, navigating inside it using tab is not working properly ([#118](https://github.com/kaltura/playkit-js-transcript/issues/118)) ([ca9cf88](https://github.com/kaltura/playkit-js-transcript/commit/ca9cf884180b21307ed9c1af2431cb17a11a0881))
+* **FEV-1590:** Transcript captions are not readable on mac voice over ([#120](https://github.com/kaltura/playkit-js-transcript/issues/120)) ([f1d1c59](https://github.com/kaltura/playkit-js-transcript/commit/f1d1c59a7698c3fad3a07dd57166bbf695ff8701))
+* **FEV-1597:** handle non-external text tracks ([#119](https://github.com/kaltura/playkit-js-transcript/issues/119)) ([372ac3f](https://github.com/kaltura/playkit-js-transcript/commit/372ac3fdbc6417ba3d38706f63e19e85408f595a))
+
 ### [3.0.1](https://github.com/kaltura/playkit-js-transcript/compare/v2.1.4...v3.0.1) (2022-10-26)
 
 
