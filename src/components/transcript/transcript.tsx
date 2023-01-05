@@ -379,7 +379,8 @@ export class TranscriptComponent extends Component<TranscriptProps, TranscriptSt
         ref={node => {
           this._widgetRootRef = node;
         }}
-        onKeyUp={this._handleEsc}>
+        onKeyUp={this._handleEsc}
+        data-testid="transcriptRoot">
         <div className={styles.globalContainer}>
           {this._renderHeader()}
 
@@ -391,7 +392,8 @@ export class TranscriptComponent extends Component<TranscriptProps, TranscriptSt
             onScroll={this._onScroll}
             ref={node => {
               this._transcriptListRef = node;
-            }}>
+            }}
+            data-testid="transcriptList">
             {isLoading ? this._renderLoading() : this._renderTranscript()}
           </div>
           {renderTranscriptButtons && this._renderScrollToButton()}

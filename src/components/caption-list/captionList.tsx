@@ -110,6 +110,7 @@ export class CaptionList extends Component<Props> {
           const captionProps = this._getCaptionProps(captionData);
           return (
             <Caption
+              data-testid={`caption ${index}`}
               ref={node => {
                 if (index === 0) {
                   this._firstCaptionRef = node;

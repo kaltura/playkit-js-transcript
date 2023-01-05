@@ -1,0 +1,106 @@
+[
+  {
+    "partnerId": 1091,
+    "ks": "",
+    "userId": 0,
+    "objectType": "KalturaStartWidgetSessionResponse"
+  },
+  {
+    "objects": [
+      {
+        "mediaType": 1,
+        "flavorParamsIds": "0,1,2,3,4,5,6,582941,583327",
+        "duration": 741,
+        "msDuration": 741000,
+        "id": "0_wifqaipd",
+        "name": "MPEG Dash with MultiAudio New Transcoding",
+        "status": 2,
+        "type": 1,
+        "thumbnailUrl": "https://mock-thumb/p/1091/sp/109100/thumbnail/entry_id/0_wifqaipd/version/100042",
+        "objectType": "KalturaMediaEntry"
+      }
+    ],
+    "totalCount": 1,
+    "objectType": "KalturaBaseEntryListResponse"
+  },
+  {
+    "sources": [
+      {
+        "deliveryProfileId": 1096,
+        "format": "applehttp",
+        "protocols": "http,https",
+        "flavorIds": "0_h65mfj7f",
+        "url": "./media/a.m3u8",
+        "drm": [],
+        "objectType": "KalturaPlaybackSource"
+      }
+    ],
+    "playbackCaptions": [],
+    "flavorAssets": [
+      {
+        "flavorParamsId": 2,
+        "width": 480,
+        "height": 272,
+        "bitrate": 469,
+        "frameRate": 25,
+        "isOriginal": false,
+        "isWeb": true,
+        "containerFormat": "isom",
+        "videoCodecId": "avc1",
+        "status": 2,
+        "language": "Undefined",
+        "isDefault": false,
+        "id": "0_h65mfj7f",
+        "entryId": "0_wifqaipd",
+        "partnerId": 1091,
+        "version": "2",
+        "size": 42393,
+        "tags": "mobile,web,mbr,iphone,iphonenew",
+        "fileExt": "mp4",
+        "createdAt": 1477390055,
+        "updatedAt": 1477390214,
+        "description": "audio warnings: 2106,#Redundant bitrate.\n",
+        "sizeInBytes": 0,
+        "objectType": "KalturaFlavorAsset"
+      }
+    ],
+    "actions": [],
+    "messages": [],
+    "bumperData": [],
+    "objectType": "KalturaPlaybackContext"
+  },
+  {
+    "objects": [
+      {
+        "id": 13624421,
+        "partnerId": 1091,
+        "metadataProfileId": 4771,
+        "metadataProfileVersion": 12,
+        "metadataObjectType": 1,
+        "objectId": "0_wifqaipd",
+        "version": 12,
+        "createdAt": 1499600020,
+        "updatedAt": 1499600285,
+        "status": 1,
+        "xml": "<metadata/>",
+        "objectType": "KalturaMetadata"
+      },
+      {
+        "id": 13624422,
+        "partnerId": 1091,
+        "metadataProfileId": 13126,
+        "metadataProfileVersion": 2,
+        "metadataObjectType": 1,
+        "objectId": "0_wifqaipd",
+        "version": 2,
+        "createdAt": 1499600285,
+        "updatedAt": 1499600285,
+        "status": 1,
+        "xml": "<metadata>\n  <MediaType>Movie</MediaType>\n  <WatchPermissionRule>Parrent Allowed</WatchPermissionRule>\n</metadata>",
+        "objectType": "KalturaMetadata"
+      }
+    ],
+    "totalCount": 2,
+    "objectType": "KalturaMetadataListResponse"
+  }
+]

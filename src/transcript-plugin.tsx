@@ -216,7 +216,8 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       svgIcon: {path: icons.DOWNLOAD_ICON, viewBox: `0 0 ${icons.BigSize} ${icons.BigSize}`},
       onClick: this._handleDownload,
       component: withText(translate)((props: {label: string}) => (
-        <PluginButton isActive={false} onClick={this._handleDownload} id={'download-transcript'} icon={icons.DOWNLOAD_ICON} label={props.label} />
+        <PluginButton isActive={false} onClick={this._handleDownload} id={'download-transcript'} icon={icons.DOWNLOAD_ICON} label={props.label}
+                      dataTestId="downloadButton" />
       ))
     }) as number;
   }
@@ -234,7 +235,8 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       svgIcon: {path: icons.PRINT_ICON, viewBox: `0 0 ${icons.BigSize} ${icons.BigSize}`},
       onClick: this._handlePrint,
       component: withText(translate)((props: {label: string}) => (
-        <PluginButton isActive={false} onClick={this._handlePrint} id={'print-transcript'} icon={icons.PRINT_ICON} label={props.label} />
+        <PluginButton isActive={false} onClick={this._handlePrint} id={'print-transcript'} icon={icons.PRINT_ICON} label={props.label}
+                      dataTestId="printButton" />
       ))
     }) as number;
   }
@@ -287,7 +289,8 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
         const isActive = this._isPluginActive();
         const label = isActive ? props.hideTranscript : props.showTranscript;
         return (
-          <PluginButton isActive={isActive} onClick={this._handleClickOnPluginIcon} id="transcript-icon" label={label} icon={icons.PLUGIN_ICON} />
+          <PluginButton isActive={isActive} onClick={this._handleClickOnPluginIcon} id="transcript-icon" label={label} icon={icons.PLUGIN_ICON}
+                        dataTestId="transcriptPluginButton" />
         );
       })
     }) as number;

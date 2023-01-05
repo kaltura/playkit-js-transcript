@@ -13,16 +13,10 @@
     "url": "git+https://github.com/kaltura/playkit-js-transcript.git"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.23.0",
-    "@typescript-eslint/parser": "^5.23.0",
     "conventional-github-releaser": "3.1.3",
     "cross-env": "^7.0.3",
     "css-loader": "^6.7.1",
-    "documentation": "^13.2.5",
-    "husky": "^8.0.1",
-    "jest": "^28.1.0",
     "kaltura-player-js": "https://github.com/kaltura/kaltura-player-js.git#master",
-    "lint-staged": "^12.4.1",
     "preact": "^10.4.1",
     "prettier": "^2.6.2",
     "sass": "^1.54.3",
@@ -30,8 +24,7 @@
     "standard-version": "^9.3.2",
     "style-loader": "1.3.0",
     "ts-loader": "^9.3.0",
-    "tslint": "^6.1.3",
-    "typescript": "^4.6.4",
+    "typescript": "^4.9.4",
     "uglifyjs-webpack-plugin": "^2.2.0",
     "webpack": "^5.72.1",
     "webpack-cli": "^4.9.2",
@@ -46,14 +39,13 @@
     "build": "webpack --mode production",
     "dev": "webpack-dev-server --mode development",
     "watch": "webpack --progress --color --watch --mode development",
-    "test": "jest",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "test:prepare": "yarn run build && yes | cp -i ./dist/playkit-transcript.js ./cypress/public/plugin.js",
+    "test:watch": "yarn run test:prepare && cypress open",
+    "test": "yarn run test:prepare && cypress run",
     "release": "standard-version",
     "pushTaggedRelease": "git push --follow-tags --no-verify origin master",
-    "eslint": "eslint . --color",
-    "commit:dist": "git add --force --all dist && (git commit -m 'chore: update dist' || exit 0)",
-    "docs:generate": "documentation build flow-typed/** src/** -f md -o docs/configuration.md",
-    "docs:serve": "documentation serve flow-typed/** src/** --watch",
-    "precommit": "lint-staged",
     "prettier:fix": "prettier --write ."
   },
   "publishConfig": {
@@ -77,6 +69,7 @@
   "dependencies": {
     "@playkit-js/common": "^1.0.7",
     "@playkit-js/ui-managers": "^1.3.1",
+    "cypress": "^12.3.0",
     "stream-browserify": "^3.0.0"
   },
   "kaltura": {
