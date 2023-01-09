@@ -217,7 +217,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       onClick: this._handleDownload,
       component: withText(translate)((props: {label: string}) => (
         <PluginButton isActive={false} onClick={this._handleDownload} id={'download-transcript'} icon={icons.DOWNLOAD_ICON} label={props.label}
-                      dataTestId="downloadButton" />
+                      dataTestId="transcript_downloadButton" />
       ))
     }) as number;
   }
@@ -236,7 +236,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       onClick: this._handlePrint,
       component: withText(translate)((props: {label: string}) => (
         <PluginButton isActive={false} onClick={this._handlePrint} id={'print-transcript'} icon={icons.PRINT_ICON} label={props.label}
-                      dataTestId="printButton" />
+                      dataTestId="transcript_printButton" />
       ))
     }) as number;
   }

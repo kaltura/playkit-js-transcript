@@ -142,7 +142,7 @@ class SearchComponent extends Component<SearchProps, SearchState> {
     return (
       <div
         className={[styles.searchWrapper, searchQuery || this.state.active ? styles.active : '', this.state.focused ? styles.focused : ''].join(' ')}
-        data-testid="searchBar">
+        data-testid="transcript_searchBar">
         <div className={styles.searchIcon}>
           <svg
             width="32px"
@@ -175,7 +175,7 @@ class SearchComponent extends Component<SearchProps, SearchState> {
         />
         {searchQuery && (
           <A11yWrapper onClick={this._onClear}>
-            <button className={styles.clearIcon} tabIndex={0} aria-label={this.props.clearSearchLabel} data-testid="clearSearchButton">
+            <button className={styles.clearIcon} tabIndex={0} aria-label={this.props.clearSearchLabel} data-testid="transcript_clearSearchButton">
               <svg
                 width="32px"
                 height="32px"
@@ -194,7 +194,7 @@ class SearchComponent extends Component<SearchProps, SearchState> {
           </A11yWrapper>
         )}
         {searchQuery && (
-          <div className={styles.searchResults} aria-live="polite" aria-label={this.props.searchResultsLabel} data-testid="searchResultLabel">{`${
+          <div className={styles.searchResults} aria-live="polite" aria-label={this.props.searchResultsLabel} data-testid="transcript_searchResultLabel">{`${
             totalSearchResults > 0 ? `${activeSearchIndex}/${totalSearchResults}` : '0/0'
           }`}</div>
         )}

@@ -83,8 +83,8 @@ describe('Transcript plugin', () => {
     preparePage();
     initiatePlay();
     cy.get('[data-testid="transcriptPluginButton"]').should('not.exist');
-    cy.get('[data-testid="printButton"]').should("not.exist");
-    cy.get('[data-testid="downloadButton"]').should("not.exist");
+    cy.get('[data-testid="transcript_printButton"]').should("not.exist");
+    cy.get('[data-testid="transcript_downloadButton"]').should("not.exist");
   });
 
   it('should open the transcript side panel after clicking on play button', () => {
@@ -138,9 +138,9 @@ describe('Transcript plugin', () => {
     mockTranscript();
     preparePage();
     initiatePlay();
-    cy.get('[data-testid="searchBar"]').get('input').type('first');
-    cy.get('[data-testid="searchResultLabel"]').should("exist");
-    cy.get('[data-testid="searchResultLabel"]').should($div => {
+    cy.get('[data-testid="transcript_searchBar"]').get('input').type('first');
+    cy.get('[data-testid="transcript_searchResultLabel"]').should("exist");
+    cy.get('[data-testid="transcript_searchResultLabel"]').should($div => {
       expect($div[0].textContent).to.eq('1/2');
     });
   });
@@ -149,7 +149,7 @@ describe('Transcript plugin', () => {
     mockTranscript();
     preparePage();
     initiatePlay();
-    cy.get('[data-testid="searchBar"]').get('input').type('first');
+    cy.get('[data-testid="transcript_searchBar"]').get('input').type('first');
 
     // verify a color of a not selected match - should be rgb(253, 211, 4)
     cy.get('[data-testid="transcriptList"]').contains('listening to music for the first time').should($div => {
@@ -166,10 +166,10 @@ describe('Transcript plugin', () => {
     mockTranscript();
     preparePage();
     initiatePlay();
-    cy.get('[data-testid="searchBar"]').get('input').type('first');
-    cy.get('[data-testid="clearSearchButton"]').should("exist");
-    cy.get('[data-testid="clearSearchButton"]').click();
-    cy.get('[data-testid="searchBar"]').get('input').should($div => {
+    cy.get('[data-testid="transcript_searchBar"]').get('input').type('first');
+    cy.get('[data-testid="transcript_clearSearchButton"]').should("exist");
+    cy.get('[data-testid="transcript_clearSearchButton"]').click();
+    cy.get('[data-testid="transcript_searchBar"]').get('input').should($div => {
       expect($div[0].textContent).to.eq('');
     })
   });
@@ -182,14 +182,14 @@ describe('Transcript plugin', () => {
     mockTranscript();
     preparePage({printDisabled: false});
     initiatePlay();
-    cy.get('[data-testid="printButton"]').should("exist");
+    cy.get('[data-testid="transcript_printButton"]').should("exist");
   });
 
   it('should not render print button', () => {
     mockTranscript();
     preparePage({printDisabled: true});
     initiatePlay();
-    cy.get('[data-testid="printButton"]').should("not.exist");
+    cy.get('[data-testid="transcript_printButton"]').should("not.exist");
   });
 
   //
@@ -200,13 +200,13 @@ describe('Transcript plugin', () => {
     mockTranscript();
     preparePage({downloadDisabled: false});
     initiatePlay();
-    cy.get('[data-testid="downloadButton"]').should("exist");
+    cy.get('[data-testid="transcript_downloadButton"]').should("exist");
   });
 
   it('should not render download button', () => {
     mockTranscript();
     preparePage({downloadDisabled: true});
     initiatePlay();
-    cy.get('[data-testid="downloadButton"]').should("not.exist");
+    cy.get('[data-testid="transcript_downloadButton"]').should("not.exist");
   });
 });
