@@ -39,8 +39,8 @@ const initiatePlay = () => {
 }
 
 const clickTranscriptPluginButton = () => {
-  cy.get('[data-testid="transcriptPluginButton"]').should("exist");
-  cy.get('[data-testid="transcriptPluginButton"]').click({force: true});
+  cy.get('[data-testid="transcript_pluginButton"]').should("exist");
+  cy.get('[data-testid="transcript_pluginButton"]').click({force: true});
 }
 
 const clickClosePluginButton = () => {
@@ -82,7 +82,7 @@ describe('Transcript plugin', () => {
     mockTranscript('vod-without-captions.json');
     preparePage();
     initiatePlay();
-    cy.get('[data-testid="transcriptPluginButton"]').should('not.exist');
+    cy.get('[data-testid="transcript_pluginButton"]').should('not.exist');
     cy.get('[data-testid="transcript_printButton"]').should("not.exist");
     cy.get('[data-testid="transcript_downloadButton"]').should("not.exist");
   });
@@ -91,15 +91,15 @@ describe('Transcript plugin', () => {
     mockTranscript();
     preparePage();
     initiatePlay();
-    cy.get('[data-testid="transcriptRoot"]').should('exist');
-    cy.get('[data-testid="transcriptRoot"]').should('have.css', 'visibility', 'visible');
+    cy.get('[data-testid="transcript_root"]').should('exist');
+    cy.get('[data-testid="transcript_root"]').should('have.css', 'visibility', 'visible');
   });
 
   it('should not open the transcript side panel after clicking on play button', () => {
     mockTranscript();
     preparePage({expandOnFirstPlay: false});
     initiatePlay();
-    cy.get('[data-testid="transcriptRoot"]').should('have.css', 'visibility', 'hidden');
+    cy.get('[data-testid="transcript_root"]').should('have.css', 'visibility', 'hidden');
   });
 
   it('should open and close Transcript plugin', () => {
@@ -107,10 +107,10 @@ describe('Transcript plugin', () => {
     preparePage({expandOnFirstPlay: false});
     initiatePlay();
     clickTranscriptPluginButton();
-    cy.get('[data-testid="transcriptRoot"]').should('exist');
-    cy.get('[data-testid="transcriptRoot"]').should('have.css', 'visibility', 'visible');
+    cy.get('[data-testid="transcript_root"]').should('exist');
+    cy.get('[data-testid="transcript_root"]').should('have.css', 'visibility', 'visible');
     clickClosePluginButton();
-    cy.get('[data-testid="transcriptRoot"]').should('have.css', 'visibility', 'hidden');
+    cy.get('[data-testid="transcript_root"]').should('have.css', 'visibility', 'hidden');
   });
 
   it('should select captions and highlight them', () => {
@@ -120,7 +120,7 @@ describe('Transcript plugin', () => {
     cy.window().then(win => {
       // @ts-ignore
       const kalturaPlayer = win.KalturaPlayer.getPlayers()['player-placeholder'];
-      const captionSpan = cy.get('[data-testid="transcriptList"]').contains('first caption');
+      const captionSpan = cy.get('[data-testid="transcript_list"]').contains('first caption');
       captionSpan.should('exist');
       kalturaPlayer.currentTime = 20;
       captionSpan.should('have.css', 'background-color', 'rgba(0, 0, 0, 0)');
@@ -152,12 +152,12 @@ describe('Transcript plugin', () => {
     cy.get('[data-testid="transcript_searchBar"]').get('input').type('first');
 
     // verify a color of a not selected match - should be rgb(253, 211, 4)
-    cy.get('[data-testid="transcriptList"]').contains('listening to music for the first time').should($div => {
+    cy.get('[data-testid="transcript_list"]').contains('listening to music for the first time').should($div => {
       expect($div[0].children[0]).to.have.css('background-color', 'rgb(253, 211, 4)');
     });
 
     // verify a color of a selected match - should be rgb(22, 135, 255)
-    cy.get('[data-testid="transcriptList"]').contains('first caption').should($div => {
+    cy.get('[data-testid="transcript_list"]').contains('first caption').should($div => {
       expect($div[0].children[0]).to.have.css('background-color', 'rgb(22, 135, 255)');
     });
   });

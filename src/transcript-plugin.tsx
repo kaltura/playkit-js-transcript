@@ -290,7 +290,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
         const label = isActive ? props.hideTranscript : props.showTranscript;
         return (
           <PluginButton isActive={isActive} onClick={this._handleClickOnPluginIcon} id="transcript-icon" label={label} icon={icons.PLUGIN_ICON}
-                        dataTestId="transcriptPluginButton" />
+                        dataTestId="transcript_pluginButton" />
         );
       })
     }) as number;
