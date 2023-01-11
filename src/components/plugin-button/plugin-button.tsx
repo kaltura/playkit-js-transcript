@@ -19,8 +19,10 @@ export const PluginButton = ({isActive, onClick, label, id, icon, dataTestId}: P
   return (
     <Tooltip label={label} type="bottom">
       <A11yWrapper onClick={onClick}>
-        <button aria-label={label} className={[ui.style.upperBarIcon, styles.pluginButton, isActive ? styles.active : ''].join(' ')}
-                data-testid={dataTestId}>
+        <button
+          aria-label={label}
+          className={[ui.style.upperBarIcon, styles.pluginButton, isActive ? styles.active : ''].join(' ')}
+          data-testid={dataTestId}>
           <Icon id={id} height={icons.BigSize} width={icons.BigSize} viewBox={`0 0 ${icons.BigSize} ${icons.BigSize}`} path={icon} />
         </button>
       </A11yWrapper>
@@ -29,5 +31,5 @@ export const PluginButton = ({isActive, onClick, label, id, icon, dataTestId}: P
 };
 
 PluginButton.defaultProps = {
-  dataTestId: "transcript_pluginButton"
-}
+  dataTestId: 'transcript_pluginButton'
+};

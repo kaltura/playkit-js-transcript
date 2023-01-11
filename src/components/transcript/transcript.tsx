@@ -1,5 +1,5 @@
 import {h, Component} from 'preact';
-import {A11yWrapper, OnClickEvent} from '@playkit-js/common';
+import {OnClickEvent} from '@playkit-js/common';
 import {debounce} from '../../utils';
 import * as styles from './transcript.scss';
 import {Spinner} from '../spinner';
@@ -8,15 +8,15 @@ import {CaptionList} from '../caption-list';
 import {HighlightedMap, CuePointData} from '../../types';
 import {CloseButton} from '../close-button';
 import {ErrorIcon} from './error-icon';
+import {AutoscrollButton} from '../autoscroll-button';
 
 const {ENTER, SPACE, TAB, ESC} = KalturaPlayer.ui.utils.KeyMap;
 const {withText, Text} = KalturaPlayer.ui.preacti18n;
 
 const translates = {
-  autoScrollLabel: <Text id="transcript.auto_scroll">Enable auto scroll</Text>,
+  skipTranscript: <Text id="transcript.skip_transcript">Skip transcript</Text>,
   errorTitle: <Text id="transcript.whoops">Whoops!</Text>,
-  errorDescripton: <Text id="transcript.load_failed">Failed to load transcript</Text>,
-  skipTranscript: <Text id="transcript.skip_transcript">Skip transcript</Text>
+  errorDescripton: <Text id="transcript.load_failed">Failed to load transcript</Text>
 };
 
 export interface TranscriptProps {
@@ -36,10 +36,9 @@ export interface TranscriptProps {
   toggledWithEnter: boolean;
   highlightedMap: HighlightedMap;
   onItemClicked: (n: number) => void;
-  autoScrollLabel?: string;
+  skipTranscript?: string;
   errorTitle?: string;
   errorDescripton?: string;
-  skipTranscript?: string;
 }
 
 interface TranscriptState {
@@ -62,7 +61,8 @@ const initialSearch = {
 
 const SEARCHBAR_HEIGHT = 38; // height of search bar with margins
 
-export class TranscriptComponent extends Component<TranscriptProps, TranscriptState> {
+@withText(translates)
+export class Transcript extends Component<TranscriptProps, TranscriptState> {
   private _transcriptListRef: HTMLElement | null = null;
   private _captionListRef: any = null;
   private _skipTranscriptButtonRef: HTMLDivElement | null = null;
@@ -113,32 +113,13 @@ export class TranscriptComponent extends Component<TranscriptProps, TranscriptSt
   private _renderScrollToButton = () => {
     const {isAutoScrollEnabled} = this.state;
     return (
-      <A11yWrapper onClick={this._enableAutoScroll}>
-        <div
-          role="button"
-          className={`${styles.autoscrollButton} ${isAutoScrollEnabled ? '' : styles.autoscrollButtonVisible}`}
-          tabIndex={isAutoScrollEnabled ? -1 : 0}
-          aria-label={this.props.autoScrollLabel}
-          ref={node => {
-            this._autoscrollButtonRef = node;
-          }}>
-          <svg
-            width="32px"
-            height="32px"
-            viewBox="0 0 16 16"
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlnsXlink="http://www.w3.org/1999/xlink">
-            <g id="Icons/16/Arrowline/up" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-              <path
-                d="M8.0000393,2 C8.55232405,2 9.0000393,2.44771525 9.0000393,3 L9.0000393,3 L9,10.17 L11.216782,7.37830235 C11.5337243,6.97899674 12.0940739,6.88664831 12.5186429,7.14486093 L12.6217369,7.21674268 C13.054318,7.56009681 13.1266507,8.18911658 12.7832966,8.62169765 L12.7832966,8.62169765 L8.78329662,13.6611718 C8.3829349,14.165575 7.61714369,14.165575 7.21678198,13.6611718 L7.21678198,13.6611718 L3.21678198,8.62169765 C2.87342784,8.18911658 2.94576057,7.56009681 3.37834164,7.21674268 C3.81092272,6.87338855 4.43994248,6.94572127 4.78329662,7.37830235 L4.78329662,7.37830235 L7,10.17 L7.0000393,3 C7.0000393,2.48716416 7.38607949,2.06449284 7.88341817,2.00672773 Z"
-                id="Combined-Shape"
-                fill="#ffffff"
-                transform="translate(8.000039, 8.019737) scale(1, -1) translate(-8.000039, -8.019737) "></path>
-            </g>
-          </svg>
-        </div>
-      </A11yWrapper>
+      <AutoscrollButton
+        setAutoscrollButtonRef={(node: HTMLDivElement) => {
+          this._autoscrollButtonRef = node;
+        }}
+        isAutoScrollEnabled={isAutoScrollEnabled}
+        onClick={this._enableAutoScroll}
+      />
     );
   };
 
@@ -199,7 +180,7 @@ export class TranscriptComponent extends Component<TranscriptProps, TranscriptSt
     const {toggledWithEnter, kitchenSinkActive} = this.props;
     const {search, activeSearchIndex, totalSearchResults} = this.state;
     return (
-      <div className={[styles.header, this._getHeaderStyles()].join(' ')}>
+      <div className={[styles.header, this._getHeaderStyles()].join(' ')} data-testid="transcript_header">
         <Search
           onChange={this._onSearch}
           onSearchIndexChange={this._debounced.onActiveSearchIndexChange}
@@ -208,7 +189,6 @@ export class TranscriptComponent extends Component<TranscriptProps, TranscriptSt
           totalSearchResults={totalSearchResults}
           toggledWithEnter={toggledWithEnter}
           kitchenSinkActive={kitchenSinkActive}
-          searchQuery={search}
         />
       </div>
     );
@@ -316,11 +296,7 @@ export class TranscriptComponent extends Component<TranscriptProps, TranscriptSt
   };
 
   private _renderLoading = () => {
-    return (
-      <div className={styles.loadingWrapper}>
-        <Spinner />
-      </div>
-    );
+    return <Spinner />;
   };
 
   private _scrollTo = (el: HTMLElement) => {
@@ -402,5 +378,3 @@ export class TranscriptComponent extends Component<TranscriptProps, TranscriptSt
     );
   }
 }
-
-export const Transcript = withText(translates)(TranscriptComponent);
