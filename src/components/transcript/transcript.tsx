@@ -11,6 +11,13 @@ import {ErrorIcon} from './error-icon';
 import {AutoscrollButton} from '../autoscroll-button';
 
 const {ENTER, SPACE, TAB, ESC} = KalturaPlayer.ui.utils.KeyMap;
+const {withText, Text} = KalturaPlayer.ui.preacti18n;
+
+const translates = {
+  skipTranscript: <Text id="transcript.skip_transcript">Skip transcript</Text>,
+  errorTitle: <Text id="transcript.whoops">Whoops!</Text>,
+  errorDescripton: <Text id="transcript.load_failed">Failed to load transcript</Text>
+};
 
 export interface TranscriptProps {
   onSeek(time: number): void;
@@ -29,7 +36,9 @@ export interface TranscriptProps {
   toggledWithEnter: boolean;
   highlightedMap: HighlightedMap;
   onItemClicked: (n: number) => void;
-  autoScrollLabel?: string;
+  skipTranscript?: string;
+  errorTitle?: string;
+  errorDescripton?: string;
 }
 
 interface TranscriptState {
@@ -52,6 +61,7 @@ const initialSearch = {
 
 const SEARCHBAR_HEIGHT = 38; // height of search bar with margins
 
+@withText(translates)
 export class Transcript extends Component<TranscriptProps, TranscriptState> {
   private _transcriptListRef: HTMLElement | null = null;
   private _captionListRef: any = null;
@@ -214,8 +224,8 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         className={styles.skipTranscriptButton}
         onKeyDown={this._handleKeyDown}
         onClick={this._handleClick}
-        tabIndex={1}>
-        Skip transcript
+        tabIndex={0}>
+        {this.props.skipTranscript}
       </div>
     );
   };
@@ -223,9 +233,6 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
   private _renderTranscript = () => {
     const {captions, hasError, onRetryLoad, showTime, videoDuration, highlightedMap} = this.props;
     const {isAutoScrollEnabled, searchMap, activeSearchIndex, searchLength} = this.state;
-    if (!captions || !captions.length) {
-      return null;
-    }
 
     if (hasError) {
       return (
@@ -233,15 +240,14 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
           <div className={styles.errorIcon}>
             <ErrorIcon />
           </div>
-          <p className={styles.errorMainText}>Whoops!</p>
-          <p className={styles.errorDescriptionText}>
-            Failed to get transcript, please try again
-            <button className={styles.retryButton} onClick={onRetryLoad}>
-              Retry
-            </button>
-          </p>
+          <p className={styles.errorMainText}>{this.props.errorTitle}</p>
+          <p className={styles.errorDescriptionText}>{this.props.errorDescripton}</p>
         </div>
       );
+    }
+
+    if (!captions || !captions.length) {
+      return null;
     }
 
     const captionProps = {
@@ -341,30 +347,32 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
   };
 
   render(props: TranscriptProps) {
-    const {isLoading, kitchenSinkActive} = props;
-
+    const {isLoading, kitchenSinkActive, hasError} = props;
+    const renderTranscriptButtons = !(isLoading || hasError);
     return (
       <div
         className={`${styles.root} ${kitchenSinkActive ? '' : styles.hidden}`}
         ref={node => {
           this._widgetRootRef = node;
         }}
-        onKeyUp={this._handleEsc}>
+        onKeyUp={this._handleEsc}
+        data-testid="transcript_root">
         <div className={styles.globalContainer}>
           {this._renderHeader()}
 
           <CloseButton onClick={this.props.onClose} />
 
-          {!isLoading && this._renderSkipTranscriptButton()}
+          {renderTranscriptButtons && this._renderSkipTranscriptButton()}
           <div
             className={styles.body}
             onScroll={this._onScroll}
             ref={node => {
               this._transcriptListRef = node;
-            }}>
+            }}
+            data-testid="transcript_list">
             {isLoading ? this._renderLoading() : this._renderTranscript()}
           </div>
-          {this._renderScrollToButton()}
+          {renderTranscriptButtons && this._renderScrollToButton()}
         </div>
       </div>
     );

@@ -13,6 +13,8 @@ const {SidePanelModes, SidePanelPositions, ReservedPresetNames, ReservedPresetAr
 const {withText, Text} = KalturaPlayer.ui.preacti18n;
 const {get} = ObjectUtils;
 
+const LOADING_TIMEOUT = 10000;
+
 interface TimedMetadataEvent {
   payload: {
     cues: Array<CuePoint>;
@@ -35,6 +37,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   private _activeCuePointsMap: HighlightedMap = {};
   private _captionMap: Map<string, Array<CuePointData>> = new Map();
   private _isLoading = false;
+  private _loadingTimeoutId?: ReturnType<typeof setTimeout>;
   private _hasError = false;
   private _triggeredByKeyboard = false;
 
@@ -78,27 +81,35 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   }
 
   private _initListeners(): void {
-    this.eventManager.listen(this.player, this.player.Event.FIRST_PLAYING, () => {
-      if ((this.player.getTracks(this.player.Track.TEXT) || []).length) {
-        // check if captions already added in TextTrack
-        if (!this._captionMap.size) {
-          // turn on loading animation till captions added to TextTrack
-          this._isLoading = true;
-        }
-        this._addDownloadIcon();
-        this._addPrintIcon();
-        this._addTranscriptItem();
+    this.eventManager.listenOnce(this.player, this.player.Event.TRACKS_CHANGED, () => {
+      if (this._getTextTracks().length) {
+        this.eventManager.listen(this.player, this.player.Event.TIMED_METADATA_CHANGE, this._onTimedMetadataChange);
+        this.eventManager.listen(this.player, this.player.Event.TIMED_METADATA_ADDED, this._onTimedMetadataAdded);
+        this.eventManager.listen(this.player, this.player.Event.TEXT_TRACK_CHANGED, this._handleLanguageChange);
       }
     });
-    this.eventManager.listen(this.player, this.player.Event.TIMED_METADATA_CHANGE, this._onTimedMetadataChange);
-    this.eventManager.listen(this.player, this.player.Event.TIMED_METADATA_ADDED, this._onTimedMetadataAdded);
-    this.eventManager.listen(this.player, this.player.Event.TEXT_TRACK_CHANGED, this._handleLanguageChange);
   }
+
+  private _initLoading = () => {
+    clearTimeout(this._loadingTimeoutId);
+    this._isLoading = false;
+    this._hasError = false;
+    if (!this._captionMap.has(this._activeCaptionMapId)) {
+      // turn on loading animation till captions added to TextTrack
+      this._isLoading = true;
+      this._loadingTimeoutId = setTimeout(() => {
+        // display error slate
+        this._isLoading = false;
+        this._hasError = true;
+        this._updateTranscriptPanel();
+      }, LOADING_TIMEOUT);
+    }
+    this._updateTranscriptPanel();
+  };
 
   private _handleLanguageChange = () => {
     this._activeCaptionMapId = this._getCaptionMapId();
-    this._isLoading = !this._captionMap.has(this._activeCaptionMapId);
-    this._updateTranscriptPanel();
+    this._initLoading();
   };
 
   private _updateTranscriptPanel() {
@@ -116,6 +127,9 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     });
     if (captionData.length) {
       this._addCaptionData(captionData);
+      this._addDownloadIcon();
+      this._addPrintIcon();
+      this._addTranscriptItem();
     }
   };
 
@@ -140,11 +154,16 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     this._activeCaptionMapId = this._getCaptionMapId();
     this._captionMap.set(this._activeCaptionMapId, newData);
     this._isLoading = false;
+    clearTimeout(this._loadingTimeoutId);
     this._updateTranscriptPanel();
   };
 
+  private _getTextTracks = () => {
+    return this.player.getTracks(this.player.Track.TEXT) || [];
+  };
+
   private _getCaptionMapId = (): string => {
-    const allTextTracks = this.player.getTracks(this.player.Track.TEXT) || [];
+    const allTextTracks = this._getTextTracks();
     const activeTextTrack = allTextTracks.find(track => track.active);
     if (activeTextTrack?.language === 'off') {
       // use 1st captions from text-track list
@@ -186,6 +205,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   private _addDownloadIcon(): void {
     const {downloadDisabled} = this.config;
     if (this._downloadIcon > 0 || downloadDisabled) {
+      // download icon already exist or download disabled
       return;
     }
     const translate = {
@@ -196,13 +216,15 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       svgIcon: {path: icons.DOWNLOAD_ICON, viewBox: `0 0 ${icons.BigSize} ${icons.BigSize}`},
       onClick: this._handleDownload,
       component: withText(translate)((props: {label: string}) => (
-        <PluginButton isActive={false} onClick={this._handleDownload} id={'download-transcript'} icon={icons.DOWNLOAD_ICON} label={props.label} />
+        <PluginButton isActive={false} onClick={this._handleDownload} id={'download-transcript'} icon={icons.DOWNLOAD_ICON} label={props.label}
+                      dataTestId="transcript_downloadButton" />
       ))
     }) as number;
   }
   private _addPrintIcon(): void {
     const {printDisabled} = this.config;
     if (this._printIcon > 0 || printDisabled) {
+      // print icon already exist or download disabled
       return;
     }
     const translate = {
@@ -213,15 +235,19 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       svgIcon: {path: icons.PRINT_ICON, viewBox: `0 0 ${icons.BigSize} ${icons.BigSize}`},
       onClick: this._handlePrint,
       component: withText(translate)((props: {label: string}) => (
-        <PluginButton isActive={false} onClick={this._handlePrint} id={'print-transcript'} icon={icons.PRINT_ICON} label={props.label} />
+        <PluginButton isActive={false} onClick={this._handlePrint} id={'print-transcript'} icon={icons.PRINT_ICON} label={props.label}
+                      dataTestId="transcript_printButton" />
       ))
     }) as number;
   }
 
   private _addTranscriptItem(): void {
-    const {expandMode, position, expandOnFirstPlay} = this.config;
-    const {showTime, scrollOffset, searchDebounceTimeout, searchNextPrevDebounceTimeout} = this.config;
+    if (Math.max(this._transcriptPanel, this._transcriptIcon) > 0) {
+      // transcript panel or icon already exist
+      return;
+    }
 
+    const {expandMode, position, expandOnFirstPlay, showTime, scrollOffset, searchDebounceTimeout, searchNextPrevDebounceTimeout} = this.config;
     this._transcriptPanel = this.sidePanelsManager!.add({
       label: 'Transcript',
       panelComponent: () => {
@@ -263,7 +289,8 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
         const isActive = this._isPluginActive();
         const label = isActive ? props.hideTranscript : props.showTranscript;
         return (
-          <PluginButton isActive={isActive} onClick={this._handleClickOnPluginIcon} id="transcript-icon" label={label} icon={icons.PLUGIN_ICON} />
+          <PluginButton isActive={isActive} onClick={this._handleClickOnPluginIcon} id="transcript-icon" label={label} icon={icons.PLUGIN_ICON}
+                        dataTestId="transcript_pluginButton" />
         );
       })
     }) as number;
@@ -320,6 +347,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     this._captionMap = new Map();
     this._activeCaptionMapId = '';
     this._isLoading = false;
+    clearTimeout(this._loadingTimeoutId);
     this._hasError = false;
     this._triggeredByKeyboard = false;
   }

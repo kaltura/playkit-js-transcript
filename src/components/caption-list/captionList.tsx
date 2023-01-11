@@ -105,7 +105,7 @@ export class CaptionList extends Component<Props> {
   render() {
     const {data} = this.props;
     return (
-      <div className={styles.transcriptWrapper} onKeyUp={this._handleKeyUp} role="list">
+      <div className={styles.transcriptWrapper} onKeyUp={this._handleKeyUp} aria-live="polite">
         {data.map((captionData, index) => {
           const captionProps = this._getCaptionProps(captionData);
           return (

@@ -1,0 +1,139 @@
+[
+  {
+    "partnerId": 1091,
+    "ks": "",
+    "userId": 0,
+    "objectType": "KalturaStartWidgetSessionResponse"
+  },
+{
+  "objects": [
+    {
+      "startTime": 1000,
+      "endTime": 10000,
+      "content": [
+        {
+          "text": "first caption"
+        }
+      ]
+    },
+    {
+      "startTime": 12120,
+      "endTime": 14960,
+      "content": [
+        {
+          "text": "What three songs would you\nrecommend to someone -"
+        }
+      ]
+    },
+    {
+      "startTime": 15040,
+      "endTime": 18360,
+      "content": [
+        {
+          "text": "listening to music for the first time"
+        }
+      ]
+    },
+    {
+      "startTime": 19680,
+      "endTime": 21000,
+      "content": [
+        {
+          "text": "<i>Dark Side.</i>"
+        }
+      ]
+    },
+    {
+      "startTime": 21080,
+      "endTime": 23960,
+      "content": [
+        {
+          "text": "<i>Timebomb.</i>\n<i>- Over My Dead Body.</i>"
+        }
+      ]
+    },
+    {
+      "startTime": 24600,
+      "endTime": 28120,
+      "content": [
+        {
+          "text": "It's always my favourite.\n- That's all you need to listen to."
+        }
+      ]
+    },
+    {
+      "startTime": 28200,
+      "endTime": 32800,
+      "content": [
+        {
+          "text": "If you weren't a Violent Pop band,\n\"Violent Bop band\", -"
+        }
+      ]
+    },
+    {
+      "startTime": 32880,
+      "endTime": 34800,
+      "content": [
+        {
+          "text": "what genre would you play?"
+        }
+      ]
+    },
+    {
+      "startTime": 34880,
+      "endTime": 38400,
+      "content": [
+        {
+          "text": "I'd be rapping, doing some trap stuff."
+        }
+      ]
+    },
+    {
+      "startTime": 38480,
+      "endTime": 42280,
+      "content": [
+        {
+          "text": "I'd probably do smooth jazz.\n- Aleksi would be a DJ."
+        }
+      ]
+    },
+    {
+      "startTime": 42360,
+      "endTime": 45960,
+      "content": [
+        {
+          "text": "Yeah, Aleksi.\n- Aleksi would be producing."
+        }
+      ]
+    },
+    {
+      "startTime": 46040,
+      "endTime": 49160,
+      "content": [
+        {
+          "text": "Have you ever had big fights?"
+        }
+      ]
+    },
+    {
+      "startTime": 49240,
+      "endTime": 51480,
+      "content": [
+        {
+          "text": "If so, what was it about?"
+        }
+      ]
+    },
+    {
+      "startTime": 51560,
+      "endTime": 55440,
+      "content": [
+        {
+          "text": "I can think of one big fight."
+        }
+      ]
+    }
+
+  ]
+}
+  ]
