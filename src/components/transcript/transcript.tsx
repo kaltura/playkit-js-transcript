@@ -180,7 +180,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     const {toggledWithEnter, kitchenSinkActive} = this.props;
     const {search, activeSearchIndex, totalSearchResults} = this.state;
     return (
-      <div className={[styles.header, this._getHeaderStyles()].join(' ')}>
+      <div className={[styles.header, this._getHeaderStyles()].join(' ')} data-testid="transcript_header">
         <Search
           onChange={this._onSearch}
           onSearchIndexChange={this._debounced.onActiveSearchIndexChange}

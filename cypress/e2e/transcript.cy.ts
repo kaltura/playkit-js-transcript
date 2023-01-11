@@ -36,17 +36,17 @@ const preparePage = (transcriptConf = {}) => {
 
 const initiatePlay = () => {
   cy.get('.playkit-pre-playback-play-button').click({force: true});
-}
+};
 
 const clickTranscriptPluginButton = () => {
-  cy.get('[data-testid="transcript_pluginButton"]').should("exist");
+  cy.get('[data-testid="transcript_pluginButton"]').should('exist');
   cy.get('[data-testid="transcript_pluginButton"]').click({force: true});
-}
+};
 
 const clickClosePluginButton = () => {
-  cy.get('[data-testid="transcriptCloseButton"]').should("exist");
+  cy.get('[data-testid="transcriptCloseButton"]').should('exist');
   cy.get('[data-testid="transcriptCloseButton"]').click({force: true});
-}
+};
 
 const checkRequest = (reqBody: any, service: string, action: string) => {
   return reqBody?.service === service && reqBody?.action === action;
@@ -74,139 +74,137 @@ describe('Transcript plugin', () => {
     cy.intercept('GET', '**/index.php?service=analytics*', {});
   });
 
-  //
-  // TRANSCRIPT
-  //
+  describe('transcript', () => {
+    it('should not show Transcript plugin buttons for entry without captions', () => {
+      mockTranscript('vod-without-captions.json');
+      preparePage();
+      initiatePlay();
+      cy.get('[data-testid="transcript_pluginButton"]').should('not.exist');
+      cy.get('[data-testid="transcript_printButton"]').should('not.exist');
+      cy.get('[data-testid="transcript_downloadButton"]').should('not.exist');
+    });
 
-  it('should not show Transcript plugin buttons for entry without captions', () => {
-    mockTranscript('vod-without-captions.json');
-    preparePage();
-    initiatePlay();
-    cy.get('[data-testid="transcript_pluginButton"]').should('not.exist');
-    cy.get('[data-testid="transcript_printButton"]').should("not.exist");
-    cy.get('[data-testid="transcript_downloadButton"]').should("not.exist");
-  });
+    it('should open the transcript side panel after clicking on play button', () => {
+      mockTranscript();
+      preparePage();
+      initiatePlay();
+      cy.get('[data-testid="transcript_root"]').should('exist');
+      cy.get('[data-testid="transcript_root"]').should('have.css', 'visibility', 'visible');
+    });
 
-  it('should open the transcript side panel after clicking on play button', () => {
-    mockTranscript();
-    preparePage();
-    initiatePlay();
-    cy.get('[data-testid="transcript_root"]').should('exist');
-    cy.get('[data-testid="transcript_root"]').should('have.css', 'visibility', 'visible');
-  });
+    it('should not open the transcript side panel after clicking on play button', () => {
+      mockTranscript();
+      preparePage({expandOnFirstPlay: false});
+      initiatePlay();
+      cy.get('[data-testid="transcript_root"]').should('have.css', 'visibility', 'hidden');
+    });
 
-  it('should not open the transcript side panel after clicking on play button', () => {
-    mockTranscript();
-    preparePage({expandOnFirstPlay: false});
-    initiatePlay();
-    cy.get('[data-testid="transcript_root"]').should('have.css', 'visibility', 'hidden');
-  });
+    it('should open and close Transcript plugin', () => {
+      mockTranscript();
+      preparePage({expandOnFirstPlay: false});
+      initiatePlay();
+      clickTranscriptPluginButton();
+      cy.get('[data-testid="transcript_root"]').should('exist');
+      cy.get('[data-testid="transcript_root"]').should('have.css', 'visibility', 'visible');
+      clickClosePluginButton();
+      cy.get('[data-testid="transcript_root"]').should('have.css', 'visibility', 'hidden');
+    });
 
-  it('should open and close Transcript plugin', () => {
-    mockTranscript();
-    preparePage({expandOnFirstPlay: false});
-    initiatePlay();
-    clickTranscriptPluginButton();
-    cy.get('[data-testid="transcript_root"]').should('exist');
-    cy.get('[data-testid="transcript_root"]').should('have.css', 'visibility', 'visible');
-    clickClosePluginButton();
-    cy.get('[data-testid="transcript_root"]').should('have.css', 'visibility', 'hidden');
-  });
-
-  it('should select captions and highlight them', () => {
-    mockTranscript();
-    preparePage();
-    initiatePlay();
-    cy.window().then(win => {
-      // @ts-ignore
-      const kalturaPlayer = win.KalturaPlayer.getPlayers()['player-placeholder'];
-      const captionSpan = cy.get('[data-testid="transcript_list"]').contains('first caption');
-      captionSpan.should('exist');
-      kalturaPlayer.currentTime = 20;
-      captionSpan.should('have.css', 'background-color', 'rgba(0, 0, 0, 0)');
-      captionSpan.click();
-      kalturaPlayer.pause();
-      captionSpan.should('have.css', 'background-color', 'rgb(1, 172, 205)');
+    it('should select captions and highlight them', () => {
+      mockTranscript();
+      preparePage();
+      initiatePlay();
+      cy.window().then(win => {
+        // @ts-ignore
+        const kalturaPlayer = win.KalturaPlayer.getPlayers()['player-placeholder'];
+        const captionSpan = cy.get('[data-testid="transcript_list"] [role="listitem"]').first();
+        captionSpan.should('exist');
+        kalturaPlayer.currentTime = 20;
+        captionSpan.should('have.attr', 'aria-current', 'false');
+        captionSpan.click();
+        kalturaPlayer.pause();
+        captionSpan.should('have.attr', 'aria-current', 'true');
+      });
     });
   });
 
-  //
-  // SEARCH BAR
-  //
+  describe('search bar', () => {
+    it('should search for the word "first" and find 2 results', () => {
+      mockTranscript();
+      preparePage();
+      initiatePlay();
+      cy.get('[data-testid="transcript_header"]').within(() => {
+        cy.get('[aria-label="Search in Transcript"]').get('input').type('first');
+        cy.get('[aria-label="Previous"]').should('exist');
+        cy.get('[aria-label="Next"]').should('exist');
+        cy.get('[aria-label="Result 1 of 2"]').should('exist');
+        cy.get('[aria-label="Result 1 of 2"]').should($div => {
+          expect($div[0].textContent).to.eq('1/2');
+        });
+      });
+    });
 
-  it('should search for the word "first" and find 2 results', () => {
-    mockTranscript();
-    preparePage();
-    initiatePlay();
-    cy.get('[data-testid="transcript_searchBar"]').get('input').type('first');
-    cy.get('[data-testid="transcript_searchResultLabel"]').should("exist");
-    cy.get('[data-testid="transcript_searchResultLabel"]').should($div => {
-      expect($div[0].textContent).to.eq('1/2');
+    it('should highlight search results', () => {
+      mockTranscript();
+      preparePage();
+      initiatePlay();
+      cy.get('[data-testid="transcript_header"] [aria-label="Search in Transcript"]').get('input').type('first');
+
+      cy.get('[data-testid="transcript_list"]')
+        .contains('listening to music for the first time')
+        .within(() => cy.get('span[class*="highlight-search"]').should('exist'));
+
+      cy.get('[data-testid="transcript_list"]')
+        .contains('first caption')
+        .within(() => cy.get('span[class*="highlight-search"]').should('not.exist'));
+    });
+
+    it('should clear the search bar', () => {
+      mockTranscript();
+      preparePage();
+      initiatePlay();
+      cy.get('[data-testid="transcript_header"]').within(() => {
+        cy.get('[aria-label="Search in Transcript"]').should('exist');
+        cy.get('[aria-label="Search in Transcript"]').get('input').type('first');
+        cy.get('[aria-label="Clear search"]').click();
+        cy.get('[aria-label="Search in Transcript"]')
+          .get('input')
+          .should($div => {
+            expect($div[0].textContent).to.eq('');
+          });
+      });
     });
   });
 
-  it('should highlight search results', () => {
-    mockTranscript();
-    preparePage();
-    initiatePlay();
-    cy.get('[data-testid="transcript_searchBar"]').get('input').type('first');
-
-    // verify a color of a not selected match - should be rgb(253, 211, 4)
-    cy.get('[data-testid="transcript_list"]').contains('listening to music for the first time').should($div => {
-      expect($div[0].children[0]).to.have.css('background-color', 'rgb(253, 211, 4)');
+  describe('print', () => {
+    it('should render print button', () => {
+      mockTranscript();
+      preparePage({printDisabled: false});
+      initiatePlay();
+      cy.get('[data-testid="transcript_printButton"]').should('exist');
     });
 
-    // verify a color of a selected match - should be rgb(22, 135, 255)
-    cy.get('[data-testid="transcript_list"]').contains('first caption').should($div => {
-      expect($div[0].children[0]).to.have.css('background-color', 'rgb(22, 135, 255)');
+    it('should not render print button', () => {
+      mockTranscript();
+      preparePage({printDisabled: true});
+      initiatePlay();
+      cy.get('[data-testid="transcript_printButton"]').should('not.exist');
     });
   });
 
-  it('should clear the search bar', () => {
-    mockTranscript();
-    preparePage();
-    initiatePlay();
-    cy.get('[data-testid="transcript_searchBar"]').get('input').type('first');
-    cy.get('[data-testid="transcript_clearSearchButton"]').should("exist");
-    cy.get('[data-testid="transcript_clearSearchButton"]').click();
-    cy.get('[data-testid="transcript_searchBar"]').get('input').should($div => {
-      expect($div[0].textContent).to.eq('');
-    })
-  });
+  describe('download', () => {
+    it('should render download button', () => {
+      mockTranscript();
+      preparePage({downloadDisabled: false});
+      initiatePlay();
+      cy.get('[data-testid="transcript_downloadButton"]').should('exist');
+    });
 
-  //
-  // PRINT
-  //
-
-  it('should render print button', () => {
-    mockTranscript();
-    preparePage({printDisabled: false});
-    initiatePlay();
-    cy.get('[data-testid="transcript_printButton"]').should("exist");
-  });
-
-  it('should not render print button', () => {
-    mockTranscript();
-    preparePage({printDisabled: true});
-    initiatePlay();
-    cy.get('[data-testid="transcript_printButton"]').should("not.exist");
-  });
-
-  //
-  // DOWNLOAD
-  //
-
-  it('should render download button', () => {
-    mockTranscript();
-    preparePage({downloadDisabled: false});
-    initiatePlay();
-    cy.get('[data-testid="transcript_downloadButton"]').should("exist");
-  });
-
-  it('should not render download button', () => {
-    mockTranscript();
-    preparePage({downloadDisabled: true});
-    initiatePlay();
-    cy.get('[data-testid="transcript_downloadButton"]').should("not.exist");
+    it('should not render download button', () => {
+      mockTranscript();
+      preparePage({downloadDisabled: true});
+      initiatePlay();
+      cy.get('[data-testid="transcript_downloadButton"]').should('not.exist');
+    });
   });
 });
