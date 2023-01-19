@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.2.0](https://github.com/kaltura/playkit-js-transcript/compare/v3.1.0...v3.2.0) (2023-01-19)
+
+
+### Features
+
+* **FEV-1572:** migrate styles of transcript plugin ([#116](https://github.com/kaltura/playkit-js-transcript/issues/116)) ([2b8a565](https://github.com/kaltura/playkit-js-transcript/commit/2b8a565b066176a7f4cea4bfbfde984523ef4b8f))
+* **FEV-1640:** add cypress tests ([#123](https://github.com/kaltura/playkit-js-transcript/issues/123)) ([0254f9e](https://github.com/kaltura/playkit-js-transcript/commit/0254f9e3878dd5bdbe31cb84063488381c138f54))
+
+
+### Bug Fixes
+
+* **FEV-1534:** init transcript plugin only if captions exist ([#121](https://github.com/kaltura/playkit-js-transcript/issues/121)) ([015410f](https://github.com/kaltura/playkit-js-transcript/commit/015410f85e340b39b2166a4d6424c2de365cbe19))
+
 ## [3.1.0](https://github.com/kaltura/playkit-js-transcript/compare/v3.0.1...v3.1.0) (2022-12-12)
 
 
