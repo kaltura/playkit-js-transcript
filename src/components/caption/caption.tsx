@@ -131,7 +131,6 @@ export class Caption extends Component<ExtendedCaptionProps, CaptionState> {
     const isHighlighted = Object.keys(highlighted)[0] === id;
 
     const captionA11yProps: Record<string, any> = {
-      role: isHighlighted ? 'text' : 'listitem',
       ariaCurrent: isHighlighted,
       onFocus: this._handleFocus,
       onBlur: this._handleBlur,
@@ -140,7 +139,7 @@ export class Caption extends Component<ExtendedCaptionProps, CaptionState> {
     };
 
     return (
-      <A11yWrapper onClick={this._handleKeyDown}>
+      <A11yWrapper onClick={this._handleKeyDown} role={isHighlighted ? 'text' : 'listitem'}>
         <div
           className={styles.caption}
           ref={node => {
