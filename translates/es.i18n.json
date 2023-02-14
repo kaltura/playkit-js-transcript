@@ -1,0 +1,20 @@
+{
+  "es": {
+    "transcript": {
+      "hide_plugin": "Ocultar la transcripción",
+      "show_plugin": "Mostrar la transcripción",
+      "print_download_area_label": "Descargar o imprimir la transcripción",
+      "print_transcript": "Imprimir la transcripción",
+      "download_transcript": "Descargar la transcripción",
+      "search": "Buscar en la transcripción",
+      "clear_search": "Borrar búsqueda",
+      "next_search_match": "Siguiente",
+      "prev_search_match": "Anterior",
+      "search_results": "Resultado {{current}} de {{total}}",
+      "auto_scroll": "Reanudar el desplazamiento automático",
+      "whoops": "¡Vaya!",
+      "load_failed": "Error al cargar la transcripción",
+      "skip_transcript": "Omitir la transcripción"
+    }
+  }
+}
