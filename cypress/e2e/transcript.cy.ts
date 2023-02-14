@@ -126,9 +126,30 @@ describe('Transcript plugin', () => {
         captionSpan.should('have.attr', 'aria-current', 'true');
       });
     });
+
+    it('should close plugin if ESC button pressed', () => {
+      mockTranscript();
+      preparePage();
+      initiatePlay();
+      cy.get('[data-testid="transcript_root"]').should('have.css', 'visibility', 'visible');
+      cy.get('[aria-label="Search in Transcript"]').get('input').type('{esc}');
+      cy.get('[data-testid="transcript_root"]').should('have.css', 'visibility', 'hidden');
+    });
   });
 
   describe('search bar', () => {
+    it('should set focus to search input if plugin opened by keyboard', () => {
+      mockTranscript();
+      preparePage({expandOnFirstPlay: false});
+      initiatePlay();
+      cy.get('[data-testid="transcript_pluginButton"]').should('exist').trigger('keydown', {
+        keyCode: 32, // Space
+        force: true
+      });
+      cy.get('[data-testid="transcript_header"]').within(() => {
+        cy.get('[aria-label="Search in Transcript"]').should('have.focus');
+      });
+    });
     it('should search for the word "first" and find 2 results', () => {
       mockTranscript();
       preparePage();

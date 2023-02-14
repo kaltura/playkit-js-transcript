@@ -46,6 +46,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   private _printIcon = -1;
   private _downloadIcon = -1;
   private _pluginState: PluginStates | null = null;
+  private _pluginButtonRef: HTMLButtonElement | null = null;
 
   constructor(name: string, player: KalturaPlayerTypes.Player, config: TranscriptConfig) {
     super(name, player, config);
@@ -216,8 +217,14 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       svgIcon: {path: icons.DOWNLOAD_ICON, viewBox: `0 0 ${icons.BigSize} ${icons.BigSize}`},
       onClick: this._handleDownload,
       component: withText(translate)((props: {label: string}) => (
-        <PluginButton isActive={false} onClick={this._handleDownload} id={'download-transcript'} icon={icons.DOWNLOAD_ICON} label={props.label}
-                      dataTestId="transcript_downloadButton" />
+        <PluginButton
+          isActive={false}
+          onClick={this._handleDownload}
+          id={'download-transcript'}
+          icon={icons.DOWNLOAD_ICON}
+          label={props.label}
+          dataTestId="transcript_downloadButton"
+        />
       ))
     }) as number;
   }
@@ -235,8 +242,14 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       svgIcon: {path: icons.PRINT_ICON, viewBox: `0 0 ${icons.BigSize} ${icons.BigSize}`},
       onClick: this._handlePrint,
       component: withText(translate)((props: {label: string}) => (
-        <PluginButton isActive={false} onClick={this._handlePrint} id={'print-transcript'} icon={icons.PRINT_ICON} label={props.label}
-                      dataTestId="transcript_printButton" />
+        <PluginButton
+          isActive={false}
+          onClick={this._handlePrint}
+          id={'print-transcript'}
+          icon={icons.PRINT_ICON}
+          label={props.label}
+          dataTestId="transcript_printButton"
+        />
       ))
     }) as number;
   }
@@ -268,7 +281,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
             videoDuration={this.player.duration}
             kitchenSinkActive={this._isPluginActive()}
             toggledWithEnter={this._triggeredByKeyboard}
-            onClose={this._deactivatePlugin}
+            onClose={this._handleClose}
           />
         );
       },
@@ -289,8 +302,15 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
         const isActive = this._isPluginActive();
         const label = isActive ? props.hideTranscript : props.showTranscript;
         return (
-          <PluginButton isActive={isActive} onClick={this._handleClickOnPluginIcon} id="transcript-icon" label={label} icon={icons.PLUGIN_ICON}
-                        dataTestId="transcript_pluginButton" />
+          <PluginButton
+            isActive={isActive}
+            onClick={this._handleClickOnPluginIcon}
+            id="transcript-icon"
+            label={label}
+            icon={icons.PLUGIN_ICON}
+            dataTestId="transcript_pluginButton"
+            setRef={this._setPluginButtonRef}
+          />
         );
       })
     }) as number;
@@ -299,6 +319,10 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       this._activatePlugin();
     }
   }
+
+  private _setPluginButtonRef = (ref: HTMLButtonElement | null) => {
+    this._pluginButtonRef = ref;
+  };
 
   private _seekTo = (time: number) => {
     this.player.currentTime = time;
@@ -324,6 +348,13 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     }
   };
 
+  private _handleClose = (e: OnClickEvent, byKeyboard: boolean) => {
+    if (byKeyboard) {
+      this._pluginButtonRef?.focus();
+    }
+    this._deactivatePlugin();
+  };
+
   static isValid(): boolean {
     return true;
   }
@@ -335,6 +366,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       this.upperBarManager!.remove(this._transcriptIcon);
       this._transcriptPanel = -1;
       this._transcriptIcon = -1;
+      this._pluginButtonRef = null;
     }
     if (this._printIcon > 0) {
       this.upperBarManager!.remove(this._printIcon);

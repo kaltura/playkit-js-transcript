@@ -21,7 +21,6 @@ export const AutoscrollButton = withText(translates)(
     return (
       <A11yWrapper onClick={onClick}>
         <div
-          role="button"
           className={`${styles.autoscrollButton} ${isAutoScrollEnabled ? '' : styles.autoscrollButtonVisible}`}
           tabIndex={isAutoScrollEnabled ? -1 : 1}
           aria-label={autoScrollLabel}

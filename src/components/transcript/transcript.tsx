@@ -1,5 +1,5 @@
 import {h, Component} from 'preact';
-import {OnClickEvent} from '@playkit-js/common';
+import {OnClickEvent, OnClick} from '@playkit-js/common';
 import {debounce} from '../../utils';
 import * as styles from './transcript.scss';
 import {Spinner} from '../spinner';
@@ -21,7 +21,7 @@ const translates = {
 
 export interface TranscriptProps {
   onSeek(time: number): void;
-  onClose: () => void;
+  onClose: OnClick;
   onRetryLoad: () => void;
   isLoading: boolean;
   hasError: boolean;
@@ -342,7 +342,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
 
   private _handleEsc = (event: KeyboardEvent) => {
     if (event.keyCode === ESC) {
-      this.props.onClose();
+      this.props.onClose(event, true);
     }
   };
 
