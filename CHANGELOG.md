@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.3.0](https://github.com/kaltura/playkit-js-transcript/compare/v3.2.1...v3.3.0) (2023-02-23)
+
+
+### Features
+
+* **FEV-1658:** Add translation for Spanish on transcript plugin ([#127](https://github.com/kaltura/playkit-js-transcript/issues/127)) ([11ee279](https://github.com/kaltura/playkit-js-transcript/commit/11ee2792f39fe37961a786921231abc3ac75d57a))
+
+
+### Bug Fixes
+
+* **FEC-12918:** When users close a menu by clicking the close button, focus should go back to the button that opened the plugin ([#126](https://github.com/kaltura/playkit-js-transcript/issues/126)) ([792a782](https://github.com/kaltura/playkit-js-transcript/commit/792a782369eabece1d2cac53b9a6c604bce9bef1))
+
 ### [3.2.1](https://github.com/kaltura/playkit-js-transcript/compare/v3.2.0...v3.2.1) (2023-01-26)
 
 ## [3.2.0](https://github.com/kaltura/playkit-js-transcript/compare/v3.1.0...v3.2.0) (2023-01-19)
