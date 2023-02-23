@@ -1,5 +1,5 @@
 import {Component, h} from 'preact';
-import {A11yWrapper, OnClickEvent} from '@playkit-js/common';
+import {A11yWrapper, OnClickEvent} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import {secontsToTime} from '../../utils';
 import {CuePointData} from '../../types';
 import * as styles from './caption.scss';

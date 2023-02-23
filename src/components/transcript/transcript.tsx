@@ -1,5 +1,5 @@
 import {h, Component} from 'preact';
-import {OnClickEvent, OnClick} from '@playkit-js/common';
+import {OnClickEvent, OnClick} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import {debounce} from '../../utils';
 import * as styles from './transcript.scss';
 import {Spinner} from '../spinner';
