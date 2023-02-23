@@ -1,0 +1,11 @@
+name: deploy to QA
+
+on:
+  pull_request:
+    types: 
+      - opened
+  
+jobs:
+   test:
+    uses: kaltura/playkit-js-common/.github/workflows/test.yml@master
+    secrets: inherit
