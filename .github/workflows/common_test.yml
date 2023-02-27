@@ -1,4 +1,4 @@
-name: deploy to QA
+name: Run tests
 
 on:
   pull_request:
