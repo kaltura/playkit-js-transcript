@@ -1,0 +1,17 @@
+@import '../../variables.scss';
+
+.menu-button {
+    height: 32px;
+    width: 32px;
+    padding: 4px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: $tone-6-color;        ;
+    }
+
+    i {
+        height: 24px;
+        width: 24px;
+    }
+}
