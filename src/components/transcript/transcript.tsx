@@ -9,6 +9,7 @@ import {HighlightedMap, CuePointData} from '../../types';
 import {CloseButton} from '../close-button';
 import {ErrorIcon} from './error-icon';
 import {AutoscrollButton} from '../autoscroll-button';
+import {TranscriptMenu} from '../transcript-menu';
 
 const {ENTER, SPACE, TAB, ESC} = KalturaPlayer.ui.utils.KeyMap;
 const {withText, Text} = KalturaPlayer.ui.preacti18n;
@@ -39,6 +40,10 @@ export interface TranscriptProps {
   skipTranscript?: string;
   errorTitle?: string;
   errorDescripton?: string;
+  downloadDisabled: boolean;
+  onDownload: () => void;
+  printDisabled: boolean;
+  onPrint: () => void;
 }
 
 interface TranscriptState {
@@ -177,7 +182,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
   };
 
   private _renderHeader = () => {
-    const {toggledWithEnter, kitchenSinkActive} = this.props;
+    const {toggledWithEnter, kitchenSinkActive, downloadDisabled, onDownload, printDisabled, onPrint} = this.props;
     const {search, activeSearchIndex, totalSearchResults} = this.state;
     return (
       <div className={[styles.header, this._getHeaderStyles()].join(' ')} data-testid="transcript_header">
@@ -190,6 +195,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
           toggledWithEnter={toggledWithEnter}
           kitchenSinkActive={kitchenSinkActive}
         />
+        <TranscriptMenu {...{downloadDisabled, onDownload, printDisabled, onPrint}} />
       </div>
     );
   };
