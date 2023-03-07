@@ -7,10 +7,10 @@ import * as styles from './menu-button.scss';
 import {A11yWrapper} from '@playkit-js/common';
 
 interface MenuButtonProps {
-  onClick: () => void;
+  onClick?: () => void;
 }
 
-const MenuButton = ({onClick}: MenuButtonProps) => (
+const MenuButton = ({onClick = () => undefined}: MenuButtonProps) => (
   <A11yWrapper onClick={onClick}>
     <div className={`${styles.menuButton}`}>
       <Icon id="transcript-menu" path={icons.MORE_ICON} viewBox={'0 0 24 24'}></Icon>
