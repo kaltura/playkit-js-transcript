@@ -1,0 +1,53 @@
+@import './variables.scss';
+
+.popover-anchor-container {
+  cursor: pointer;
+  
+  .popover-anchor {
+    pointer-events: none;
+  }
+}
+
+.popover-container {
+  position: relative;
+  .popover-component {
+    background-color: #222222;
+    border-radius: 4px;
+    position: absolute;
+    right: 0px;
+    font-size: 15px;
+    display: block;
+    z-index: 1;
+
+    &.hidden {
+      display: none;
+    }
+    &.bottom {
+      top: 100%;
+      margin-top: 6px;
+    }
+    &.left {
+      right: 0px;
+    }
+  }
+}
+.popover-menu {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+.popover-menu-item {
+  display: flex;
+  align-items: center;
+  padding: 9px 24px 9px 16px;
+  white-space: nowrap;
+  min-height: 30px;
+  line-height: 18px;
+  font-size: 15px;
+  &:hover {
+    cursor: pointer;
+    background-color: #222;
+  }
+  &:focus {
+    outline: 1px solid #222;
+  }
+}
