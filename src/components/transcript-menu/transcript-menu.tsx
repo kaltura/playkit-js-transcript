@@ -26,7 +26,7 @@ class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState>
     const items = [];
     if (!downloadDisabled) {
       items.push({
-        label: 'Download',
+        label: 'Download transcript',
         onClick: () => {
           onDownload();
         }
@@ -35,7 +35,7 @@ class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState>
 
     if (!printDisabled) {
       items.push({
-        label: 'Print',
+        label: 'Print transcript',
         onClick: () => {
           onPrint();
         }
