@@ -1,15 +1,14 @@
 import {h, Component} from 'preact';
-import {OnClickEvent, OnClick} from '@playkit-js/common';
 import {debounce} from '../../utils';
 import * as styles from './transcript.scss';
 import {Spinner} from '../spinner';
 import {Search} from '../search';
 import {CaptionList} from '../caption-list';
 import {HighlightedMap, CuePointData} from '../../types';
-import {CloseButton} from '../close-button';
 import {ErrorIcon} from './error-icon';
 import {AutoscrollButton} from '../autoscroll-button';
 import {TranscriptMenu} from '../transcript-menu';
+import {Button, OnClickEvent, OnClick, ButtonType, ButtonSize} from '@playkit-js/common';
 
 const {ENTER, SPACE, TAB, ESC} = KalturaPlayer.ui.utils.KeyMap;
 const {withText, Text} = KalturaPlayer.ui.preacti18n;
@@ -196,6 +195,15 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
           kitchenSinkActive={kitchenSinkActive}
         />
         <TranscriptMenu {...{downloadDisabled, onDownload, printDisabled, onPrint}} />
+        <div>
+          <Button
+            type={ButtonType.borderless}
+            size={ButtonSize.medium}
+            disabled={false}
+            onClick={this.props.onClose}
+            tooltip={{label: 'Hide Transcript'}}
+            icon={'close'}></Button>
+        </div>
       </div>
     );
   };
@@ -365,8 +373,6 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         data-testid="transcript_root">
         <div className={styles.globalContainer}>
           {this._renderHeader()}
-
-          <CloseButton onClick={this.props.onClose} />
 
           {renderTranscriptButtons && this._renderSkipTranscriptButton()}
           <div
