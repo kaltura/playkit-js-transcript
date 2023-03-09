@@ -2,6 +2,16 @@
 
 .popover-anchor-container {
   cursor: pointer;
+  margin-left: 8px;
+  border-radius: 4px;
+  
+  &:hover {
+    background-color: $tone-4-color;
+  }
+  
+  &.active {
+    background-color: $tone-6-color;
+  }
   
   .popover-anchor {
     pointer-events: none;
@@ -10,44 +20,54 @@
 
 .popover-container {
   position: relative;
+  
   .popover-component {
-    background-color: #222222;
+    background-color: $tone-7-color;
     border-radius: 4px;
+    display: block;
+    font-size: 15px;
+    margin-top: 6px;
     position: absolute;
     right: 0px;
-    font-size: 15px;
-    display: block;
     z-index: 1;
-
+    
     &.hidden {
       display: none;
     }
+    
     &.bottom {
       top: 100%;
       margin-top: 6px;
     }
+    
     &.left {
       right: 0px;
     }
   }
 }
-.popover-menu {
-  padding-top: 6px;
-  padding-bottom: 6px;
-}
 .popover-menu-item {
-  display: flex;
   align-items: center;
+  display: flex;
+  font-size: 15px;
+  line-height: 18px;
+  min-height: 30px;
   padding: 9px 24px 9px 16px;
   white-space: nowrap;
-  min-height: 30px;
-  line-height: 18px;
-  font-size: 15px;
+  margin: 4px;
+  
   &:hover {
+    background-color: $tone-6-color;
+    border-radius: 4px;
     cursor: pointer;
-    background-color: #222;
   }
+  
   &:focus {
     outline: 1px solid #222;
   }
 }
+
+.popover-menu {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+

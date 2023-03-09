@@ -69,7 +69,7 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
     return (
       <div className={styles.popoverContainer}>
         <div
-          className={styles.popoverAnchorContainer}
+          className={`${styles.popoverAnchorContainer} ${this.state.isOpen ? styles.active : ''}`}
           ref={node => {
             this._controlElementRef = node;
           }}
@@ -87,9 +87,11 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
                         onClick();
                       }
                     }}>
-                    <div tabIndex={0} role="menuitem" className={styles.popoverMenuItem}>
-                      {label}
-                    </div>
+                    {
+                      <div tabIndex={0} role="menuitem" className={styles.popoverMenuItem}>
+                        {label}
+                      </div>
+                    }
                   </A11yWrapper>
                 );
               })
