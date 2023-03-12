@@ -195,7 +195,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
           kitchenSinkActive={kitchenSinkActive}
         />
         <TranscriptMenu {...{downloadDisabled, onDownload, printDisabled, onPrint}} />
-        <div>
+        <div data-testid="transcriptCloseButton">
           <Button
             type={ButtonType.borderless}
             size={ButtonSize.medium}

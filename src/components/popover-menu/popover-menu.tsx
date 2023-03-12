@@ -7,6 +7,7 @@ const {ENTER, ESC, SPACE} = KalturaPlayer.ui.utils.KeyMap;
 import * as styles from './popover-menu.scss';
 
 interface PopoverMenuItemData {
+  testId: string;
   label: string;
   onClick: () => void;
 }
@@ -69,6 +70,7 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
     return (
       <div className={styles.popoverContainer}>
         <div
+          data-testid="popover-anchor-container"
           className={`${styles.popoverAnchorContainer} ${this.state.isOpen ? styles.active : ''}`}
           ref={node => {
             this._controlElementRef = node;
@@ -78,7 +80,7 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
         </div>
         <div className={styles.popoverComponent} role="menu">
           {this.state.isOpen
-            ? items.map(({label, onClick}) => {
+            ? items.map(({label, onClick, testId}) => {
                 return (
                   <A11yWrapper
                     {...{
@@ -88,7 +90,7 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
                       }
                     }}>
                     {
-                      <div tabIndex={0} role="menuitem" className={styles.popoverMenuItem}>
+                      <div tabIndex={0} role="menuitem" className={styles.popoverMenuItem} data-testid={testId}>
                         {label}
                       </div>
                     }
