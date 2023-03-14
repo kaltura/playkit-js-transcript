@@ -106,7 +106,6 @@ describe('Transcript plugin', () => {
       clickTranscriptPluginButton();
       cy.get('[data-testid="transcript_root"]').should('exist');
       cy.get('[data-testid="transcript_root"]').should('have.css', 'visibility', 'visible');
-      // clickTranscriptPluginButton();
       clickClosePluginButton();
       cy.get('[data-testid="transcript_root"]').should('have.css', 'visibility', 'hidden');
     });
