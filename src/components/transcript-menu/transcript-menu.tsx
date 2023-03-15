@@ -46,9 +46,7 @@ class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState>
   render() {
     return this.state.items.length ? (
       <PopoverMenu items={this.state.items}>
-        <div>
-          <MenuButton />
-        </div>
+        <MenuButton />
       </PopoverMenu>
     ) : null;
   }
