@@ -83,11 +83,9 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
             ? items.map(({label, onClick, testId}) => {
                 return (
                   <A11yWrapper
-                    {...{
-                      onClick: () => {
-                        this.closePopover();
-                        onClick();
-                      }
+                    onClick={() => {
+                      this.closePopover();
+                      onClick();
                     }}>
                     {
                       <div tabIndex={0} role="menuitem" className={styles.popoverMenuItem} data-testid={testId}>
