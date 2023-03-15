@@ -78,7 +78,7 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
           onClick={this.togglePopover}>
           <div className={styles.popoverAnchor}>{children}</div>
         </div>
-        <div className={styles.popoverComponent} role="menu">
+        <div className={styles.popoverComponent} role="menu" aria-expanded={this.state.isOpen}>
           {this.state.isOpen
             ? items.map(({label, onClick, testId}) => {
                 return (
