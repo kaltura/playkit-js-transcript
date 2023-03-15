@@ -238,9 +238,9 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
             toggledWithEnter={this._triggeredByKeyboard}
             onClose={this._handleClose}
             downloadDisabled={getConfigValue(downloadDisabled, isBoolean, false)}
-            onDownload={() => this._handleDownload()}
+            onDownload={this._handleDownload}
             printDisabled={getConfigValue(printDisabled, isBoolean, false)}
-            onPrint={() => this._handlePrint()}
+            onPrint={this._handlePrint}
           />
         );
       },
