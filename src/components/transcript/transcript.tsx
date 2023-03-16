@@ -8,7 +8,9 @@ import {HighlightedMap, CuePointData} from '../../types';
 import {ErrorIcon} from './error-icon';
 import {AutoscrollButton} from '../autoscroll-button';
 import {TranscriptMenu} from '../transcript-menu';
-import {Button, OnClickEvent, OnClick, ButtonType, ButtonSize} from '@playkit-js/common';
+
+import {Button, ButtonType, ButtonSize} from '@playkit-js/common/dist/components/button';
+import {OnClickEvent, OnClick} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 
 const {ENTER, SPACE, TAB, ESC} = KalturaPlayer.ui.utils.KeyMap;
 const {withText, Text} = KalturaPlayer.ui.preacti18n;

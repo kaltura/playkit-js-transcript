@@ -1,4 +1,4 @@
-import {A11yWrapper} from '@playkit-js/common';
+import {A11yWrapper} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import {h, Component, VNode} from 'preact';
 
 const {withEventManager} = KalturaPlayer.ui.Event;

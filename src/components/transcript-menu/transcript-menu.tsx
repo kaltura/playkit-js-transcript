@@ -2,7 +2,7 @@ import {Component, h} from 'preact';
 import {PopoverMenu} from '../popover-menu';
 import {PopoverMenuItemData} from '../popover-menu';
 
-import {Button, ButtonType} from '@playkit-js/common';
+import {Button, ButtonType} from '@playkit-js/common/dist/components/button';
 
 interface TranscriptMenuProps {
   printDownloadAreaLabel?: string;
