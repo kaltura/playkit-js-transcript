@@ -1,14 +1,16 @@
 import {h, Component} from 'preact';
-import {OnClickEvent, OnClick} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import {debounce} from '../../utils';
 import * as styles from './transcript.scss';
 import {Spinner} from '../spinner';
 import {Search} from '../search';
 import {CaptionList} from '../caption-list';
 import {HighlightedMap, CuePointData} from '../../types';
-import {CloseButton} from '../close-button';
 import {ErrorIcon} from './error-icon';
 import {AutoscrollButton} from '../autoscroll-button';
+import {TranscriptMenu} from '../transcript-menu';
+
+import {Button, ButtonType, ButtonSize} from '@playkit-js/common/dist/components/button';
+import {OnClickEvent, OnClick} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 
 const {ENTER, SPACE, TAB, ESC} = KalturaPlayer.ui.utils.KeyMap;
 const {withText, Text} = KalturaPlayer.ui.preacti18n;
@@ -39,6 +41,10 @@ export interface TranscriptProps {
   skipTranscript?: string;
   errorTitle?: string;
   errorDescripton?: string;
+  downloadDisabled: boolean;
+  onDownload: () => void;
+  printDisabled: boolean;
+  onPrint: () => void;
 }
 
 interface TranscriptState {
@@ -177,7 +183,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
   };
 
   private _renderHeader = () => {
-    const {toggledWithEnter, kitchenSinkActive} = this.props;
+    const {toggledWithEnter, kitchenSinkActive, downloadDisabled, onDownload, printDisabled, onPrint} = this.props;
     const {search, activeSearchIndex, totalSearchResults} = this.state;
     return (
       <div className={[styles.header, this._getHeaderStyles()].join(' ')} data-testid="transcript_header">
@@ -190,6 +196,16 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
           toggledWithEnter={toggledWithEnter}
           kitchenSinkActive={kitchenSinkActive}
         />
+        <TranscriptMenu {...{downloadDisabled, onDownload, printDisabled, onPrint}} />
+        <div data-testid="transcriptCloseButton">
+          <Button
+            type={ButtonType.borderless}
+            size={ButtonSize.medium}
+            disabled={false}
+            onClick={this.props.onClose}
+            tooltip={{label: 'Hide Transcript'}}
+            icon={'close'}></Button>
+        </div>
       </div>
     );
   };
@@ -359,8 +375,6 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         data-testid="transcript_root">
         <div className={styles.globalContainer}>
           {this._renderHeader()}
-
-          <CloseButton onClick={this.props.onClose} />
 
           {renderTranscriptButtons && this._renderSkipTranscriptButton()}
           <div
