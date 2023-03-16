@@ -3,7 +3,7 @@
 .popover-anchor-container {
   cursor: pointer;
   margin-left: 8px;
-  border-radius: 4px;
+  border-radius: $roundness-1;
   
   &:hover {
     background-color: $tone-4-color;
@@ -23,7 +23,7 @@
   
   .popover-component {
     background-color: $tone-7-color;
-    border-radius: 4px;
+    border-radius: $roundness-1;
     display: block;
     font-size: 15px;
     margin-top: 6px;
@@ -57,7 +57,7 @@
   
   &:hover {
     background-color: $tone-6-color;
-    border-radius: 4px;
+    border-radius: $roundness-1;
     cursor: pointer;
   }
   
