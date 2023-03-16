@@ -69,15 +69,17 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
 
     return (
       <div className={styles.popoverContainer}>
-        <div
-          data-testid="popover-anchor-container"
-          className={`${styles.popoverAnchorContainer} ${this.state.isOpen ? styles.active : ''}`}
-          ref={node => {
-            this._controlElementRef = node;
-          }}
-          onClick={this.togglePopover}>
-          <div className={styles.popoverAnchor}>{children}</div>
-        </div>
+        <A11yWrapper onClick={this.togglePopover}>
+          <div
+            data-testid="popover-anchor-container"
+            className={`${styles.popoverAnchorContainer} ${this.state.isOpen ? styles.active : ''}`}
+            ref={node => {
+              this._controlElementRef = node;
+            }}>
+            <div className={styles.popoverAnchor}>{children}</div>
+          </div>
+        </A11yWrapper>
+
         <div className={styles.popoverComponent} role="menu" aria-expanded={this.state.isOpen}>
           {this.state.isOpen
             ? items.map(({label, onClick, testId}) => {

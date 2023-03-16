@@ -1,7 +1,8 @@
 import {Component, h} from 'preact';
-import {MenuButton} from '../menu-button';
 import {PopoverMenu} from '../popover-menu';
 import {PopoverMenuItemData} from '../popover-menu';
+
+import {Button, ButtonType} from '@playkit-js/common';
 
 interface TranscriptMenuProps {
   printDownloadAreaLabel?: string;
@@ -46,7 +47,7 @@ class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState>
   render() {
     return this.state.items.length ? (
       <PopoverMenu items={this.state.items}>
-        <MenuButton />
+        <Button type={ButtonType.borderless} icon={'more'}></Button>
       </PopoverMenu>
     ) : null;
   }
