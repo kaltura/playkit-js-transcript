@@ -44,8 +44,8 @@ const clickTranscriptPluginButton = () => {
 };
 
 const clickClosePluginButton = () => {
-  cy.get('[data-testid="transcriptCloseButton"] button').should('exist');
-  cy.get('[data-testid="transcriptCloseButton"] button').click({force: true});
+  cy.get('[data-testid="transcriptCloseButton"]').should('exist');
+  cy.get('[data-testid="transcriptCloseButton"]').click({force: true});
 };
 
 const checkRequest = (reqBody: any, service: string, action: string) => {
@@ -197,32 +197,19 @@ describe('Transcript plugin', () => {
     });
   });
 
-  describe('popover menu', () => {
-    it('should not render when print and download are disabled', () => {
-      mockTranscript();
-      preparePage({printDisabled: true, downloadDisabled: true});
-      initiatePlay();
-      cy.get(`[data-testid="popover-anchor-container"]`).should('not.exist');
-    });
-  });
-
   describe('print', () => {
     it('should render print button', () => {
       mockTranscript();
       preparePage({printDisabled: false});
       initiatePlay();
-      cy.get(`[data-testid="popover-anchor-container"]`).should('exist');
-      cy.get(`[data-testid="popover-anchor-container"]`).click();
-      cy.get(`[data-testid="print-menu-item"]`).should('exist');
+      cy.get('[data-testid="transcript_printButton"]').should('exist');
     });
 
     it('should not render print button', () => {
       mockTranscript();
       preparePage({printDisabled: true});
       initiatePlay();
-      cy.get(`[data-testid="popover-anchor-container"]`).should('exist');
-      cy.get(`[data-testid="popover-anchor-container"]`).click();
-      cy.get(`[data-testid="print-menu-item"]`).should('not.exist');
+      cy.get('[data-testid="transcript_printButton"]').should('not.exist');
     });
   });
 
@@ -231,18 +218,14 @@ describe('Transcript plugin', () => {
       mockTranscript();
       preparePage({downloadDisabled: false});
       initiatePlay();
-      cy.get(`[data-testid="popover-anchor-container"]`).should('exist');
-      cy.get(`[data-testid="popover-anchor-container"]`).click();
-      cy.get(`[data-testid="download-menu-item"]`).should('exist');
+      cy.get('[data-testid="transcript_downloadButton"]').should('exist');
     });
 
     it('should not render download button', () => {
       mockTranscript();
       preparePage({downloadDisabled: true});
       initiatePlay();
-      cy.get(`[data-testid="popover-anchor-container"]`).should('exist');
-      cy.get(`[data-testid="popover-anchor-container"]`).click();
-      cy.get(`[data-testid="download-menu-item"]`).should('not.exist');
+      cy.get('[data-testid="transcript_downloadButton"]').should('not.exist');
     });
   });
 });

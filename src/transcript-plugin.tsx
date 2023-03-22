@@ -43,6 +43,8 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
 
   private _transcriptPanel = -1;
   private _transcriptIcon = -1;
+  private _printIcon = -1;
+  private _downloadIcon = -1;
   private _pluginState: PluginStates | null = null;
   private _pluginButtonRef: HTMLButtonElement | null = null;
 
@@ -126,6 +128,8 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     });
     if (captionData.length) {
       this._addCaptionData(captionData);
+      this._addDownloadIcon();
+      this._addPrintIcon();
       this._addTranscriptItem();
     }
   };
@@ -199,23 +203,64 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     }
   };
 
+  private _addDownloadIcon(): void {
+    const {downloadDisabled} = this.config;
+    if (this._downloadIcon > 0 || downloadDisabled) {
+      // download icon already exist or download disabled
+      return;
+    }
+    const translate = {
+      label: <Text id="transcript.download_transcript">Download current transcript</Text>
+    };
+    this._downloadIcon = this.upperBarManager!.add({
+      label: translate.label as any,
+      svgIcon: {path: icons.DOWNLOAD_ICON, viewBox: `0 0 ${icons.BigSize} ${icons.BigSize}`},
+      onClick: this._handleDownload,
+      component: withText(translate)((props: {label: string}) => (
+        <PluginButton
+          isActive={false}
+          onClick={this._handleDownload}
+          id={'download-transcript'}
+          icon={icons.DOWNLOAD_ICON}
+          label={props.label}
+          dataTestId="transcript_downloadButton"
+        />
+      ))
+    }) as number;
+  }
+  private _addPrintIcon(): void {
+    const {printDisabled} = this.config;
+    if (this._printIcon > 0 || printDisabled) {
+      // print icon already exist or download disabled
+      return;
+    }
+    const translate = {
+      label: <Text id="transcript.print_transcript">Print current transcript</Text>
+    };
+    this._printIcon = this.upperBarManager!.add({
+      label: translate.label as any,
+      svgIcon: {path: icons.PRINT_ICON, viewBox: `0 0 ${icons.BigSize} ${icons.BigSize}`},
+      onClick: this._handlePrint,
+      component: withText(translate)((props: {label: string}) => (
+        <PluginButton
+          isActive={false}
+          onClick={this._handlePrint}
+          id={'print-transcript'}
+          icon={icons.PRINT_ICON}
+          label={props.label}
+          dataTestId="transcript_printButton"
+        />
+      ))
+    }) as number;
+  }
+
   private _addTranscriptItem(): void {
     if (Math.max(this._transcriptPanel, this._transcriptIcon) > 0) {
       // transcript panel or icon already exist
       return;
     }
 
-    const {
-      expandMode,
-      position,
-      expandOnFirstPlay,
-      showTime,
-      scrollOffset,
-      searchDebounceTimeout,
-      searchNextPrevDebounceTimeout,
-      downloadDisabled,
-      printDisabled
-    } = this.config;
+    const {expandMode, position, expandOnFirstPlay, showTime, scrollOffset, searchDebounceTimeout, searchNextPrevDebounceTimeout} = this.config;
     this._transcriptPanel = this.sidePanelsManager!.add({
       label: 'Transcript',
       panelComponent: () => {
@@ -237,10 +282,6 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
             kitchenSinkActive={this._isPluginActive()}
             toggledWithEnter={this._triggeredByKeyboard}
             onClose={this._handleClose}
-            downloadDisabled={getConfigValue(downloadDisabled, isBoolean, false)}
-            onDownload={this._handleDownload}
-            printDisabled={getConfigValue(printDisabled, isBoolean, false)}
-            onPrint={this._handlePrint}
           />
         );
       },
@@ -326,6 +367,14 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       this._transcriptPanel = -1;
       this._transcriptIcon = -1;
       this._pluginButtonRef = null;
+    }
+    if (this._printIcon > 0) {
+      this.upperBarManager!.remove(this._printIcon);
+      this._printIcon = -1;
+    }
+    if (this._downloadIcon > 0) {
+      this.upperBarManager!.remove(this._downloadIcon);
+      this._downloadIcon = -1;
     }
     this._captionMap = new Map();
     this._activeCaptionMapId = '';

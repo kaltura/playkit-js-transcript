@@ -60,7 +60,12 @@
   margin-bottom: 8px;
   padding-left: 16px;
   font-size: 16px;
-  padding-right: 16px;
+  &.small-width {
+    padding-right: 44px;
+  }
+  &.medium-width {
+    padding-right: 22px;
+  }
 }
 
 .body {
