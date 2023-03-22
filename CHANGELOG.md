@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.4.0](https://github.com/kaltura/playkit-js-transcript/compare/v3.3.0...v3.4.0) (2023-03-22)
+
+
+### Features
+
+* **FEV-1658:** Add translation for Spanish on transcript plugin ([#133](https://github.com/kaltura/playkit-js-transcript/issues/133)) ([75a0a21](https://github.com/kaltura/playkit-js-transcript/commit/75a0a211d125939de20a446f3ff880d57e71b46e))
+* **FEV-1658:** Add translation for Spanish on transcript plugin ([#136](https://github.com/kaltura/playkit-js-transcript/issues/136)) ([26bdd4b](https://github.com/kaltura/playkit-js-transcript/commit/26bdd4b6cd3738697dea4fb1332b1b67ef2a0fd6))
+
+
+### Bug Fixes
+
+* **FEC-12951:** Transcript plugin side panel  background is transparent ([f74d721](https://github.com/kaltura/playkit-js-transcript/commit/f74d7215227c881a1cb59b20bb8daf12510037a9))
+* **FEC-12957:** Transcript Plugin - move download transcript inside the plugin menu and "release" the download button. ([a72c55e](https://github.com/kaltura/playkit-js-transcript/commit/a72c55ec1dfc9ac5d723cd88978bb5dc402df2d7))
+* **FEV-1623:** The transition animation is broken when the side panel is activated  ([#130](https://github.com/kaltura/playkit-js-transcript/issues/130)) ([2822849](https://github.com/kaltura/playkit-js-transcript/commit/282284991b66968d0d3dbb33a6c452bc463aca23))
+
 ## [3.3.0](https://github.com/kaltura/playkit-js-transcript/compare/v3.2.1...v3.3.0) (2023-02-23)
 
 
