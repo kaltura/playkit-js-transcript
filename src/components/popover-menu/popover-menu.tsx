@@ -96,34 +96,34 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
           </div>
         </A11yWrapper>
 
-        {this.state.isOpen ? (
-          <div className={styles.popoverComponent} role="menu" aria-expanded={this.state.isOpen}>
-            {items.map(({label, onClick, testId}, index) => {
-              return (
-                <A11yWrapper
-                  onClick={() => {
-                    this.closePopover();
-                    onClick();
-                  }}
-                  onDownKeyPressed={this._handleDownKeyPressed(index)}
-                  onUpKeyPressed={this._handleUpKeyPressed(index)}>
-                  {
-                    <div
-                      tabIndex={0}
-                      role="menuitem"
-                      className={styles.popoverMenuItem}
-                      data-testid={testId}
-                      ref={node => {
-                        this._setItemRef(index, node);
-                      }}>
-                      {label}
-                    </div>
-                  }
-                </A11yWrapper>
-              );
-            })}
-          </div>
-        ) : null}
+        <div className={styles.popoverComponent} role="menu" aria-expanded={this.state.isOpen}>
+          {this.state.isOpen
+            ? items.map(({label, onClick, testId}, index) => {
+                return (
+                  <A11yWrapper
+                    onClick={() => {
+                      this.closePopover();
+                      onClick();
+                    }}
+                    onDownKeyPressed={this._handleDownKeyPressed(index)}
+                    onUpKeyPressed={this._handleUpKeyPressed(index)}>
+                    {
+                      <div
+                        tabIndex={0}
+                        role="menuitem"
+                        className={styles.popoverMenuItem}
+                        data-testid={testId}
+                        ref={node => {
+                          this._setItemRef(index, node);
+                        }}>
+                        {label}
+                      </div>
+                    }
+                  </A11yWrapper>
+                );
+              })
+            : null}
+        </div>
       </div>
     );
 
