@@ -15,7 +15,6 @@ interface TranscriptMenuProps {
 }
 
 interface TranscriptMenuState {
-  isOpen: boolean;
   items: Array<PopoverMenuItemData>;
 }
 
@@ -41,12 +40,12 @@ class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState>
       });
     }
 
-    this.state = {isOpen: false, items};
+    this.state = {items};
   }
 
   render() {
     return this.state.items.length ? (
-      <PopoverMenu items={this.state.items}>
+      <PopoverMenu label={'More'} items={this.state.items}>
         <Button type={ButtonType.borderless} icon={'more'}></Button>
       </PopoverMenu>
     ) : null;

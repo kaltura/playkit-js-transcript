@@ -203,6 +203,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
             size={ButtonSize.medium}
             disabled={false}
             onClick={this.props.onClose}
+            ariaLabel={'Hide Transcript'}
             tooltip={{label: 'Hide Transcript'}}
             icon={'close'}></Button>
         </div>
