@@ -97,7 +97,7 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
         </A11yWrapper>
 
         {this.state.isOpen ? (
-          <div className={`${styles.popoverComponent} ${this.state.isOpen ? '' : styles.hidden}`} role="menu" aria-expanded={this.state.isOpen}>
+          <div className={styles.popoverComponent} role="menu" aria-expanded={this.state.isOpen}>
             {items.map(({label, onClick, testId}, index) => {
               return (
                 <A11yWrapper
