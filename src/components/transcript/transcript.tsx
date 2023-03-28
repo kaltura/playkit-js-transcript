@@ -183,7 +183,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
   };
 
   private _renderHeader = () => {
-    const {toggledWithEnter, kitchenSinkActive, downloadDisabled, onDownload, printDisabled, onPrint} = this.props;
+    const {toggledWithEnter, kitchenSinkActive, downloadDisabled, onDownload, printDisabled, onPrint, isLoading} = this.props;
     const {search, activeSearchIndex, totalSearchResults} = this.state;
     return (
       <div className={[styles.header, this._getHeaderStyles()].join(' ')} data-testid="transcript_header">
@@ -196,7 +196,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
           toggledWithEnter={toggledWithEnter}
           kitchenSinkActive={kitchenSinkActive}
         />
-        <TranscriptMenu {...{downloadDisabled, onDownload, printDisabled, onPrint}} />
+        <TranscriptMenu {...{downloadDisabled, onDownload, printDisabled, onPrint, isLoading}} />
         <div data-testid="transcriptCloseButton">
           <Button
             type={ButtonType.borderless}

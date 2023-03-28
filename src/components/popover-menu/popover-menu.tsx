@@ -4,7 +4,7 @@ import {h, Component, VNode} from 'preact';
 const {Tooltip} = KalturaPlayer.ui.components;
 
 const {withEventManager} = KalturaPlayer.ui.Event;
-const {ENTER, ESC, SPACE, TAB, UP, DOWN} = KalturaPlayer.ui.utils.KeyMap;
+const {TAB} = KalturaPlayer.ui.utils.KeyMap;
 
 import * as styles from './popover-menu.scss';
 
@@ -12,6 +12,7 @@ interface PopoverMenuItemData {
   testId: string;
   label: string;
   onClick: () => void;
+  isDisabled?: boolean;
 }
 
 interface PopoverMenuProps {
@@ -38,6 +39,7 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
     this.state = {isOpen: false};
 
     this.props.eventManager?.listen(document, 'click', this.handleMouseEvent);
+    this.props.eventManager?.listen(document, 'keydown', this.handleKeydownEvent);
   }
 
   componentWillUnmount() {
@@ -46,6 +48,18 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
 
   private handleMouseEvent = (event: MouseEvent) => {
     if (!this._controlElementRef?.contains(event.target as Node | null)) {
+      this.closePopover();
+    }
+  };
+
+  private handleKeydownEvent = (event: KeyboardEvent) => {
+    const eventTarget = event.target as Node | null;
+    if (
+      this.state.isOpen &&
+      event.keyCode === TAB &&
+      !this._controlElementRef?.contains(eventTarget) &&
+      !this._popoverElementRef?.contains(eventTarget)
+    ) {
       this.closePopover();
     }
   };
@@ -67,7 +81,10 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
 
     this.setState({isOpen}, () => {
       if (isOpen && focusFirstItem) {
-        this._getItemRef(0)?.focus();
+        const firstNonDisabledItem = this.props.items.findIndex((item: PopoverMenuItemData) => !item.isDisabled);
+        if (firstNonDisabledItem !== -1) {
+          this._getItemRef(firstNonDisabledItem)?.focus();
+        }
       }
     });
   };
@@ -96,22 +113,38 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
           </div>
         </A11yWrapper>
 
-        <div className={styles.popoverComponent} role="menu" aria-expanded={this.state.isOpen}>
+        <div
+          className={styles.popoverComponent}
+          role="menu"
+          aria-expanded={this.state.isOpen}
+          ref={node => {
+            this._popoverElementRef = node;
+          }}>
           {this.state.isOpen
-            ? items.map(({label, onClick, testId}, index) => {
+            ? items.map(({label, onClick, testId, isDisabled}, index) => {
                 return (
                   <A11yWrapper
                     onClick={() => {
-                      this.closePopover();
-                      onClick();
+                      if (!isDisabled) {
+                        this.closePopover();
+                        onClick();
+                      }
                     }}
-                    onDownKeyPressed={this._handleDownKeyPressed(index)}
-                    onUpKeyPressed={this._handleUpKeyPressed(index)}>
+                    onDownKeyPressed={() => {
+                      if (!isDisabled) {
+                        this._handleDownKeyPressed(index);
+                      }
+                    }}
+                    onUpKeyPressed={() => {
+                      if (!isDisabled) {
+                        this._handleUpKeyPressed(index);
+                      }
+                    }}>
                     {
                       <div
-                        tabIndex={0}
+                        tabIndex={isDisabled ? -1 : 0}
                         role="menuitem"
-                        className={styles.popoverMenuItem}
+                        className={`${styles.popoverMenuItem} ${isDisabled ? styles.popoverMenuItemDisabled : ''}`}
                         data-testid={testId}
                         ref={node => {
                           this._setItemRef(index, node);

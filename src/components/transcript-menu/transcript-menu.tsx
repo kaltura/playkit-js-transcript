@@ -12,6 +12,7 @@ interface TranscriptMenuProps {
   onPrint: () => void;
   downloadDisabled?: boolean;
   printDisabled?: boolean;
+  isLoading?: boolean;
 }
 
 interface TranscriptMenuState {
@@ -22,13 +23,14 @@ class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState>
   constructor(props: TranscriptMenuProps) {
     super();
 
-    const {downloadDisabled, onDownload, printDisabled, onPrint, printDownloadAreaLabel, printTranscript, downloadTranscript} = props;
+    const {downloadDisabled, onDownload, printDisabled, onPrint, printDownloadAreaLabel, printTranscript, downloadTranscript, isLoading} = props;
     const items = [];
     if (!downloadDisabled) {
       items.push({
         testId: 'download-menu-item',
         label: 'Download transcript',
-        onClick: onDownload
+        onClick: onDownload,
+        isDisabled: isLoading
       });
     }
 
@@ -36,7 +38,8 @@ class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState>
       items.push({
         testId: 'print-menu-item',
         label: 'Print transcript',
-        onClick: onPrint
+        onClick: onPrint,
+        isDisabled: isLoading
       });
     }
 
