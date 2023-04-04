@@ -1,0 +1,20 @@
+{
+  "nl": {
+    "transcript": {
+      "hide_plugin": "Transcriptie verbergen",
+      "show_plugin": "Transcriptie tonen",
+      "print_download_area_label": "Huidige transcriptie afdrukken of downloaden",
+      "print_transcript": "Huidige transcriptie afdrukken",
+      "download_transcript": "Huidige transcriptie downloaden",
+      "search": "In transcriptie zoeken",
+      "clear_search": "Zoekopdracht wissen",
+      "next_search_match": "Volgende",
+      "prev_search_match": "Vorige",
+      "search_results": "Resultaat {{current}} van {{total}}",
+      "auto_scroll": "AutoScroll hervatten",
+      "whoops": "Oeps!",
+      "load_failed": "Laden transcriptie mislukt",
+      "skip_transcript": "Transcriptie overslaan"
+    }
+  }
+}

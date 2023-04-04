@@ -1,0 +1,20 @@
+{
+  "fi": {
+    "transcript": {
+      "hide_plugin": "Piilota tekstitallenne",
+      "show_plugin": "Näytä tekstitallenne",
+      "print_download_area_label": "Lataa tai tulosta nykyinen tekstitallenne",
+      "print_transcript": "Tulosta nykyinen tekstitallenne",
+      "download_transcript": "Lataa nykyinen tekstitallenne",
+      "search": "Hae tekstitallenteesta",
+      "clear_search": "Tyhjennä haku",
+      "next_search_match": "Seuraava",
+      "prev_search_match": "Edellinen",
+      "search_results": "Tulos {{current}}/{{total}}",
+      "auto_scroll": "Jatka automaattista vieritystä",
+      "whoops": "Ups!",
+      "load_failed": "Tekstitallenteen lataaminen epäonnistui",
+      "skip_transcript": "Ohita tekstitallenne"
+    }
+  }
+}

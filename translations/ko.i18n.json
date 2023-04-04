@@ -1,0 +1,20 @@
+{
+  "ko": {
+    "transcript": {
+      "hide_plugin": "기록 숨기기",
+      "show_plugin": "기록 보기",
+      "print_download_area_label": "현재 기록 다운로드 또는 인쇄",
+      "print_transcript": "현재 기록 인쇄",
+      "download_transcript": "현재 기록 다운로드",
+      "search": "기록 검색",
+      "clear_search": "검색 지우기",
+      "next_search_match": "다음",
+      "prev_search_match": "이전",
+      "search_results": "{{total}}의 {{current}} 결과",
+      "auto_scroll": "자동 스크롤 다시 시작",
+      "whoops": "죄송합니다.",
+      "load_failed": "기록을 로드하는 데 실패했습니다",
+      "skip_transcript": "기록 스킵하기"
+    }
+  }
+}

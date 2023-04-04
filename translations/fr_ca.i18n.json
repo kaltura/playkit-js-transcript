@@ -1,0 +1,20 @@
+{
+  "fr_ca": {
+    "transcript": {
+      "hide_plugin": "Masquer la transcription",
+      "show_plugin": "Afficher la transcription",
+      "print_download_area_label": "Téléverser ou imprimer la transcription actuelle",
+      "print_transcript": "Imprimer la transcription actuelle",
+      "download_transcript": "Téléverser la transcription actuelle",
+      "search": "Recherche dans la transcription",
+      "clear_search": "Effacer la recherche",
+      "next_search_match": "Suivant",
+      "prev_search_match": "Précédent",
+      "search_results": "Résultat {{current}} de {{total}}",
+      "auto_scroll": "Reprendre AutoScroll",
+      "whoops": "Oups!",
+      "load_failed": "Échec du chargement de la transcription",
+      "skip_transcript": "Passer la transcription"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "it": {
+    "transcript": {
+      "hide_plugin": "Nascondi trascrizione",
+      "show_plugin": "Mostra trascrizione",
+      "print_download_area_label": "Scarica o stampa trascrizione corrente",
+      "print_transcript": "Stampa trascrizione corrente",
+      "download_transcript": "Scarica trascrizione corrente",
+      "search": "Cerca in Trascrizione",
+      "clear_search": "Cancella ricerca",
+      "next_search_match": "Successivo",
+      "prev_search_match": "Precedente",
+      "search_results": "Risultato {{current}} di {{total}}",
+      "auto_scroll": "Riprendi Scorrimento automatico",
+      "whoops": "Operazione non riuscita!",
+      "load_failed": "Impossibile caricare la trascrizione",
+      "skip_transcript": "Salta trascrizione"
+    }
+  }
+}
