@@ -1,0 +1,20 @@
+{
+  "fr": {
+    "transcript": {
+      "hide_plugin": "Cacher le relevé",
+      "show_plugin": "Afficher le relevé",
+      "print_download_area_label": "Télécharger ou imprimer le relevé actuel",
+      "print_transcript": "Imprimer le relevé actuel",
+      "download_transcript": "Télécharger le relevé actuel",
+      "search": "Rechercher dans le relevé",
+      "clear_search": "Effacer la recherche",
+      "next_search_match": "Suivant",
+      "prev_search_match": "Précédent",
+      "search_results": "Résultat {{current}} de {{total}}",
+      "auto_scroll": "Reprendre AutoScroll",
+      "whoops": "Oups !",
+      "load_failed": "Échec de chargement du relevé",
+      "skip_transcript": "Sauter le relevé"
+    }
+  }
+}

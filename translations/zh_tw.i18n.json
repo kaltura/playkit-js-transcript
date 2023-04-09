@@ -1,0 +1,20 @@
+{
+  "zh_tw": {
+    "transcript": {
+      "hide_plugin": "隱藏文字記錄",
+      "show_plugin": "顯示文字記錄",
+      "print_download_area_label": "下載或列印目前文字記錄",
+      "print_transcript": "列印目前文字記錄",
+      "download_transcript": "下載目前文字記錄",
+      "search": "在文字記錄中搜尋",
+      "clear_search": "清除搜尋",
+      "next_search_match": "下一個",
+      "prev_search_match": "前一個",
+      "search_results": "{{total}} 的結果 {{current}}",
+      "auto_scroll": "恢復自動捲動",
+      "whoops": "糟糕！",
+      "load_failed": "無法載入文字紀錄",
+      "skip_transcript": "略過文字記錄"
+    }
+  }
+}

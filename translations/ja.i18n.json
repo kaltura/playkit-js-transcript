@@ -1,0 +1,20 @@
+{
+  "ja": {
+    "transcript": {
+      "hide_plugin": "複写を非表示にする",
+      "show_plugin": "複写を表示する",
+      "print_download_area_label": "現在の複写をダウンロードまたは印刷する",
+      "print_transcript": "現在の複写を印刷する",
+      "download_transcript": "現在の複写をダウンロードする",
+      "search": "複写で検索",
+      "clear_search": "検索をクリア",
+      "next_search_match": "次",
+      "prev_search_match": "前へ",
+      "search_results": "{{total}} の結果  {{current}} ",
+      "auto_scroll": "AutoScrollを再開",
+      "whoops": "おっと！",
+      "load_failed": "複写のロードに失敗した",
+      "skip_transcript": "複写をスキップ"
+    }
+  }
+}
