@@ -2,7 +2,6 @@
 
 .popover-anchor-container {
   cursor: pointer;
-  margin-left: 8px;
   border-radius: $roundness-1;
   
   &:hover {
@@ -54,8 +53,12 @@
   padding: 9px 24px 9px 16px;
   white-space: nowrap;
   margin: 4px;
+
+  &.popover-menu-item-disabled {
+    color: $tone-4-color;
+  }
   
-  &:hover {
+  &:hover :not(.popover-menu-item-disabled) {
     background-color: $tone-6-color;
     border-radius: $roundness-1;
     cursor: pointer;
