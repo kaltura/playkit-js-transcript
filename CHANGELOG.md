@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.4.1](https://github.com/kaltura/playkit-js-transcript/compare/v3.4.0...v3.4.1) (2023-04-19)
+
+
+### Bug Fixes
+
+* **FEC-12957:** Transcript Plugin - move download transcript inside the plugin menu and "release" the download button. ([8a9a5ea](https://github.com/kaltura/playkit-js-transcript/commit/8a9a5ea20d1e1c1869a2833d30462c3c4b7a7029))
+* **FEC-12957:** Transcript Plugin - move download transcript inside the plugin menu and "release" the download button. ([d2c93cc](https://github.com/kaltura/playkit-js-transcript/commit/d2c93cc2fdec3e5f8472aafde506d932bcc8b044))
+
 ## [3.4.0](https://github.com/kaltura/playkit-js-transcript/compare/v3.3.0...v3.4.0) (2023-03-22)
 
 
