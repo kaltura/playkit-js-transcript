@@ -3,7 +3,6 @@
     "transcript": {
       "hide_plugin": "隐藏转录文字",
       "show_plugin": "显示转录文字",
-      "print_download_area_label": "加载或打印当前转录文字",
       "print_transcript": "打印当前转录文字",
       "download_transcript": "加载当前转录文字",
       "search": "在转录文字中搜索",

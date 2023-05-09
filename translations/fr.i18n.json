@@ -3,7 +3,6 @@
     "transcript": {
       "hide_plugin": "Cacher le relevé",
       "show_plugin": "Afficher le relevé",
-      "print_download_area_label": "Télécharger ou imprimer le relevé actuel",
       "print_transcript": "Imprimer le relevé actuel",
       "download_transcript": "Télécharger le relevé actuel",
       "search": "Rechercher dans le relevé",
