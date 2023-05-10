@@ -156,10 +156,10 @@ describe('Transcript plugin', () => {
       initiatePlay();
       cy.get('[data-testid="transcript_header"]').within(() => {
         cy.get('[aria-label="Search in Transcript"]').get('input').type('first');
-        cy.get('[aria-label="Previous"]').should('exist');
-        cy.get('[aria-label="Next"]').should('exist');
-        cy.get('[aria-label="Result 1 of 2"]').should('exist');
-        cy.get('[aria-label="Result 1 of 2"]').should($div => {
+        cy.get('[aria-label="Previous search result"]').should('exist');
+        cy.get('[aria-label="Next search result"]').should('exist');
+        cy.get('[aria-label="Search result 1 out of 2"]').should('exist');
+        cy.get('[aria-label="Search result 1 out of 2"]').should($div => {
           expect($div[0].textContent).to.eq('1/2');
         });
       });
