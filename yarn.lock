@@ -3846,6 +3846,18 @@ pkg-dir@^4.2.0:
   version "2.39.0"
   resolved "https://github.com/kaltura/playkit-js-providers.git#ddaac7ae611eab35ad33249061bbca8f3e4fc787"
 
+playwright-core@1.33.0:
+  version "1.33.0"
+  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.33.0.tgz#269efe29a927cd6d144d05f3c2d2f72bd72447a1"
+  integrity sha512-aizyPE1Cj62vAECdph1iaMILpT0WUDCq3E6rW6I+dleSbBoGbktvJtzS6VHkZ4DKNEOG9qJpiom/ZxO+S15LAw==
+
+playwright-webkit@^1.33.0:
+  version "1.33.0"
+  resolved "https://registry.yarnpkg.com/playwright-webkit/-/playwright-webkit-1.33.0.tgz#0d366ad0ebfa37b45ca73782677d09592165d188"
+  integrity sha512-hUHt8Bk6x5QYKesu1LxwbK21z46QbU8nDOGYkZyIIoCf6PYL7+PDnbwRSSYcuw51Wvtv7Eo6MPj70XWKYDOJlw==
+  dependencies:
+    playwright-core "1.33.0"
+
 postcss-modules-extract-imports@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/postcss-modules-extract-imports/-/postcss-modules-extract-imports-3.0.0.tgz#cda1f047c0ae80c97dbe28c3e76a43b88025741d"
