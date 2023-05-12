@@ -9,5 +9,5 @@ on:
   
 jobs:
    test:
-    uses: kaltura/playkit-js-common/.github/workflows/test.yml@master
+    uses: kaltura/playkit-js-common/.github/workflows/cypress.yml@master
     secrets: inherit

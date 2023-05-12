@@ -5,16 +5,16 @@ const {withText, Text} = KalturaPlayer.ui.preacti18n;
 const translates = ({activeSearchIndex, totalSearchResults}: SearchProps) => ({
   searchLabel: <Text id="transcript.search">Search in Transcript</Text>,
   clearSearchLabel: <Text id="transcript.clear_search">Clear search</Text>,
-  nextMatchLabel: <Text id="transcript.next_search_match">Next</Text>,
-  prevMatchLabel: <Text id="transcript.prev_search_match">Previous</Text>,
+  nextMatchLabel: <Text id="transcript.next_search_match">Next search result</Text>,
+  prevMatchLabel: <Text id="transcript.prev_search_match">Previous search result</Text>,
   searchResultsLabel: (
     <Text
-      id="transcript.prev_search_match"
+      id="transcript.search_results"
       fields={{
         current: totalSearchResults > 0 ? activeSearchIndex : 0,
         total: totalSearchResults
       }}>
-      {`Result ${totalSearchResults > 0 ? activeSearchIndex : 0} of ${totalSearchResults}`}
+      {`Search result ${totalSearchResults > 0 ? activeSearchIndex : 0} out of ${totalSearchResults}`}
     </Text>
   )
 });

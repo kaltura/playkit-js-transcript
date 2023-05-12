@@ -14,6 +14,7 @@
   position: absolute;
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   z-index: 1;
   .skip-transcript-button {
     position: absolute;
