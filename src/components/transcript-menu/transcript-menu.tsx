@@ -3,9 +3,9 @@ import {PopoverMenu} from '../popover-menu';
 import {PopoverMenuItemData} from '../popover-menu';
 
 import {Button, ButtonType} from '@playkit-js/common/dist/components/button';
+const {withText, Text} = KalturaPlayer.ui.preacti18n;
 
 interface TranscriptMenuProps {
-  printDownloadAreaLabel?: string;
   printTranscript?: string;
   downloadTranscript?: string;
   onDownload: () => void;
@@ -19,16 +19,22 @@ interface TranscriptMenuState {
   items: Array<PopoverMenuItemData>;
 }
 
+const translates = {
+  printTranscript: <Text id="transcript.more_options">Print current transcript</Text>,
+  downloadTranscript: <Text id="transcript.more_options">Download current transcript</Text>
+};
+
+@withText(translates)
 class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState> {
   constructor(props: TranscriptMenuProps) {
     super();
 
-    const {downloadDisabled, onDownload, printDisabled, onPrint, printDownloadAreaLabel, printTranscript, downloadTranscript, isLoading} = props;
+    const {downloadDisabled, onDownload, printDisabled, onPrint, printTranscript, downloadTranscript, isLoading} = props;
     const items = [];
     if (!downloadDisabled) {
       items.push({
         testId: 'download-menu-item',
-        label: 'Download transcript',
+        label: downloadTranscript!,
         onClick: onDownload,
         isDisabled: isLoading
       });
@@ -37,7 +43,7 @@ class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState>
     if (!printDisabled) {
       items.push({
         testId: 'print-menu-item',
-        label: 'Print transcript',
+        label: printTranscript!,
         onClick: onPrint,
         isDisabled: isLoading
       });
@@ -48,8 +54,8 @@ class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState>
 
   render() {
     return this.state.items.length ? (
-      <PopoverMenu label={'More'} items={this.state.items}>
-        <Button type={ButtonType.borderless} icon={'more'}></Button>
+      <PopoverMenu items={this.state.items}>
+        <Button type={ButtonType.borderless} icon={'more'} tabIndex={-1} />
       </PopoverMenu>
     ) : null;
   }

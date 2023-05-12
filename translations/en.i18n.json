@@ -3,7 +3,7 @@
     "transcript": {
       "hide_plugin": "Hide Transcript",
       "show_plugin": "Show Transcript",
-      "print_download_area_label": "Download or print current transcript",
+      "more_options": "More transcript options",
       "print_transcript": "Print current transcript",
       "download_transcript": "Download current transcript",
       "search": "Search in Transcript",

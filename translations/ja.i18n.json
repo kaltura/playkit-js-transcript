@@ -3,7 +3,6 @@
     "transcript": {
       "hide_plugin": "複写を非表示にする",
       "show_plugin": "複写を表示する",
-      "print_download_area_label": "現在の複写をダウンロードまたは印刷する",
       "print_transcript": "現在の複写を印刷する",
       "download_transcript": "現在の複写をダウンロードする",
       "search": "複写で検索",

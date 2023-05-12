@@ -2,6 +2,7 @@ import {A11yWrapper} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import {h, Component, VNode} from 'preact';
 
 const {Tooltip} = KalturaPlayer.ui.components;
+const {withText, Text} = KalturaPlayer.ui.preacti18n;
 
 const {withEventManager} = KalturaPlayer.ui.Event;
 const {TAB} = KalturaPlayer.ui.utils.KeyMap;
@@ -16,7 +17,7 @@ interface PopoverMenuItemData {
 }
 
 interface PopoverMenuProps {
-  label: string;
+  moreOptionsLabel?: string;
   eventManager?: any;
   children?: VNode;
   items: Array<PopoverMenuItemData>;
@@ -25,7 +26,11 @@ interface PopoverMenuProps {
 interface PopoverMenuState {
   isOpen: boolean;
 }
+const translates = {
+  moreOptionsLabel: <Text id="transcript.more_options">More transcript options</Text>
+};
 
+@withText(translates)
 @withEventManager
 class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
   private _controlElementRef: HTMLDivElement | null = null;
@@ -98,12 +103,14 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
   };
 
   render() {
-    const {label, children, items} = this.props;
+    const {children, items} = this.props;
 
     const popoverMenuContent = (
       <div className={styles.popoverContainer}>
         <A11yWrapper onClick={() => this.togglePopover(true)}>
           <div
+            aria-label={this.props.moreOptionsLabel!}
+            tabIndex={0}
             data-testid="popover-anchor-container"
             className={`${styles.popoverAnchorContainer} ${this.state.isOpen ? styles.active : ''}`}
             ref={node => {
@@ -124,6 +131,7 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
             ? items.map(({label, onClick, testId, isDisabled}, index) => {
                 return (
                   <A11yWrapper
+                    role="menuitem"
                     onClick={() => {
                       if (!isDisabled) {
                         this.closePopover();
@@ -164,7 +172,7 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
       popoverMenuContent
     ) : (
       <div>
-        <Tooltip label={label}>{popoverMenuContent}</Tooltip>
+        <Tooltip label={this.props.moreOptionsLabel!}>{popoverMenuContent}</Tooltip>
       </div>
     );
   }

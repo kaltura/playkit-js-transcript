@@ -1,6 +1,6 @@
 import {h} from 'preact';
 import {OnClickEvent} from '@playkit-js/common/dist/hoc/a11y-wrapper';
-import {ui} from 'kaltura-player-js';
+import {ui} from '@playkit-js/kaltura-player-js';
 import {UpperBarManager, SidePanelsManager} from '@playkit-js/ui-managers';
 import {ObjectUtils, downloadContent, printContent} from './utils';
 import {icons} from './components/icons';

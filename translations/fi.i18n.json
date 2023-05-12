@@ -3,7 +3,6 @@
     "transcript": {
       "hide_plugin": "Piilota tekstitallenne",
       "show_plugin": "Näytä tekstitallenne",
-      "print_download_area_label": "Lataa tai tulosta nykyinen tekstitallenne",
       "print_transcript": "Tulosta nykyinen tekstitallenne",
       "download_transcript": "Lataa nykyinen tekstitallenne",
       "search": "Hae tekstitallenteesta",

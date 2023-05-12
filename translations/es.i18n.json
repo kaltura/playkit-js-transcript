@@ -3,7 +3,6 @@
     "transcript": {
       "hide_plugin": "Ocultar la transcripción",
       "show_plugin": "Mostrar la transcripción",
-      "print_download_area_label": "Descargar o imprimir la transcripción",
       "print_transcript": "Imprimir la transcripción",
       "download_transcript": "Descargar la transcripción",
       "search": "Buscar en la transcripción",

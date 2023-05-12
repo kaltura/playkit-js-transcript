@@ -3,7 +3,6 @@
     "transcript": {
       "hide_plugin": "隱藏文字記錄",
       "show_plugin": "顯示文字記錄",
-      "print_download_area_label": "下載或列印目前文字記錄",
       "print_transcript": "列印目前文字記錄",
       "download_transcript": "下載目前文字記錄",
       "search": "在文字記錄中搜尋",

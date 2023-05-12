@@ -3,7 +3,6 @@
     "transcript": {
       "hide_plugin": "기록 숨기기",
       "show_plugin": "기록 보기",
-      "print_download_area_label": "현재 기록 다운로드 또는 인쇄",
       "print_transcript": "현재 기록 인쇄",
       "download_transcript": "현재 기록 다운로드",
       "search": "기록 검색",
