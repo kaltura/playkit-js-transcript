@@ -1,6 +1,6 @@
 import {h} from 'preact';
 import * as styles from './plugin-button.scss';
-import {ui} from 'kaltura-player-js';
+import {ui} from '@playkit-js/kaltura-player-js';
 import {icons} from '../icons';
 import {A11yWrapper, OnClick} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 

@@ -66,7 +66,7 @@ module.exports = {
     fallback: {stream: require.resolve('stream-browserify')}
   },
   externals: {
-    preact: 'root KalturaPlayer.ui.preact',
-    'kaltura-player-js': ['KalturaPlayer']
+    '@playkit-js/kaltura-player-js': 'root KalturaPlayer',
+    preact: 'root KalturaPlayer.ui.preact'
   }
 };
