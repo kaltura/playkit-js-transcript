@@ -74,7 +74,7 @@
     "html5 player"
   ],
   "dependencies": {
-    "@playkit-js/common": "^1.2.3",
+    "@playkit-js/common": "^1.2.4",
     "@playkit-js/playkit-js-ui": "^0.77.1",
     "@playkit-js/ui-managers": "^1.3.8",
     "stream-browserify": "^3.0.0"
@@ -82,7 +82,7 @@
   "kaltura": {
     "name": "playkit-js-transcript",
     "dependencies": {
-      "playkit-kaltura-cuepoints": "3.0.4",
+      "playkit-kaltura-cuepoints": "3.0.5",
       "playkit-ui-managers": "1.3.8"
     }
   }
