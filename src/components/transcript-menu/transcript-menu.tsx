@@ -20,8 +20,8 @@ interface TranscriptMenuState {
 }
 
 const translates = {
-  printTranscript: <Text id="transcript.more_options">Print current transcript</Text>,
-  downloadTranscript: <Text id="transcript.more_options">Download current transcript</Text>
+  printTranscript: <Text id="transcript.print_transcript">Print current transcript</Text>,
+  downloadTranscript: <Text id="transcript.download_transcript">Download current transcript</Text>
 };
 
 @withText(translates)
