@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.4.2](https://github.com/kaltura/playkit-js-transcript/compare/v3.4.1...v3.4.2) (2023-05-17)
+
+
+### Bug Fixes
+
+* **FEC-13050:** CSS backdrop-filter property is not supposed in Safari ([#140](https://github.com/kaltura/playkit-js-transcript/issues/140)) ([7cccf5e](https://github.com/kaltura/playkit-js-transcript/commit/7cccf5ea96240fdc62c5cfdbdca35139657d42bf))
+* **FEC-13125:** fix translates ([#146](https://github.com/kaltura/playkit-js-transcript/issues/146)) ([5244ad0](https://github.com/kaltura/playkit-js-transcript/commit/5244ad03b53a62c6be5b99262bc85335b4cb1caf))
+* **FEC-13125:** transcript - menu missing a name ([#143](https://github.com/kaltura/playkit-js-transcript/issues/143)) ([e5bbd6d](https://github.com/kaltura/playkit-js-transcript/commit/e5bbd6d9b5be845494af0c7ae162a5942571f0a1))
+* **FEC-13126:** a11y - change aria labels of next/prev buttons and search results text ([#142](https://github.com/kaltura/playkit-js-transcript/issues/142)) ([77e14dc](https://github.com/kaltura/playkit-js-transcript/commit/77e14dc34b9c64a2aa41c1328c29b49efda30428))
+* **FEC-13127:** a11y - when reaching the autoscroll button from end of script SR does not announce it ([#141](https://github.com/kaltura/playkit-js-transcript/issues/141)) ([1a1b1ea](https://github.com/kaltura/playkit-js-transcript/commit/1a1b1ea01966509b971c11b91c3d687fc35c07d2))
+* **FEC-13145:** upgrade dependancies for common and ui-managers etc ([#144](https://github.com/kaltura/playkit-js-transcript/issues/144)) ([10ebee3](https://github.com/kaltura/playkit-js-transcript/commit/10ebee3486ea984de0aa6d0578dcc9c78f7a74cf))
+
 ### [3.4.1](https://github.com/kaltura/playkit-js-transcript/compare/v3.4.0...v3.4.1) (2023-04-19)
 
 
