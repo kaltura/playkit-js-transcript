@@ -8,7 +8,6 @@ const {Tooltip, Icon} = KalturaPlayer.ui.components;
 
 interface PluginButtonProps {
   isActive: boolean;
-  // onClick: OnClick;
   setRef?: (ref: HTMLButtonElement | null) => void;
   id: string;
   icon: string;
