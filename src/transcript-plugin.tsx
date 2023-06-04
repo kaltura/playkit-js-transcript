@@ -263,7 +263,6 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
         return (
           <PluginButton
             isActive={isActive}
-            onClick={this._handleClickOnPluginIcon}
             id="transcript-icon"
             label={label}
             icon={icons.PLUGIN_ICON}
