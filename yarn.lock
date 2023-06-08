@@ -209,10 +209,9 @@
     js-logger "^1.6.0"
     ua-parser-js "1.0.2"
 
-"@playkit-js/ui-managers@^1.3.10":
+"@playkit-js/ui-managers@github:kaltura/playkit-js-ui-managers#FEC-13214":
   version "1.3.10"
-  resolved "https://registry.yarnpkg.com/@playkit-js/ui-managers/-/ui-managers-1.3.10.tgz#1a6c44b6a2eec4c37652b440390e0ac85da8413e"
-  integrity sha512-jTOBM730MvzojZWKKM7lruUaO+03i2OiW2AbREkZBY3teghVrx8jm13a8mh2qW+CmJ++iWWSd+G2VzIp/lH1yw==
+  resolved "https://codeload.github.com/kaltura/playkit-js-ui-managers/tar.gz/109f8627fe4b25d6b549047c2db44ae03b1f63d7"
   dependencies:
     "@playkit-js/common" "^1.2.3"
 
