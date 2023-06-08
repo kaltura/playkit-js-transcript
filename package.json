@@ -76,7 +76,7 @@
   "dependencies": {
     "@playkit-js/common": "^1.2.9",
     "@playkit-js/playkit-js-ui": "^0.77.2",
-    "@playkit-js/ui-managers": "github:kaltura/playkit-js-ui-managers#FEC-13214",
+    "@playkit-js/ui-managers": "^1.3.10",
     "stream-browserify": "^3.0.0"
   },
   "kaltura": {
