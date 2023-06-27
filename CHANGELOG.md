@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.4.4 (2023-06-27)
+
+
+### Bug Fixes
+
+* **FEC-13214:** Top Bar Dropdown menu are not auto closed on Transcript or Navigation icon clicked ([#148](https://github.com/kaltura/playkit-js-transcript/issues/148)) ([512ab9b](https://github.com/kaltura/playkit-js-transcript/commit/512ab9b5873d34589134b06b2501cc97c0fe1fc5)), closes [kaltura/playkit-js-ui-managers#40](https://github.com/kaltura/playkit-js-ui-managers/issues/40)
+
 ### 3.4.3 (2023-06-07)
 
 
