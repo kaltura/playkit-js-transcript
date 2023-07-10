@@ -1,0 +1,9 @@
+name: Upgrade Kaltura Dependencies
+
+on:
+  workflow_dispatch:
+
+jobs:
+  update_dependencies:
+    uses: kaltura/playkit-js-common/.github/workflows/run_upd_dependency.yaml@master
+    secrets: inherit
