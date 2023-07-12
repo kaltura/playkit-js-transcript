@@ -228,6 +228,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
             highlightedMap={this._activeCuePointsMap}
             onSeek={this._seekTo}
             onItemClicked={this._seekTo}
+            expandMode={this.config.expandMode}
             captions={this._data}
             isLoading={this._isLoading}
             hasError={this._hasError}

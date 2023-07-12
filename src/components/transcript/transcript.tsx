@@ -1,4 +1,5 @@
 import {h, Component} from 'preact';
+import {ui} from '@playkit-js/kaltura-player-js';
 import {debounce} from '../../utils';
 import * as styles from './transcript.scss';
 import {Spinner} from '../spinner';
@@ -8,12 +9,16 @@ import {HighlightedMap, CuePointData} from '../../types';
 import {ErrorIcon} from './error-icon';
 import {AutoscrollButton} from '../autoscroll-button';
 import {TranscriptMenu} from '../transcript-menu';
-
+import {SmallScreenSlate} from '../small-screen-slate';
 import {Button, ButtonType, ButtonSize} from '@playkit-js/common/dist/components/button';
 import {OnClickEvent, OnClick} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 
-const {ENTER, SPACE, TAB, ESC} = KalturaPlayer.ui.utils.KeyMap;
-const {withText, Text} = KalturaPlayer.ui.preacti18n;
+const {ENTER, SPACE, TAB, ESC} = ui.utils.KeyMap;
+const {withText, Text} = ui.preacti18n;
+
+const {SidePanelModes} = ui;
+const {PLAYER_BREAK_POINTS} = ui.Components;
+const {connect} = ui.redux;
 
 const translates = {
   skipTranscript: <Text id="transcript.skip_transcript">Skip transcript</Text>,
@@ -45,6 +50,8 @@ export interface TranscriptProps {
   onDownload: () => void;
   printDisabled: boolean;
   onPrint: () => void;
+  smallScreen?: boolean;
+  expandMode?: string;
 }
 
 interface TranscriptState {
@@ -67,6 +74,12 @@ const initialSearch = {
 
 const SEARCHBAR_HEIGHT = 38; // height of search bar with margins
 
+const mapStateToProps = (state: any, ownProps: Pick<TranscriptProps, 'expandMode'>) => ({
+  smallScreen: ownProps.expandMode === SidePanelModes.ALONGSIDE && state.shell.playerClientRect?.width < PLAYER_BREAK_POINTS.SMALL
+});
+
+// @ts-ignore
+@connect(mapStateToProps)
 @withText(translates)
 export class Transcript extends Component<TranscriptProps, TranscriptState> {
   private _transcriptListRef: HTMLElement | null = null;
@@ -364,7 +377,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
   };
 
   render(props: TranscriptProps) {
-    const {isLoading, kitchenSinkActive, hasError} = props;
+    const {isLoading, kitchenSinkActive, hasError, smallScreen, toggledWithEnter} = props;
     const renderTranscriptButtons = !(isLoading || hasError);
     return (
       <div
@@ -374,21 +387,25 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         }}
         onKeyUp={this._handleEsc}
         data-testid="transcript_root">
-        <div className={styles.globalContainer}>
-          {this._renderHeader()}
+        {smallScreen ? (
+          <SmallScreenSlate onClose={this.props.onClose} toggledWithEnter={toggledWithEnter} />
+        ) : (
+          <div className={styles.globalContainer}>
+            {this._renderHeader()}
 
-          {renderTranscriptButtons && this._renderSkipTranscriptButton()}
-          <div
-            className={styles.body}
-            onScroll={this._onScroll}
-            ref={node => {
-              this._transcriptListRef = node;
-            }}
-            data-testid="transcript_list">
-            {isLoading ? this._renderLoading() : this._renderTranscript()}
+            {renderTranscriptButtons && this._renderSkipTranscriptButton()}
+            <div
+              className={styles.body}
+              onScroll={this._onScroll}
+              ref={node => {
+                this._transcriptListRef = node;
+              }}
+              data-testid="transcript_list">
+              {isLoading ? this._renderLoading() : this._renderTranscript()}
+            </div>
+            {renderTranscriptButtons && this._renderScrollToButton()}
           </div>
-          {renderTranscriptButtons && this._renderScrollToButton()}
-        </div>
+        )}
       </div>
     );
   }
