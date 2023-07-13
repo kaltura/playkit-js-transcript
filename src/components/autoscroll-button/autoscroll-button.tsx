@@ -1,10 +1,9 @@
 import {h} from 'preact';
 import * as styles from './autoscroll-button.scss';
-import {A11yWrapper, OnClick} from '@playkit-js/common/dist/hoc/a11y-wrapper';
-import {AutoScrollIcon} from "./AutoScrollIcon";
+import {OnClick} from '@playkit-js/common/dist/hoc/a11y-wrapper';
+import {Button, ButtonType} from '@playkit-js/common/dist/components/button';
 
 const {withText, Text} = KalturaPlayer.ui.preacti18n;
-const {Tooltip} = KalturaPlayer.ui.components;
 
 interface AutoscrollButtonProps {
   onClick: OnClick;
@@ -21,15 +20,14 @@ export const AutoscrollButton = withText(translates)(
   ({onClick, isAutoScrollEnabled, setAutoscrollButtonRef, autoScrollLabel}: AutoscrollButtonProps) => {
     return (
       <div className={styles.autoscrollRoot} tabIndex={isAutoScrollEnabled ? -1 : 1} aria-label={autoScrollLabel}>
-        <Tooltip label={autoScrollLabel} type="left">
-          <A11yWrapper onClick={onClick}>
-            <button
-              className={`${styles.autoscrollButton} ${isAutoScrollEnabled ? '' : styles.autoscrollButtonVisible}`}
-              ref={setAutoscrollButtonRef}>
-              <AutoScrollIcon/>
-            </button>
-          </A11yWrapper>
-        </Tooltip>
+        <Button
+          onClick={onClick}
+          setRef={setAutoscrollButtonRef}
+          className={`${styles.autoscrollButton} ${isAutoScrollEnabled ? '' : styles.autoscrollButtonVisible}`}
+          type={ButtonType.primary}
+          icon="autoScroll"
+          tooltip={{label: autoScrollLabel!, type: 'left'}}
+        />
       </div>
     );
   }

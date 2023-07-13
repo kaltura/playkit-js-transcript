@@ -139,7 +139,16 @@
     classnames "^2.3.2"
     linkify-it "^4.0.1"
 
-"@playkit-js/kaltura-player-js@canary":
+"@playkit-js/common@^1.2.13":
+  version "1.2.13"
+  resolved "https://registry.yarnpkg.com/@playkit-js/common/-/common-1.2.13.tgz#ddf8a82d43b40b355b8e8b85304be503a614cf23"
+  integrity sha512-vlITke+xm4ijYWnfCp+fwEokHF+9Mu1rOF16OLGzh1CHMa5a5xeqHaY3CMjZE+wGBL9Cw7MODhOCtb50CHhuQg==
+  dependencies:
+    "@playkit-js/playkit-js-ui" "^0.77.1"
+    classnames "^2.3.2"
+    linkify-it "^4.0.1"
+
+"@playkit-js/kaltura-player-js@^3.14.3-canary.0-4128316":
   version "3.14.3-canary.0-4128316"
   resolved "https://registry.yarnpkg.com/@playkit-js/kaltura-player-js/-/kaltura-player-js-3.14.3-canary.0-4128316.tgz#0b0d07e9f06e92391afd84d5ac7219d476278299"
   integrity sha512-QV4v6cOKsc+qUEIdTV4zJGHGRgkL9kr9YIhNJgWLCZvhEq5pw09kZ6gktp+QV7dEQ3YfknatTJOsMeVW3tmVpQ==
