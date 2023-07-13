@@ -258,6 +258,15 @@ describe('Transcript plugin', () => {
       });
     });
 
+    it('should not render small screen slate for small screen if plugin expandMode is "over"', () => {
+      cy.viewport(478, 380);
+      mockKalturaBe();
+      loadPlayer({expandMode: 'over'}).then(() => {
+        cy.get('[data-testid="transcript_header"]').should('exist');
+        cy.get(`[data-testid="transcript_smallScreenWrapper"]`).should('not.exist');
+      });
+    });
+
     it('should render small screen slate for small screens', () => {
       cy.viewport(478, 380);
       mockKalturaBe();
