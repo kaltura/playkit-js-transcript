@@ -37,7 +37,7 @@ export class SmallScreenSlate extends Component<SmallScreenSlateProps> {
   render() {
     const {isMobile, smallScreenMobileText, smallScreenText, onClose, toggledWithEnter, player, hideTranscript} = this.props;
     return (
-      <div className={styles.smallScreenWrapper}>
+      <div className={styles.smallScreenWrapper} data-testid="transcript_smallScreenWrapper">
         <Button
           icon={'close'}
           onClick={onClose}
@@ -45,6 +45,7 @@ export class SmallScreenSlate extends Component<SmallScreenSlateProps> {
           focusOnMount={toggledWithEnter}
           className={styles.closeButton}
           ariaLabel={hideTranscript}
+          testId="transcript_smallScreenClose"
         />
         <div className={styles.contentWrapper}>
           {isMobile ? (
@@ -56,9 +57,12 @@ export class SmallScreenSlate extends Component<SmallScreenSlateProps> {
               type={ButtonType.borderless}
               size={ButtonSize.medium}
               ariaLabel={smallScreenText}
+              testId="transcript_smallScreenFullscreen"
             />
           )}
-          <div className={styles.textContent}>{isMobile ? smallScreenMobileText : smallScreenText}</div>
+          <div className={styles.textContent} data-testid="transcript_smallScreenTextContent">
+            {isMobile ? smallScreenMobileText : smallScreenText}
+          </div>
         </div>
       </div>
     );

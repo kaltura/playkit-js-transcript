@@ -247,4 +247,68 @@ describe('Transcript plugin', () => {
       });
     });
   });
+
+  describe('small screen slate', () => {
+    it('should not render small screen slate for big screens', () => {
+      cy.viewport(550, 750);
+      mockKalturaBe();
+      loadPlayer().then(() => {
+        cy.get('[data-testid="transcript_header"]').should('exist');
+        cy.get(`[data-testid="transcript_smallScreenWrapper"]`).should('not.exist');
+      });
+    });
+
+    it('should render small screen slate for small screens', () => {
+      cy.viewport(478, 380);
+      mockKalturaBe();
+      loadPlayer().then(() => {
+        cy.get('[data-testid="transcript_header"]').should('not.exist');
+        cy.get(`[data-testid="transcript_smallScreenWrapper"]`).should('be.visible');
+        cy.get('[data-testid="transcript_smallScreenClose"]').should('exist');
+        cy.get(`[data-testid="transcript_smallScreenFullscreen"]`).should('exist');
+        cy.get(`[data-testid="transcript_smallScreenTextContent"]`).should('have.text', 'To see the transcript, go to full screen');
+      });
+    });
+
+    it('should render small screen slate for small mobile screens', () => {
+      cy.viewport('iphone-6');
+      cy.on('window:before:load', win => {
+        Object.defineProperty(win.navigator, 'userAgent', {
+          value:
+            'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1'
+        });
+      });
+      mockKalturaBe();
+      loadPlayer().then(() => {
+        cy.get(`[data-testid="transcript_smallScreenTextContent"]`).should('have.text', 'To see the transcript, rotate the phone');
+        cy.get(`[data-testid="transcript_smallScreenFullscreen"]`).should('not.exist');
+        cy.viewport('iphone-6', 'landscape');
+        cy.get(`[data-testid="transcript_smallScreenTextContent"]`).should('not.be.visible');
+      });
+    });
+
+    it('should test close button', () => {
+      cy.viewport(478, 380);
+      mockKalturaBe();
+      loadPlayer().then(() => {
+        cy.get(`[data-testid="transcript_smallScreenWrapper"]`).should('be.visible');
+        cy.get('[data-testid="transcript_smallScreenClose"]').click({force: true});
+        cy.get(`[data-testid="transcript_smallScreenWrapper"]`).should('not.be.visible');
+      });
+    });
+
+    it('should test fullscreen button', () => {
+      cy.viewport(478, 380);
+      mockKalturaBe();
+      loadPlayer().then(kalturaPlayer => {
+        const fn = cy.stub(kalturaPlayer, 'enterFullscreen');
+        cy.get(`[data-testid="transcript_smallScreenWrapper"]`).should('be.visible');
+        cy.get('[data-testid="transcript_smallScreenFullscreen"]')
+          .click({force: true})
+          .then(() => {
+            expect(fn).to.be.called;
+          });
+      });
+    });
+  });
 });
