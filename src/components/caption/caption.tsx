@@ -1,6 +1,6 @@
 import {Component, h} from 'preact';
 import {A11yWrapper, OnClickEvent} from '@playkit-js/common/dist/hoc/a11y-wrapper';
-import {secontsToTime} from '../../utils';
+import {secondsToTime} from '../../utils';
 import {CuePointData} from '../../types';
 import * as styles from './caption.scss';
 
@@ -102,7 +102,7 @@ export class Caption extends Component<ExtendedCaptionProps> {
     const {caption, highlighted, showTime, longerThanHour} = this.props;
     const {startTime, id} = caption;
     const isHighlighted = Object.keys(highlighted)[0] === id;
-    const time = showTime ? secontsToTime(startTime, longerThanHour) : '';
+    const time = showTime ? secondsToTime(startTime, longerThanHour) : '';
 
     const captionA11yProps: Record<string, any> = {
       ariaCurrent: isHighlighted,
