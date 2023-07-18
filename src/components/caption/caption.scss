@@ -7,7 +7,6 @@
   margin-bottom: 9px;
   margin-left: 8px;
   color: $tone-1-color;
-  cursor: pointer;
   .caption-time {
     flex-shrink: 1;
     min-width: 48px;
@@ -49,6 +48,7 @@
       user-select: text;
       -ms-user-select: text;
       border-radius: 2px;
+      cursor: pointer;
       &::selection {
         background-color: $primary-brighter-color;
         padding: 0 2px;

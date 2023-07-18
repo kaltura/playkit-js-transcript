@@ -32,7 +32,7 @@ const makeHoursString = (seconds: number): string => {
   return '';
 };
 
-export const secondsToTime = (seconds: number, longerThanHour: boolean): string => {
+export const secontsToTime = (seconds: number, longerThanHour: boolean): string => {
   const date = new Date(0);
   date.setSeconds(seconds);
   return `${longerThanHour ? makeHoursString(seconds) : ''}${pad(date.getUTCMinutes())}:${pad(date.getUTCSeconds())}`;
