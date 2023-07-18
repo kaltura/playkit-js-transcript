@@ -58,7 +58,7 @@
     color: $tone-4-color;
   }
   
-  &:hover :not(.popover-menu-item-disabled) {
+  &:hover:not(.popover-menu-item-disabled) {
     background-color: $tone-6-color;
     border-radius: $roundness-1;
     cursor: pointer;

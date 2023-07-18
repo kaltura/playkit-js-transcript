@@ -107,7 +107,10 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
 
     const popoverMenuContent = (
       <div className={styles.popoverContainer}>
-        <A11yWrapper onClick={() => this.togglePopover(true)}>
+        <A11yWrapper onClick={(e) => {
+          e.stopPropagation();
+          this.togglePopover(true);
+        }}>
           <div
             aria-label={this.props.moreOptionsLabel!}
             tabIndex={0}
