@@ -14,9 +14,7 @@
       "auto_scroll": "Resume AutoScroll",
       "whoops": "Whoops!",
       "load_failed": "Failed to load transcript",
-      "skip_transcript": "Skip transcript",
-      "smallScreenText": "To see the transcript, go to full screen",
-      "smallScreenMobileText": "To see the transcript, rotate the phone"
+      "skip_transcript": "Skip transcript"
     }
   }
 }
