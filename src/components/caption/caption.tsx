@@ -1,6 +1,6 @@
 import {Component, h} from 'preact';
 import {A11yWrapper, OnClickEvent} from '@playkit-js/common/dist/hoc/a11y-wrapper';
-import {secontsToTime} from '../../utils';
+import {secondsToTime} from '../../utils';
 import {CuePointData} from '../../types';
 import * as styles from './caption.scss';
 
@@ -24,14 +24,8 @@ interface ExtendedCaptionProps extends CaptionProps {
   isAutoScrollEnabled: boolean;
 }
 
-interface CaptionState {
-  focused: boolean;
-}
-
-export class Caption extends Component<ExtendedCaptionProps, CaptionState> {
+export class Caption extends Component<ExtendedCaptionProps> {
   private _hotspotRef: HTMLElement | null = null;
-
-  state = {focused: false};
 
   componentDidUpdate() {
     if (this._hotspotRef && this.props.shouldScroll) {
@@ -41,12 +35,12 @@ export class Caption extends Component<ExtendedCaptionProps, CaptionState> {
     }
   }
 
-  shouldComponentUpdate(nextProps: ExtendedCaptionProps, nextState: CaptionState) {
-    const {indexMap, highlighted, isAutoScrollEnabled, activeSearchIndex, longerThanHour, caption} = this.props;
+  shouldComponentUpdate(nextProps: ExtendedCaptionProps) {
+    const {indexMap, highlighted, isAutoScrollEnabled, activeSearchIndex, longerThanHour} = this.props;
     if (longerThanHour !== nextProps.longerThanHour) {
       return true;
     }
-    if (highlighted !== nextProps.highlighted || this.state.focused !== nextState.focused) {
+    if (highlighted !== nextProps.highlighted) {
       return true;
     }
     if (highlighted && isAutoScrollEnabled !== nextProps.isAutoScrollEnabled) {
@@ -61,16 +55,7 @@ export class Caption extends Component<ExtendedCaptionProps, CaptionState> {
     return false;
   }
 
-  private _handleKeyDown = (event: OnClickEvent, byKeyboard?: boolean) => {
-    if (byKeyboard) {
-      event.preventDefault();
-      this._gotoCurrentTime();
-    }
-  };
-
-  private _handleClick = (event: MouseEvent) => {
-    event.stopPropagation();
-    this._hotspotRef?.focus();
+  private _handleClick = () => {
     this._gotoCurrentTime();
   };
 
@@ -113,42 +98,34 @@ export class Caption extends Component<ExtendedCaptionProps, CaptionState> {
     );
   };
 
-  private _handleFocus = () => {
-    this.setState({
-      focused: true
-    });
-  };
-
-  private _handleBlur = () => {
-    this.setState({
-      focused: false
-    });
-  };
-
   render() {
     const {caption, highlighted, showTime, longerThanHour} = this.props;
     const {startTime, id} = caption;
     const isHighlighted = Object.keys(highlighted)[0] === id;
+    const time = showTime ? secondsToTime(startTime, longerThanHour) : '';
 
     const captionA11yProps: Record<string, any> = {
       ariaCurrent: isHighlighted,
-      onFocus: this._handleFocus,
-      onBlur: this._handleBlur,
       tabIndex: 0,
-      ariaHidden: !(isHighlighted || this.state.focused)
+      ariaLabel: `${time}${showTime ? ' ' : ''}${caption.text}`,
+      role: 'button'
     };
 
     return (
-      <A11yWrapper onClick={this._handleKeyDown} role={isHighlighted ? 'text' : 'listitem'}>
+      <A11yWrapper onClick={this._handleClick}>
         <div
           className={styles.caption}
           ref={node => {
             this._hotspotRef = node;
           }}
           {...captionA11yProps}>
-          {showTime && <div className={styles.captionTime}>{secontsToTime(startTime, longerThanHour)}</div>}
+          {showTime && (
+            <div className={styles.captionTime} aria-hidden="true">
+              {time}
+            </div>
+          )}
           <div
-            onClick={this._handleClick}
+            aria-hidden="true"
             className={`${styles.captionContent} ${isHighlighted ? styles.highlighted : ''} ${showTime ? '' : styles.withoutTime}`}>
             {this._renderText(caption.text)}
           </div>
