@@ -73,9 +73,10 @@ const initialSearch = {
 };
 
 const SEARCHBAR_HEIGHT = 38; // height of search bar with margins
+const smallScreen = PLAYER_BREAK_POINTS?.SMALL || 480;
 
 const mapStateToProps = (state: any, ownProps: Pick<TranscriptProps, 'expandMode'>) => ({
-  smallScreen: ownProps.expandMode === SidePanelModes.ALONGSIDE && state.shell.playerClientRect?.width < PLAYER_BREAK_POINTS.SMALL
+  smallScreen: ownProps.expandMode === SidePanelModes.ALONGSIDE && state.shell.playerClientRect?.width < smallScreen
 });
 
 // @ts-ignore
