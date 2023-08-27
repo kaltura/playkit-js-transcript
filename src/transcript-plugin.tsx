@@ -172,7 +172,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   private _activatePlugin = () => {
     this.ready.then(() => {
       this.sidePanelsManager?.activateItem(this._transcriptPanel);
-      this._pluginState === PluginStates.OPENED;
+      this._pluginState = PluginStates.OPENED;
       this.upperBarManager?.update(this._transcriptIcon);
     });
   };
@@ -180,7 +180,6 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   private _deactivatePlugin = () => {
     this.ready.then(() => {
       this.sidePanelsManager?.deactivateItem(this._transcriptPanel);
-      this._pluginState = PluginStates.CLOSED;
       this.upperBarManager?.update(this._transcriptIcon);
     });
   };
@@ -193,6 +192,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     if (this._isPluginActive()) {
       this._triggeredByKeyboard = false;
       this._deactivatePlugin();
+      this._pluginState = PluginStates.CLOSED;
     } else {
       this._triggeredByKeyboard = Boolean(byKeyboard);
       this._activatePlugin();
@@ -312,6 +312,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       this._pluginButtonRef?.focus();
     }
     this._deactivatePlugin();
+    this._pluginState = PluginStates.CLOSED;
   };
 
   static isValid(): boolean {
