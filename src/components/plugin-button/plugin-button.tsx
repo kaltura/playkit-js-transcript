@@ -27,7 +27,7 @@ export const PluginButton = ({isActive, label, id, icon, dataTestId, setRef}: Pl
           aria-label={label}
           className={[ui.style.upperBarIcon, styles.pluginButton, isActive ? styles.active : ''].join(' ')}
           data-testid={dataTestId}>
-          <Icon id={id} height={icons.BigSize} width={icons.BigSize} viewBox={`0 0 ${icons.BigSize} ${icons.BigSize}`} path={icon} />
+          <Icon id={id} height={icons.BigSize} width={icons.BigSize} viewBox={`0 0 ${icons.BigSize} ${icons.BigSize}`} path={icon} hidden="true"/>
         </button>
     </Tooltip>
   );
