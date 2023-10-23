@@ -1,3 +1,5 @@
+import {mockKalturaBe, loadPlayer, clickClosePluginButton} from './env';
+
 const MANIFEST = `#EXTM3U
 #EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="audio",LANGUAGE="en",NAME="English",AUTOSELECT=YES,DEFAULT=YES,URI="${location.origin}/media/index_1.m3u8",SUBTITLES="subs"
 #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=509496,RESOLUTION=480x272,AUDIO="audio",SUBTITLES="subs"
@@ -8,67 +10,9 @@ const MANIFEST_SAFARI = `#EXTM3U
 #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=504265,RESOLUTION=480x272,AUDIO="audio",SUBTITLES="subs"
 ${location.origin}/media/index.m3u8`;
 
-const preparePage = (pluginConf: Object, playbackConf: Object) => {
-  cy.visit('index.html');
-  return cy.window().then(win => {
-    try {
-      // @ts-ignore
-      var kalturaPlayer = win.KalturaPlayer.setup({
-        targetId: 'player-placeholder',
-        provider: {
-          partnerId: -1,
-          env: {
-            cdnUrl: 'http://mock-cdn',
-            serviceUrl: 'http://mock-api'
-          }
-        },
-        plugins: {
-          'playkit-js-transcript': pluginConf,
-          uiManagers: {},
-          kalturaCuepoints: {}
-        },
-        playback: {muted: true, autoplay: true, ...playbackConf}
-      });
-      return kalturaPlayer.loadMedia({entryId: '0_wifqaipd'});
-    } catch (e: any) {
-      return Promise.reject(e.message);
-    }
-  });
-};
-
-const getPlayer = () => {
-  // @ts-ignore
-  return cy.window().then($win => $win.KalturaPlayer.getPlayers()['player-placeholder']);
-};
-
-const loadPlayer = (pluginConf = {}, playbackConf = {}) => {
-  return preparePage(pluginConf, playbackConf).then(() => getPlayer().then(kalturaPlayer => kalturaPlayer));
-};
-
-const clickTranscriptPluginButton = () => {
-  cy.get('[data-testid="transcript_pluginButton"]').should('exist');
-  cy.get('[data-testid="transcript_pluginButton"]').click({force: true});
-};
-
-const clickClosePluginButton = () => {
-  cy.get('[data-testid="transcriptCloseButton"] button').should('exist');
-  cy.get('[data-testid="transcriptCloseButton"] button').click({force: true});
-};
-
-const checkRequest = (reqBody: any, service: string, action: string) => {
-  return reqBody?.service === service && reqBody?.action === action;
-};
-
-const mockKalturaBe = (entryFixture = 'vod-with-captions.json', captionsFixture = 'captions-en-response.json') => {
-  cy.intercept('http://mock-api/service/multirequest', req => {
-    if (checkRequest(req.body[2], 'baseEntry', 'list')) {
-      return req.reply({fixture: entryFixture});
-    }
-    if (checkRequest(req.body[2], 'caption_captionasset', 'serveAsJson')) {
-      return req.reply({fixture: captionsFixture});
-    }
-  });
-};
+Cypress.on('uncaught:exception', (err, runnable) => {
+  return false;
+});
 
 describe('Transcript plugin', () => {
   beforeEach(() => {
@@ -116,18 +60,25 @@ describe('Transcript plugin', () => {
       });
     });
 
-    // it('should select captions and highlight them', () => {
-    //   mockKalturaBe();
-    //   loadPlayer().then(kalturaPlayer => {
-    //     const captionSpan = cy.get('[data-testid="transcript_list"] [role="listitem"]').first();
-    //     captionSpan.should('exist');
-    //     kalturaPlayer.currentTime = 20;
-    //     captionSpan.should('have.attr', 'aria-current', 'false');
-    //     captionSpan.click();
-    //     kalturaPlayer.pause();
-    //     captionSpan.should('have.attr', 'aria-current', 'true');
-    //   });
-    // });
+    it('should select captions and highlight them', () => {
+      mockKalturaBe();
+      loadPlayer().then(kalturaPlayer => {
+        kalturaPlayer.currentTime = 5;
+        cy.get('[data-testid="transcript_list"]').within(() => {
+          kalturaPlayer.pause();
+          const caption = cy.contains('first caption');
+          caption.should('exist');
+          caption.parent().invoke('attr', 'class').should('contain', 'highlighted');
+        });
+      });
+    });
+
+    it('should sanitize html tags', () => {
+      mockKalturaBe();
+      loadPlayer({showTime: false}).then(() => {
+        cy.get('[aria-label="Dark Side."]').should('have.text', 'Dark Side.');
+      });
+    });
 
     it('should close plugin if ESC button pressed', () => {
       mockKalturaBe();

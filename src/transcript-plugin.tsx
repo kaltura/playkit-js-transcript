@@ -1,3 +1,5 @@
+// @ts-ignore
+import * as sanitizeHtml from 'sanitize-html';
 import {h} from 'preact';
 import {OnClickEvent} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import {ui} from '@playkit-js/kaltura-player-js';
@@ -149,7 +151,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
 
   private _addCaptionData = (newData: CuePointData[]) => {
     this._activeCaptionMapId = this._getCaptionMapId();
-    this._captionMap.set(this._activeCaptionMapId, newData);
+    this._captionMap.set(this._activeCaptionMapId, this._sanitizeCaptions(newData));
     this._isLoading = false;
     clearTimeout(this._loadingTimeoutId);
     this._updateTranscriptPanel();
@@ -197,6 +199,13 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       this._triggeredByKeyboard = Boolean(byKeyboard);
       this._activatePlugin();
     }
+  };
+
+  private _sanitizeCaptions = (data: CuePointData[]) => {
+    return data.map(caption => ({
+      ...caption,
+      text: sanitizeHtml(caption.text || '', {allowedTags: []})
+    }));
   };
 
   private _addTranscriptItem(): void {
