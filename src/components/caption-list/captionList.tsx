@@ -104,10 +104,12 @@ export class CaptionList extends Component<Props> {
 
   render() {
     const {data} = this.props;
+    let isSearchCaption = false;
     return (
       <div className={styles.transcriptWrapper} onKeyUp={this._handleKeyUp} aria-live="polite">
         {data.map((captionData, index) => {
           const captionProps = this._getCaptionProps(captionData);
+          const searchCaption = this.props.searchMap[captionData.id];
           return (
             <Caption
               ref={node => {
@@ -116,7 +118,15 @@ export class CaptionList extends Component<Props> {
                 } else if (index === data.length - 1) {
                   this._lastCaptionRef = node;
                 }
-                if (captionProps.highlighted[captionData.id]) {
+                if (searchCaption){
+                  Object.keys(searchCaption).forEach(key => {
+                    if (parseInt(key) === this.props.activeSearchIndex) {
+                      this._currentCaptionRef = node
+                      isSearchCaption = true;
+                    }
+                  });
+                }
+                if (!isSearchCaption && captionProps.highlighted[captionData.id]) {
                   this._currentCaptionRef = node;
                 }
               }}
