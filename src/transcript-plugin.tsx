@@ -1,4 +1,4 @@
-// @ts-nocheck
+// @ts-ignore
 import * as sanitizeHtml from 'sanitize-html';
 import {h} from 'preact';
 import {OnClickEvent} from '@playkit-js/common/dist/hoc/a11y-wrapper';
