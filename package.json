@@ -15,12 +15,14 @@
   "devDependencies": {
     "@playkit-js/kaltura-player-js": "canary",
     "conventional-github-releaser": "3.1.3",
+    "copyfiles": "^2.4.1",
     "cross-env": "^7.0.3",
     "css-loader": "^6.7.1",
     "cypress": "^12.12.0",
     "playwright-webkit": "^1.33.0",
     "preact": "^10.4.1",
     "prettier": "^2.6.2",
+    "rimraf": "^5.0.5",
     "sass": "^1.54.3",
     "sass-loader": "^12.6.0",
     "standard-version": "^9.3.2",
@@ -36,7 +38,7 @@
     "@playkit-js/kaltura-player-js": "canary"
   },
   "scripts": {
-    "clean": "rm -rf ./dist",
+    "clean": "rimraf ./dist",
     "prebuild": "npm run clean",
     "build": "webpack --mode production",
     "dev": "webpack-dev-server --mode development",
@@ -47,7 +49,7 @@
     "cy:run:firefox": "cypress run --browser firefox --config video=false",
     "cy:run:edge": "cypress run --browser edge --config video=false",
     "cy:run:safari": "cypress run --browser webkit --config video=false",
-    "test:prepare": "yarn run build && yes | cp -i ./dist/playkit-transcript.js ./cypress/public/plugin.js",
+    "test:prepare": "yarn run build && copyfiles -f ./dist/playkit-transcript.js ./cypress/public/plugin",
     "test:watch": "yarn run test:prepare && cypress open",
     "test": "yarn run test:prepare && yarn run cy:run",
     "release": "standard-version",
