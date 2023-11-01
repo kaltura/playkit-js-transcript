@@ -21,6 +21,7 @@
     "playwright-webkit": "^1.33.0",
     "preact": "^10.4.1",
     "prettier": "^2.6.2",
+    "rimraf": "^5.0.5",
     "sass": "^1.54.3",
     "sass-loader": "^12.6.0",
     "standard-version": "^9.3.2",
@@ -36,7 +37,7 @@
     "@playkit-js/kaltura-player-js": "canary"
   },
   "scripts": {
-    "clean": "rm -rf ./dist",
+    "clean": "rimraf ./dist",
     "prebuild": "npm run clean",
     "build": "webpack --mode production",
     "dev": "webpack-dev-server --mode development",
