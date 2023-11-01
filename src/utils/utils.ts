@@ -52,14 +52,11 @@ export function isBoolean(value: any) {
 
 export function makePlainText(captions: Array<CuePointData>): string {
   return captions.reduce((acc: string, next: CuePointData) => {
-    return `${acc} ${next.text}`;
+    return `${acc.trim()} ${next.text.trim()}`;
   }, '');
 }
 
 import {CuePointData, CuePoint} from '../types';
-
-const {toHHMMSS} = KalturaPlayer.ui.utils;
-const MAX_CHARACTERS = 77;
 
 export const decodeString = (content: any): string => {
   if (typeof content !== 'string') {
@@ -69,6 +66,7 @@ export const decodeString = (content: any): string => {
     .replace(/&lt;/gi, '<')
     .replace(/&gt;/gi, '>')
     .replace(/&nbsp;/gi, ' ')
+    .replace(/  /gi, ' ')
     .replace(/&amp;/gi, '&')
     .replace(/&quot;/gi, '"');
 };

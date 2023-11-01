@@ -1,10 +1,9 @@
-// @ts-ignore
 import * as sanitizeHtml from 'sanitize-html';
 import {h} from 'preact';
 import {OnClickEvent} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import {ui} from '@playkit-js/kaltura-player-js';
 import {UpperBarManager, SidePanelsManager} from '@playkit-js/ui-managers';
-import {ObjectUtils, downloadContent, printContent} from './utils';
+import {ObjectUtils, downloadContent, printContent, decodeString} from './utils';
 import {icons} from './components/icons';
 import {PluginButton} from './components/plugin-button/plugin-button';
 import {Transcript} from './components/transcript';
@@ -204,7 +203,12 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   private _sanitizeCaptions = (data: CuePointData[]) => {
     return data.map(caption => ({
       ...caption,
-      text: sanitizeHtml(caption.text || '', {allowedTags: []})
+      text: decodeString(
+        sanitizeHtml(caption.text || '', {
+          allowedAttributes: {},
+          allowedTags: []
+        })
+      )
     }));
   };
 
@@ -298,7 +302,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
 
   private _handleDownload = () => {
     const {config} = this.player;
-    const captions = this._captionMap.get(this._activeCaptionMapId) || [];
+    const captions = this._sanitizeCaptions(this._captionMap.get(this._activeCaptionMapId) || []);
 
     if (captions) {
       const entryMetadata = get(config, 'sources.metadata', {});
@@ -309,8 +313,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   };
 
   private _handlePrint = () => {
-    const captions = this._captionMap.get(this._activeCaptionMapId) || [];
-
+    const captions = this._sanitizeCaptions(this._captionMap.get(this._activeCaptionMapId) || []);
     if (captions) {
       printContent(makePlainText(captions));
     }
