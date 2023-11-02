@@ -197,6 +197,23 @@ describe('Transcript plugin', () => {
         });
       });
     });
+
+    it('should move focus to current caption in search results', () => {
+      mockKalturaBe();
+      loadPlayer().then((kalturaPlayer) => {
+        cy.get('[data-testid="transcript_header"] [aria-label="Search in Transcript"]').get('input').type('music').then(()=> {
+          kalturaPlayer.currentTime = 20;
+          kalturaPlayer.pause();
+          cy.get('[data-testid="transcript_skipButton"]').focus();
+          cy.wait(300);
+          cy.get('[data-testid="transcript_skipButton"]').trigger('keydown', {
+            keyCode: 9, // tab
+            force: true
+          });
+          cy.get('[aria-label="00:15 listening to music for the first time"]').should('have.focus');
+        });
+      });
+    });
   });
 
   describe('popover menu', () => {

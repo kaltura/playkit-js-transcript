@@ -252,6 +252,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         ref={node => {
           this._skipTranscriptButtonRef = node;
         }}
+        data-testid="transcript_skipButton"
         className={styles.skipTranscriptButton}
         onKeyDown={this._handleKeyDown}
         onClick={this._handleClick}
