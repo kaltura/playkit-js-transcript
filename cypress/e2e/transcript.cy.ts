@@ -232,14 +232,16 @@ describe('Transcript plugin', () => {
     });
 
     it('should render small screen slate for small mobile screens', () => {
-      cy.viewport(478, 380);
+      cy.viewport('iphone-6');
       mockKalturaBe();
       loadPlayer().then(kalturaPlayer => {
+        cy.viewport(414, 736);
         // @ts-ignore
         kalturaPlayer.ui.store.dispatch(ui.reducers.shell.actions.updateIsMobile(true));
         cy.get(`[data-testid="transcript_smallScreenTextContent"]`).should('have.text', 'To see the transcript, rotate the phone');
         cy.get(`[data-testid="transcript_smallScreenFullscreen"]`).should('not.exist');
-        cy.viewport(500, 380);
+        cy.viewport('iphone-6', 'landscape');
+        cy.viewport(736, 414);
         cy.get(`[data-testid="transcript_smallScreenTextContent"]`).should('not.be.visible');
       });
     });
