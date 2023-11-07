@@ -89,6 +89,7 @@ export class CaptionList extends Component<Props> {
       shouldScroll: this._getShouldScroll(id),
       shouldScrollToSearchMatch: this._getShouldScrollToSearchMatch(id),
       isAutoScrollEnabled,
+      searchCaption: this.props.searchMap[captionData.id],
       ...this._getSearchProps(id)
     };
     return newCaptionProps;
@@ -104,6 +105,7 @@ export class CaptionList extends Component<Props> {
 
   render() {
     const {data} = this.props;
+    let isSearchCaption = false;
     return (
       <div className={styles.transcriptWrapper} onKeyUp={this._handleKeyUp}>
         {data.map((captionData, index) => {
@@ -116,7 +118,15 @@ export class CaptionList extends Component<Props> {
                 } else if (index === data.length - 1) {
                   this._lastCaptionRef = node;
                 }
-                if (captionProps.highlighted[captionData.id]) {
+                if (captionProps.searchCaption){
+                  Object.keys(captionProps.searchCaption).forEach(key => {
+                    if (parseInt(key) === this.props.activeSearchIndex) {
+                      this._currentCaptionRef = node
+                      isSearchCaption = true;
+                    }
+                  });
+                }
+                if (!isSearchCaption && captionProps.highlighted[captionData.id]) {
                   this._currentCaptionRef = node;
                 }
               }}
