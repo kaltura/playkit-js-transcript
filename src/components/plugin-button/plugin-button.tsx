@@ -24,6 +24,7 @@ export const PluginButton = ({isActive, label, id, icon, dataTestId, setRef}: Pl
               setRef(node);
             }
           }}
+          type="button"
           aria-label={label}
           className={[ui.style.upperBarIcon, styles.pluginButton, isActive ? styles.active : ''].join(' ')}
           data-testid={dataTestId}>
