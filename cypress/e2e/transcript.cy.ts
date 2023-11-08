@@ -23,7 +23,7 @@ describe('Transcript plugin', () => {
     cy.intercept('GET', '**/width/164/vid_slices/100', {fixture: '100.jpeg'});
     cy.intercept('GET', '**/height/360/width/640', {fixture: '640.jpeg'});
     // kava
-    cy.intercept('GET', '**/index.php?service=analytics*', {});
+    cy.intercept('POST', '**/index.php?service=analytics*', {});
   });
 
   describe('transcript', () => {
@@ -150,20 +150,24 @@ describe('Transcript plugin', () => {
       });
     });
 
-    it('should move focus to current caption in search results', () => {
+    it.skip('should move focus to current caption in search results', () => {
+      // disabled till Cypress get Tab support https://github.com/cypress-io/cypress/issues/299
       mockKalturaBe();
-      loadPlayer().then((kalturaPlayer) => {
-        cy.get('[data-testid="transcript_header"] [aria-label="Search in Transcript"]').get('input').type('music').then(()=> {
-          kalturaPlayer.currentTime = 20;
-          kalturaPlayer.pause();
-          cy.get('[data-testid="transcript_skipButton"]').focus();
-          cy.wait(300);
-          cy.get('[data-testid="transcript_skipButton"]').trigger('keydown', {
-            keyCode: 9, // tab
-            force: true
+      loadPlayer().then(kalturaPlayer => {
+        cy.get('[data-testid="transcript_header"] [aria-label="Search in Transcript"]')
+          .get('input')
+          .type('music')
+          .then(() => {
+            kalturaPlayer.currentTime = 20;
+            kalturaPlayer.pause();
           });
-          cy.get('[aria-label="00:15 listening to music for the first time"]').should('have.focus');
+        cy.get('[data-testid="transcript_skipButton"]').focus();
+        cy.wait(300);
+        cy.focused().trigger('keydown', {
+          keyCode: 9, // tab
+          force: true
         });
+        cy.get('[aria-label="00:15 listening to music for the first time"]').should('have.focus');
       });
     });
   });
