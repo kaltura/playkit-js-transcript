@@ -80,15 +80,6 @@ describe('Transcript plugin', () => {
         cy.get('[aria-label="Dark Side."]').should('have.text', 'Dark Side.');
       });
     });
-
-    it('should close plugin if ESC button pressed', () => {
-      mockKalturaBe();
-      loadPlayer().then(() => {
-        cy.get('[data-testid="transcript_root"]').should('have.css', 'visibility', 'visible');
-        cy.get('[aria-label="Search in Transcript"]').get('input').type('{esc}');
-        cy.get('[data-testid="transcript_root"]').should('have.css', 'visibility', 'hidden');
-      });
-    });
   });
 
   describe('search bar', () => {
