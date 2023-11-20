@@ -13,7 +13,7 @@ import {SmallScreenSlate} from '../small-screen-slate';
 import {Button, ButtonType, ButtonSize} from '@playkit-js/common/dist/components/button';
 import {OnClickEvent, OnClick} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 
-const {ENTER, SPACE, TAB, ESC} = ui.utils.KeyMap;
+const {ENTER, SPACE, TAB} = ui.utils.KeyMap;
 const {withText, Text} = ui.preacti18n;
 
 const {SidePanelModes} = ui;
@@ -372,12 +372,6 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     onActiveSearchIndexChange: debounce(this._setActiveSearchIndex, this.props.searchNextPrevDebounceTimeout)
   };
 
-  private _handleEsc = (event: KeyboardEvent) => {
-    if (event.keyCode === ESC) {
-      this.props.onClose(event, true);
-    }
-  };
-
   render(props: TranscriptProps) {
     const {isLoading, kitchenSinkActive, hasError, smallScreen, toggledWithEnter} = props;
     const renderTranscriptButtons = !(isLoading || hasError);
@@ -387,7 +381,6 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         ref={node => {
           this._widgetRootRef = node;
         }}
-        onKeyUp={this._handleEsc}
         data-testid="transcript_root">
         {smallScreen ? (
           <SmallScreenSlate onClose={this.props.onClose} toggledWithEnter={toggledWithEnter} />
