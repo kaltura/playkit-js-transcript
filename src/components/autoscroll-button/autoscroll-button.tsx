@@ -19,7 +19,7 @@ const translates = {
 export const AutoscrollButton = withText(translates)(
   ({onClick, isAutoScrollEnabled, setAutoscrollButtonRef, autoScrollLabel}: AutoscrollButtonProps) => {
     return (
-      <div className={styles.autoscrollRoot} tabIndex={isAutoScrollEnabled ? -1 : 1} aria-label={autoScrollLabel}>
+      <div className={styles.autoscrollRoot} tabIndex={isAutoScrollEnabled ? -1 : 1}>
         <Button
           onClick={onClick}
           setRef={setAutoscrollButtonRef}
@@ -27,6 +27,7 @@ export const AutoscrollButton = withText(translates)(
           type={ButtonType.primary}
           icon="autoScroll"
           tooltip={{label: autoScrollLabel!, type: 'left'}}
+          ariaLabel={autoScrollLabel}
         />
       </div>
     );
