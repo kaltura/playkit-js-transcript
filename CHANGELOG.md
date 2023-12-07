@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.5.3 (2023-12-07)
+
+
+### Bug Fixes
+
+* **ADA-104:** Button in the transcript does not have a programmatic name ([#171](https://github.com/kaltura/playkit-js-transcript/issues/171)) ([321fd8f](https://github.com/kaltura/playkit-js-transcript/commit/321fd8fa9425116e852ba7f3ba2fbcdeaf1e5aab))
+
 ### 3.5.2 (2023-11-28)
 
 ## 3.5.0 (2023-10-08)
