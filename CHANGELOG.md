@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.5.5 (2023-12-21)
+
+
+### Bug Fixes
+
+* **SUP-40351:** [eLearning] correcting typo in Spanish translation ([#172](https://github.com/kaltura/playkit-js-transcript/issues/172)) ([9f49075](https://github.com/kaltura/playkit-js-transcript/commit/9f49075e7c7fedd77cb31011f57af4a399e45333))
+
 ### 3.5.4 (2023-12-10)
 
 ### 3.5.3 (2023-12-07)
