@@ -275,6 +275,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       // @ts-ignore
       displayName: 'Transcript',
       ariaLabel: 'Transcript',
+      order: 30,
       svgIcon: {path: icons.PLUGIN_ICON, viewBox: `0 0 ${icons.BigSize} ${icons.BigSize}`},
       onClick: this._handleClickOnPluginIcon as () => void,
       component: withText(translates)((props: {showTranscript: string; hideTranscript: string}) => {
