@@ -10,6 +10,8 @@ import {Transcript} from './components/transcript';
 import {getConfigValue, isBoolean, makePlainText, prepareCuePoint} from './utils';
 import {TranscriptConfig, PluginStates, HighlightedMap, CuePointData, ItemTypes, CuePoint} from './types';
 
+export const pluginName: string = 'playkit-js-transcript';
+
 const {SidePanelModes, SidePanelPositions, ReservedPresetNames, ReservedPresetAreas} = ui;
 const {withText, Text} = KalturaPlayer.ui.preacti18n;
 const {get} = ObjectUtils;
@@ -267,8 +269,14 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       showTranscript: <Text id="transcript.show_plugin">Show Transcript</Text>,
       hideTranscript: <Text id="transcript.hide_plugin">Hide Transcript</Text>
     };
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     this._transcriptIcon = this.upperBarManager!.add({
-      label: 'Transcript',
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      displayName: 'Transcript',
+      ariaLabel: 'Transcript',
+      order: 30,
       svgIcon: {path: icons.PLUGIN_ICON, viewBox: `0 0 ${icons.BigSize} ${icons.BigSize}`},
       onClick: this._handleClickOnPluginIcon as () => void,
       component: withText(translates)((props: {showTranscript: string; hideTranscript: string}) => {
@@ -277,7 +285,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
         return (
           <PluginButton
             isActive={isActive}
-            id="transcript-icon"
+            id={pluginName}
             label={label}
             icon={icons.PLUGIN_ICON}
             dataTestId="transcript_pluginButton"
