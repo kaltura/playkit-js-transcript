@@ -116,6 +116,8 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
             tabIndex={0}
             data-testid="popover-anchor-container"
             className={`${styles.popoverAnchorContainer} ${this.state.isOpen ? styles.active : ''}`}
+            aria-expanded={this.state.isOpen}
+            aria-controls="popoverContent"
             ref={node => {
               this._controlElementRef = node;
             }}>
@@ -127,6 +129,7 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
           className={styles.popoverComponent}
           role="menu"
           aria-expanded={this.state.isOpen}
+          id="popoverContent"
           ref={node => {
             this._popoverElementRef = node;
           }}>
