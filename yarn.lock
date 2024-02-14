@@ -155,6 +155,15 @@
     classnames "^2.3.2"
     linkify-it "^4.0.1"
 
+"@playkit-js/common@^1.5.8":
+  version "1.5.8"
+  resolved "https://registry.yarnpkg.com/@playkit-js/common/-/common-1.5.8.tgz#b19fe6cbcc23a5927e4724faee786649e52bb841"
+  integrity sha512-tMTAtNdIDr1Maely/zP6RltaREiewnssxEpeD8Z+3hWeYvUcCHK5ODzR1vutPvou/MOrjT+lFj80f2qRnsfRrg==
+  dependencies:
+    "@playkit-js/playkit-js-ui" "0.78.0"
+    classnames "^2.3.2"
+    linkify-it "^4.0.1"
+
 "@playkit-js/kaltura-player-js@3.17.9":
   version "3.17.9"
   resolved "https://registry.yarnpkg.com/@playkit-js/kaltura-player-js/-/kaltura-player-js-3.17.9.tgz#9974cee0a3655cd040e6d4347fa9934da7328b5d"
