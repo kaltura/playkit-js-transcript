@@ -29,19 +29,6 @@
     position: absolute;
     right: 0px;
     z-index: 1;
-    
-    &.hidden {
-      display: none;
-    }
-    
-    &.bottom {
-      top: 100%;
-      margin-top: 6px;
-    }
-    
-    &.left {
-      right: 0px;
-    }
   }
 }
 .popover-menu-item {
