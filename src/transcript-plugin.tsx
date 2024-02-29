@@ -257,7 +257,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
             onDownload={this._handleDownload}
             printDisabled={getConfigValue(printDisabled, isBoolean, false)}
             onPrint={this._handlePrint}
-          />
+          /> as any
         );
       },
       presets: [ReservedPresetNames.Playback, ReservedPresetNames.Live, ReservedPresetNames.Ads],
@@ -269,8 +269,6 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       showTranscript: <Text id="transcript.show_plugin">Show Transcript</Text>,
       hideTranscript: <Text id="transcript.hide_plugin">Hide Transcript</Text>
     };
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     this._transcriptIcon = this.upperBarManager!.add({
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
