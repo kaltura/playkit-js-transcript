@@ -6,6 +6,7 @@ declare var __NAME__: string;
 const VERSION = __VERSION__;
 const NAME = __NAME__;
 
+export { TranscriptEvents} from './events'
 export {TranscriptPlugin as Plugin};
 export {VERSION, NAME};
 

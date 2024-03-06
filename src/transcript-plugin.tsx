@@ -9,6 +9,7 @@ import {PluginButton} from './components/plugin-button/plugin-button';
 import {Transcript} from './components/transcript';
 import {getConfigValue, isBoolean, makePlainText, prepareCuePoint} from './utils';
 import {TranscriptConfig, PluginStates, HighlightedMap, CuePointData, ItemTypes, CuePoint} from './types';
+import { TranscriptEvents } from "./events";
 
 export const pluginName: string = 'playkit-js-transcript';
 
@@ -177,6 +178,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       this.sidePanelsManager?.activateItem(this._transcriptPanel);
       this._pluginState = PluginStates.OPENED;
       this.upperBarManager?.update(this._transcriptIcon);
+      this.dispatchEvent(TranscriptEvents.TRANSCRIPT_OPEN, {auto: this.config.expandOnFirstPlay});
     });
   };
 
@@ -184,6 +186,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     this.ready.then(() => {
       this.sidePanelsManager?.deactivateItem(this._transcriptPanel);
       this.upperBarManager?.update(this._transcriptIcon);
+      this.dispatchEvent(TranscriptEvents.TRANSCRIPT_CLOSE);
     });
   };
 
@@ -257,6 +260,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
             onDownload={this._handleDownload}
             printDisabled={getConfigValue(printDisabled, isBoolean, false)}
             onPrint={this._handlePrint}
+            dispatcher={(eventType, payload) => this.dispatchEvent(eventType, payload)}
           /> as any
         );
       },
@@ -316,6 +320,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
 
       downloadContent(makePlainText(captions), `${language}${entryMetadata.name ? `-${entryMetadata.name}` : ''}.txt`);
     }
+    this.dispatchEvent(TranscriptEvents.TRANSCRIPT_DOWNLOAD, {videoPosition: this.player.currentTime});
   };
 
   private _handlePrint = () => {
@@ -323,6 +328,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     if (captions) {
       printContent(makePlainText(captions));
     }
+    this.dispatchEvent(TranscriptEvents.TRANSCRIPT_PRINT, {videoPosition: this.player.currentTime});
   };
 
   private _handleClose = (e: OnClickEvent, byKeyboard: boolean) => {
