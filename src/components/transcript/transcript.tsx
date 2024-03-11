@@ -12,6 +12,7 @@ import {TranscriptMenu} from '../transcript-menu';
 import {SmallScreenSlate} from '../small-screen-slate';
 import {Button, ButtonType, ButtonSize} from '@playkit-js/common/dist/components/button';
 import {OnClickEvent, OnClick} from '@playkit-js/common/dist/hoc/a11y-wrapper';
+import { TranscriptEvents } from "../../events";
 
 const {ENTER, SPACE, TAB} = ui.utils.KeyMap;
 const {withText, Text} = ui.preacti18n;
@@ -52,6 +53,7 @@ export interface TranscriptProps {
   onPrint: () => void;
   smallScreen?: boolean;
   expandMode?: string;
+  dispatcher: (name: string, payload?: any) => void;
 }
 
 interface TranscriptState {
@@ -168,6 +170,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
           searchMap[caption.id] = {...searchMap[caption.id], [index]: i};
         });
       });
+      this.props.dispatcher(TranscriptEvents.TRANSCRIPT_SEARCH, {search: state.search});
       return {
         searchMap,
         totalSearchResults: index,
@@ -183,6 +186,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
       activeSearchIndex: index,
       isAutoScrollEnabled: false
     });
+    this.props.dispatcher(TranscriptEvents.TRANSCRIPT_NAVIGATE_RESULT, {index});
   };
 
   private _getHeaderStyles = (): string => {
