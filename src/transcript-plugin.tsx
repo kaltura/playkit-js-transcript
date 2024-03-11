@@ -173,12 +173,12 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     return `${activeTextTrack?.language}-${activeTextTrack?.label}`;
   };
 
-  private _activatePlugin = () => {
+  private _activatePlugin = (isFirstOpen = false) => {
     this.ready.then(() => {
       this.sidePanelsManager?.activateItem(this._transcriptPanel);
       this._pluginState = PluginStates.OPENED;
       this.upperBarManager?.update(this._transcriptIcon);
-      this.dispatchEvent(TranscriptEvents.TRANSCRIPT_OPEN, {auto: this.config.expandOnFirstPlay});
+      this.dispatchEvent(TranscriptEvents.TRANSCRIPT_OPEN, {auto: isFirstOpen});
     });
   };
 
@@ -298,7 +298,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     }) as number;
 
     if ((expandOnFirstPlay && !this._pluginState) || this._pluginState === PluginStates.OPENED) {
-      this._activatePlugin();
+      this._activatePlugin(true);
     }
   }
 
