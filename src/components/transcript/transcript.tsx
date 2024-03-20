@@ -12,7 +12,7 @@ import {TranscriptMenu} from '../transcript-menu';
 import {SmallScreenSlate} from '../small-screen-slate';
 import {Button, ButtonType, ButtonSize} from '@playkit-js/common/dist/components/button';
 import {OnClickEvent, OnClick} from '@playkit-js/common/dist/hoc/a11y-wrapper';
-import { TranscriptEvents } from "../../events";
+import {TranscriptEvents} from '../../events';
 
 const {ENTER, SPACE, TAB} = ui.utils.KeyMap;
 const {withText, Text} = ui.preacti18n;
@@ -20,6 +20,8 @@ const {withText, Text} = ui.preacti18n;
 const {SidePanelModes} = ui;
 const {PLAYER_BREAK_POINTS} = ui.Components;
 const {connect} = ui.redux;
+
+const SEARCH_EVENT_DISPATCH_TIMEOUT = 2000;
 
 const translates = {
   skipTranscript: <Text id="transcript.skip_transcript">Skip transcript</Text>,
@@ -170,7 +172,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
           searchMap[caption.id] = {...searchMap[caption.id], [index]: i};
         });
       });
-      this.props.dispatcher(TranscriptEvents.TRANSCRIPT_SEARCH, {search: state.search});
+      this._debounced.searchEventDispatcher(state);
       return {
         searchMap,
         totalSearchResults: index,
@@ -179,6 +181,10 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
       };
     });
   };
+
+  private _dispatchSearchEvent = (state: TranscriptState) => {
+    this.props.dispatcher(TranscriptEvents.TRANSCRIPT_SEARCH, {search: this.state.search});
+  }
 
   private _setActiveSearchIndex = (index: number) => {
     this._scrollToSearchMatchEnabled = true;
@@ -373,7 +379,8 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
 
   private _debounced = {
     findSearchMatches: debounce(this._findSearchMatches, this.props.searchDebounceTimeout),
-    onActiveSearchIndexChange: debounce(this._setActiveSearchIndex, this.props.searchNextPrevDebounceTimeout)
+    onActiveSearchIndexChange: debounce(this._setActiveSearchIndex, this.props.searchNextPrevDebounceTimeout),
+    searchEventDispatcher: debounce(this._dispatchSearchEvent, SEARCH_EVENT_DISPATCH_TIMEOUT)
   };
 
   render(props: TranscriptProps) {
