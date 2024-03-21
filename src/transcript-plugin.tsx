@@ -9,7 +9,7 @@ import {PluginButton} from './components/plugin-button/plugin-button';
 import {Transcript} from './components/transcript';
 import {getConfigValue, isBoolean, makePlainText, prepareCuePoint} from './utils';
 import {TranscriptConfig, PluginStates, HighlightedMap, CuePointData, ItemTypes, CuePoint} from './types';
-import { TranscriptEvents } from "./events";
+import {TranscriptEvents} from './events/events';
 
 export const pluginName: string = 'playkit-js-transcript';
 
