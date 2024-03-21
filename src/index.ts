@@ -1,4 +1,4 @@
-import { pluginName, TranscriptPlugin } from "./transcript-plugin";
+import {pluginName, TranscriptPlugin} from './transcript-plugin';
 
 declare var __VERSION__: string;
 declare var __NAME__: string;
@@ -6,7 +6,7 @@ declare var __NAME__: string;
 const VERSION = __VERSION__;
 const NAME = __NAME__;
 
-export { TranscriptEvents} from './events'
+export {TranscriptEvents} from './events/events';
 export {TranscriptPlugin as Plugin};
 export {VERSION, NAME};
 

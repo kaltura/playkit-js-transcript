@@ -17,8 +17,6 @@ jobs:
       node-version: '18.x'
       yarn-run-to-execute: 'build'
 
-
-
   notification:
     if: always()
     uses: kaltura/ovp-pipelines-pub/.github/workflows/notification.yaml@master
