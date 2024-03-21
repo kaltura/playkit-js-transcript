@@ -12,7 +12,7 @@ import {TranscriptMenu} from '../transcript-menu';
 import {SmallScreenSlate} from '../small-screen-slate';
 import {Button, ButtonType, ButtonSize} from '@playkit-js/common/dist/components/button';
 import {OnClickEvent, OnClick} from '@playkit-js/common/dist/hoc/a11y-wrapper';
-import { TranscriptEvents } from "../../events";
+import {TranscriptEvents} from '../../events/events';
 
 const {ENTER, SPACE, TAB} = ui.utils.KeyMap;
 const {withText, Text} = ui.preacti18n;

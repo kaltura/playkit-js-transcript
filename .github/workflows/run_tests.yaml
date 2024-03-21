@@ -11,15 +11,19 @@ jobs:
   tests:
     uses: kaltura/playkit-js-common/.github/workflows/cypress.yml@master
     secrets: inherit
+  build:
+    uses: kaltura/ovp-pipelines-pub/.github/workflows/player_tests.yaml@master
+    with:
+      node-version: '18.x'
+      yarn-run-to-execute: 'build'
 
   notification:
     if: always()
     uses: kaltura/ovp-pipelines-pub/.github/workflows/notification.yaml@master
-    needs: tests
+    needs: [tests, build]
     secrets:
       PLAYER_MSTEAMS_WEBHOOK: ${{ secrets.PLAYER_MSTEAMS_WEBHOOK }}
     with:
       failure-status: ${{ contains(needs.*.result, 'failure') }}
       cancelled-status: ${{ contains(needs.*.result, 'cancelled') }}
       is-test: 'true'
-      
