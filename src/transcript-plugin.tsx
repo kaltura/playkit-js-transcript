@@ -156,7 +156,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
 
   private _addCaptionData = (newData: CuePointData[], captionKey: string) => {
     this._activeCaptionMapId = this._getCaptionMapId();
-    // need to set the captions data to the correct language, and not to the active language.
+    // set the captions data according to the captionKey param
     this._captionMap.set(captionKey, this._sanitizeCaptions(newData));
     this._isLoading = false;
     clearTimeout(this._loadingTimeoutId);
