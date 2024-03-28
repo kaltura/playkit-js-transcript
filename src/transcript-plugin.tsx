@@ -156,8 +156,10 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
 
   private _addCaptionData = (newData: CuePointData[], captionKey: string) => {
     this._activeCaptionMapId = this._getCaptionMapId();
+    const oldData = this._captionMap.get(captionKey);
+    const newSanitizedData = this._sanitizeCaptions(newData);
     // set the captions data according to the captionKey param
-    this._captionMap.set(captionKey, this._sanitizeCaptions(newData));
+    this._captionMap.set(captionKey, oldData ? [...oldData, ...newSanitizedData] : newSanitizedData);
     this._isLoading = false;
     clearTimeout(this._loadingTimeoutId);
     this._updateTranscriptPanel();
