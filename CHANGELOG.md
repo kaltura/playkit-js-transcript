@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.5.11 (2024-03-31)
+
+
+### Bug Fixes
+
+* **FEC-13784:** Search event is sent too often - need to be debounced for minimum 2 sec ([#181](https://github.com/kaltura/playkit-js-transcript/issues/181)) ([d04edb6](https://github.com/kaltura/playkit-js-transcript/commit/d04edb60b92684560cbf1d321a909c2ad663fe17))
+
 ### 3.5.10 (2024-03-14)
 
 
