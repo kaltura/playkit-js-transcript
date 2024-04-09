@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.5.13 (2024-04-09)
+
+
+### Bug Fixes
+
+* **FEC-13775:** transcript shows only current caption line ([#183](https://github.com/kaltura/playkit-js-transcript/issues/183)) ([774125a](https://github.com/kaltura/playkit-js-transcript/commit/774125a28f50638760aa0e9a8cf01b0de91e5046))
+
 ### 3.5.12 (2024-03-31)
 
 ### 3.5.11 (2024-03-31)
