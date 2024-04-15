@@ -56,6 +56,7 @@ export interface TranscriptProps {
   smallScreen?: boolean;
   expandMode?: string;
   dispatcher: (name: string, payload?: any) => void;
+  activeCaption: string;
 }
 
 interface TranscriptState {
@@ -107,13 +108,15 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
   };
 
   componentDidUpdate(previousProps: Readonly<TranscriptProps>, previousState: Readonly<TranscriptState>): void {
-    const {captions} = this.props;
+    const {captions, activeCaption} = this.props;
     const {search} = this.state;
     if (previousProps.captions !== captions) {
-      this.setState({search: '', isAutoScrollEnabled: true});
+      // clear search value only if active caption language was switched, otherwise keep previous value
+      this.setState({search: previousProps.activeCaption !== activeCaption ? '' : previousState.search, isAutoScrollEnabled: true});
     }
 
-    if (previousState.search !== search) {
+    if (previousState.search !== search || (previousProps.captions !== captions && previousProps.activeCaption === activeCaption)) {
+      // trigger search in case search value has changed, or new captions were added for the same language (preventSeek use-case)
       this._debounced.findSearchMatches();
     }
 
