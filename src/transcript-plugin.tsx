@@ -271,6 +271,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
             printDisabled={getConfigValue(printDisabled, isBoolean, false)}
             onPrint={this._handlePrint}
             dispatcher={(eventType, payload) => this.dispatchEvent(eventType, payload)}
+            activeCaptionLanguage={this._activeCaptionMapId}
           /> as any
         );
       },
