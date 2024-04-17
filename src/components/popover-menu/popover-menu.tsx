@@ -63,7 +63,8 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
       this.state.isOpen &&
       event.keyCode === TAB &&
       !this._controlElementRef?.contains(eventTarget) &&
-      !this._popoverElementRef?.contains(eventTarget)
+      !this._popoverElementRef?.contains(eventTarget) &&
+      eventTarget !== this._controlElementRef
     ) {
       this.closePopover();
     }
@@ -81,17 +82,22 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
     this.setState({isOpen: false});
   }
 
-  private togglePopover = (focusFirstItem: boolean) => {
+  private togglePopover = () => {
     const isOpen = !this.state.isOpen;
 
     this.setState({isOpen}, () => {
-      if (isOpen && focusFirstItem) {
-        const firstNonDisabledItem = this.props.items.findIndex((item: PopoverMenuItemData) => !item.isDisabled);
-        if (firstNonDisabledItem !== -1) {
-          this._getItemRef(firstNonDisabledItem)?.focus();
-        }
+      if (isOpen){
+        this._controlElementRef?.focus();
+        this.props.eventManager?.listen(this._controlElementRef, 'keydown', (event: KeyboardEvent) => {
+          if (event.keyCode === TAB){
+            const firstNonDisabledItem = this.props.items.findIndex((item: PopoverMenuItemData) => !item.isDisabled);
+            if (firstNonDisabledItem !== -1) {
+              this._getItemRef(firstNonDisabledItem -1)?.focus();
+            }
+          }
+        })
       }
-    });
+    })
   };
 
   private _getItemRef = (index: number) => {
@@ -109,7 +115,7 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
       <div className={styles.popoverContainer}>
         <A11yWrapper onClick={(e) => {
           e.stopPropagation();
-          this.togglePopover(true);
+          this.togglePopover();
         }}>
           <div
             aria-label={this.props.moreOptionsLabel!}
@@ -119,7 +125,9 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
             aria-expanded={this.state.isOpen}
             aria-controls="popoverContent"
             ref={node => {
-              this._controlElementRef = node;
+              if (node != null){
+                this._controlElementRef = node;
+              }
             }}>
             <div className={styles.popoverAnchor}>{children}</div>
           </div>
