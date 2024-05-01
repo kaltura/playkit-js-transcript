@@ -125,7 +125,7 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
             aria-expanded={this.state.isOpen}
             aria-controls="popoverContent"
             ref={node => {
-              if (node != null){
+              if (node){
                 this._controlElementRef = node;
               }
             }}>
