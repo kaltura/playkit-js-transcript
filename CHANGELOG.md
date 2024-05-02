@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.5.16 (2024-05-02)
+
+
+### Bug Fixes
+
+* **FEC-13857:** search is cleared when prevent seek is enabled ([#187](https://github.com/kaltura/playkit-js-transcript/issues/187)) ([a44fd29](https://github.com/kaltura/playkit-js-transcript/commit/a44fd290748d6e6cd2755e8d2ae351018567068a))
+
 ### 3.5.15 (2024-04-10)
 
 ### 3.5.14 (2024-04-09)
