@@ -52,7 +52,7 @@ export class Caption extends Component<ExtendedCaptionProps> {
     if (indexMap && nextProps.indexMap && indexMap[activeSearchIndex] !== nextProps.indexMap[nextProps.activeSearchIndex]) {
       return true;
     }
-    return false;
+    return true;
   }
 
   private _handleClick = () => {
@@ -101,7 +101,7 @@ export class Caption extends Component<ExtendedCaptionProps> {
   render() {
     const {caption, highlighted, showTime, longerThanHour} = this.props;
     const {startTime, id} = caption;
-    const isHighlighted = Object.keys(highlighted)[0] === id;
+    const isHighlighted = Object.keys(highlighted).some(c => c === id) ;
     const time = showTime ? secondsToTime(startTime, longerThanHour) : '';
 
     const captionA11yProps: Record<string, any> = {
