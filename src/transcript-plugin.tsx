@@ -244,11 +244,6 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       downloadDisabled,
       printDisabled
     } = this.config;
-    //
-    // Object.keys(this._activeCuePointsMap).forEach(key => {
-    //   this._activeCuePointsMap[key] = true;
-    // });
-
     this._transcriptPanel = this.sidePanelsManager!.add({
       label: 'Transcript',
       panelComponent: () => {
@@ -259,7 +254,6 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
             searchDebounceTimeout={getConfigValue(searchDebounceTimeout, Number.isInteger, 250)}
             searchNextPrevDebounceTimeout={getConfigValue(searchNextPrevDebounceTimeout, Number.isInteger, 100)}
             highlightedMap={this._activeCuePointsMap}
-            // highlightedMap={{}}
             onSeek={this._seekTo}
             onItemClicked={this._seekTo}
             expandMode={this.config.expandMode}

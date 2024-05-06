@@ -52,7 +52,7 @@ export class Caption extends Component<ExtendedCaptionProps> {
     if (indexMap && nextProps.indexMap && indexMap[activeSearchIndex] !== nextProps.indexMap[nextProps.activeSearchIndex]) {
       return true;
     }
-    return true;
+    return false;
   }
 
   private _handleClick = () => {
