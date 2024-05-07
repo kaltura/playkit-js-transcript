@@ -264,6 +264,8 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
             currentTime={this.player.currentTime}
             videoDuration={this.player.duration}
             kitchenSinkActive={this._isPluginActive()}
+            // @ts-ignore
+            kitchenSinkDetached={this.sidePanelsManager!.isItemDetached(this._transcriptPanel)}
             toggledWithEnter={this._triggeredByKeyboard}
             onClose={this._handleClose}
             downloadDisabled={getConfigValue(downloadDisabled, isBoolean, false)}
@@ -272,8 +274,12 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
             onPrint={this._handlePrint}
             dispatcher={(eventType, payload) => this.dispatchEvent(eventType, payload)}
             activeCaptionLanguage={this._activeCaptionMapId}
-          /> as any
-        );
+            // @ts-ignore
+            onDetach={() => this.sidePanelsManager?.detachItem(this._transcriptPanel)}
+            // @ts-ignore
+            onAttach={() => this.sidePanelsManager?.attachItem(this._transcriptPanel)}
+          />
+        ) as any;
       },
       presets: [ReservedPresetNames.Playback, ReservedPresetNames.Live, ReservedPresetNames.Ads],
       position: position,

@@ -13,6 +13,7 @@ import {SmallScreenSlate} from '../small-screen-slate';
 import {Button, ButtonType, ButtonSize} from '@playkit-js/common/dist/components/button';
 import {OnClickEvent, OnClick} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import {TranscriptEvents} from '../../events/events';
+// import {Detouch} from '../detouch';
 
 const {ENTER, SPACE, TAB} = ui.utils.KeyMap;
 const {withText, Text} = ui.preacti18n;
@@ -43,6 +44,7 @@ export interface TranscriptProps {
   searchNextPrevDebounceTimeout: number;
   videoDuration: number;
   kitchenSinkActive: boolean;
+  kitchenSinkDetached: boolean;
   toggledWithEnter: boolean;
   highlightedMap: HighlightedMap;
   onItemClicked: (n: number) => void;
@@ -187,7 +189,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
 
   private _dispatchSearchEvent = (state: TranscriptState) => {
     this.props.dispatcher(TranscriptEvents.TRANSCRIPT_SEARCH, {search: this.state.search});
-  }
+  };
 
   private _setActiveSearchIndex = (index: number) => {
     this._scrollToSearchMatchEnabled = true;
@@ -210,7 +212,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
   };
 
   private _renderHeader = () => {
-    const {toggledWithEnter, kitchenSinkActive, downloadDisabled, onDownload, printDisabled, onPrint, isLoading} = this.props;
+    const {toggledWithEnter, kitchenSinkActive, kitchenSinkDetached, downloadDisabled, onDownload, printDisabled, onPrint, isLoading} = this.props;
     const {search, activeSearchIndex, totalSearchResults} = this.state;
     return (
       <div className={[styles.header, this._getHeaderStyles()].join(' ')} data-testid="transcript_header">
@@ -224,16 +226,21 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
           kitchenSinkActive={kitchenSinkActive}
         />
         <TranscriptMenu {...{downloadDisabled, onDownload, printDisabled, onPrint, isLoading}} />
-        <div data-testid="transcriptCloseButton">
-          <Button
-            type={ButtonType.borderless}
-            size={ButtonSize.medium}
-            disabled={false}
-            onClick={this.props.onClose}
-            ariaLabel={'Hide Transcript'}
-            tooltip={{label: 'Hide Transcript'}}
-            icon={'close'}></Button>
-        </div>
+        {/* @ts-ignore */}
+        {kitchenSinkDetached ? <Button onClick={this.props.onAttach}>A</Button> : <Button onClick={this.props.onDetach}>D</Button>}
+        {!kitchenSinkDetached && (
+          <div data-testid="transcriptCloseButton">
+            <Button
+              type={ButtonType.borderless}
+              size={ButtonSize.medium}
+              disabled={false}
+              onClick={this.props.onClose}
+              ariaLabel={'Hide Transcript'}
+              tooltip={{label: 'Hide Transcript'}}
+              icon={'close'}
+            />
+          </div>
+        )}
       </div>
     );
   };
@@ -387,11 +394,11 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
   };
 
   render(props: TranscriptProps) {
-    const {isLoading, kitchenSinkActive, hasError, smallScreen, toggledWithEnter} = props;
+    const {isLoading, kitchenSinkActive, kitchenSinkDetached, hasError, smallScreen, toggledWithEnter} = props;
     const renderTranscriptButtons = !(isLoading || hasError);
     return (
       <div
-        className={`${styles.root} ${kitchenSinkActive ? '' : styles.hidden}`}
+        className={`${styles.root} ${kitchenSinkActive || kitchenSinkDetached ? '' : styles.hidden}`}
         ref={node => {
           this._widgetRootRef = node;
         }}
