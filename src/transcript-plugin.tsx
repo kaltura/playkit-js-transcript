@@ -278,7 +278,6 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       presets: [ReservedPresetNames.Playback, ReservedPresetNames.Live, ReservedPresetNames.Ads],
       position: position,
       expandMode: expandMode === SidePanelModes.ALONGSIDE ? SidePanelModes.ALONGSIDE : SidePanelModes.OVER,
-      onDeactivate: this._deactivatePlugin
     }) as number;
     const translates = {
       showTranscript: <Text id="transcript.show_plugin">Show Transcript</Text>,
