@@ -77,7 +77,7 @@
     "html5 player"
   ],
   "dependencies": {
-    "@playkit-js/common": "1.5.9",
+    "@playkit-js/common": "1.5.13",
     "sanitize-html": "^2.11.0",
     "stream-browserify": "^3.0.0"
   },

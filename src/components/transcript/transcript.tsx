@@ -44,7 +44,6 @@ export interface TranscriptProps {
   searchNextPrevDebounceTimeout: number;
   videoDuration: number;
   kitchenSinkActive: boolean;
-  kitchenSinkDetached: boolean;
   toggledWithEnter: boolean;
   highlightedMap: HighlightedMap;
   onItemClicked: (n: number) => void;
@@ -59,6 +58,9 @@ export interface TranscriptProps {
   expandMode?: string;
   dispatcher: (name: string, payload?: any) => void;
   activeCaptionLanguage: string;
+  onDetach: () => void;
+  onAttach: () => void;
+  kitchenSinkDetached: boolean;
 }
 
 interface TranscriptState {
@@ -212,7 +214,18 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
   };
 
   private _renderHeader = () => {
-    const {toggledWithEnter, kitchenSinkActive, kitchenSinkDetached, downloadDisabled, onDownload, printDisabled, onPrint, isLoading} = this.props;
+    const {
+      toggledWithEnter,
+      kitchenSinkActive,
+      kitchenSinkDetached,
+      downloadDisabled,
+      onDownload,
+      printDisabled,
+      onPrint,
+      isLoading,
+      onAttach,
+      onDetach
+    } = this.props;
     const {search, activeSearchIndex, totalSearchResults} = this.state;
     return (
       <div className={[styles.header, this._getHeaderStyles()].join(' ')} data-testid="transcript_header">
@@ -226,8 +239,16 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
           kitchenSinkActive={kitchenSinkActive}
         />
         <TranscriptMenu {...{downloadDisabled, onDownload, printDisabled, onPrint, isLoading}} />
-        {/* @ts-ignore */}
-        {kitchenSinkDetached ? <Button onClick={this.props.onAttach}>A</Button> : <Button onClick={this.props.onDetach}>D</Button>}
+        <div data-testid="transcriptDetachAttachButton">
+          <Button
+            type={ButtonType.borderless}
+            size={ButtonSize.medium}
+            onClick={kitchenSinkDetached ? onAttach : onDetach}
+            icon={kitchenSinkDetached ? 'attach' : 'detach'}
+            ariaLabel={kitchenSinkDetached ? 'Bring Transcript back' : 'Popout Transcript'}
+            tooltip={{label: kitchenSinkDetached ? 'Bring Transcript back' : 'Popout Transcript'}}
+          />
+        </div>
         {!kitchenSinkDetached && (
           <div data-testid="transcriptCloseButton">
             <Button

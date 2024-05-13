@@ -16,7 +16,9 @@
       "load_failed": "Failed to load transcript",
       "skip_transcript": "Skip transcript",
       "smallScreenText": "To see the transcript, go to full screen",
-      "smallScreenMobileText": "To see the transcript, rotate the phone"
+      "smallScreenMobileText": "To see the transcript, rotate the phone",
+      "attachTranscriptText": "Transcript popped out",
+      "attachTranscriptButton": "Bring it back"
     }
   }
 }
