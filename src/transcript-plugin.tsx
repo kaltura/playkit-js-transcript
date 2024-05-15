@@ -231,9 +231,8 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   private _handleDetach = () => {
     // @ts-ignore
     this.sidePanelsManager?.detachItem(this._transcriptPanel, {
-      width: 500,
-      height: 500,
-      maxWidth: 600,
+      width: 600,
+      height: 600,
       title: 'Transcript',
       attachPlaceholder: () => <AttachPlaceholder onAttach={this._handleAttach} />
     });
