@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.5.19 (2024-05-19)
+
+
+### Bug Fixes
+
+* **FEC-13889:** Download_close being reported too many times to application events ([#192](https://github.com/kaltura/playkit-js-transcript/issues/192)) ([8742c1f](https://github.com/kaltura/playkit-js-transcript/commit/8742c1f4a1f94d45acd08a0b63d697919e3191b8))
+
 ### 3.5.18 (2024-05-05)
 
 ### 3.5.17 (2024-05-02)
