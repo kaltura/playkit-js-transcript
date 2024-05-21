@@ -1,6 +1,6 @@
 {
   "name": "@playkit-js/transcript",
-  "version": "3.5.15",
+  "version": "3.5.20",
   "main": "dist/playkit-transcript.js",
   "license": "AGPL-3.0",
   "private": false,
@@ -84,8 +84,8 @@
   "kaltura": {
     "name": "playkit-js-transcript",
     "dependencies": {
-      "playkit-kaltura-cuepoints": "3.0.11",
-      "playkit-ui-managers": "1.5.2"
+      "playkit-kaltura-cuepoints": "3.0.13",
+      "playkit-ui-managers": "1.5.3"
     }
   }
 }

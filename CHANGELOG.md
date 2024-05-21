@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.5.20 (2024-05-19)
+
+### 3.5.19 (2024-05-19)
+
+
+### Bug Fixes
+
+* **FEC-13889:** Download_close being reported too many times to application events ([#192](https://github.com/kaltura/playkit-js-transcript/issues/192)) ([8742c1f](https://github.com/kaltura/playkit-js-transcript/commit/8742c1f4a1f94d45acd08a0b63d697919e3191b8))
+
+### 3.5.18 (2024-05-05)
+
+### 3.5.17 (2024-05-02)
+
+### 3.5.16 (2024-05-02)
+
+
+### Bug Fixes
+
+* **FEC-13857:** search is cleared when prevent seek is enabled ([#187](https://github.com/kaltura/playkit-js-transcript/issues/187)) ([a44fd29](https://github.com/kaltura/playkit-js-transcript/commit/a44fd290748d6e6cd2755e8d2ae351018567068a))
+
 ### 3.5.15 (2024-04-10)
 
 ### 3.5.14 (2024-04-09)
