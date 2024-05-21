@@ -282,4 +282,13 @@ describe('Transcript plugin', () => {
       });
     });
   });
+
+  describe('detach transcript', () => {
+    it('should render detach button', () => {
+      mockKalturaBe();
+      loadPlayer().then(() => {
+        cy.get(`[data-testid="transcriptDetachAttachButton"]`).should('exist');
+      });
+    });
+  });
 });

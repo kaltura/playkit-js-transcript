@@ -26,7 +26,9 @@ const SEARCH_EVENT_DISPATCH_TIMEOUT = 2000;
 const translates = {
   skipTranscript: <Text id="transcript.skip_transcript">Skip transcript</Text>,
   errorTitle: <Text id="transcript.whoops">Whoops!</Text>,
-  errorDescripton: <Text id="transcript.load_failed">Failed to load transcript</Text>
+  errorDescripton: <Text id="transcript.load_failed">Failed to load transcript</Text>,
+  attachTranscript: <Text id="transcript.attach_transcript">Bring Transcript back</Text>,
+  detachTranscript: <Text id="transcript.detach_transcript">Popout Transcript</Text>
 };
 
 export interface TranscriptProps {
@@ -49,6 +51,8 @@ export interface TranscriptProps {
   skipTranscript?: string;
   errorTitle?: string;
   errorDescripton?: string;
+  attachTranscript?: string;
+  detachTranscript?: string;
   downloadDisabled: boolean;
   onDownload: () => void;
   printDisabled: boolean;
@@ -57,6 +61,9 @@ export interface TranscriptProps {
   expandMode?: string;
   dispatcher: (name: string, payload?: any) => void;
   activeCaptionLanguage: string;
+  onDetach: () => void;
+  onAttach: () => void;
+  kitchenSinkDetached: boolean;
 }
 
 interface TranscriptState {
@@ -187,7 +194,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
 
   private _dispatchSearchEvent = (state: TranscriptState) => {
     this.props.dispatcher(TranscriptEvents.TRANSCRIPT_SEARCH, {search: this.state.search});
-  }
+  };
 
   private _setActiveSearchIndex = (index: number) => {
     this._scrollToSearchMatchEnabled = true;
@@ -210,7 +217,20 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
   };
 
   private _renderHeader = () => {
-    const {toggledWithEnter, kitchenSinkActive, downloadDisabled, onDownload, printDisabled, onPrint, isLoading} = this.props;
+    const {
+      toggledWithEnter,
+      kitchenSinkActive,
+      kitchenSinkDetached,
+      downloadDisabled,
+      onDownload,
+      printDisabled,
+      onPrint,
+      isLoading,
+      onAttach,
+      onDetach,
+      attachTranscript,
+      detachTranscript
+    } = this.props;
     const {search, activeSearchIndex, totalSearchResults} = this.state;
     return (
       <div className={[styles.header, this._getHeaderStyles()].join(' ')} data-testid="transcript_header">
@@ -224,16 +244,29 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
           kitchenSinkActive={kitchenSinkActive}
         />
         <TranscriptMenu {...{downloadDisabled, onDownload, printDisabled, onPrint, isLoading}} />
-        <div data-testid="transcriptCloseButton">
+        <div data-testid="transcriptDetachAttachButton">
           <Button
             type={ButtonType.borderless}
             size={ButtonSize.medium}
-            disabled={false}
-            onClick={this.props.onClose}
-            ariaLabel={'Hide Transcript'}
-            tooltip={{label: 'Hide Transcript'}}
-            icon={'close'}></Button>
+            onClick={kitchenSinkDetached ? onAttach : onDetach}
+            icon={kitchenSinkDetached ? 'attach' : 'detach'}
+            ariaLabel={kitchenSinkDetached ? attachTranscript : detachTranscript}
+            tooltip={{label: kitchenSinkDetached ? attachTranscript! : detachTranscript!}}
+          />
         </div>
+        {!kitchenSinkDetached && (
+          <div data-testid="transcriptCloseButton">
+            <Button
+              type={ButtonType.borderless}
+              size={ButtonSize.medium}
+              disabled={false}
+              onClick={this.props.onClose}
+              ariaLabel={'Hide Transcript'}
+              tooltip={{label: 'Hide Transcript'}}
+              icon={'close'}
+            />
+          </div>
+        )}
       </div>
     );
   };
@@ -387,11 +420,11 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
   };
 
   render(props: TranscriptProps) {
-    const {isLoading, kitchenSinkActive, hasError, smallScreen, toggledWithEnter} = props;
+    const {isLoading, kitchenSinkActive, kitchenSinkDetached, hasError, smallScreen, toggledWithEnter} = props;
     const renderTranscriptButtons = !(isLoading || hasError);
     return (
       <div
-        className={`${styles.root} ${kitchenSinkActive ? '' : styles.hidden}`}
+        className={`${styles.root} ${kitchenSinkActive || kitchenSinkDetached ? '' : styles.hidden}`}
         ref={node => {
           this._widgetRootRef = node;
         }}

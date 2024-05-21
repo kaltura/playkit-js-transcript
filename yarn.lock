@@ -146,12 +146,11 @@
   resolved "https://registry.yarnpkg.com/@pkgjs/parseargs/-/parseargs-0.11.0.tgz#a77ea742fab25775145434eb1d2328cf5013ac33"
   integrity sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==
 
-"@playkit-js/common@1.5.9":
-  version "1.5.9"
-  resolved "https://registry.yarnpkg.com/@playkit-js/common/-/common-1.5.9.tgz#e0bf394c55178c9fb009b5f7933a49f6cb5d3207"
-  integrity sha512-vcD/yNLmiwTnUvg4CgjUxZXKb5aj8w9ySk8ozP67uXHI56cmtulZXsDVxAeaSe/MzP6L4qpqBtDb3RjjHQEyCQ==
+"@playkit-js/common@1.5.13":
+  version "1.5.13"
+  resolved "https://registry.yarnpkg.com/@playkit-js/common/-/common-1.5.13.tgz#70a49b80f447e2cf28beafc615ce9bc12b220411"
+  integrity sha512-7F1R62ItpVs10QIOViP7GS5yVLt9PGD77cf1nqSFgdr135GxQPtq/rIOZNxTpo6Ci+pcxsLUMU9d/j9kPixVuQ==
   dependencies:
-    "@playkit-js/playkit-js-ui" "0.78.0"
     classnames "^2.3.2"
     linkify-it "^4.0.1"
 
@@ -220,10 +219,10 @@
     js-logger "^1.6.0"
     ua-parser-js "^1.0.36"
 
-"@playkit-js/ui-managers@1.5.2":
-  version "1.5.2"
-  resolved "https://registry.yarnpkg.com/@playkit-js/ui-managers/-/ui-managers-1.5.2.tgz#107025b4b9763e33fad72015546743fb78f9398b"
-  integrity sha512-DmtMmXx7hN/Pyw5wwhwgo/XFvFyliYW6w3OV4cVcCUEnU/RJ5Fy0wW/RZkpgAI5m/Xb6J+UFY76ElekOPC7RSw==
+"@playkit-js/ui-managers@1.6.0-canary.0-93cb124":
+  version "1.6.0-canary.0-93cb124"
+  resolved "https://registry.yarnpkg.com/@playkit-js/ui-managers/-/ui-managers-1.6.0-canary.0-93cb124.tgz#f65af478281241e821828e0ce2493b962a5bc1ee"
+  integrity sha512-EmjeZkbBuBjJFtS8zMfoX9RiB0Wi7jeAhMdjnP1SmJg0LTdaRZe89FBaxIljVSkqROBz5UpkVE2qWpnaNUxN2A==
   dependencies:
     "@playkit-js/common" "^1.2.10"
 

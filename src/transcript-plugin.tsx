@@ -10,6 +10,7 @@ import {Transcript} from './components/transcript';
 import {getConfigValue, isBoolean, makePlainText, prepareCuePoint} from './utils';
 import {TranscriptConfig, PluginStates, HighlightedMap, CuePointData, ItemTypes, CuePoint} from './types';
 import {TranscriptEvents} from './events/events';
+import {AttachPlaceholder} from './components/attach-placeholder';
 
 export const pluginName: string = 'playkit-js-transcript';
 
@@ -227,6 +228,21 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     }));
   };
 
+  private _handleDetach = () => {
+    this.sidePanelsManager?.detachItem(this._transcriptPanel, {
+      width: 600,
+      height: 600,
+      title: 'Transcript',
+      attachPlaceholder: () => (<AttachPlaceholder onAttach={this._handleAttach} />) as any
+    });
+  };
+  private _handleAttach = () => {
+    this.sidePanelsManager?.attachItem(this._transcriptPanel);
+  };
+  private _isDetached = (): boolean => {
+    return this.sidePanelsManager!.isItemDetached(this._transcriptPanel);
+  };
+
   private _addTranscriptItem(): void {
     if (Math.max(this._transcriptPanel, this._transcriptIcon) > 0) {
       // transcript panel or icon already exist
@@ -264,6 +280,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
             currentTime={this.player.currentTime}
             videoDuration={this.player.duration}
             kitchenSinkActive={this._isPluginActive()}
+            kitchenSinkDetached={this._isDetached()}
             toggledWithEnter={this._triggeredByKeyboard}
             onClose={this._handleClose}
             downloadDisabled={getConfigValue(downloadDisabled, isBoolean, false)}
@@ -272,12 +289,14 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
             onPrint={this._handlePrint}
             dispatcher={(eventType, payload) => this.dispatchEvent(eventType, payload)}
             activeCaptionLanguage={this._activeCaptionMapId}
-          /> as any
-        );
+            onDetach={this._handleDetach}
+            onAttach={this._handleAttach}
+          />
+        ) as any;
       },
       presets: [ReservedPresetNames.Playback, ReservedPresetNames.Live, ReservedPresetNames.Ads],
       position: position,
-      expandMode: expandMode === SidePanelModes.ALONGSIDE ? SidePanelModes.ALONGSIDE : SidePanelModes.OVER,
+      expandMode: expandMode === SidePanelModes.ALONGSIDE ? SidePanelModes.ALONGSIDE : SidePanelModes.OVER
     }) as number;
     const translates = {
       showTranscript: <Text id="transcript.show_plugin">Show Transcript</Text>,

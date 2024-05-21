@@ -1,0 +1,21 @@
+@import '~@playkit-js/playkit-js-ui';
+
+.attach-placeholder-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  .attach-text {
+    line-height: 20px;
+    font-weight: 700;
+    letter-spacing: normal;
+    color: $tone-1-color;
+  }
+  .attach-button {
+    margin-top: 20px;
+  }
+}
