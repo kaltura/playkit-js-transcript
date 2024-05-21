@@ -229,20 +229,17 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   };
 
   private _handleDetach = () => {
-    // @ts-ignore
     this.sidePanelsManager?.detachItem(this._transcriptPanel, {
       width: 600,
       height: 600,
       title: 'Transcript',
-      attachPlaceholder: () => <AttachPlaceholder onAttach={this._handleAttach} />
+      attachPlaceholder: () => (<AttachPlaceholder onAttach={this._handleAttach} />) as any
     });
   };
   private _handleAttach = () => {
-    // @ts-ignore
     this.sidePanelsManager?.attachItem(this._transcriptPanel);
   };
   private _isDetached = (): boolean => {
-    // @ts-ignore
     return this.sidePanelsManager!.isItemDetached(this._transcriptPanel);
   };
 
@@ -299,8 +296,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       },
       presets: [ReservedPresetNames.Playback, ReservedPresetNames.Live, ReservedPresetNames.Ads],
       position: position,
-      expandMode: expandMode === SidePanelModes.ALONGSIDE ? SidePanelModes.ALONGSIDE : SidePanelModes.OVER,
-      onDeactivate: this._deactivatePlugin
+      expandMode: expandMode === SidePanelModes.ALONGSIDE ? SidePanelModes.ALONGSIDE : SidePanelModes.OVER
     }) as number;
     const translates = {
       showTranscript: <Text id="transcript.show_plugin">Show Transcript</Text>,
