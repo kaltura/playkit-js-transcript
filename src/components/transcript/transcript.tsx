@@ -26,7 +26,9 @@ const SEARCH_EVENT_DISPATCH_TIMEOUT = 2000;
 const translates = {
   skipTranscript: <Text id="transcript.skip_transcript">Skip transcript</Text>,
   errorTitle: <Text id="transcript.whoops">Whoops!</Text>,
-  errorDescripton: <Text id="transcript.load_failed">Failed to load transcript</Text>
+  errorDescripton: <Text id="transcript.load_failed">Failed to load transcript</Text>,
+  attachTranscript: <Text id="transcript.attach_transcript">Bring Transcript back</Text>,
+  detachTranscript: <Text id="transcript.detach_transcript">Popout Transcript</Text>
 };
 
 export interface TranscriptProps {
@@ -49,6 +51,8 @@ export interface TranscriptProps {
   skipTranscript?: string;
   errorTitle?: string;
   errorDescripton?: string;
+  attachTranscript?: string;
+  detachTranscript?: string;
   downloadDisabled: boolean;
   onDownload: () => void;
   printDisabled: boolean;
@@ -223,7 +227,9 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
       onPrint,
       isLoading,
       onAttach,
-      onDetach
+      onDetach,
+      attachTranscript,
+      detachTranscript
     } = this.props;
     const {search, activeSearchIndex, totalSearchResults} = this.state;
     return (
@@ -244,8 +250,8 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
             size={ButtonSize.medium}
             onClick={kitchenSinkDetached ? onAttach : onDetach}
             icon={kitchenSinkDetached ? 'attach' : 'detach'}
-            ariaLabel={kitchenSinkDetached ? 'Bring Transcript back' : 'Popout Transcript'}
-            tooltip={{label: kitchenSinkDetached ? 'Bring Transcript back' : 'Popout Transcript'}}
+            ariaLabel={kitchenSinkDetached ? attachTranscript : detachTranscript}
+            tooltip={{label: kitchenSinkDetached ? attachTranscript! : detachTranscript!}}
           />
         </div>
         {!kitchenSinkDetached && (
