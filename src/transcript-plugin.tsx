@@ -233,11 +233,29 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       width: 600,
       height: 600,
       title: 'Transcript',
-      attachPlaceholder: () => (<AttachPlaceholder onAttach={this._handleAttach} />) as any
+      attachPlaceholder: () =>
+        (
+          <AttachPlaceholder
+            onAttach={() => {
+              this._handleAttach('bring_back');
+            }}
+          />
+        ) as any,
+      onDetachWindowClose: () => {
+        this.dispatchEvent(TranscriptEvents.TRANSCRIPT_POPOUT_CLOSE, {type: 'close_window'});
+      },
+      onDetachResize: (width: number, height: number) => {
+        this.dispatchEvent(TranscriptEvents.TRANSCRIPT_POPOUT_RESIZE, {size: {x: width, y: height}});
+      },
+      onDetachMove: (x: number, y: number) => {
+        this.dispatchEvent(TranscriptEvents.TRANSCRIPT_POPOUT_DRAG, {position: {x, y}});
+      }
     });
+    this.dispatchEvent(TranscriptEvents.TRANSCRIPT_POPOUT_OPEN);
   };
-  private _handleAttach = () => {
+  private _handleAttach = (type: string) => {
     this.sidePanelsManager?.attachItem(this._transcriptPanel);
+    this.dispatchEvent(TranscriptEvents.TRANSCRIPT_POPOUT_CLOSE, {type});
   };
   private _isDetached = (): boolean => {
     return this.sidePanelsManager!.isItemDetached(this._transcriptPanel);
@@ -290,7 +308,9 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
             dispatcher={(eventType, payload) => this.dispatchEvent(eventType, payload)}
             activeCaptionLanguage={this._activeCaptionMapId}
             onDetach={this._handleDetach}
-            onAttach={this._handleAttach}
+            onAttach={() => {
+              this._handleAttach('arrow');
+            }}
           />
         ) as any;
       },
