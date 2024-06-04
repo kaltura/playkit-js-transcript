@@ -233,7 +233,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       width: 600,
       height: 600,
       title: 'Transcript',
-      attachPlaceholder: () => (<AttachPlaceholder onAttach={this._handleAttach} />) as any
+      attachPlaceholder: () => (<AttachPlaceholder onAttach={this._handleAttach} onClose={this._handleClose} />) as any
     });
   };
   private _handleAttach = () => {
