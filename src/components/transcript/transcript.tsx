@@ -429,7 +429,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
           this._widgetRootRef = node;
         }}
         data-testid="transcript_root">
-        {smallScreen ? (
+        {smallScreen && !kitchenSinkDetached ? (
           <SmallScreenSlate onClose={this.props.onClose} toggledWithEnter={toggledWithEnter} />
         ) : (
           <div className={styles.globalContainer}>
