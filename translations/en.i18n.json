@@ -20,7 +20,8 @@
       "attachTranscriptText": "Transcript popped out",
       "attachTranscriptButton": "Bring it back",
       "attachTranscript": "Bring Transcript back",
-      "detachTranscript": "Popout Transcript"
+      "detachTranscript": "Popout Transcript",
+      "transcript": "Transcript"
     }
   }
 }

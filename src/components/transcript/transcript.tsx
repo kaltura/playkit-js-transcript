@@ -64,6 +64,7 @@ export interface TranscriptProps {
   onDetach: () => void;
   onAttach: () => void;
   kitchenSinkDetached: boolean;
+  isMobile?: boolean;
 }
 
 interface TranscriptState {
@@ -88,7 +89,8 @@ const SEARCHBAR_HEIGHT = 38; // height of search bar with margins
 const smallScreen = PLAYER_BREAK_POINTS?.SMALL || 480;
 
 const mapStateToProps = (state: any, ownProps: Pick<TranscriptProps, 'expandMode'>) => ({
-  smallScreen: ownProps.expandMode === SidePanelModes.ALONGSIDE && state.shell.playerClientRect?.width < smallScreen
+  smallScreen: ownProps.expandMode === SidePanelModes.ALONGSIDE && state.shell.playerClientRect?.width < smallScreen,
+  isMobile: state.shell.isMobile
 });
 
 // @ts-ignore
@@ -157,6 +159,25 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     );
   };
 
+  private _renderDetachButton = () => {
+    const {onAttach, onDetach, attachTranscript, detachTranscript, kitchenSinkDetached, isMobile} = this.props;
+    if (isMobile) {
+      return null;
+    }
+    return (
+      <div data-testid="transcriptDetachAttachButton">
+        <Button
+          type={ButtonType.borderless}
+          size={ButtonSize.medium}
+          onClick={kitchenSinkDetached ? onAttach : onDetach}
+          icon={kitchenSinkDetached ? 'attach' : 'detach'}
+          ariaLabel={kitchenSinkDetached ? attachTranscript : detachTranscript}
+          tooltip={{label: kitchenSinkDetached ? attachTranscript! : detachTranscript!}}
+        />
+      </div>
+    );
+  };
+
   private _onSearch = (search: string) => {
     this.setState({search});
   };
@@ -217,20 +238,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
   };
 
   private _renderHeader = () => {
-    const {
-      toggledWithEnter,
-      kitchenSinkActive,
-      kitchenSinkDetached,
-      downloadDisabled,
-      onDownload,
-      printDisabled,
-      onPrint,
-      isLoading,
-      onAttach,
-      onDetach,
-      attachTranscript,
-      detachTranscript
-    } = this.props;
+    const {toggledWithEnter, kitchenSinkActive, kitchenSinkDetached, downloadDisabled, onDownload, printDisabled, onPrint, isLoading} = this.props;
     const {search, activeSearchIndex, totalSearchResults} = this.state;
     return (
       <div className={[styles.header, this._getHeaderStyles()].join(' ')} data-testid="transcript_header">
@@ -244,16 +252,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
           kitchenSinkActive={kitchenSinkActive}
         />
         <TranscriptMenu {...{downloadDisabled, onDownload, printDisabled, onPrint, isLoading}} />
-        <div data-testid="transcriptDetachAttachButton">
-          <Button
-            type={ButtonType.borderless}
-            size={ButtonSize.medium}
-            onClick={kitchenSinkDetached ? onAttach : onDetach}
-            icon={kitchenSinkDetached ? 'attach' : 'detach'}
-            ariaLabel={kitchenSinkDetached ? attachTranscript : detachTranscript}
-            tooltip={{label: kitchenSinkDetached ? attachTranscript! : detachTranscript!}}
-          />
-        </div>
+        {this._renderDetachButton()}
         {!kitchenSinkDetached && (
           <div data-testid="transcriptCloseButton">
             <Button
@@ -429,7 +428,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
           this._widgetRootRef = node;
         }}
         data-testid="transcript_root">
-        {smallScreen ? (
+        {smallScreen && !kitchenSinkDetached ? (
           <SmallScreenSlate onClose={this.props.onClose} toggledWithEnter={toggledWithEnter} />
         ) : (
           <div className={styles.globalContainer}>

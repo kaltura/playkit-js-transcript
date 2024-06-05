@@ -1,21 +1,47 @@
 @import '~@playkit-js/playkit-js-ui';
+@import '../../variables.scss';
 
 .attach-placeholder-container {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  .attach-text {
-    line-height: 20px;
-    font-weight: 700;
-    letter-spacing: normal;
-    color: $tone-1-color;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: $plugin-background;
+  .attach-header {
+    position: absolute;
+    top: 16px;
+    left: 0;
+    width: 100%;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    .attach-header-title {
+      font-weight: 700;
+      font-size: 16px;
+      color: $tone-1-color;
+    }  
   }
-  .attach-button {
-    margin-top: 20px;
+  .attach-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    .attach-text {
+      line-height: 20px;
+      font-weight: 700;
+      letter-spacing: normal;
+      color: $tone-1-color;
+      text-align: center;
+    }
+    .attach-button {
+      margin-top: 20px;
+    }
   }
 }

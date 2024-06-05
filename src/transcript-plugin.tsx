@@ -9,7 +9,7 @@ import {PluginButton} from './components/plugin-button/plugin-button';
 import {Transcript} from './components/transcript';
 import {getConfigValue, isBoolean, makePlainText, prepareCuePoint} from './utils';
 import {TranscriptConfig, PluginStates, HighlightedMap, CuePointData, ItemTypes, CuePoint} from './types';
-import {TranscriptEvents} from './events/events';
+import {TranscriptEvents, CloseDetachTypes} from './events/events';
 import {AttachPlaceholder} from './components/attach-placeholder';
 
 export const pluginName: string = 'playkit-js-transcript';
@@ -237,12 +237,13 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
         (
           <AttachPlaceholder
             onAttach={() => {
-              this._handleAttach('bring_back');
+              this._handleAttach(CloseDetachTypes.bringBack);
             }}
+            onClose={this._handleClose}
           />
         ) as any,
       onDetachWindowClose: () => {
-        this.dispatchEvent(TranscriptEvents.TRANSCRIPT_POPOUT_CLOSE, {type: 'close_window'});
+        this.dispatchEvent(TranscriptEvents.TRANSCRIPT_POPOUT_CLOSE, {type: CloseDetachTypes.closeWindow});
       },
       onDetachResize: (width: number, height: number) => {
         this.dispatchEvent(TranscriptEvents.TRANSCRIPT_POPOUT_RESIZE, {size: {x: width, y: height}});
@@ -309,7 +310,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
             activeCaptionLanguage={this._activeCaptionMapId}
             onDetach={this._handleDetach}
             onAttach={() => {
-              this._handleAttach('arrow');
+              this._handleAttach(CloseDetachTypes.arrow);
             }}
           />
         ) as any;

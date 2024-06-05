@@ -4,6 +4,8 @@
 $roundness-1: 4px;
 $roundness-3: 16px;
 
+$plugin-background: rgba(0, 0, 0, 0.6);
+
 @mixin plugin-scrollbar {
   &::-webkit-scrollbar {
     width: 4px;

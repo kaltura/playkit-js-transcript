@@ -290,5 +290,14 @@ describe('Transcript plugin', () => {
         cy.get(`[data-testid="transcriptDetachAttachButton"]`).should('exist');
       });
     });
+
+    it('should not render detach button for mobile screens', () => {
+      mockKalturaBe();
+      loadPlayer().then(kalturaPlayer => {
+        // @ts-ignore
+        kalturaPlayer.ui.store.dispatch(ui.reducers.shell.actions.updateIsMobile(true));
+        cy.get(`[data-testid="transcriptDetachAttachButton"]`).should('not.exist');
+      });
+    });
   });
 });

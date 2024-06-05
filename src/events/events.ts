@@ -10,3 +10,9 @@ export const TranscriptEvents = {
   TRANSCRIPT_POPOUT_DRAG: 'transcript_popout_drag',
   TRANSCRIPT_POPOUT_RESIZE: 'transcript_popout_resize'
 };
+
+export enum CloseDetachTypes {
+  closeWindow = 'close_window',
+  bringBack = 'bring_back',
+  arrow = 'arrow'
+}
