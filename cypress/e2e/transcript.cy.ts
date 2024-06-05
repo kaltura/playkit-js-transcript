@@ -299,5 +299,16 @@ describe('Transcript plugin', () => {
         cy.get(`[data-testid="transcriptDetachAttachButton"]`).should('not.exist');
       });
     });
+
+    it('should render detach button in transcript menu', () => {
+      mockKalturaBe();
+      loadPlayer().then(() => {
+        cy.get(`[data-testid="popover-anchor-container"]`).should('exist');
+        cy.get(`[data-testid="popover-anchor-container"]`).click();
+        cy.get(`[data-testid="transcript-detach-attach-button"]`).should('not.exist');
+        cy.viewport(726, 380);
+        cy.get(`[data-testid="transcript-detach-attach-button"]`).should('exist');
+      });
+    });
   });
 });

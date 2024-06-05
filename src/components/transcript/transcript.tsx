@@ -272,7 +272,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
       detachMenuItem = {
         label: kitchenSinkDetached ? attachTranscript : detachTranscript,
         onClick: kitchenSinkDetached ? onAttach : onDetach,
-        testId: 'transcriptDetachAttachButton',
+        testId: 'transcript-detach-attach-button',
         disabled: isLoading
       };
     }
