@@ -65,6 +65,7 @@ export interface TranscriptProps {
   onAttach: () => void;
   kitchenSinkDetached: boolean;
   isMobile?: boolean;
+  playerWidth?: number;
 }
 
 interface TranscriptState {
@@ -91,7 +92,8 @@ const smallScreen = PLAYER_BREAK_POINTS?.SMALL || 480;
 
 const mapStateToProps = (state: any, ownProps: Pick<TranscriptProps, 'expandMode'>) => ({
   smallScreen: ownProps.expandMode === SidePanelModes.ALONGSIDE && state.shell.playerClientRect?.width < smallScreen,
-  isMobile: state.shell.isMobile
+  isMobile: state.shell.isMobile,
+  playerWidth: state.shell.playerClientRect?.width
 });
 
 // @ts-ignore
@@ -111,8 +113,6 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
   private _bottomAutoscrollEdge: number = 0;
   private _thirdOfWidgetHeight: number = 0;
 
-  private _resizeObserver: ResizeObserver | null = null;
-
   state: TranscriptState = {
     isAutoScrollEnabled: true,
     widgetWidth: 0,
@@ -120,15 +120,11 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
   };
 
   componentDidMount(): void {
-    // observe transcript root element size changes
-    this._resizeObserver = new ResizeObserver(() => {
-      this._setWidgetSize();
-    });
-    this._resizeObserver.observe(this._widgetRootRef!);
+    this._setWidgetSize();
   }
 
   componentDidUpdate(previousProps: Readonly<TranscriptProps>, previousState: Readonly<TranscriptState>): void {
-    const {captions, activeCaptionLanguage} = this.props;
+    const {captions, activeCaptionLanguage, playerWidth} = this.props;
     const {search} = this.state;
     if (previousProps.captions !== captions) {
       // clear search value only if active caption language was switched, otherwise keep previous value
@@ -139,10 +135,11 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
       // trigger search in case search value has changed, or new captions were added for the same language (preventSeek use-case)
       this._debounced.findSearchMatches();
     }
-  }
 
-  componentWillMount(): void {
-    this._resizeObserver?.disconnect();
+    if (previousProps.playerWidth !== playerWidth) {
+      // re-calculate wiget size if player size changed
+      this._setWidgetSize();
+    }
   }
 
   private _enableAutoScroll = (event: OnClickEvent, byKeyboard?: boolean) => {
@@ -268,7 +265,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     const {search, activeSearchIndex, totalSearchResults} = this.state;
 
     let detachMenuItem: null | any = null;
-    if (this.state.widgetWidth <= SMALL_WIDGET_WIDTH) {
+    if (this.state.widgetWidth <= SMALL_WIDGET_WIDTH && !kitchenSinkDetached) {
       detachMenuItem = {
         label: kitchenSinkDetached ? attachTranscript : detachTranscript,
         onClick: kitchenSinkDetached ? onAttach : onDetach,
