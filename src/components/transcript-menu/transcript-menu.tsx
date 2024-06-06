@@ -13,6 +13,12 @@ interface TranscriptMenuProps {
   downloadDisabled?: boolean;
   printDisabled?: boolean;
   isLoading?: boolean;
+  detachMenuItem?: {
+    testId: string;
+    label: string;
+    onClick: () => void;
+    isDisabled: boolean;
+  } | null;
 }
 
 interface TranscriptMenuState {
@@ -26,11 +32,14 @@ const translates = {
 
 @withText(translates)
 class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState> {
-  constructor(props: TranscriptMenuProps) {
-    super();
-
-    const {downloadDisabled, onDownload, printDisabled, onPrint, printTranscript, downloadTranscript, isLoading} = props;
+  render() {
+    const {downloadDisabled, onDownload, printDisabled, onPrint, printTranscript, downloadTranscript, isLoading, detachMenuItem} = this.props;
     const items = [];
+
+    if (detachMenuItem) {
+      items.push(detachMenuItem);
+    }
+
     if (!downloadDisabled) {
       items.push({
         testId: 'download-menu-item',
@@ -49,12 +58,8 @@ class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState>
       });
     }
 
-    this.state = {items};
-  }
-
-  render() {
-    return this.state.items.length ? (
-      <PopoverMenu items={this.state.items}>
+    return items.length ? (
+      <PopoverMenu items={items}>
         <Button type={ButtonType.borderless} icon={'more'} tabIndex={-1} />
       </PopoverMenu>
     ) : null;

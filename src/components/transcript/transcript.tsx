@@ -65,6 +65,7 @@ export interface TranscriptProps {
   onAttach: () => void;
   kitchenSinkDetached: boolean;
   isMobile?: boolean;
+  playerWidth?: number;
 }
 
 interface TranscriptState {
@@ -85,12 +86,14 @@ const initialSearch = {
   searchLength: 0
 };
 
+const SMALL_WIDGET_WIDTH = 240;
 const SEARCHBAR_HEIGHT = 38; // height of search bar with margins
 const smallScreen = PLAYER_BREAK_POINTS?.SMALL || 480;
 
 const mapStateToProps = (state: any, ownProps: Pick<TranscriptProps, 'expandMode'>) => ({
   smallScreen: ownProps.expandMode === SidePanelModes.ALONGSIDE && state.shell.playerClientRect?.width < smallScreen,
-  isMobile: state.shell.isMobile
+  isMobile: state.shell.isMobile,
+  playerWidth: state.shell.playerClientRect?.width
 });
 
 // @ts-ignore
@@ -116,8 +119,12 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     ...initialSearch
   };
 
+  componentDidMount(): void {
+    this._setWidgetSize();
+  }
+
   componentDidUpdate(previousProps: Readonly<TranscriptProps>, previousState: Readonly<TranscriptState>): void {
-    const {captions, activeCaptionLanguage} = this.props;
+    const {captions, activeCaptionLanguage, playerWidth} = this.props;
     const {search} = this.state;
     if (previousProps.captions !== captions) {
       // clear search value only if active caption language was switched, otherwise keep previous value
@@ -129,7 +136,10 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
       this._debounced.findSearchMatches();
     }
 
-    this._setWidgetSize();
+    if (previousProps.playerWidth !== playerWidth) {
+      // re-calculate wiget size if player size changed
+      this._setWidgetSize();
+    }
   }
 
   private _enableAutoScroll = (event: OnClickEvent, byKeyboard?: boolean) => {
@@ -238,8 +248,32 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
   };
 
   private _renderHeader = () => {
-    const {toggledWithEnter, kitchenSinkActive, kitchenSinkDetached, downloadDisabled, onDownload, printDisabled, onPrint, isLoading} = this.props;
+    const {
+      toggledWithEnter,
+      kitchenSinkActive,
+      kitchenSinkDetached,
+      downloadDisabled,
+      onDownload,
+      printDisabled,
+      onPrint,
+      isLoading,
+      attachTranscript,
+      detachTranscript,
+      onAttach,
+      onDetach
+    } = this.props;
     const {search, activeSearchIndex, totalSearchResults} = this.state;
+
+    let detachMenuItem: null | any = null;
+    if (this.state.widgetWidth <= SMALL_WIDGET_WIDTH && !kitchenSinkDetached) {
+      detachMenuItem = {
+        label: kitchenSinkDetached ? attachTranscript : detachTranscript,
+        onClick: kitchenSinkDetached ? onAttach : onDetach,
+        testId: 'transcript-detach-attach-button',
+        disabled: isLoading
+      };
+    }
+
     return (
       <div className={[styles.header, this._getHeaderStyles()].join(' ')} data-testid="transcript_header">
         <Search
@@ -251,8 +285,8 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
           toggledWithEnter={toggledWithEnter}
           kitchenSinkActive={kitchenSinkActive}
         />
-        <TranscriptMenu {...{downloadDisabled, onDownload, printDisabled, onPrint, isLoading}} />
-        {this._renderDetachButton()}
+        <TranscriptMenu {...{downloadDisabled, onDownload, printDisabled, onPrint, isLoading, detachMenuItem}} />
+        {!detachMenuItem && this._renderDetachButton()}
         {!kitchenSinkDetached && (
           <div data-testid="transcriptCloseButton">
             <Button
