@@ -229,6 +229,9 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   };
 
   private _handleDetach = () => {
+    if (this._isDetached()) {
+      this._handleAttach(CloseDetachTypes.bringBack);
+    }
     this.sidePanelsManager?.detachItem(this._transcriptPanel, {
       width: 600,
       height: 600,
@@ -315,7 +318,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
           />
         ) as any;
       },
-      presets: [ReservedPresetNames.Playback, ReservedPresetNames.Live, ReservedPresetNames.Ads],
+      presets: [ReservedPresetNames.Playback, ReservedPresetNames.Live, ReservedPresetNames.Ads, 'MiniAudioUI'],
       position: position,
       expandMode: expandMode === SidePanelModes.ALONGSIDE ? SidePanelModes.ALONGSIDE : SidePanelModes.OVER
     }) as number;
@@ -387,6 +390,10 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     }
     this._deactivatePlugin();
     this._pluginState = PluginStates.CLOSED;
+  };
+
+  public isPluginAvailable = () => {
+    return this._captionMap.size > 0;
   };
 
   static isValid(): boolean {

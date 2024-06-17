@@ -113,6 +113,8 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
   private _bottomAutoscrollEdge: number = 0;
   private _thirdOfWidgetHeight: number = 0;
 
+  private _resizeObserver: ResizeObserver | null = null;
+
   state: TranscriptState = {
     isAutoScrollEnabled: true,
     widgetWidth: 0,
@@ -120,7 +122,16 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
   };
 
   componentDidMount(): void {
-    this._setWidgetSize();
+    if (window.ResizeObserver) {
+      // observe transcript root element size changes
+      this._resizeObserver = new ResizeObserver(() => {
+        this._setWidgetSize();
+      });
+      this._resizeObserver.observe(this._widgetRootRef!);
+    } else {
+      // use player size to define transcript root element size
+      this._setWidgetSize();
+    }
   }
 
   componentDidUpdate(previousProps: Readonly<TranscriptProps>, previousState: Readonly<TranscriptState>): void {
@@ -136,9 +147,16 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
       this._debounced.findSearchMatches();
     }
 
-    if (previousProps.playerWidth !== playerWidth) {
+    if (!this._resizeObserver && previousProps.playerWidth !== playerWidth) {
       // re-calculate wiget size if player size changed
       this._setWidgetSize();
+    }
+  }
+
+  componentWillMount(): void {
+    if (this._resizeObserver) {
+      this._resizeObserver?.disconnect();
+      this._resizeObserver = null;
     }
   }
 
