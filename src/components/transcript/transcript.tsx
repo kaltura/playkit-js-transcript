@@ -28,7 +28,7 @@ const translates = {
   errorTitle: <Text id="transcript.whoops">Whoops!</Text>,
   errorDescripton: <Text id="transcript.load_failed">Failed to load transcript</Text>,
   attachTranscript: <Text id="transcript.attach_transcript">Bring Transcript back</Text>,
-  detachTranscript: <Text id="transcript.detach_transcript">Popout Transcript</Text>
+  detachTranscript: <Text id="transcript.detach_transcript">Popout transcript</Text>
 };
 
 export interface TranscriptProps {
