@@ -181,7 +181,8 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   };
 
   private _makeCaptionKey = (language?: string, label?: string): string => {
-    return `${language}-${label}`;
+    // use 'default' language as fallback when language argument is undefined or empty string
+    return `${language || 'default'}-${label}`;
   };
 
   private _activatePlugin = (isFirstOpen = false) => {
