@@ -6,7 +6,6 @@ import * as styles from './caption.scss';
 
 const {withText, Text} = KalturaPlayer.ui.preacti18n;
 
-
 export interface CaptionProps {
   showTime: boolean;
   searchLength: number;
@@ -14,7 +13,6 @@ export interface CaptionProps {
   scrollToSearchMatch(el: HTMLElement): void;
   videoDuration: number;
   captionLabel?: string;
-
 }
 
 interface ExtendedCaptionProps extends CaptionProps {
