@@ -8,6 +8,7 @@ const {withText, Text} = KalturaPlayer.ui.preacti18n;
 interface TranscriptMenuProps {
   printTranscript?: string;
   downloadTranscript?: string;
+  moreOptionsLabel?: string;
   onDownload: () => void;
   onPrint: () => void;
   downloadDisabled?: boolean;
@@ -27,7 +28,8 @@ interface TranscriptMenuState {
 
 const translates = {
   printTranscript: <Text id="transcript.print_transcript">Print current transcript</Text>,
-  downloadTranscript: <Text id="transcript.download_transcript">Download current transcript</Text>
+  downloadTranscript: <Text id="transcript.download_transcript">Download current transcript</Text>,
+  moreOptionsLabel: <Text id="transcript.more_options">More transcript options</Text>
 };
 
 @withText(translates)
@@ -60,7 +62,7 @@ class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState>
 
     return items.length ? (
       <PopoverMenu items={items}>
-        <Button type={ButtonType.borderless} icon={'more'} tabIndex={-1} />
+        <Button type={ButtonType.borderless} icon={'more'} tabIndex={-1} ariaLabel={this.props.moreOptionsLabel} />
       </PopoverMenu>
     ) : null;
   }
