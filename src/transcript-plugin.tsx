@@ -27,6 +27,8 @@ interface TimedMetadataEvent {
 }
 
 export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
+  public displayName = 'Transcript';
+  public symbol = {svgUrl: icons.PLUGIN_ICON, viewBox: '0 0 32 32'};
   static defaultConfig: TranscriptConfig = {
     expandMode: SidePanelModes.ALONGSIDE,
     expandOnFirstPlay: true,
@@ -110,6 +112,10 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     }
     this._updateTranscriptPanel();
   };
+
+  public open(): void {
+    this._handleDetach();
+  }
 
   private _handleLanguageChange = () => {
     this._activeCaptionMapId = this._getCaptionMapId();
@@ -393,11 +399,15 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     this._pluginState = PluginStates.CLOSED;
   };
 
-  public isPluginAvailable = () => {
+  public isEntrySupported(): boolean {
     return this._captionMap.size > 0;
-  };
+  }
 
   static isValid(): boolean {
+    return true;
+  }
+
+  public isAudioPlayerSupported(): boolean {
     return true;
   }
 
