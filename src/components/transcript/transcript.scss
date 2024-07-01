@@ -44,6 +44,10 @@
     font-family: sans-serif;
     font-style: normal;
   }
+
+  *:focus-visible:not(input) {
+    outline: 1px solid $tab-focus-color;
+  }
 }
 
 .global-container {

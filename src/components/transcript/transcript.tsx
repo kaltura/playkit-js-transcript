@@ -153,7 +153,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     }
   }
 
-  componentWillMount(): void {
+  componentWillUnmount(): void {
     if (this._resizeObserver) {
       this._resizeObserver?.disconnect();
       this._resizeObserver = null;

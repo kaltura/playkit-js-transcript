@@ -77,7 +77,7 @@ describe('Transcript plugin', () => {
     it('should sanitize html tags', () => {
       mockKalturaBe();
       loadPlayer({showTime: false}).then(() => {
-        cy.get('[aria-label="Dark Side."]').should('have.text', 'Dark Side.');
+        cy.get('[aria-label="Dark Side. Jump to this point in video"]').should('have.text', 'Dark Side.');
       });
     });
   });
