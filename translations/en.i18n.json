@@ -21,7 +21,8 @@
       "attachTranscriptButton": "Bring it back",
       "attachTranscript": "Bring Transcript back",
       "detachTranscript": "Popout Transcript",
-      "transcript": "Transcript"
+      "transcript": "Transcript",
+      "caption_label": "Jump to this point in video"
     }
   }
 }
