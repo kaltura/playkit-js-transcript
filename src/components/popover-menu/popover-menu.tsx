@@ -21,6 +21,7 @@ interface PopoverMenuProps {
   eventManager?: any;
   children?: VNode;
   items: Array<PopoverMenuItemData>;
+  kitchenSinkDetached: boolean;
 }
 
 interface PopoverMenuState {
@@ -86,18 +87,18 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
     const isOpen = !this.state.isOpen;
 
     this.setState({isOpen}, () => {
-      if (isOpen){
+      if (isOpen) {
         this._controlElementRef?.focus();
         this.props.eventManager?.listen(this._controlElementRef, 'keydown', (event: KeyboardEvent) => {
-          if (event.keyCode === TAB){
+          if (event.keyCode === TAB) {
             const firstNonDisabledItem = this.props.items.findIndex((item: PopoverMenuItemData) => !item.isDisabled);
             if (firstNonDisabledItem !== -1) {
-              this._getItemRef(firstNonDisabledItem -1)?.focus();
+              this._getItemRef(firstNonDisabledItem - 1)?.focus();
             }
           }
-        })
+        });
       }
-    })
+    });
   };
 
   private _getItemRef = (index: number) => {
@@ -109,14 +110,15 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
   };
 
   render() {
-    const {children, items} = this.props;
+    const {children, items, kitchenSinkDetached} = this.props;
 
     const popoverMenuContent = (
       <div className={styles.popoverContainer}>
-        <A11yWrapper onClick={(e) => {
-          e.stopPropagation();
-          this.togglePopover();
-        }}>
+        <A11yWrapper
+          onClick={e => {
+            e.stopPropagation();
+            this.togglePopover();
+          }}>
           <div
             aria-label={this.props.moreOptionsLabel!}
             tabIndex={0}
@@ -125,7 +127,7 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
             aria-expanded={this.state.isOpen}
             aria-controls="popoverContent"
             ref={node => {
-              if (node){
+              if (node) {
                 this._controlElementRef = node;
               }
             }}>
@@ -186,7 +188,9 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
       popoverMenuContent
     ) : (
       <div>
-        <Tooltip label={this.props.moreOptionsLabel!}>{popoverMenuContent}</Tooltip>
+        <Tooltip label={this.props.moreOptionsLabel!} {...(kitchenSinkDetached ? {type: 'bottom-left', strictPosition: true} : {})}>
+          {popoverMenuContent}
+        </Tooltip>
       </div>
     );
   }
