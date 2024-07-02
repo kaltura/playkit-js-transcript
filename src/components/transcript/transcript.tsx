@@ -200,7 +200,10 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
           onClick={kitchenSinkDetached ? onAttach : onDetach}
           icon={kitchenSinkDetached ? 'attach' : 'detach'}
           ariaLabel={kitchenSinkDetached ? attachTranscript : detachTranscript}
-          tooltip={{label: kitchenSinkDetached ? attachTranscript! : detachTranscript!}}
+          tooltip={{
+            label: kitchenSinkDetached ? attachTranscript! : detachTranscript!,
+            ...(kitchenSinkDetached ? {type: 'bottom-left', strictPosition: kitchenSinkDetached} : {})
+          }}
         />
       </div>
     );
@@ -303,7 +306,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
           toggledWithEnter={toggledWithEnter}
           kitchenSinkActive={kitchenSinkActive}
         />
-        <TranscriptMenu {...{downloadDisabled, onDownload, printDisabled, onPrint, isLoading, detachMenuItem}} />
+        <TranscriptMenu {...{downloadDisabled, onDownload, printDisabled, onPrint, isLoading, detachMenuItem, kitchenSinkDetached}} />
         {!detachMenuItem && this._renderDetachButton()}
         {!kitchenSinkDetached && (
           <div data-testid="transcriptCloseButton">
