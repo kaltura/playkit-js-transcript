@@ -45,7 +45,10 @@ export const clickClosePluginButton = () => {
   cy.get('[data-testid="transcriptCloseButton"] button').click({force: true});
 };
 
-const checkRequest = (reqBody: any, service: string, action: string) => {
+const checkRequest = (reqBody: any, service: string, action: string, captionAssetId?: string) => {
+  if (captionAssetId) {
+    return reqBody?.service === service && reqBody?.action === action && reqBody?.captionAssetId === captionAssetId;
+  }
   return reqBody?.service === service && reqBody?.action === action;
 };
 
@@ -54,8 +57,11 @@ export const mockKalturaBe = (entryFixture = 'vod-with-captions.json', captionsF
     if (checkRequest(req.body[2], 'baseEntry', 'list')) {
       return req.reply({fixture: entryFixture});
     }
-    if (checkRequest(req.body[2], 'caption_captionasset', 'serveAsJson')) {
+    if (checkRequest(req.body[2], 'caption_captionasset', 'serveAsJson', '1_nkiuwh50')) {
       return req.reply({fixture: captionsFixture});
+    }
+    if (checkRequest(req.body[2], 'caption_captionasset', 'serveAsJson', '1_drrtkrgf')) {
+      return req.reply({fixture: 'captions-fr-response.json'});
     }
   });
 };
