@@ -14,6 +14,7 @@ interface TranscriptMenuProps {
   downloadDisabled?: boolean;
   printDisabled?: boolean;
   isLoading?: boolean;
+  kitchenSinkDetached: boolean;
   detachMenuItem?: {
     testId: string;
     label: string;
@@ -35,7 +36,17 @@ const translates = {
 @withText(translates)
 class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState> {
   render() {
-    const {downloadDisabled, onDownload, printDisabled, onPrint, printTranscript, downloadTranscript, isLoading, detachMenuItem} = this.props;
+    const {
+      downloadDisabled,
+      onDownload,
+      printDisabled,
+      onPrint,
+      printTranscript,
+      downloadTranscript,
+      isLoading,
+      detachMenuItem,
+      kitchenSinkDetached
+    } = this.props;
     const items = [];
 
     if (detachMenuItem) {

@@ -37,16 +37,6 @@
     ],
     "playbackCaptions": [
       {
-        "label": "Finnish",
-        "format": "1",
-        "language": "Finnish",
-        "webVttUrl": "https://mock-captions/api_v3/index.php/service/caption_captionasset/action/serveWebVTT/captionAssetId/1_drrtkrgf/segmentIndex/-1/version/1/captions.vtt",
-        "url": "https://mock-captions/api_v3/index.php/service/caption_captionAsset/action/serve/captionAssetId/1_drrtkrgf",
-        "isDefault": true,
-        "languageCode": "fi",
-        "objectType": "KalturaCaptionPlaybackPluginData"
-      },
-      {
         "label": "English",
         "format": "1",
         "language": "English",
@@ -54,6 +44,16 @@
         "url": "https://mock-captions/api_v3/index.php/service/caption_captionAsset/action/serve/captionAssetId/1_nkiuwh50",
         "isDefault": false,
         "languageCode": "en",
+        "objectType": "KalturaCaptionPlaybackPluginData"
+      },
+      {
+        "label": "Finnish",
+        "format": "1",
+        "language": "Finnish",
+        "webVttUrl": "https://mock-captions/api_v3/index.php/service/caption_captionasset/action/serveWebVTT/captionAssetId/1_drrtkrgf/segmentIndex/-1/version/1/captions.vtt",
+        "url": "https://mock-captions/api_v3/index.php/service/caption_captionAsset/action/serve/captionAssetId/1_drrtkrgf",
+        "isDefault": true,
+        "languageCode": "fi",
         "objectType": "KalturaCaptionPlaybackPluginData"
       }
     ],

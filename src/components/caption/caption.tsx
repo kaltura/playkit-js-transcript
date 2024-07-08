@@ -4,12 +4,15 @@ import {secondsToTime} from '../../utils';
 import {CuePointData} from '../../types';
 import * as styles from './caption.scss';
 
+const {withText, Text} = KalturaPlayer.ui.preacti18n;
+
 export interface CaptionProps {
   showTime: boolean;
   searchLength: number;
   scrollTo(el: HTMLElement): void;
   scrollToSearchMatch(el: HTMLElement): void;
   videoDuration: number;
+  captionLabel?: string;
 }
 
 interface ExtendedCaptionProps extends CaptionProps {
@@ -24,6 +27,11 @@ interface ExtendedCaptionProps extends CaptionProps {
   isAutoScrollEnabled: boolean;
 }
 
+const translates = {
+  captionLabel: <Text id="transcript.caption_label">Jump to this point in video</Text>
+};
+
+@withText(translates)
 export class Caption extends Component<ExtendedCaptionProps> {
   private _hotspotRef: HTMLElement | null = null;
 
@@ -107,7 +115,7 @@ export class Caption extends Component<ExtendedCaptionProps> {
     const captionA11yProps: Record<string, any> = {
       ariaCurrent: isHighlighted,
       tabIndex: 0,
-      ariaLabel: `${time}${showTime ? ' ' : ''}${caption.text}`,
+      ariaLabel: `${time}${showTime ? ' ' : ''}${caption.text} ${this.props.captionLabel}`,
       role: 'button'
     };
 
