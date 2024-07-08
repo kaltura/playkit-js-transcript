@@ -61,7 +61,7 @@ class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState>
     }
 
     return items.length ? (
-      <PopoverMenu items={items}>
+      <PopoverMenu items={items} kitchenSinkDetached={kitchenSinkDetached}>
         <Button type={ButtonType.borderless} icon={'more'} tabIndex={-1} ariaLabel={this.props.moreOptionsLabel} />
       </PopoverMenu>
     ) : null;
