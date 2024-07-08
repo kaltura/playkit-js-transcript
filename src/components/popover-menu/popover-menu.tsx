@@ -120,7 +120,6 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
             this.togglePopover();
           }}>
           <div
-            aria-label={this.props.moreOptionsLabel!}
             tabIndex={0}
             data-testid="popover-anchor-container"
             className={`${styles.popoverAnchorContainer} ${this.state.isOpen ? styles.active : ''}`}
