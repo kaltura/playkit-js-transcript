@@ -1,4 +1,4 @@
-import {h, Component} from 'preact';
+import {h, Component, createRef, RefObject} from 'preact';
 import {ui} from '@playkit-js/kaltura-player-js';
 import {debounce} from '../../utils';
 import * as styles from './transcript.scss';
@@ -107,6 +107,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
   private _preventScrollEvent: boolean = false;
   private _scrollToSearchMatchEnabled: boolean = false;
   private _widgetRootRef: HTMLElement | null = null;
+  private _isTranscriptNavigateTriggered: RefObject<boolean> = createRef();
 
   private _widgetHeight: number = 0;
   private _topAutoscrollEdge: number = 0;
@@ -132,6 +133,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
       // use player size to define transcript root element size
       this._setWidgetSize();
     }
+    this._isTranscriptNavigateTriggered.current = false;
   }
 
   componentDidUpdate(previousProps: Readonly<TranscriptProps>, previousState: Readonly<TranscriptState>): void {
@@ -406,6 +408,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         widgetWidth={this.state.widgetWidth}
         showItemsIcons={true}
         searchActive={false}
+        isTranscriptNavigateTriggered={this._isTranscriptNavigateTriggered}
       />
     );
   };
