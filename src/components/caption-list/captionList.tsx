@@ -1,4 +1,4 @@
-import {h, Component, RefObject} from 'preact';
+import {h, Component} from 'preact';
 import {HOUR} from '../../utils';
 import {Caption} from '../caption';
 import * as styles from './captionList.scss';
@@ -32,8 +32,6 @@ export interface Props {
   activeSearchIndex: number;
   searchMap: Record<string, Record<string, number>>;
   captionProps: CaptionProps;
-  isTranscriptNavigateTriggered: RefObject<boolean>;
-  // isTranscriptNavigateTriggered: boolean;
   eventManager?: any;
   player?: any;
 }
@@ -45,18 +43,17 @@ export class CaptionList extends Component<Props> {
   private _currentCaptionRef: any = null;
   private _firstCaptionRef: any = null;
   private _lastCaptionRef: any = null;
-  // private _isClick: boolean = this.props.isTranscriptNavigateTriggered;
+  private _isTranscriptNavigateTriggered: boolean = false;
 
   constructor(props: Props | undefined) {
     super(props);
     this._setFocus();
-
   }
 
   shouldComponentUpdate(nextProps: Readonly<Props>) {
     const {highlightedMap, data, searchMap, activeSearchIndex, isAutoScrollEnabled} = this.props;
     if (searchMap !== nextProps.searchMap){
-      this.props.isTranscriptNavigateTriggered.current = false;
+      this._isTranscriptNavigateTriggered = false;
     }
     if (
       highlightedMap !== nextProps.highlightedMap ||
@@ -127,7 +124,7 @@ export class CaptionList extends Component<Props> {
 
   private _setFocus = () =>{
     this.props.eventManager?.listen(this.props.player, TranscriptEvents.TRANSCRIPT_NAVIGATE_RESULT, () => {
-      this.props.isTranscriptNavigateTriggered.current = true
+      this._isTranscriptNavigateTriggered = true
     });
   }
 
@@ -154,7 +151,7 @@ export class CaptionList extends Component<Props> {
                     }
                   });
                 }
-                if (this.props.isTranscriptNavigateTriggered.current && isSearchCaption){
+                if (this._isTranscriptNavigateTriggered && isSearchCaption){
                   this._currentCaptionRef?.base?.focus();
                 }
                 if (!isSearchCaption && captionProps.highlighted[captionData.id]) {
