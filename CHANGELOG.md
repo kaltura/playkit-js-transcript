@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.5.24 (2024-07-11)
+
+### 3.5.23 (2024-07-04)
+
+
+### Bug Fixes
+
+* **FEC-14023:** tooltip fix for detach mode ([#209](https://github.com/kaltura/playkit-js-transcript/issues/209)) ([0293024](https://github.com/kaltura/playkit-js-transcript/commit/02930248628625a118b2fe48ffabe8c68c978756))
+
+### 3.5.22 (2024-06-30)
+
 ### 3.5.21 (2024-06-16)
 
 ### 3.5.20 (2024-05-19)

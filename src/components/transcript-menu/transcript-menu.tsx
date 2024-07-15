@@ -8,11 +8,13 @@ const {withText, Text} = KalturaPlayer.ui.preacti18n;
 interface TranscriptMenuProps {
   printTranscript?: string;
   downloadTranscript?: string;
+  moreOptionsLabel?: string;
   onDownload: () => void;
   onPrint: () => void;
   downloadDisabled?: boolean;
   printDisabled?: boolean;
   isLoading?: boolean;
+  kitchenSinkDetached: boolean;
   detachMenuItem?: {
     testId: string;
     label: string;
@@ -27,13 +29,24 @@ interface TranscriptMenuState {
 
 const translates = {
   printTranscript: <Text id="transcript.print_transcript">Print current transcript</Text>,
-  downloadTranscript: <Text id="transcript.download_transcript">Download current transcript</Text>
+  downloadTranscript: <Text id="transcript.download_transcript">Download current transcript</Text>,
+  moreOptionsLabel: <Text id="transcript.more_options">More transcript options</Text>
 };
 
 @withText(translates)
 class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState> {
   render() {
-    const {downloadDisabled, onDownload, printDisabled, onPrint, printTranscript, downloadTranscript, isLoading, detachMenuItem} = this.props;
+    const {
+      downloadDisabled,
+      onDownload,
+      printDisabled,
+      onPrint,
+      printTranscript,
+      downloadTranscript,
+      isLoading,
+      detachMenuItem,
+      kitchenSinkDetached
+    } = this.props;
     const items = [];
 
     if (detachMenuItem) {
@@ -59,8 +72,8 @@ class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState>
     }
 
     return items.length ? (
-      <PopoverMenu items={items}>
-        <Button type={ButtonType.borderless} icon={'more'} tabIndex={-1} />
+      <PopoverMenu items={items} kitchenSinkDetached={kitchenSinkDetached}>
+        <Button type={ButtonType.borderless} icon={'more'} tabIndex={-1} ariaLabel={this.props.moreOptionsLabel} />
       </PopoverMenu>
     ) : null;
   }

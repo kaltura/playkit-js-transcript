@@ -22,10 +22,10 @@ export const AttachPlaceholder = ({onAttach, onClose}: AttachPlaceholderProps) =
       </div>
       <div className={styles.attachContent}>
         <div className={styles.attachText}>
-          <Text id="transcript.attachTranscriptText">Transcript popped out</Text>
+          <Text id="transcript.attach_transcript_text">Transcript popped out</Text>
         </div>
         <Button type={ButtonType.primary} size={ButtonSize.medium} className={styles.attachButton} onClick={onAttach} testId="transcriptAttachButton">
-          <Text id="transcript.attachTranscriptButton">Bring it back</Text>
+          <Text id="transcript.attach_transcript_button">Bring it back</Text>
         </Button>
       </div>
     </div>

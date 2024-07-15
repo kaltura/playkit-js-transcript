@@ -1,0 +1,138 @@
+[
+  {
+    "partnerId": 1091,
+    "ks": "",
+    "userId": 0,
+    "objectType": "KalturaStartWidgetSessionResponse"
+  },
+  {
+    "objects": [
+      {
+        "startTime": 1000,
+        "endTime": 10000,
+        "content": [
+          {
+            "text": "première légende"
+          }
+        ]
+      },
+      {
+        "startTime": 12120,
+        "endTime": 14960,
+        "content": [
+          {
+            "text": "Quelles sont les trois chansons que vous\recommanderiez à quelqu'un -"
+          }
+        ]
+      },
+      {
+        "startTime": 15040,
+        "endTime": 18360,
+        "content": [
+          {
+            "text": "écouter de la musique pour la première fois"
+          }
+        ]
+      },
+      {
+        "startTime": 19680,
+        "endTime": 21000,
+        "content": [
+          {
+            "text": "<i>Côté obscur.</i>"
+          }
+        ]
+      },
+      {
+        "startTime": 21080,
+        "endTime": 23960,
+        "content": [
+          {
+            "text": "<i>Bombe à retardement.</i>\n<i>- Sur mon cadavre.</i>"
+          }
+        ]
+      },
+      {
+        "startTime": 24600,
+        "endTime": 28120,
+        "content": [
+          {
+            "text": "C'est toujours mon préféré.\n- C'est tout ce que vous avez besoin d'écouter."
+          }
+        ]
+      },
+      {
+        "startTime": 28200,
+        "endTime": 32800,
+        "content": [
+          {
+            "text": "Si vous n'étiez pas un groupe de Violent Pop,\n\"Groupe de Violent Bop\", -"
+          }
+        ]
+      },
+      {
+        "startTime": 32880,
+        "endTime": 34800,
+        "content": [
+          {
+            "text": "quel genre jouerais-tu ?"
+          }
+        ]
+      },
+      {
+        "startTime": 34880,
+        "endTime": 38400,
+        "content": [
+          {
+            "text": "Je rapperais, je ferais des trucs de trap."
+          }
+        ]
+      },
+      {
+        "startTime": 38480,
+        "endTime": 42280,
+        "content": [
+          {
+            "text": "Je ferais probablement du smooth jazz.\n- Aleksi serait DJ."
+          }
+        ]
+      },
+      {
+        "startTime": 42360,
+        "endTime": 45960,
+        "content": [
+          {
+            "text": "Ouais, Aleksi.\n- Aleksi serait producteur."
+          }
+        ]
+      },
+      {
+        "startTime": 46040,
+        "endTime": 49160,
+        "content": [
+          {
+            "text": "Avez-vous déjà eu de gros combats?"
+          }
+        ]
+      },
+      {
+        "startTime": 49240,
+        "endTime": 51480,
+        "content": [
+          {
+            "text": "Si oui, de quoi s’agissait-il?"
+          }
+        ]
+      },
+      {
+        "startTime": 51560,
+        "endTime": 55440,
+        "content": [
+          {
+            "text": "Je peux penser à un grand combat."
+          }
+        ]
+      }
+    ]
+  }
+]

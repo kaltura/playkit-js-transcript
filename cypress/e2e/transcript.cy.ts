@@ -24,6 +24,8 @@ describe('Transcript plugin', () => {
     cy.intercept('GET', '**/height/360/width/640', {fixture: '640.jpeg'});
     // kava
     cy.intercept('POST', '**/index.php?service=analytics*', {});
+    // caption asset
+    cy.intercept('GET', '**/service/caption_captionAsset/action/serve/**', {fixture: 'captions.vtt'});
   });
 
   describe('transcript', () => {
@@ -77,7 +79,7 @@ describe('Transcript plugin', () => {
     it('should sanitize html tags', () => {
       mockKalturaBe();
       loadPlayer({showTime: false}).then(() => {
-        cy.get('[aria-label="Dark Side."]').should('have.text', 'Dark Side.');
+        cy.get('[aria-label="Dark Side. Jump to this point in video"]').should('have.text', 'Dark Side.');
       });
     });
   });
@@ -308,6 +310,53 @@ describe('Transcript plugin', () => {
         cy.get(`[data-testid="transcript-detach-attach-button"]`).should('not.exist');
         cy.viewport(726, 380);
         cy.get(`[data-testid="transcript-detach-attach-button"]`).should('exist');
+      });
+    });
+  });
+
+  describe('language change', () => {
+    it('should load first captions from list', () => {
+      mockKalturaBe();
+      cy.window().then($win => {
+        $win.localStorage.setItem('@playkit-js/kaltura-player-js_captionsDisplay', 'false');
+        loadPlayer().then(() => {
+          cy.contains('first caption').should('exist');
+        });
+      });
+    });
+
+    it('should load caption language from local-storage', () => {
+      mockKalturaBe();
+      cy.window().then($win => {
+        $win.localStorage.setItem('@playkit-js/kaltura-player-js_textLanguage', 'fi');
+        $win.localStorage.setItem('@playkit-js/kaltura-player-js_captionsDisplay', 'true');
+        loadPlayer().then(() => {
+          cy.contains('première légende').should('exist');
+        });
+      });
+    });
+
+    it('should switch captions when user selected another language', () => {
+      mockKalturaBe();
+      loadPlayer().then(() => {
+        cy.contains('first caption').should('exist');
+        cy.get('.playkit-control-settings > .playkit-tooltip > .playkit-control-button > .playkit-icon').click({force: true});
+        cy.get('#captionsActive').click({force: true});
+        cy.contains('Finnish').click({force: true});
+        cy.contains('première légende').should('exist');
+      });
+    });
+
+    it('should keep current caption language if user swtich captions off', () => {
+      mockKalturaBe();
+      cy.window().then($win => {
+        $win.localStorage.setItem('@playkit-js/kaltura-player-js_textLanguage', 'fi');
+        $win.localStorage.setItem('@playkit-js/kaltura-player-js_captionsDisplay', 'true');
+        loadPlayer().then(() => {
+          cy.contains('première légende').should('exist');
+          cy.get('.playkit-control-closed-captions > .playkit-tooltip > .playkit-control-button > .playkit-icon').click({force: true});
+          cy.contains('première légende').should('exist');
+        });
       });
     });
   });

@@ -180,6 +180,10 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     const allTextTracks = this._getTextTracks();
     const activeTextTrack = allTextTracks.find(track => track.active);
     if (activeTextTrack?.language === 'off') {
+      if (this._activeCaptionMapId) {
+        // use current captions language
+        return this._activeCaptionMapId;
+      }
       // use 1st captions from text-track list
       return this._makeCaptionKey(allTextTracks[0]?.language, allTextTracks[0]?.label);
     }

@@ -17,11 +17,12 @@
       "skip_transcript": "Skip transcript",
       "smallScreenText": "To see the transcript, go to full screen",
       "smallScreenMobileText": "To see the transcript, rotate the phone",
-      "attachTranscriptText": "Transcript popped out",
-      "attachTranscriptButton": "Bring it back",
-      "attachTranscript": "Bring Transcript back",
-      "detachTranscript": "Popout Transcript",
-      "transcript": "Transcript"
+      "attach_transcript_text": "Transcript popped out",
+      "attach_transcript_button": "Bring it back",
+      "attach_transcript": "Bring Transcript back",
+      "detach_transcript": "Popout transcript",
+      "transcript": "Transcript",
+      "caption_label": "Jump to this point in video"
     }
   }
 }

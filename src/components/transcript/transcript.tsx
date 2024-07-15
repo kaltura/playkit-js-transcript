@@ -28,7 +28,7 @@ const translates = {
   errorTitle: <Text id="transcript.whoops">Whoops!</Text>,
   errorDescripton: <Text id="transcript.load_failed">Failed to load transcript</Text>,
   attachTranscript: <Text id="transcript.attach_transcript">Bring Transcript back</Text>,
-  detachTranscript: <Text id="transcript.detach_transcript">Popout Transcript</Text>
+  detachTranscript: <Text id="transcript.detach_transcript">Popout transcript</Text>
 };
 
 export interface TranscriptProps {
@@ -200,7 +200,10 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
           onClick={kitchenSinkDetached ? onAttach : onDetach}
           icon={kitchenSinkDetached ? 'attach' : 'detach'}
           ariaLabel={kitchenSinkDetached ? attachTranscript : detachTranscript}
-          tooltip={{label: kitchenSinkDetached ? attachTranscript! : detachTranscript!}}
+          tooltip={{
+            label: kitchenSinkDetached ? attachTranscript! : detachTranscript!,
+            ...(kitchenSinkDetached ? {type: 'bottom-left', strictPosition: kitchenSinkDetached} : {})
+          }}
         />
       </div>
     );
@@ -303,7 +306,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
           toggledWithEnter={toggledWithEnter}
           kitchenSinkActive={kitchenSinkActive}
         />
-        <TranscriptMenu {...{downloadDisabled, onDownload, printDisabled, onPrint, isLoading, detachMenuItem}} />
+        <TranscriptMenu {...{downloadDisabled, onDownload, printDisabled, onPrint, isLoading, detachMenuItem, kitchenSinkDetached}} />
         {!detachMenuItem && this._renderDetachButton()}
         {!kitchenSinkDetached && (
           <div data-testid="transcriptCloseButton">
