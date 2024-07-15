@@ -50,6 +50,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
 
   private _transcriptPanel = -1;
   private _transcriptIcon = -1;
+  private _audioPlayerIconId = -1;
   private _pluginState: PluginStates | null = null;
   private _pluginButtonRef: HTMLButtonElement | null = null;
 
@@ -277,11 +278,10 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   };
 
   private _addTranscriptItem(): void {
-    if (Math.max(this._transcriptPanel, this._transcriptIcon) > 0) {
+    if (Math.max(this._transcriptPanel, this._transcriptIcon, this._audioPlayerIconId) > 0) {
       // transcript panel or icon already exist
       return;
     }
-
     const {
       expandMode,
       position,
@@ -337,29 +337,36 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       showTranscript: <Text id="transcript.show_plugin">Show Transcript</Text>,
       hideTranscript: <Text id="transcript.hide_plugin">Hide Transcript</Text>
     };
-    this._transcriptIcon = this.upperBarManager!.add({
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    if (ui.redux.useStore().getState().shell['activePresetName'] !== ReservedPresetNames.MiniAudioUI) {
+      this._transcriptIcon = this.upperBarManager!.add({
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        displayName: 'Transcript',
+        ariaLabel: 'Transcript',
+        order: 30,
+        svgIcon: {path: icons.PLUGIN_ICON, viewBox: `0 0 ${icons.BigSize} ${icons.BigSize}`},
+        onClick: this._handleClickOnPluginIcon as () => void,
+        component: withText(translates)((props: {showTranscript: string; hideTranscript: string}) => {
+          const isActive = this._isPluginActive();
+          const label = isActive ? props.hideTranscript : props.showTranscript;
+          return (
+            <PluginButton
+              isActive={isActive}
+              id={pluginName}
+              label={label}
+              icon={icons.PLUGIN_ICON}
+              dataTestId="transcript_pluginButton"
+              setRef={this._setPluginButtonRef}
+            />
+          );
+        })
+      }) as number;
+    } else {
+      const {displayName, symbol} = this;
       // @ts-ignore
-      displayName: 'Transcript',
-      ariaLabel: 'Transcript',
-      order: 30,
-      svgIcon: {path: icons.PLUGIN_ICON, viewBox: `0 0 ${icons.BigSize} ${icons.BigSize}`},
-      onClick: this._handleClickOnPluginIcon as () => void,
-      component: withText(translates)((props: {showTranscript: string; hideTranscript: string}) => {
-        const isActive = this._isPluginActive();
-        const label = isActive ? props.hideTranscript : props.showTranscript;
-        return (
-          <PluginButton
-            isActive={isActive}
-            id={pluginName}
-            label={label}
-            icon={icons.PLUGIN_ICON}
-            dataTestId="transcript_pluginButton"
-            setRef={this._setPluginButtonRef}
-          />
-        );
-      })
-    }) as number;
+      this._audioPlayerIconId = this.player.getService('AudioPluginsManager').add({displayName, symbol, open: () => this.open()});
+    }
 
     if ((expandOnFirstPlay && !this._pluginState) || this._pluginState === PluginStates.OPENED) {
       this._activatePlugin(true);
@@ -403,15 +410,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     this._pluginState = PluginStates.CLOSED;
   };
 
-  public isEntrySupported(): boolean {
-    return this._captionMap.size > 0;
-  }
-
   static isValid(): boolean {
-    return true;
-  }
-
-  public isAudioPlayerSupported(): boolean {
     return true;
   }
 
@@ -420,8 +419,11 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     if (Math.max(this._transcriptPanel, this._transcriptIcon) > 0) {
       this.sidePanelsManager?.remove(this._transcriptPanel);
       this.upperBarManager!.remove(this._transcriptIcon);
+      // @ts-ignore
+      this.player.getService('AudioPluginsManager').remove(this._audioPlayerIconId);
       this._transcriptPanel = -1;
       this._transcriptIcon = -1;
+      this._audioPlayerIconId = -1;
       this._pluginButtonRef = null;
     }
     this._captionMap = new Map();
