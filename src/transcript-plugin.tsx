@@ -28,7 +28,7 @@ interface TimedMetadataEvent {
 
 export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   public displayName = 'Transcript';
-  public symbol = {svgUrl: icons.PLUGIN_ICON, viewBox: '0 0 32 32'};
+  public svgIcon = {path: icons.PLUGIN_ICON, viewBox: '0 0 32 32'};
   static defaultConfig: TranscriptConfig = {
     expandMode: SidePanelModes.ALONGSIDE,
     expandOnFirstPlay: true,
@@ -363,9 +363,9 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
         })
       }) as number;
     } else {
-      const {displayName, symbol} = this;
+      const {displayName, svgIcon} = this;
       // @ts-ignore
-      this._audioPlayerIconId = this.player.getService('AudioPluginsManager').add({displayName, symbol, open: () => this.open()});
+      this._audioPlayerIconId = this.player.getService('AudioPluginsManager').add({displayName, svgIcon, onClick: (e) => this.open(e)});
     }
 
     if ((expandOnFirstPlay && !this._pluginState) || this._pluginState === PluginStates.OPENED) {
