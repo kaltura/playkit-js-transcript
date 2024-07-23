@@ -70,6 +70,10 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     return this.player.getService('kalturaCuepoints') as any;
   }
 
+  get audioPluginsManager(): {remove: (id: number) => void; add: (obj: object) => number} | null {
+    return (this.player.getService('AudioPluginsManager') as {remove: (id: number) => void; add: (obj: object) => number}) || null;
+  }
+
   private get _data() {
     return this._captionMap.get(this._activeCaptionMapId) || [];
   }
@@ -364,8 +368,10 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       }) as number;
     } else {
       const {displayName, svgIcon} = this;
-      // @ts-ignore
-      this._audioPlayerIconId = this.player.getService('AudioPluginsManager').add({displayName, svgIcon, onClick: (e) => this.open(e)});
+
+      if (this.audioPluginsManager) {
+        this._audioPlayerIconId = this.audioPluginsManager.add({displayName, svgIcon, onClick: () => this.open()});
+      }
     }
 
     if ((expandOnFirstPlay && !this._pluginState) || this._pluginState === PluginStates.OPENED) {
@@ -419,8 +425,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     if (Math.max(this._transcriptPanel, this._transcriptIcon) > 0) {
       this.sidePanelsManager?.remove(this._transcriptPanel);
       this.upperBarManager!.remove(this._transcriptIcon);
-      // @ts-ignore
-      this.player.getService('AudioPluginsManager').remove(this._audioPlayerIconId);
+      this.audioPluginsManager?.remove(this._audioPlayerIconId);
       this._transcriptPanel = -1;
       this._transcriptIcon = -1;
       this._audioPlayerIconId = -1;
