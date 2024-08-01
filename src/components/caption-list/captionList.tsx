@@ -3,12 +3,8 @@ import {HOUR} from '../../utils';
 import {Caption} from '../caption';
 import * as styles from './captionList.scss';
 import {HighlightedMap, CuePointData} from '../../types';
-import {TranscriptEvents} from "../../events/events";
-import {ui} from "@playkit-js/kaltura-player-js";
 
 const {END, HOME} = KalturaPlayer.ui.utils.KeyMap;
-const {withEventManager} = KalturaPlayer.ui.Event;
-const {withPlayer} = ui.Components;
 
 export interface CaptionProps {
   showTime: boolean;
@@ -32,35 +28,20 @@ export interface Props {
   activeSearchIndex: number;
   searchMap: Record<string, Record<string, number>>;
   captionProps: CaptionProps;
-  eventManager?: any;
-  player?: any;
 }
-
-
-@withEventManager
-@withPlayer
 export class CaptionList extends Component<Props> {
   private _currentCaptionRef: any = null;
   private _firstCaptionRef: any = null;
   private _lastCaptionRef: any = null;
-  private _isTranscriptNavigateTriggered: boolean = false;
-
-  constructor(props: Props | undefined) {
-    super(props);
-    this._setFocus();
-  }
-
   shouldComponentUpdate(nextProps: Readonly<Props>) {
-    const {highlightedMap, data, searchMap, activeSearchIndex, isAutoScrollEnabled} = this.props;
-    if (searchMap !== nextProps.searchMap){
-      this._isTranscriptNavigateTriggered = false;
-    }
+    const {highlightedMap, data, searchMap, activeSearchIndex, isAutoScrollEnabled, captionProps} = this.props;
     if (
       highlightedMap !== nextProps.highlightedMap ||
       data !== nextProps.data ||
       searchMap !== nextProps.searchMap ||
       activeSearchIndex !== nextProps.activeSearchIndex ||
-      isAutoScrollEnabled !== nextProps.isAutoScrollEnabled
+      isAutoScrollEnabled !== nextProps.isAutoScrollEnabled ||
+      captionProps.videoDuration !== nextProps.captionProps.videoDuration
     ) {
       return true;
     }
@@ -122,12 +103,6 @@ export class CaptionList extends Component<Props> {
     }
   };
 
-  private _setFocus = () =>{
-    this.props.eventManager?.listen(this.props.player, TranscriptEvents.TRANSCRIPT_NAVIGATE_RESULT, () => {
-      this._isTranscriptNavigateTriggered = true
-    });
-  }
-
   render() {
     const {data} = this.props;
     let isSearchCaption = false;
@@ -150,9 +125,6 @@ export class CaptionList extends Component<Props> {
                       isSearchCaption = true;
                     }
                   });
-                }
-                if (this._isTranscriptNavigateTriggered && isSearchCaption){
-                  this._currentCaptionRef?.base?.focus();
                 }
                 if (!isSearchCaption && captionProps.highlighted[captionData.id]) {
                   this._currentCaptionRef = node;

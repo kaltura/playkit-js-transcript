@@ -45,7 +45,7 @@
     font-style: normal;
   }
 
-  *:focus:not(input) {
+  *:focus-visible:not(input) {
     outline: 1px solid $tab-focus-color;
   }
 }
