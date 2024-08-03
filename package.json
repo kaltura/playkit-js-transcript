@@ -84,8 +84,8 @@
   "kaltura": {
     "name": "playkit-js-transcript",
     "dependencies": {
-      "playkit-kaltura-cuepoints": "3.0.13",
-      "playkit-ui-managers": "1.5.6"
+      "playkit-kaltura-cuepoints": "3.0.14",
+      "playkit-ui-managers": "1.6.0"
     }
   }
 }
