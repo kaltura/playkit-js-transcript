@@ -11,6 +11,7 @@ import {AutoscrollButton} from '../autoscroll-button';
 import {TranscriptMenu} from '../transcript-menu';
 import {SmallScreenSlate} from '../small-screen-slate';
 import {Button, ButtonType, ButtonSize} from '@playkit-js/common/dist/components/button';
+import {ScreenReaderProvider} from '@playkit-js/common/dist/hoc/sr-wrapper';
 import {OnClickEvent, OnClick} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import {TranscriptEvents} from '../../events/events';
 
@@ -477,32 +478,34 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     const {isLoading, kitchenSinkActive, kitchenSinkDetached, hasError, smallScreen, toggledWithEnter} = props;
     const renderTranscriptButtons = !(isLoading || hasError);
     return (
-      <div
-        className={`${styles.root} ${kitchenSinkActive || kitchenSinkDetached ? '' : styles.hidden}`}
-        ref={node => {
-          this._widgetRootRef = node;
-        }}
-        data-testid="transcript_root">
-        {smallScreen && !kitchenSinkDetached ? (
-          <SmallScreenSlate onClose={this.props.onClose} toggledWithEnter={toggledWithEnter} />
-        ) : (
-          <div className={styles.globalContainer}>
-            {this._renderHeader()}
+      <ScreenReaderProvider>
+        <div
+          className={`${styles.root} ${kitchenSinkActive || kitchenSinkDetached ? '' : styles.hidden}`}
+          ref={node => {
+            this._widgetRootRef = node;
+          }}
+          data-testid="transcript_root">
+          {smallScreen && !kitchenSinkDetached ? (
+            <SmallScreenSlate onClose={this.props.onClose} toggledWithEnter={toggledWithEnter} />
+          ) : (
+            <div className={styles.globalContainer}>
+              {this._renderHeader()}
 
-            {renderTranscriptButtons && this._renderSkipTranscriptButton()}
-            <div
-              className={styles.body}
-              onScroll={this._onScroll}
-              ref={node => {
-                this._transcriptListRef = node;
-              }}
-              data-testid="transcript_list">
-              {isLoading ? this._renderLoading() : this._renderTranscript()}
+              {renderTranscriptButtons && this._renderSkipTranscriptButton()}
+              <div
+                className={styles.body}
+                onScroll={this._onScroll}
+                ref={node => {
+                  this._transcriptListRef = node;
+                }}
+                data-testid="transcript_list">
+                {isLoading ? this._renderLoading() : this._renderTranscript()}
+              </div>
+              {renderTranscriptButtons && this._renderScrollToButton()}
             </div>
-            {renderTranscriptButtons && this._renderScrollToButton()}
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      </ScreenReaderProvider>
     );
   }
 }

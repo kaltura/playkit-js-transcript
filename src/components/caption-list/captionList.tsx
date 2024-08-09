@@ -1,4 +1,5 @@
 import {h, Component} from 'preact';
+import {ScreenReaderContext} from '@playkit-js/common/dist/hoc/sr-wrapper';
 import {HOUR} from '../../utils';
 import {Caption} from '../caption';
 import * as styles from './captionList.scss';
@@ -111,27 +112,34 @@ export class CaptionList extends Component<Props> {
         {data.map((captionData, index) => {
           const captionProps = this._getCaptionProps(captionData);
           return (
-            <Caption
-              ref={node => {
-                if (index === 0) {
-                  this._firstCaptionRef = node;
-                } else if (index === data.length - 1) {
-                  this._lastCaptionRef = node;
-                }
-                if (captionProps.searchCaption){
-                  Object.keys(captionProps.searchCaption).forEach(key => {
-                    if (parseInt(key) === this.props.activeSearchIndex) {
-                      this._currentCaptionRef = node
-                      isSearchCaption = true;
-                    }
-                  });
-                }
-                if (!isSearchCaption && captionProps.highlighted[captionData.id]) {
-                  this._currentCaptionRef = node;
-                }
+            <ScreenReaderContext.Consumer>
+              {(setTextToRead: (textToRead: string, delay?: number | undefined) => void) => {
+                return (
+                  <Caption
+                    setTextToRead={setTextToRead}
+                    ref={node => {
+                      if (index === 0) {
+                        this._firstCaptionRef = node;
+                      } else if (index === data.length - 1) {
+                        this._lastCaptionRef = node;
+                      }
+                      if (captionProps.searchCaption) {
+                        Object.keys(captionProps.searchCaption).forEach(key => {
+                          if (parseInt(key) === this.props.activeSearchIndex) {
+                            this._currentCaptionRef = node;
+                            isSearchCaption = true;
+                          }
+                        });
+                      }
+                      if (!isSearchCaption && captionProps.highlighted[captionData.id]) {
+                        this._currentCaptionRef = node;
+                      }
+                    }}
+                    {...captionProps}
+                  />
+                );
               }}
-              {...captionProps}
-            />
+            </ScreenReaderContext.Consumer>
           );
         })}
       </div>
