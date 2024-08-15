@@ -281,6 +281,10 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     return this.sidePanelsManager!.isItemDetached(this._transcriptPanel);
   };
 
+  private _toSearchMatch = () => {
+    this.dispatchEvent(TranscriptEvents.TRANSCRIPT_TO_SEARCH_MATCH);
+  };
+
   private _addTranscriptItem(): void {
     if (Math.max(this._transcriptPanel, this._transcriptIcon, this._audioPlayerIconId) > 0) {
       // transcript panel or icon already exist
@@ -330,6 +334,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
             onAttach={() => {
               this._handleAttach(CloseDetachTypes.arrow);
             }}
+            onJumpToSearchMatch={this._toSearchMatch}
           />
         ) as any;
       },

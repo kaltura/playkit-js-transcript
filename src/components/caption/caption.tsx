@@ -4,7 +4,11 @@ import {secondsToTime} from '../../utils';
 import {CuePointData} from '../../types';
 import * as styles from './caption.scss';
 
+import {TranscriptEvents} from '../../events/events';
+
 const {withText, Text} = KalturaPlayer.ui.preacti18n;
+const {withEventManager} = KalturaPlayer.ui.Event;
+const {withPlayer} = KalturaPlayer.ui.components;
 
 export interface CaptionProps {
   showTime: boolean;
@@ -12,6 +16,8 @@ export interface CaptionProps {
   scrollTo(el: HTMLElement): void;
   scrollToSearchMatch(el: HTMLElement): void;
   videoDuration: number;
+  eventManager?: any;
+  player?: any;
   captionLabel?: string;
   moveToSearch?: string;
   setTextToRead: (textToRead: string, delay?: number) => void;
@@ -35,27 +41,35 @@ const translates = {
 };
 
 @withText(translates)
+@withEventManager
+@withPlayer
 export class Caption extends Component<ExtendedCaptionProps> {
-  private _hotspotRef: HTMLElement | null = null;
+  private _captionRef: HTMLElement | null = null;
 
   get indexArray() {
     return Object.keys(this.props.indexMap || {}).sort((a, b) => Number(a) - Number(b));
   }
 
   componentDidUpdate(previousProps: Readonly<ExtendedCaptionProps>) {
-    if (this._hotspotRef && this.props.shouldScroll) {
-      this.props.scrollTo(this._hotspotRef);
-    } else if (this._hotspotRef && this.props.shouldScrollToSearchMatch) {
-      this.props.scrollToSearchMatch(this._hotspotRef);
+    if (this._captionRef && this.props.shouldScroll) {
+      this.props.scrollTo(this._captionRef);
+    } else if (this._captionRef && this.props.shouldScrollToSearchMatch) {
+      this.props.scrollToSearchMatch(this._captionRef);
     }
     if (this.props.indexMap && previousProps.activeSearchIndex !== this.props.activeSearchIndex) {
-      const indexArray = this.indexArray;
-      indexArray.map((el: string) => {
-        if (Number(el) === this.props.activeSearchIndex && this.props.caption.text) {
-          this.props.setTextToRead(this.props.caption.text);
-        }
-      });
+      if (this._hasSearchMatch()) {
+        this.props.setTextToRead(this.props.caption.text);
+      }
     }
+  }
+
+  componentDidMount(): void {
+    const {eventManager, player} = this.props;
+    eventManager?.listen(player, TranscriptEvents.TRANSCRIPT_TO_SEARCH_MATCH, () => {
+      if (this._hasSearchMatch()) {
+        this._captionRef?.focus();
+      }
+    });
   }
 
   shouldComponentUpdate(nextProps: ExtendedCaptionProps) {
@@ -87,6 +101,14 @@ export class Caption extends Component<ExtendedCaptionProps> {
     if (caption.text.length) {
       onClick();
     }
+  };
+
+  private _hasSearchMatch = () => {
+    if (!this.props.indexMap) {
+      return false;
+    }
+    const indexArray = this.indexArray;
+    return Boolean(indexArray.find((el: string) => Number(el) === this.props.activeSearchIndex));
   };
 
   private _renderText = (text: string) => {
@@ -139,7 +161,7 @@ export class Caption extends Component<ExtendedCaptionProps> {
         <div
           className={styles.caption}
           ref={node => {
-            this._hotspotRef = node;
+            this._captionRef = node;
           }}
           {...captionA11yProps}>
           {showTime && (

@@ -24,7 +24,8 @@
       "transcript": "Transcript",
       "caption_label": "Jump to this point in video",
       "move_to_search": "Click to jump to search result",
-      "to_search_result": "Go to result"
+      "to_search_result": "Go to result",
+      "to_search_result_label": "Click to jump to this point in the video"
     }
   }
 }

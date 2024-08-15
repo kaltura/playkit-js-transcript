@@ -30,7 +30,8 @@ const translates = {
   errorDescripton: <Text id="transcript.load_failed">Failed to load transcript</Text>,
   attachTranscript: <Text id="transcript.attach_transcript">Bring Transcript back</Text>,
   detachTranscript: <Text id="transcript.detach_transcript">Popout transcript</Text>,
-  toSearchResult: <Text id="transcript.to_search_result">Go to result</Text>
+  toSearchResult: <Text id="transcript.to_search_result">Go to result</Text>,
+  toSearchResultLabel: <Text id="transcript.to_search_result_label">Click to jump to this point in the video</Text>
 };
 
 export interface TranscriptProps {
@@ -56,6 +57,7 @@ export interface TranscriptProps {
   attachTranscript?: string;
   detachTranscript?: string;
   toSearchResult?: string;
+  toSearchResultLabel?: string;
   downloadDisabled: boolean;
   onDownload: () => void;
   printDisabled: boolean;
@@ -69,6 +71,7 @@ export interface TranscriptProps {
   kitchenSinkDetached: boolean;
   isMobile?: boolean;
   playerWidth?: number;
+  onJumpToSearchMatch: () => void;
 }
 
 interface TranscriptState {
@@ -283,8 +286,11 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
       isLoading,
       attachTranscript,
       detachTranscript,
+      toSearchResult,
+      toSearchResultLabel,
       onAttach,
-      onDetach
+      onDetach,
+      onJumpToSearchMatch
     } = this.props;
     const {search, activeSearchIndex, totalSearchResults} = this.state;
 
@@ -297,7 +303,6 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         disabled: isLoading
       };
     }
-
     return (
       <div className={[styles.header, this._getHeaderStyles()].join(' ')} data-testid="transcript_header">
         <Search
@@ -310,8 +315,8 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
           kitchenSinkActive={kitchenSinkActive}
         />
         {search && activeSearchIndex && (
-          <Button type={ButtonType.translucent} className={styles.toSearchButton}>
-            {this.props.toSearchResult}
+          <Button type={ButtonType.translucent} className={styles.toSearchButton} onClick={onJumpToSearchMatch} ariaLabel={toSearchResultLabel}>
+            {toSearchResult}
           </Button>
         )}
         <TranscriptMenu {...{downloadDisabled, onDownload, printDisabled, onPrint, isLoading, detachMenuItem, kitchenSinkDetached}} />
