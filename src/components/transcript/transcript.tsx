@@ -315,7 +315,12 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
           kitchenSinkActive={kitchenSinkActive}
         />
         {search && activeSearchIndex && (
-          <Button type={ButtonType.translucent} className={styles.toSearchButton} onClick={onJumpToSearchMatch} ariaLabel={toSearchResultLabel}>
+          <Button
+            type={ButtonType.translucent}
+            className={styles.toSearchButton}
+            onClick={onJumpToSearchMatch}
+            ariaLabel={toSearchResultLabel}
+            testId="transcript_jumpToSearchMatch">
             {toSearchResult}
           </Button>
         )}

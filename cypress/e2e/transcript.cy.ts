@@ -163,6 +163,16 @@ describe('Transcript plugin', () => {
         cy.get('[aria-label="00:15 listening to music for the first time"]').should('have.focus');
       });
     });
+
+    it('should render jump to search result button', () => {
+      mockKalturaBe();
+      loadPlayer().then(() => {
+        cy.get('[data-testid="transcript_header"]').within(() => {
+          cy.get('[aria-label="Search in Transcript"]').get('input').type('first');
+          cy.get(`[data-testid="transcript_jumpToSearchMatch"]`).should('exist');
+        });
+      });
+    });
   });
 
   describe('popover menu', () => {
