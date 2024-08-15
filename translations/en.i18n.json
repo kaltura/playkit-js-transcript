@@ -23,7 +23,8 @@
       "detach_transcript": "Popout transcript",
       "transcript": "Transcript",
       "caption_label": "Jump to this point in video",
-      "move_to_search": "Click to jump to search result"
+      "move_to_search": "Click to jump to search result",
+      "to_search_result": "Go to result"
     }
   }
 }

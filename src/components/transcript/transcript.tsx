@@ -29,7 +29,8 @@ const translates = {
   errorTitle: <Text id="transcript.whoops">Whoops!</Text>,
   errorDescripton: <Text id="transcript.load_failed">Failed to load transcript</Text>,
   attachTranscript: <Text id="transcript.attach_transcript">Bring Transcript back</Text>,
-  detachTranscript: <Text id="transcript.detach_transcript">Popout transcript</Text>
+  detachTranscript: <Text id="transcript.detach_transcript">Popout transcript</Text>,
+  toSearchResult: <Text id="transcript.to_search_result">Go to result</Text>
 };
 
 export interface TranscriptProps {
@@ -54,6 +55,7 @@ export interface TranscriptProps {
   errorDescripton?: string;
   attachTranscript?: string;
   detachTranscript?: string;
+  toSearchResult?: string;
   downloadDisabled: boolean;
   onDownload: () => void;
   printDisabled: boolean;
@@ -307,6 +309,11 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
           toggledWithEnter={toggledWithEnter}
           kitchenSinkActive={kitchenSinkActive}
         />
+        {search && activeSearchIndex && (
+          <Button type={ButtonType.translucent} className={styles.toSearchButton}>
+            {this.props.toSearchResult}
+          </Button>
+        )}
         <TranscriptMenu {...{downloadDisabled, onDownload, printDisabled, onPrint, isLoading, detachMenuItem, kitchenSinkDetached}} />
         {!detachMenuItem && this._renderDetachButton()}
         {!kitchenSinkDetached && (
