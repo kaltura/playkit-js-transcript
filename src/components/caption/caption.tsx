@@ -47,7 +47,10 @@ export class Caption extends Component<ExtendedCaptionProps> {
   private _captionRef: HTMLElement | null = null;
 
   get indexArray() {
-    return Object.keys(this.props.indexMap || {}).sort((a, b) => Number(a) - Number(b));
+    if (!this.props.indexMap) {
+      return [];
+    }
+    return Object.keys(this.props.indexMap).sort((a, b) => Number(a) - Number(b));
   }
 
   componentDidUpdate(previousProps: Readonly<ExtendedCaptionProps>) {
@@ -107,16 +110,12 @@ export class Caption extends Component<ExtendedCaptionProps> {
     if (!this.props.indexMap) {
       return false;
     }
-    const indexArray = this.indexArray;
-    return Boolean(indexArray.find((el: string) => Number(el) === this.props.activeSearchIndex));
+    return Boolean(this.indexArray.find((el: string) => Number(el) === this.props.activeSearchIndex));
   };
 
   private _renderText = (text: string) => {
     const {activeSearchIndex, searchLength, indexMap} = this.props;
-    let indexArray: string[] = [];
-    if (indexMap) {
-      indexArray = this.indexArray;
-    }
+    const indexArray = this.indexArray;
     if (text?.length === 0) {
       return null;
     }

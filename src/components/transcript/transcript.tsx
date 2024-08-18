@@ -316,7 +316,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         />
         {search && activeSearchIndex && (
           <Button
-            type={ButtonType.translucent}
+            type={ButtonType.secondary}
             className={styles.toSearchButton}
             onClick={onJumpToSearchMatch}
             ariaLabel={toSearchResultLabel}
