@@ -4,7 +4,11 @@ import {secondsToTime} from '../../utils';
 import {CuePointData} from '../../types';
 import * as styles from './caption.scss';
 
+import {TranscriptEvents} from '../../events/events';
+
 const {withText, Text} = KalturaPlayer.ui.preacti18n;
+const {withEventManager} = KalturaPlayer.ui.Event;
+const {withPlayer} = KalturaPlayer.ui.components;
 
 export interface CaptionProps {
   showTime: boolean;
@@ -12,7 +16,11 @@ export interface CaptionProps {
   scrollTo(el: HTMLElement): void;
   scrollToSearchMatch(el: HTMLElement): void;
   videoDuration: number;
+  eventManager?: any;
+  player?: any;
   captionLabel?: string;
+  moveToSearch?: string;
+  setTextToRead: (textToRead: string, delay?: number) => void;
 }
 
 interface ExtendedCaptionProps extends CaptionProps {
@@ -28,19 +36,43 @@ interface ExtendedCaptionProps extends CaptionProps {
 }
 
 const translates = {
-  captionLabel: <Text id="transcript.caption_label">Jump to this point in video</Text>
+  captionLabel: <Text id="transcript.caption_label">Jump to this point in video</Text>,
+  moveToSearch: <Text id="transcript.move_to_search">Click to jump to search result</Text>
 };
 
 @withText(translates)
+@withEventManager
+@withPlayer
 export class Caption extends Component<ExtendedCaptionProps> {
-  private _hotspotRef: HTMLElement | null = null;
+  private _captionRef: HTMLElement | null = null;
 
-  componentDidUpdate() {
-    if (this._hotspotRef && this.props.shouldScroll) {
-      this.props.scrollTo(this._hotspotRef);
-    } else if (this._hotspotRef && this.props.shouldScrollToSearchMatch) {
-      this.props.scrollToSearchMatch(this._hotspotRef);
+  get indexArray() {
+    if (!this.props.indexMap) {
+      return [];
     }
+    return Object.keys(this.props.indexMap).sort((a, b) => Number(a) - Number(b));
+  }
+
+  componentDidUpdate(previousProps: Readonly<ExtendedCaptionProps>) {
+    if (this._captionRef && this.props.shouldScroll) {
+      this.props.scrollTo(this._captionRef);
+    } else if (this._captionRef && this.props.shouldScrollToSearchMatch) {
+      this.props.scrollToSearchMatch(this._captionRef);
+    }
+    if (this.props.indexMap && previousProps.activeSearchIndex !== this.props.activeSearchIndex) {
+      if (this._hasSearchMatch()) {
+        this.props.setTextToRead(this.props.caption.text);
+      }
+    }
+  }
+
+  componentDidMount(): void {
+    const {eventManager, player} = this.props;
+    eventManager?.listen(player, TranscriptEvents.TRANSCRIPT_TO_SEARCH_MATCH, () => {
+      if (this._hasSearchMatch()) {
+        this._captionRef?.focus();
+      }
+    });
   }
 
   shouldComponentUpdate(nextProps: ExtendedCaptionProps) {
@@ -74,12 +106,16 @@ export class Caption extends Component<ExtendedCaptionProps> {
     }
   };
 
+  private _hasSearchMatch = () => {
+    if (!this.props.indexMap) {
+      return false;
+    }
+    return Boolean(this.indexArray.find((el: string) => Number(el) === this.props.activeSearchIndex));
+  };
+
   private _renderText = (text: string) => {
     const {activeSearchIndex, searchLength, indexMap} = this.props;
-    let indexArray: string[] = [];
-    if (indexMap) {
-      indexArray = Object.keys(indexMap).sort((a, b) => Number(a) - Number(b));
-    }
+    const indexArray = this.indexArray;
     if (text?.length === 0) {
       return null;
     }
@@ -107,15 +143,15 @@ export class Caption extends Component<ExtendedCaptionProps> {
   };
 
   render() {
-    const {caption, highlighted, showTime, longerThanHour} = this.props;
+    const {caption, highlighted, showTime, longerThanHour, indexMap, captionLabel, moveToSearch} = this.props;
     const {startTime, id} = caption;
-    const isHighlighted = Object.keys(highlighted).some(c => c === id) ;
+    const isHighlighted = Object.keys(highlighted).some(c => c === id);
     const time = showTime ? secondsToTime(startTime, longerThanHour) : '';
 
     const captionA11yProps: Record<string, any> = {
       ariaCurrent: isHighlighted,
       tabIndex: 0,
-      ariaLabel: `${time}${showTime ? ' ' : ''}${caption.text} ${this.props.captionLabel}`,
+      ariaLabel: `${time}${showTime ? ' ' : ''}${caption.text} ${indexMap ? moveToSearch : captionLabel}`,
       role: 'button'
     };
 
@@ -124,7 +160,7 @@ export class Caption extends Component<ExtendedCaptionProps> {
         <div
           className={styles.caption}
           ref={node => {
-            this._hotspotRef = node;
+            this._captionRef = node;
           }}
           {...captionA11yProps}>
           {showTime && (

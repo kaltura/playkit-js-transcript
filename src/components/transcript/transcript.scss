@@ -1,5 +1,7 @@
 @import '../../variables.scss';
 
+$button-height: 32px;
+
 .hidden {
   visibility: hidden;
 }
@@ -25,7 +27,7 @@
     align-items: center;
     justify-content: center;
     width: 120px;
-    height: 32px;
+    height: $button-height;
     border-radius: $roundness-3;
     box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.3);
     border: solid 1px $primary-color;
@@ -60,16 +62,28 @@
 }
 
 .header {
+  $header-margin-bottom: 8px;
+
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  margin-bottom: 8px;
+  margin-bottom: $header-margin-bottom;
   padding-left: 16px;
   font-size: 16px;
   padding-right: 16px;
   gap: 8px;
   z-index: 2;
+  .to-search-button {
+    position: absolute;
+    right: 16px;
+    bottom: calc((#{$button-height + $header-margin-bottom}) * -1); // button height + margin
+    opacity: 0;
+    &:focus {
+      opacity: 1;
+    }
+  }
 }
 
 .body {
