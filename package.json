@@ -21,7 +21,7 @@
     "copyfiles": "^2.4.1",
     "cross-env": "^7.0.3",
     "css-loader": "^6.7.1",
-    "cypress": "^12.12.0",
+    "cypress": "13.13.1",
     "playwright-webkit": "^1.33.0",
     "prettier": "^2.6.2",
     "rimraf": "^5.0.5",
