@@ -274,6 +274,24 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     return styles.smallWidth;
   };
 
+  private _renderJumpToSearchButton = () => {
+    const {toSearchResult, toSearchResultLabel, onJumpToSearchMatch} = this.props;
+    const {search, activeSearchIndex, totalSearchResults} = this.state;
+    if (!search || totalSearchResults === 0 || activeSearchIndex === 0) {
+      return null;
+    }
+    return (
+      <Button
+        type={ButtonType.secondary}
+        className={styles.toSearchButton}
+        onClick={onJumpToSearchMatch}
+        ariaLabel={toSearchResultLabel}
+        testId="transcript_jumpToSearchMatch">
+        {toSearchResult}
+      </Button>
+    );
+  };
+
   private _renderHeader = () => {
     const {
       toggledWithEnter,
@@ -286,11 +304,8 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
       isLoading,
       attachTranscript,
       detachTranscript,
-      toSearchResult,
-      toSearchResultLabel,
       onAttach,
-      onDetach,
-      onJumpToSearchMatch
+      onDetach
     } = this.props;
     const {search, activeSearchIndex, totalSearchResults} = this.state;
 
@@ -314,16 +329,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
           toggledWithEnter={toggledWithEnter}
           kitchenSinkActive={kitchenSinkActive}
         />
-        {search && activeSearchIndex && (
-          <Button
-            type={ButtonType.secondary}
-            className={styles.toSearchButton}
-            onClick={onJumpToSearchMatch}
-            ariaLabel={toSearchResultLabel}
-            testId="transcript_jumpToSearchMatch">
-            {toSearchResult}
-          </Button>
-        )}
+        {this._renderJumpToSearchButton()}
         <TranscriptMenu {...{downloadDisabled, onDownload, printDisabled, onPrint, isLoading, detachMenuItem, kitchenSinkDetached}} />
         {!detachMenuItem && this._renderDetachButton()}
         {!kitchenSinkDetached && (
