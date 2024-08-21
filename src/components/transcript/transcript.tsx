@@ -30,8 +30,7 @@ const translates = {
   errorDescripton: <Text id="transcript.load_failed">Failed to load transcript</Text>,
   attachTranscript: <Text id="transcript.attach_transcript">Bring Transcript back</Text>,
   detachTranscript: <Text id="transcript.detach_transcript">Popout transcript</Text>,
-  toSearchResult: <Text id="transcript.to_search_result">Go to result</Text>,
-  toSearchResultLabel: <Text id="transcript.to_search_result_label">Click to jump to this point in the video</Text>
+  toSearchResult: <Text id="transcript.to_search_result">Go to result</Text>
 };
 
 export interface TranscriptProps {
@@ -57,7 +56,6 @@ export interface TranscriptProps {
   attachTranscript?: string;
   detachTranscript?: string;
   toSearchResult?: string;
-  toSearchResultLabel?: string;
   downloadDisabled: boolean;
   onDownload: () => void;
   printDisabled: boolean;
@@ -274,6 +272,24 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     return styles.smallWidth;
   };
 
+  private _renderJumpToSearchButton = () => {
+    const {toSearchResult, onJumpToSearchMatch} = this.props;
+    const {search, activeSearchIndex, totalSearchResults} = this.state;
+    if (!search || totalSearchResults === 0 || activeSearchIndex === 0) {
+      return null;
+    }
+    return (
+      <Button
+        type={ButtonType.secondary}
+        className={styles.toSearchButton}
+        onClick={onJumpToSearchMatch}
+        ariaLabel={toSearchResult}
+        testId="transcript_jumpToSearchMatch">
+        {toSearchResult}
+      </Button>
+    );
+  };
+
   private _renderHeader = () => {
     const {
       toggledWithEnter,
@@ -286,11 +302,8 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
       isLoading,
       attachTranscript,
       detachTranscript,
-      toSearchResult,
-      toSearchResultLabel,
       onAttach,
-      onDetach,
-      onJumpToSearchMatch
+      onDetach
     } = this.props;
     const {search, activeSearchIndex, totalSearchResults} = this.state;
 
@@ -314,16 +327,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
           toggledWithEnter={toggledWithEnter}
           kitchenSinkActive={kitchenSinkActive}
         />
-        {search && activeSearchIndex && (
-          <Button
-            type={ButtonType.secondary}
-            className={styles.toSearchButton}
-            onClick={onJumpToSearchMatch}
-            ariaLabel={toSearchResultLabel}
-            testId="transcript_jumpToSearchMatch">
-            {toSearchResult}
-          </Button>
-        )}
+        {this._renderJumpToSearchButton()}
         <TranscriptMenu {...{downloadDisabled, onDownload, printDisabled, onPrint, isLoading, detachMenuItem, kitchenSinkDetached}} />
         {!detachMenuItem && this._renderDetachButton()}
         {!kitchenSinkDetached && (
