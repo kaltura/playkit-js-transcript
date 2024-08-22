@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.5.26 (2024-08-22)
+
+
+### Bug Fixes
+
+* **FEC-14132:** fix rendering jump to search result button ([#216](https://github.com/kaltura/playkit-js-transcript/issues/216)) ([7fa5f63](https://github.com/kaltura/playkit-js-transcript/commit/7fa5f6388cdc208ea1805c52288ab4672e444ed3))
+
 ### 3.5.25 (2024-08-03)
 
 ### 3.5.24 (2024-07-11)
