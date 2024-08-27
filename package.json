@@ -77,7 +77,7 @@
     "html5 player"
   ],
   "dependencies": {
-    "@playkit-js/common": "1.5.15-canary.0-e058c69",
+    "@playkit-js/common": "1.5.17",
     "sanitize-html": "^2.11.0",
     "stream-browserify": "^3.0.0"
   },
