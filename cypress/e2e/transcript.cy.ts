@@ -224,7 +224,7 @@ describe('Transcript plugin', () => {
     });
   });
 
-  describe('small screen slate', () => {
+  describe('tiny screen slate', () => {
     it('should not render small screen slate for big screens', () => {
       cy.viewport(550, 750);
       mockKalturaBe();
@@ -235,7 +235,7 @@ describe('Transcript plugin', () => {
     });
 
     it('should not render small screen slate for small screen if plugin expandMode is "over"', () => {
-      cy.viewport(478, 380);
+      cy.viewport(279, 380);
       mockKalturaBe();
       loadPlayer({expandMode: 'over'}).then(() => {
         cy.get('[data-testid="transcript_header"]').should('exist');
@@ -244,7 +244,7 @@ describe('Transcript plugin', () => {
     });
 
     it('should render small screen slate for small screens', () => {
-      cy.viewport(478, 380);
+      cy.viewport(279, 380);
       mockKalturaBe();
       loadPlayer().then(() => {
         cy.get('[data-testid="transcript_header"]').should('not.exist');
@@ -259,19 +259,19 @@ describe('Transcript plugin', () => {
       cy.viewport('iphone-6');
       mockKalturaBe();
       loadPlayer().then(kalturaPlayer => {
-        cy.viewport(414, 736);
+        cy.viewport(279, 736);
         // @ts-ignore
         kalturaPlayer.ui.store.dispatch(ui.reducers.shell.actions.updateIsMobile(true));
         cy.get(`[data-testid="transcript_smallScreenTextContent"]`).should('have.text', 'To see the transcript, rotate the phone');
         cy.get(`[data-testid="transcript_smallScreenFullscreen"]`).should('not.exist');
         cy.viewport('iphone-6', 'landscape');
-        cy.viewport(736, 414);
+        cy.viewport(736, 279);
         cy.get(`[data-testid="transcript_smallScreenTextContent"]`).should('not.be.visible');
       });
     });
 
     it('should test close button', () => {
-      cy.viewport(478, 380);
+      cy.viewport(279, 380);
       mockKalturaBe();
       loadPlayer().then(() => {
         cy.get(`[data-testid="transcript_smallScreenWrapper"]`).should('be.visible');
@@ -281,7 +281,7 @@ describe('Transcript plugin', () => {
     });
 
     it('should test fullscreen button', () => {
-      cy.viewport(478, 380);
+      cy.viewport(279, 380);
       mockKalturaBe();
       loadPlayer().then(kalturaPlayer => {
         const fn = cy.stub(kalturaPlayer, 'enterFullscreen');
