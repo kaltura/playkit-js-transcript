@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.5.27 (2024-09-19)
+
+
+### Bug Fixes
+
+* **ADA-1689:** [Strategic Blue / University of Sheffield] - highlight search text within the video ([#219](https://github.com/kaltura/playkit-js-transcript/issues/219)) ([6e9e9bc](https://github.com/kaltura/playkit-js-transcript/commit/6e9e9bc46cbad51ec261f76892f5fb28182b6ced))
+
 ### 3.5.26 (2024-08-22)
 
 
