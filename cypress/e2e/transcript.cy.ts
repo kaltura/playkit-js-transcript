@@ -79,7 +79,7 @@ describe('Transcript plugin', () => {
     it('should sanitize html tags', () => {
       mockKalturaBe();
       loadPlayer({showTime: false}).then(() => {
-        cy.get('[aria-label="Dark Side. Jump to this point in video"]').should('have.text', 'Dark Side.');
+        cy.get('[aria-label="Dark Side. Jump to this point in video. Press Home to navigate to the beginning of the transcript. Press End to jump to the end of the transcript."]').should('have.text', 'Dark Side.');
       });
     });
   });

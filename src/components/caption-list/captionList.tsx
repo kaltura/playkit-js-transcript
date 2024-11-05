@@ -98,9 +98,9 @@ export class CaptionList extends Component<Props> {
 
   private _handleKeyUp = (event: KeyboardEvent) => {
     if (event.keyCode === END) {
-      this._lastCaptionRef?._hotspotRef?.focus();
+      this._lastCaptionRef?.base.focus();
     } else if (event.keyCode === HOME) {
-      this._firstCaptionRef?._hotspotRef?.focus();
+      this._firstCaptionRef?.base.focus();
     }
   };
 
