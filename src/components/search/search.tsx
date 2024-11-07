@@ -1,7 +1,12 @@
 import {h, Component} from 'preact';
 import {InputField} from '@playkit-js/common/dist/components/input-field';
+import {core} from '@playkit-js/kaltura-player-js';
 
+const {Utils} = core;
+const {withEventManager} = KalturaPlayer.ui.Event;
+const {TAB} = KalturaPlayer.ui.utils.KeyMap;
 const {withText, Text} = KalturaPlayer.ui.preacti18n;
+
 const translates = ({activeSearchIndex, totalSearchResults}: SearchProps) => ({
   searchLabel: <Text id="transcript.search">Search in Transcript</Text>,
   clearSearchLabel: <Text id="transcript.clear_search">Clear search</Text>,
@@ -34,10 +39,25 @@ export interface SearchProps {
   nextMatchLabel?: string;
   prevMatchLabel?: string;
   searchResultsLabel?: string;
+  eventManager?: any
+  focusPluginButton: () => void;
 }
 
+@withEventManager
 class SearchComponent extends Component<SearchProps> {
   private _inputField: InputField | null = null;
+
+  constructor(props: SearchProps) {
+    super(props);
+    this.props.eventManager?.listen(document, 'keydown', this.handleKeydownEvent);
+  }
+
+  private handleKeydownEvent = (event: KeyboardEvent) => {
+    if (event.keyCode === TAB && event.shiftKey && this._inputField?.base?.contains(document.activeElement)){
+      event.preventDefault();
+      this.props.focusPluginButton();
+    }
+  };
 
   shouldComponentUpdate(nextProps: Readonly<SearchProps>) {
     const {value, activeSearchIndex, totalSearchResults, kitchenSinkActive} = this.props;

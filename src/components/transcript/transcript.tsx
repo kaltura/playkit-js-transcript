@@ -70,6 +70,7 @@ export interface TranscriptProps {
   isMobile?: boolean;
   playerWidth?: number;
   onJumpToSearchMatch: () => void;
+  focusPluginButton: () => void;
 }
 
 interface TranscriptState {
@@ -325,6 +326,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
           totalSearchResults={totalSearchResults}
           toggledWithEnter={toggledWithEnter}
           kitchenSinkActive={kitchenSinkActive}
+          focusPluginButton={this.props.focusPluginButton}
         />
         {this._renderJumpToSearchButton()}
         <TranscriptMenu {...{downloadDisabled, onDownload, printDisabled, onPrint, isLoading, detachMenuItem, kitchenSinkDetached}} />
