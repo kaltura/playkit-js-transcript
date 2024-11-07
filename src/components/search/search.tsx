@@ -1,7 +1,6 @@
 import {h, Component} from 'preact';
 import {InputField} from '@playkit-js/common/dist/components/input-field';
 import {core} from '@playkit-js/kaltura-player-js';
-import {UpperBarManager} from "@playkit-js/ui-managers";
 
 const {Utils} = core;
 const {withEventManager} = KalturaPlayer.ui.Event;
@@ -40,9 +39,8 @@ export interface SearchProps {
   nextMatchLabel?: string;
   prevMatchLabel?: string;
   searchResultsLabel?: string;
-  eventManager?: any;
-  upperBarManager?: UpperBarManager | undefined;
-  transcriptIconId: number;
+  eventManager?: any
+  focusPluginButton: () => void;
 }
 
 @withEventManager
@@ -57,8 +55,7 @@ class SearchComponent extends Component<SearchProps> {
   private handleKeydownEvent = (event: KeyboardEvent) => {
     if (event.keyCode === TAB && event.shiftKey && this._inputField?.base?.contains(document.activeElement)){
       event.preventDefault();
-      //@ts-ignore
-      this.props.upperBarManager?.focusPluginButton(this.props.transcriptIconId);
+      this.props.focusPluginButton();
     }
   };
 
