@@ -72,6 +72,7 @@ export interface TranscriptProps {
   playerWidth?: number;
   onJumpToSearchMatch: () => void;
   upperBarManager: UpperBarManager | undefined;
+  transcriptIconId: number;
 }
 
 interface TranscriptState {
@@ -328,6 +329,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
           toggledWithEnter={toggledWithEnter}
           kitchenSinkActive={kitchenSinkActive}
           upperBarManager={this.props.upperBarManager}
+          transcriptIconId={this.props.transcriptIconId}
         />
         {this._renderJumpToSearchButton()}
         <TranscriptMenu {...{downloadDisabled, onDownload, printDisabled, onPrint, isLoading, detachMenuItem, kitchenSinkDetached}} />

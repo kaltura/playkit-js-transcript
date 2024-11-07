@@ -42,6 +42,7 @@ export interface SearchProps {
   searchResultsLabel?: string;
   eventManager?: any;
   upperBarManager?: UpperBarManager | undefined;
+  transcriptIconId: number;
 }
 
 @withEventManager
@@ -57,7 +58,7 @@ class SearchComponent extends Component<SearchProps> {
     if (event.keyCode === TAB && event.shiftKey && this._inputField?.base?.contains(document.activeElement)){
       event.preventDefault();
       //@ts-ignore
-      this.props.upperBarManager?.focusPluginButton('Transcript');
+      this.props.upperBarManager?.focusPluginButton(this.props.transcriptIconId);
     }
   };
 
