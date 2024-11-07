@@ -14,6 +14,7 @@ import {Button, ButtonType, ButtonSize} from '@playkit-js/common/dist/components
 import {ScreenReaderProvider} from '@playkit-js/common/dist/hoc/sr-wrapper';
 import {OnClickEvent, OnClick} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import {TranscriptEvents} from '../../events/events';
+import {UpperBarManager} from "@playkit-js/ui-managers";
 
 const {ENTER, SPACE, TAB} = ui.utils.KeyMap;
 const {withText, Text} = ui.preacti18n;
@@ -70,6 +71,7 @@ export interface TranscriptProps {
   isMobile?: boolean;
   playerWidth?: number;
   onJumpToSearchMatch: () => void;
+  upperBarManager: UpperBarManager | undefined;
 }
 
 interface TranscriptState {
@@ -325,6 +327,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
           totalSearchResults={totalSearchResults}
           toggledWithEnter={toggledWithEnter}
           kitchenSinkActive={kitchenSinkActive}
+          upperBarManager={this.props.upperBarManager}
         />
         {this._renderJumpToSearchButton()}
         <TranscriptMenu {...{downloadDisabled, onDownload, printDisabled, onPrint, isLoading, detachMenuItem, kitchenSinkDetached}} />

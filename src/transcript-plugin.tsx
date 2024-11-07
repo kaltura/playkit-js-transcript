@@ -335,6 +335,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
               this._handleAttach(CloseDetachTypes.arrow);
             }}
             onJumpToSearchMatch={this._toSearchMatch}
+            upperBarManager={this.upperBarManager}
           />
         ) as any;
       },
