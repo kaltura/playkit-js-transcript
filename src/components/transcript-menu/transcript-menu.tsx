@@ -1,6 +1,8 @@
 import {Component, h} from 'preact';
+import {core} from '@playkit-js/kaltura-player-js';
 import {PopoverMenu} from '../popover-menu';
 import {PopoverMenuItemData} from '../popover-menu';
+import {capitalizeFirstLetter} from '../../utils';
 
 import {Button, ButtonType} from '@playkit-js/common/dist/components/button';
 const {withText, Text} = KalturaPlayer.ui.preacti18n;
@@ -15,6 +17,8 @@ interface TranscriptMenuProps {
   printDisabled?: boolean;
   isLoading?: boolean;
   kitchenSinkDetached: boolean;
+  textTracks: Array<core.TextTrack>;
+  changeLanguage: (textTrack: core.TextTrack) => void;
   detachMenuItem?: {
     testId: string;
     label: string;
@@ -45,36 +49,25 @@ class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState>
       downloadTranscript,
       isLoading,
       detachMenuItem,
-      kitchenSinkDetached
+      kitchenSinkDetached,
+      textTracks,
+      changeLanguage
     } = this.props;
     const items = [];
 
-    if (true) { // TODO: use real data
+    if (textTracks?.length > 1) {
+      const activeTextTrack = textTracks.find(track => track.active);
       items.push({
-        testId: 'language-change-menu-item',
-        label: 'English',
+        testId: 'language-change-menu-item-active',
+        label: capitalizeFirstLetter(activeTextTrack?.label!),
         isDisabled: isLoading,
-        items: [
-          {
-            testId: 'language-change-menu-item-en',
-            label: 'English',
-            isDisabled: isLoading,
-            isSelected: true,
-            onClick: () => console.log('English')
-          },
-          {
-            testId: 'language-change-menu-item-sp',
-            label: 'Spanish',
-            isDisabled: isLoading,
-            onClick: () => console.log('Spanish')
-          },
-          {
-            testId: 'language-change-menu-item-fr',
-            label: 'French',
-            isDisabled: isLoading,
-            onClick: () => console.log('French')
-          }
-        ]
+        items: textTracks.map(track => ({
+          testId: `language-change-menu-item-${track.label}`,
+          label: capitalizeFirstLetter(track.label!),
+          isDisabled: isLoading,
+          isSelected: activeTextTrack?.label === track.label,
+          onClick: () => changeLanguage(track)
+        }))
       });
     }
 

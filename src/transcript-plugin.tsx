@@ -1,7 +1,7 @@
 import * as sanitizeHtml from 'sanitize-html';
 import {h} from 'preact';
 import {OnClickEvent} from '@playkit-js/common/dist/hoc/a11y-wrapper';
-import {ui} from '@playkit-js/kaltura-player-js';
+import {ui, core} from '@playkit-js/kaltura-player-js';
 import {UpperBarManager, SidePanelsManager} from '@playkit-js/ui-managers';
 import {ObjectUtils, downloadContent, printContent, decodeString} from './utils';
 import {icons} from './components/icons';
@@ -289,6 +289,12 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     this.dispatchEvent(TranscriptEvents.TRANSCRIPT_TO_SEARCH_MATCH);
   };
 
+  private _changeLanguage = (textTrack: core.TextTrack) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error - Property 'selectTrack' does not exist on type 'Player'
+    this.player.selectTrack(textTrack);
+  };
+
   private _addTranscriptItem(): void {
     if (Math.max(this._transcriptPanel, this._transcriptIcon, this._audioPlayerIconId) > 0) {
       // transcript panel or icon already exist
@@ -341,6 +347,8 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
             onJumpToSearchMatch={this._toSearchMatch}
             //@ts-ignore
             focusPluginButton={() => this.upperBarManager!.focusPluginButton(this._transcriptIcon)}
+            textTracks={this._getTextTracks()}
+            changeLanguage={this._changeLanguage}
           />
         ) as any;
       },
