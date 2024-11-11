@@ -49,6 +49,35 @@ class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState>
     } = this.props;
     const items = [];
 
+    if (true) { // TODO: use real data
+      items.push({
+        testId: 'language-change-menu-item',
+        label: 'English',
+        isDisabled: isLoading,
+        items: [
+          {
+            testId: 'language-change-menu-item-en',
+            label: 'English',
+            isDisabled: isLoading,
+            isSelected: true,
+            onClick: () => console.log('English')
+          },
+          {
+            testId: 'language-change-menu-item-sp',
+            label: 'Spanish',
+            isDisabled: isLoading,
+            onClick: () => console.log('Spanish')
+          },
+          {
+            testId: 'language-change-menu-item-fr',
+            label: 'French',
+            isDisabled: isLoading,
+            onClick: () => console.log('French')
+          }
+        ]
+      });
+    }
+
     if (detachMenuItem) {
       items.push(detachMenuItem);
     }
