@@ -93,6 +93,7 @@ export const PopoverMenuItem = (props: PopoverMenuItemProps) => {
       <div
         tabIndex={isDisabled ? -1 : 0}
         role="menuitem"
+        aria-selected={isSelected}
         className={`${styles.popoverMenuItem} ${isDisabled ? styles.popoverMenuItemDisabled : ''}`}
         data-testid={testId}
         ref={node => {
