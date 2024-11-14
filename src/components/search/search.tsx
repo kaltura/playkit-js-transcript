@@ -53,7 +53,7 @@ class SearchComponent extends Component<SearchProps> {
   }
 
   private handleKeydownEvent = (event: KeyboardEvent) => {
-    if (event.keyCode === TAB && event.shiftKey && this._inputField?.base?.contains(document.activeElement)){
+    if (event.keyCode === TAB && event.shiftKey && document.activeElement === this._inputField?.base?.childNodes[0]){
       event.preventDefault();
       this.props.focusPluginButton();
     }
