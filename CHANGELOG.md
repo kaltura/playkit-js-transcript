@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.5.30 (2024-11-14)
+
+
+### Bug Fixes
+
+* **FEC-14237:** Player v7 | No option to Shift+tab backwards from transcript plugin to the play, previous & next buttons. ([#226](https://github.com/kaltura/playkit-js-transcript/issues/226)) ([e5c3d3a](https://github.com/kaltura/playkit-js-transcript/commit/e5c3d3a5e95c607f249a67c5341c80bf5551507c))
+
 ### 3.5.29 (2024-10-13)
 
 ### 3.5.28 (2024-10-13)
