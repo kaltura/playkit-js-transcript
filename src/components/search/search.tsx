@@ -52,7 +52,13 @@ class SearchComponent extends Component<SearchProps> {
 
   constructor(props: SearchProps) {
     super(props);
-    this.props.eventManager?.listen(document, 'keydown', this.handleKeydownEvent);
+    if (this.props.player._firstPlay){
+      this.props.eventManager?.listen(this.props.player, this.props.player.Event.FIRST_PLAY, () => {
+        this.props.eventManager?.listen(document, 'keydown', this.handleKeydownEvent);
+      })
+    } else {
+      this.props.eventManager?.listen(document, 'keydown', this.handleKeydownEvent);
+    }
   }
 
   private handleKeydownEvent = (event: KeyboardEvent) => {
