@@ -41,7 +41,7 @@ export interface SearchProps {
   prevMatchLabel?: string;
   searchResultsLabel?: string;
   eventManager?: any
-  focusPluginButton: () => void;
+  focusPluginButton: (event: KeyboardEvent) => void;
   player?: any;
 }
 
@@ -52,15 +52,13 @@ class SearchComponent extends Component<SearchProps> {
 
   constructor(props: SearchProps) {
     super(props);
-    this.props.eventManager?.listen(this.props.player, this.props.player.Event.FIRST_PLAY, () => {
-      this.props.eventManager?.listen(document, 'keydown', this.handleKeydownEvent);
-    })
+    this.props.eventManager?.listen(document, 'keydown', this.handleKeydownEvent);
   }
 
   private handleKeydownEvent = (event: KeyboardEvent) => {
     if (event.keyCode === TAB && event.shiftKey && document.activeElement === this._inputField?.base?.childNodes[0]){
-      event.preventDefault();
-      this.props.focusPluginButton();
+      //@ts-ignore
+      this.props.focusPluginButton(event);
     }
   };
 

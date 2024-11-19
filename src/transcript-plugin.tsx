@@ -336,7 +336,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
             }}
             onJumpToSearchMatch={this._toSearchMatch}
             //@ts-ignore
-            focusPluginButton={() => this.upperBarManager!.focusPluginButton(this._transcriptIcon)}
+            focusPluginButton={(event: KeyboardEvent) => this.upperBarManager!.focusPluginButton(this._transcriptIcon, event)}
           />
         ) as any;
       },

@@ -70,7 +70,7 @@ export interface TranscriptProps {
   isMobile?: boolean;
   playerWidth?: number;
   onJumpToSearchMatch: () => void;
-  focusPluginButton: () => void;
+  focusPluginButton: (event: KeyboardEvent) => void;
 }
 
 interface TranscriptState {
