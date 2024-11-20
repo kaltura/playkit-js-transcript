@@ -1,20 +1,14 @@
 import {A11yWrapper} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import {h, Component, VNode} from 'preact';
+import {PopoverMenuItem, PopoverMenuItemData} from './popover-menu-item';
+import {ui} from '@playkit-js/kaltura-player-js';
+const {Tooltip} = ui.components;
+const {withText, Text} = ui.preacti18n;
 
-const {Tooltip} = KalturaPlayer.ui.components;
-const {withText, Text} = KalturaPlayer.ui.preacti18n;
-
-const {withEventManager} = KalturaPlayer.ui.Event;
-const {TAB} = KalturaPlayer.ui.utils.KeyMap;
+const {withEventManager} = ui.Event;
+const {TAB} = ui.utils.KeyMap;
 
 import * as styles from './popover-menu.scss';
-
-interface PopoverMenuItemData {
-  testId: string;
-  label: string;
-  onClick: () => void;
-  isDisabled?: boolean;
-}
 
 interface PopoverMenuProps {
   moreOptionsLabel?: string;
@@ -42,23 +36,25 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
 
   constructor(props: PopoverMenuProps) {
     super(props);
-    this.state = {isOpen: false};
+    this.state = {
+      isOpen: false
+    };
 
-    this.props.eventManager?.listen(document, 'click', this.handleMouseEvent);
-    this.props.eventManager?.listen(document, 'keydown', this.handleKeydownEvent);
+    this.props.eventManager?.listen(document, 'click', this._handleMouseEvent);
+    this.props.eventManager?.listen(document, 'keydown', this._handleKeydownEvent);
   }
 
   componentWillUnmount() {
     this._itemsRefMap = new Map();
   }
 
-  private handleMouseEvent = (event: MouseEvent) => {
+  private _handleMouseEvent = (event: MouseEvent) => {
     if (!this._controlElementRef?.contains(event.target as Node | null)) {
-      this.closePopover();
+      this._closePopover();
     }
   };
 
-  private handleKeydownEvent = (event: KeyboardEvent) => {
+  private _handleKeydownEvent = (event: KeyboardEvent) => {
     const eventTarget = event.target as Node | null;
     if (
       this.state.isOpen &&
@@ -67,7 +63,7 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
       !this._popoverElementRef?.contains(eventTarget) &&
       eventTarget !== this._controlElementRef
     ) {
-      this.closePopover();
+      this._closePopover();
     }
   };
 
@@ -79,11 +75,11 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
     this._getItemRef(currentIndex + 1)?.focus();
   };
 
-  private closePopover() {
+  private _closePopover() {
     this.setState({isOpen: false});
   }
 
-  private togglePopover = () => {
+  private _togglePopover = () => {
     const isOpen = !this.state.isOpen;
 
     this.setState({isOpen}, () => {
@@ -117,7 +113,7 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
         <A11yWrapper
           onClick={e => {
             e.stopPropagation();
-            this.togglePopover();
+            this._togglePopover();
           }}>
           <div
             tabIndex={0}
@@ -143,41 +139,22 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
             this._popoverElementRef = node;
           }}>
           {this.state.isOpen
-            ? items.map(({label, onClick, testId, isDisabled}, index) => {
-                return (
-                  <A11yWrapper
-                    role="menuitem"
-                    onClick={() => {
-                      if (!isDisabled) {
-                        this.closePopover();
-                        onClick();
-                      }
-                    }}
-                    onDownKeyPressed={() => {
-                      if (!isDisabled) {
-                        this._handleDownKeyPressed(index);
-                      }
-                    }}
-                    onUpKeyPressed={() => {
-                      if (!isDisabled) {
-                        this._handleUpKeyPressed(index);
-                      }
-                    }}>
-                    {
-                      <div
-                        tabIndex={isDisabled ? -1 : 0}
-                        role="menuitem"
-                        className={`${styles.popoverMenuItem} ${isDisabled ? styles.popoverMenuItemDisabled : ''}`}
-                        data-testid={testId}
-                        ref={node => {
-                          this._setItemRef(index, node);
-                        }}>
-                        {label}
-                      </div>
+            ? items.map((item, index) => (
+                <PopoverMenuItem
+                  key={index}
+                  item={item}
+                  index={index}
+                  onKeyDown={this._handleDownKeyPressed}
+                  onKeyUp={this._handleUpKeyPressed}
+                  setRef={this._setItemRef}
+                  onClick={() => {
+                    this._closePopover();
+                    if (!item.items) {
+                      item.onClick?.();
                     }
-                  </A11yWrapper>
-                );
-              })
+                  }}
+                />
+              ))
             : null}
         </div>
       </div>

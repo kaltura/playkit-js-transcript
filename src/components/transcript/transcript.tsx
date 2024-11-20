@@ -1,5 +1,5 @@
 import {h, Component} from 'preact';
-import {ui} from '@playkit-js/kaltura-player-js';
+import {ui, core} from '@playkit-js/kaltura-player-js';
 import {debounce} from '../../utils';
 import * as styles from './transcript.scss';
 import {Spinner} from '../spinner';
@@ -71,6 +71,8 @@ export interface TranscriptProps {
   playerWidth?: number;
   onJumpToSearchMatch: () => void;
   focusPluginButton: () => void;
+  textTracks: Array<core.TextTrack>;
+  changeLanguage: (textTrack: core.TextTrack) => void;
 }
 
 interface TranscriptState {
@@ -303,7 +305,9 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
       attachTranscript,
       detachTranscript,
       onAttach,
-      onDetach
+      onDetach,
+      textTracks,
+      changeLanguage
     } = this.props;
     const {search, activeSearchIndex, totalSearchResults} = this.state;
 
@@ -329,7 +333,9 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
           focusPluginButton={this.props.focusPluginButton}
         />
         {this._renderJumpToSearchButton()}
-        <TranscriptMenu {...{downloadDisabled, onDownload, printDisabled, onPrint, isLoading, detachMenuItem, kitchenSinkDetached}} />
+        <TranscriptMenu
+          {...{downloadDisabled, onDownload, printDisabled, onPrint, isLoading, detachMenuItem, kitchenSinkDetached, textTracks, changeLanguage}}
+        />
         {!detachMenuItem && this._renderDetachButton()}
         {!kitchenSinkDetached && (
           <div data-testid="transcriptCloseButton">
