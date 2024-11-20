@@ -1,17 +1,19 @@
 @import './variables.scss';
 
+$child-item-width: 170px;
+
 .popover-anchor-container {
   cursor: pointer;
   border-radius: $roundness-1;
-  
+
   &:hover {
     background-color: $tone-4-color;
   }
-  
+
   &.active {
     background-color: $tone-6-color;
   }
-  
+
   .popover-anchor {
     pointer-events: none;
   }
@@ -19,7 +21,7 @@
 
 .popover-container {
   position: relative;
-  
+
   .popover-component {
     background-color: $tone-7-color;
     border-radius: $roundness-1;
@@ -29,11 +31,19 @@
     position: absolute;
     right: 0px;
     z-index: 1;
+    &.child-item {
+      margin-top: 0;
+      top: 0;
+      width: $child-item-width;
+      left: calc(-7px - #{$child-item-width});
+    }
   }
 }
 .popover-menu-item {
+  position: relative;
   align-items: center;
   display: flex;
+  justify-content: space-between;
   font-size: 15px;
   line-height: 18px;
   min-height: 30px;
@@ -44,13 +54,13 @@
   &.popover-menu-item-disabled {
     color: $tone-4-color;
   }
-  
+
   &:hover:not(.popover-menu-item-disabled) {
     background-color: $tone-6-color;
     border-radius: $roundness-1;
     cursor: pointer;
   }
-  
+
   &:focus {
     outline: 1px solid #222;
   }
@@ -60,4 +70,3 @@
   padding-top: 6px;
   padding-bottom: 6px;
 }
-

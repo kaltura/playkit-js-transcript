@@ -79,7 +79,9 @@ describe('Transcript plugin', () => {
     it('should sanitize html tags', () => {
       mockKalturaBe();
       loadPlayer({showTime: false}).then(() => {
-        cy.get('[aria-label="Dark Side. Jump to this point in video. Press Home to navigate to the beginning of the transcript. Press End to jump to the end of the transcript."]').should('have.text', 'Dark Side.');
+        cy.get(
+          '[aria-label="Dark Side. Jump to this point in video. Press Home to navigate to the beginning of the transcript. Press End to jump to the end of the transcript."]'
+        ).should('have.text', 'Dark Side.');
       });
     });
   });
@@ -200,6 +202,37 @@ describe('Transcript plugin', () => {
         cy.get(`[data-testid="popover-anchor-container"]`).should('exist');
         cy.get(`[data-testid="popover-anchor-container"]`).click();
         cy.get(`[data-testid="print-menu-item"]`).should('not.exist');
+      });
+    });
+
+    it('should render change language menu', () => {
+      mockKalturaBe();
+      cy.window().then($win => {
+        $win.localStorage.setItem('@playkit-js/kaltura-player-js_textLanguage', 'fi');
+        $win.localStorage.setItem('@playkit-js/kaltura-player-js_captionsDisplay', 'true');
+        loadPlayer().then(() => {
+          cy.get(`[data-testid="popover-anchor-container"]`).should('exist');
+          cy.get(`[data-testid="popover-anchor-container"]`).click();
+          cy.get(`[data-testid="language-change-menu-item-active"]`).should('have.text', 'Finnish');
+          cy.get(`[data-testid="language-change-menu-item-active"]`).click();
+          cy.get(`[data-testid="language-change-menu-item-English"]`).should('exist');
+          cy.get(`[data-testid="language-change-menu-item-Finnish"]`).should('exist').should('have.attr', 'aria-selected', 'true');
+          cy.get(`[data-testid="language-change-menu-item-Off"]`).should('exist');
+        });
+      });
+    });
+    it('should change caption language from change language menu', () => {
+      mockKalturaBe();
+      cy.window().then($win => {
+        $win.localStorage.setItem('@playkit-js/kaltura-player-js_textLanguage', 'fi');
+        $win.localStorage.setItem('@playkit-js/kaltura-player-js_captionsDisplay', 'true');
+        loadPlayer().then(() => {
+          cy.contains('première légende').should('exist');
+          cy.get(`[data-testid="popover-anchor-container"]`).click();
+          cy.get(`[data-testid="language-change-menu-item-active"]`).click();
+          cy.get(`[data-testid="language-change-menu-item-English"]`).click({ force: true });
+          cy.contains('first caption').should('exist');
+        });
       });
     });
   });
