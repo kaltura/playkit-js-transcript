@@ -36,6 +36,8 @@ $child-item-width: 170px;
       top: 0;
       width: $child-item-width;
       left: calc(-7px - #{$child-item-width});
+      max-height: calc(100% * 5.8); // height - almost 6 menu items like in player caption menu
+      overflow-y: auto;
     }
   }
 }
