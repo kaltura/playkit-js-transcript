@@ -65,7 +65,7 @@ class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState>
           testId: `language-change-menu-item-${track.label}`,
           label: capitalizeFirstLetter(track.label!),
           isDisabled: isLoading,
-          isSelected: activeTextTrack?.label === track.label,
+          isSelected: track.active,
           onClick: () => changeLanguage(track)
         }))
       });
