@@ -15,7 +15,8 @@ import {ScreenReaderProvider} from '@playkit-js/common/dist/hoc/sr-wrapper';
 import {OnClickEvent, OnClick} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import {TranscriptEvents} from '../../events/events';
 
-const {ENTER, SPACE, TAB} = ui.utils.KeyMap;
+const {withEventManager} = ui.Event;
+const {ENTER, SPACE, TAB, ESC} = ui.utils.KeyMap;
 const {withText, Text} = ui.preacti18n;
 
 const {SidePanelModes} = ui;
@@ -73,6 +74,7 @@ export interface TranscriptProps {
   focusPluginButton: (event: KeyboardEvent) => void;
   textTracks: Array<core.TextTrack>;
   changeLanguage: (textTrack: core.TextTrack) => void;
+  eventManager?: any
 }
 
 interface TranscriptState {
@@ -105,6 +107,7 @@ const mapStateToProps = (state: any, ownProps: Pick<TranscriptProps, 'expandMode
 // @ts-ignore
 @connect(mapStateToProps)
 @withText(translates)
+@withEventManager
 export class Transcript extends Component<TranscriptProps, TranscriptState> {
   private _transcriptListRef: HTMLElement | null = null;
   private _captionListRef: any = null;
@@ -138,6 +141,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
       // use player size to define transcript root element size
       this._setWidgetSize();
     }
+    this.props.eventManager?.listen(document, 'keydown', this._handleKeydownEvent);
   }
 
   componentDidUpdate(previousProps: Readonly<TranscriptProps>, previousState: Readonly<TranscriptState>): void {
@@ -165,6 +169,12 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
       this._resizeObserver = null;
     }
   }
+
+  private _handleKeydownEvent = (event: KeyboardEvent) => {
+    if (event.keyCode === ESC){
+      this.props.onClose(event, true);
+    }
+  };
 
   private _enableAutoScroll = (event: OnClickEvent, byKeyboard?: boolean) => {
     event.preventDefault();
