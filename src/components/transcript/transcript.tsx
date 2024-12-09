@@ -15,7 +15,6 @@ import {ScreenReaderProvider} from '@playkit-js/common/dist/hoc/sr-wrapper';
 import {OnClickEvent, OnClick} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import {TranscriptEvents} from '../../events/events';
 
-const {withEventManager} = ui.Event;
 const {ENTER, SPACE, TAB, ESC} = ui.utils.KeyMap;
 const {withText, Text} = ui.preacti18n;
 
@@ -74,7 +73,6 @@ export interface TranscriptProps {
   focusPluginButton: (event: KeyboardEvent) => void;
   textTracks: Array<core.TextTrack>;
   changeLanguage: (textTrack: core.TextTrack) => void;
-  eventManager?: any
 }
 
 interface TranscriptState {
@@ -107,7 +105,6 @@ const mapStateToProps = (state: any, ownProps: Pick<TranscriptProps, 'expandMode
 // @ts-ignore
 @connect(mapStateToProps)
 @withText(translates)
-@withEventManager
 export class Transcript extends Component<TranscriptProps, TranscriptState> {
   private _transcriptListRef: HTMLElement | null = null;
   private _captionListRef: any = null;
