@@ -141,7 +141,6 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
       // use player size to define transcript root element size
       this._setWidgetSize();
     }
-    this.props.eventManager?.listen(document, 'keydown', this._handleKeydownEvent);
   }
 
   componentDidUpdate(previousProps: Readonly<TranscriptProps>, previousState: Readonly<TranscriptState>): void {
@@ -170,7 +169,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     }
   }
 
-  private _handleKeydownEvent = (event: KeyboardEvent) => {
+  private _handleClose = (event: KeyboardEvent) => {
     if (event.keyCode === ESC){
       this.props.onClose(event, true);
     }
@@ -522,6 +521,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
           ref={node => {
             this._widgetRootRef = node;
           }}
+          onKeyUp={this._handleClose}
           data-testid="transcript_root">
           {smallScreen && !kitchenSinkDetached ? (
             <SmallScreenSlate onClose={this.props.onClose} toggledWithEnter={toggledWithEnter} />
