@@ -15,7 +15,7 @@ import {ScreenReaderProvider} from '@playkit-js/common/dist/hoc/sr-wrapper';
 import {OnClickEvent, OnClick} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import {TranscriptEvents} from '../../events/events';
 
-const {ENTER, SPACE, TAB} = ui.utils.KeyMap;
+const {ENTER, SPACE, TAB, ESC} = ui.utils.KeyMap;
 const {withText, Text} = ui.preacti18n;
 
 const {SidePanelModes} = ui;
@@ -165,6 +165,12 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
       this._resizeObserver = null;
     }
   }
+
+  private _handleClose = (event: KeyboardEvent) => {
+    if (event.keyCode === ESC){
+      this.props.onClose(event, true);
+    }
+  };
 
   private _enableAutoScroll = (event: OnClickEvent, byKeyboard?: boolean) => {
     event.preventDefault();
@@ -512,6 +518,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
           ref={node => {
             this._widgetRootRef = node;
           }}
+          onKeyUp={this._handleClose}
           data-testid="transcript_root">
           {smallScreen && !kitchenSinkDetached ? (
             <SmallScreenSlate onClose={this.props.onClose} toggledWithEnter={toggledWithEnter} />
