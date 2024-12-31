@@ -162,7 +162,7 @@ describe('Transcript plugin', () => {
           keyCode: 9, // tab
           force: true
         });
-        cy.get('[aria-label="00:15 listening to music for the first time"]').should('have.focus');
+        cy.get('[aria-label="Timestamp 15 seconds listening to music for the first time"]').should('have.focus');
       });
     });
 
