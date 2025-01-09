@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.5.34 (2025-01-09)
+
+
+### Bug Fixes
+
+* **ADA-1988:** Change time to be read as text ([#231](https://github.com/kaltura/playkit-js-transcript/issues/231)) ([5587adb](https://github.com/kaltura/playkit-js-transcript/commit/5587adbac9596ae437a626ec2858aa882f6ea515)), closes [kaltura/playkit-js-ui#955](https://github.com/kaltura/playkit-js-ui/issues/955)
+
 ### 3.5.33 (2024-12-19)
 
 ### 3.5.32 (2024-11-28)
