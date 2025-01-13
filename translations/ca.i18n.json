@@ -1,0 +1,31 @@
+{
+  "ca": {
+    "transcript": {
+      "hide_plugin": "Amagar la transcripció",
+      "show_plugin": "Mostrar la transcripció",
+      "more_options": "Més opcions de transcripció",
+      "print_transcript": "Imprimir la transcripció actual",
+      "download_transcript": "Descarregar la transcripció actual",
+      "search": "Cercar a la transcripció",
+      "clear_search": "Esborrar la cerca",
+      "next_search_match": "Següent resultat de la cerca",
+      "prev_search_match": "Resultat anterior de la cerca",
+      "search_results": "Resultat de la cerca {{current}} de {{total}}",
+      "auto_scroll": "Reprendre AutoScroll",
+      "whoops": "Ups!",
+      "load_failed": "No s'ha pogut carregar la transcripció",
+      "skip_transcript": "Salt de la transcripció",
+      "smallScreenText": "Per veure la transcripció, vés a pantalla completa",
+      "smallScreenMobileText": "Per veure la transcripció, gira el telèfon",
+      "attach_transcript_text": "La transcripció ha aparegut",
+      "attach_transcript_button": "Torna a portar-la",
+      "attach_transcript": "Torna a portar la transcripció",
+      "detach_transcript": "Desplegar transcripció",
+      "transcript": "Transcripció",
+      "caption_label": "Salta a aquest punt del vídeo",
+      "move_to_search": "Fes clic per saltar al resultat de la cerca",
+      "to_search_result": "Vés al resultat",
+      "to_search_result_label": "Fes clic per saltar a aquest punt del vídeo"
+    }
+  }
+}
