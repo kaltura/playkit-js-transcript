@@ -147,7 +147,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     if (captionData.length) {
       // take metadata from the first caption, as all captions in captionData have the same language and label
       const captionMetadata = payload.cues[0].metadata;
-      const captionKey = this._makeCaptionKey(captionMetadata.language, captionMetadata.label);
+      const captionKey = captionMetadata.language || 'default';
       this._addCaptionData(captionData, captionKey);
       this._addTranscriptItem();
     }
@@ -194,14 +194,9 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
         return this._activeCaptionMapId;
       }
       // use 1st captions from text-track list
-      return this._makeCaptionKey(allTextTracks[0]?.language, allTextTracks[0]?.label);
+      return allTextTracks[0]?.language || 'default';
     }
-    return this._makeCaptionKey(activeTextTrack?.language, activeTextTrack?.label);
-  };
-
-  private _makeCaptionKey = (language?: string, label?: string): string => {
-    // use 'default' language as fallback when language argument is undefined or empty string
-    return `${language || 'default'}-${label}`;
+    return activeTextTrack?.language || 'default';
   };
 
   private _activatePlugin = (isFirstOpen = false) => {
