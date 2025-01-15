@@ -80,6 +80,12 @@ export class Caption extends Component<ExtendedCaptionProps> {
         this._captionRef?.focus();
       }
     });
+
+    eventManager?.listen(player, TranscriptEvents.TRANSCRIPT_SCROLLING, () => {
+      if(this._hasSearchMatch()) {
+        this._captionRef?.scrollIntoView()
+      }
+    })
   }
 
   shouldComponentUpdate(nextProps: ExtendedCaptionProps) {
