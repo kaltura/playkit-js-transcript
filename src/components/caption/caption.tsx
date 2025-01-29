@@ -1,9 +1,8 @@
 import {Component, h} from 'preact';
 import {A11yWrapper} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import {secondsToTime} from '../../utils';
-import {CuePointData} from '../../types';
+import {CuePointData, HighlightedMap} from '../../types';
 import * as styles from './caption.scss';
-
 import {TranscriptEvents} from '../../events/events';
 
 //@ts-ignore
@@ -30,7 +29,7 @@ export interface CaptionProps {
 interface ExtendedCaptionProps extends CaptionProps {
   caption: CuePointData;
   onClick: () => void;
-  highlighted: boolean;
+  highlighted: HighlightedMap;
   shouldScroll: boolean;
   shouldScrollToSearchMatch: boolean;
   indexMap: Record<string, number> | undefined;
@@ -83,9 +82,12 @@ export class Caption extends Component<ExtendedCaptionProps> {
   }
 
   shouldComponentUpdate(nextProps: ExtendedCaptionProps) {
-    const {indexMap, highlighted, isAutoScrollEnabled, activeSearchIndex, longerThanHour} = this.props;
+    const {indexMap, highlighted, isAutoScrollEnabled, activeSearchIndex, longerThanHour, caption} = this.props;
     if (longerThanHour !== nextProps.longerThanHour) {
       return true;
+    }
+    if(!Object.keys(highlighted).some(c => c === caption.id)) {
+      return false;
     }
     if (highlighted !== nextProps.highlighted) {
       return true;
