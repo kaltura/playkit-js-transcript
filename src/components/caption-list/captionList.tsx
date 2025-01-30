@@ -29,21 +29,23 @@ export interface Props {
   activeSearchIndex: number;
   searchMap: Record<string, Record<string, number>>;
   captionProps: CaptionProps;
+  kitchenSinkActive: boolean;
 }
 export class CaptionList extends Component<Props> {
   private _currentCaptionRef: any = null;
   private _firstCaptionRef: any = null;
   private _lastCaptionRef: any = null;
   shouldComponentUpdate(nextProps: Readonly<Props>) {
-    const {highlightedMap, data, searchMap, activeSearchIndex, isAutoScrollEnabled, captionProps} = this.props;
+    const {highlightedMap, data, searchMap, activeSearchIndex, isAutoScrollEnabled, captionProps, kitchenSinkActive} = this.props;
     if (
+        kitchenSinkActive && (
       highlightedMap !== nextProps.highlightedMap ||
       data !== nextProps.data ||
       searchMap !== nextProps.searchMap ||
       activeSearchIndex !== nextProps.activeSearchIndex ||
       isAutoScrollEnabled !== nextProps.isAutoScrollEnabled ||
       captionProps.videoDuration !== nextProps.captionProps.videoDuration
-    ) {
+    )) {
       return true;
     }
     return false;

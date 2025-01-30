@@ -398,7 +398,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
   };
 
   private _renderTranscript = () => {
-    const {captions, hasError, onRetryLoad, showTime, videoDuration, highlightedMap} = this.props;
+    const {captions, hasError, onRetryLoad, showTime, videoDuration, highlightedMap, kitchenSinkActive} = this.props;
     const {isAutoScrollEnabled, searchMap, activeSearchIndex, searchLength} = this.state;
 
     if (hasError) {
@@ -441,6 +441,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         widgetWidth={this.state.widgetWidth}
         showItemsIcons={true}
         searchActive={false}
+        kitchenSinkActive={kitchenSinkActive}
       />
     );
   };
