@@ -20,7 +20,6 @@ export interface Props {
   onSeek: (n: CuePointData) => void;
   autoScroll?: boolean;
   onScroll: (n: number) => void;
-  widgetWidth: number;
   highlightedMap: HighlightedMap;
   showItemsIcons: boolean;
   listDataContainCaptions?: boolean;
@@ -85,12 +84,12 @@ export class CaptionList extends Component<Props> {
       key: id,
       onClick: this._handleClick(captionData),
       caption: captionData,
-      highlighted: highlightedMap,
+      isHighlighted: Boolean(highlightedMap[id]),
       longerThanHour: captionProps.videoDuration >= HOUR,
       shouldScroll: this._getShouldScroll(id),
       shouldScrollToSearchMatch: this._getShouldScrollToSearchMatch(id),
       isAutoScrollEnabled,
-      searchCaption: this.props.searchMap[captionData.id],
+      searchCaption: this.props.searchMap[id],
       ...this._getSearchProps(id)
     };
     return newCaptionProps;
@@ -105,14 +104,19 @@ export class CaptionList extends Component<Props> {
   };
 
   render() {
-    const {data} = this.props;
-    let isSearchCaption = false;
+    const {data, highlightedMap} = this.props;
+    let isSearchCaptionInList = false;
     return (
       <div className={styles.transcriptWrapper} onKeyUp={this._handleKeyUp}>
         {data.map((captionData, index) => {
           const captionProps = this._getCaptionProps(captionData);
+          let isSearchCaption = false;
+          if (captionProps.searchCaption && Object.keys(captionProps.searchCaption).some(key => parseInt(key) === this.props.activeSearchIndex)) {
+            isSearchCaptionInList = true;
+            isSearchCaption = true;
+          }
           return (
-            <ScreenReaderContext.Consumer>
+            <ScreenReaderContext.Consumer key={captionData.id}>
               {(setTextToRead: (textToRead: string, delay?: number | undefined) => void) => {
                 return (
                   <Caption
@@ -123,15 +127,7 @@ export class CaptionList extends Component<Props> {
                       } else if (index === data.length - 1) {
                         this._lastCaptionRef = node;
                       }
-                      if (captionProps.searchCaption) {
-                        Object.keys(captionProps.searchCaption).forEach(key => {
-                          if (parseInt(key) === this.props.activeSearchIndex) {
-                            this._currentCaptionRef = node;
-                            isSearchCaption = true;
-                          }
-                        });
-                      }
-                      if (!isSearchCaption && captionProps.highlighted[captionData.id]) {
+                      if (isSearchCaption || (!isSearchCaptionInList && captionProps.isHighlighted)) {
                         this._currentCaptionRef = node;
                       }
                     }}

@@ -438,7 +438,6 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         activeSearchIndex={activeSearchIndex}
         captionProps={captionProps}
         onScroll={this._onScroll}
-        widgetWidth={this.state.widgetWidth}
         showItemsIcons={true}
         searchActive={false}
       />
