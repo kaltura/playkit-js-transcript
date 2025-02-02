@@ -86,9 +86,7 @@ export class Caption extends Component<ExtendedCaptionProps> {
     if (longerThanHour !== nextProps.longerThanHour) {
       return true;
     }
-    if(Object.keys(highlighted).length === 0){
-      return true;
-    }
+
     if (highlighted !== nextProps.highlighted) {
       if(Object.keys(highlighted).some(c => c === caption.id)) {
         return true
