@@ -30,7 +30,7 @@ export interface CaptionProps {
 interface ExtendedCaptionProps extends CaptionProps {
   caption: CuePointData;
   onClick: () => void;
-  highlighted: boolean;
+  isHighlighted: boolean;
   shouldScroll: boolean;
   shouldScrollToSearchMatch: boolean;
   indexMap: Record<string, number> | undefined;
@@ -83,14 +83,14 @@ export class Caption extends Component<ExtendedCaptionProps> {
   }
 
   shouldComponentUpdate(nextProps: ExtendedCaptionProps) {
-    const {indexMap, highlighted, isAutoScrollEnabled, activeSearchIndex, longerThanHour} = this.props;
+    const {indexMap, isHighlighted, isAutoScrollEnabled, activeSearchIndex, longerThanHour} = this.props;
     if (longerThanHour !== nextProps.longerThanHour) {
       return true;
     }
-    if (highlighted !== nextProps.highlighted) {
+    if (isHighlighted !== nextProps.isHighlighted) {
       return true;
     }
-    if (highlighted && isAutoScrollEnabled !== nextProps.isAutoScrollEnabled) {
+    if (isHighlighted && isAutoScrollEnabled !== nextProps.isAutoScrollEnabled) {
       return true;
     }
     if (indexMap !== nextProps.indexMap) {
@@ -150,9 +150,8 @@ export class Caption extends Component<ExtendedCaptionProps> {
   };
 
   render() {
-    const {caption, highlighted, showTime, longerThanHour, indexMap, captionLabel, moveToSearch, navigationInstruction, timeLabel, player} = this.props;
-    const {startTime, id} = caption;
-    const isHighlighted = Object.keys(highlighted).some(c => c === id);
+    const {caption, isHighlighted, showTime, longerThanHour, indexMap, captionLabel, moveToSearch, navigationInstruction, timeLabel, player} = this.props;
+    const {startTime} = caption;
     const time = showTime ? secondsToTime(startTime, longerThanHour) : '';
 
     const captionA11yProps: Record<string, any> = {

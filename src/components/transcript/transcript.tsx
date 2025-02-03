@@ -1,6 +1,6 @@
 import {h, Component} from 'preact';
 import {ui, core} from '@playkit-js/kaltura-player-js';
-import {debounce} from '../../utils';
+import {debounce} from '@playkit-js/common/dist/utils-common';
 import * as styles from './transcript.scss';
 import {Spinner} from '../spinner';
 import {Search} from '../search';
@@ -23,6 +23,7 @@ const {PLAYER_BREAK_POINTS} = ui.Components;
 const {connect} = ui.redux;
 
 const SEARCH_EVENT_DISPATCH_TIMEOUT = 2000;
+const WIDGET_RESIZE_DEBOUNCE_TIMEOUT = 250;
 
 const translates = {
   skipTranscript: <Text id="transcript.skip_transcript">Skip transcript</Text>,
@@ -131,12 +132,12 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     if (window.ResizeObserver) {
       // observe transcript root element size changes
       this._resizeObserver = new ResizeObserver(() => {
-        this._setWidgetSize();
+        this._debounced.setWidgetSize();
       });
       this._resizeObserver.observe(this._widgetRootRef!);
     } else {
       // use player size to define transcript root element size
-      this._setWidgetSize();
+      this._debounced.setWidgetSize();
     }
   }
 
@@ -155,7 +156,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
 
     if (!this._resizeObserver && previousProps.playerWidth !== playerWidth) {
       // re-calculate wiget size if player size changed
-      this._setWidgetSize();
+      this._debounced.setWidgetSize();
     }
   }
 
@@ -438,7 +439,6 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         activeSearchIndex={activeSearchIndex}
         captionProps={captionProps}
         onScroll={this._onScroll}
-        widgetWidth={this.state.widgetWidth}
         showItemsIcons={true}
         searchActive={false}
       />
@@ -505,7 +505,8 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
   private _debounced = {
     findSearchMatches: debounce(this._findSearchMatches, this.props.searchDebounceTimeout),
     onActiveSearchIndexChange: debounce(this._setActiveSearchIndex, this.props.searchNextPrevDebounceTimeout),
-    searchEventDispatcher: debounce(this._dispatchSearchEvent, SEARCH_EVENT_DISPATCH_TIMEOUT)
+    searchEventDispatcher: debounce(this._dispatchSearchEvent, SEARCH_EVENT_DISPATCH_TIMEOUT),
+    setWidgetSize: debounce(this._setWidgetSize, WIDGET_RESIZE_DEBOUNCE_TIMEOUT)
   };
 
   render(props: TranscriptProps) {
