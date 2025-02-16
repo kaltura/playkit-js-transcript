@@ -71,6 +71,7 @@ export interface TranscriptProps {
   isMobile?: boolean;
   playerWidth?: number;
   onJumpToSearchMatch: () => void;
+  onScrollToSearchMatch: () => void;
   focusPluginButton: (event: KeyboardEvent) => void;
   textTracks: Array<core.TextTrack>;
   changeLanguage: (textTrack: core.TextTrack) => void;
@@ -224,6 +225,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
 
   private _onSearch = (search: string) => {
     this.setState({search});
+    this.props.onScrollToSearchMatch()
   };
 
   private _findSearchMatches = () => {

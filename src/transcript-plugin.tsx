@@ -284,6 +284,10 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     this.dispatchEvent(TranscriptEvents.TRANSCRIPT_TO_SEARCH_MATCH);
   };
 
+  private _scrollToMatch = () => {
+    this.dispatchEvent(TranscriptEvents.TRANSCRIPT_SCROLLING);
+  }
+
   private _changeLanguage = (textTrack: core.TextTrack) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error - Property 'selectTrack' does not exist on type 'Player'
@@ -340,6 +344,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
               this._handleAttach(CloseDetachTypes.arrow);
             }}
             onJumpToSearchMatch={this._toSearchMatch}
+            onScrollToSearchMatch={this._scrollToMatch}
             //@ts-ignore
             focusPluginButton={(event: KeyboardEvent) => this.upperBarManager!.focusPluginButton(this._transcriptIcon, event)}
             textTracks={this._getTextTracks()}
