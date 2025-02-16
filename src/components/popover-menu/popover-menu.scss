@@ -31,6 +31,9 @@ $child-item-width: 170px;
     position: absolute;
     right: 0px;
     z-index: 1;
+    overflow-y: auto;
+    height: 80px;
+
     &.child-item {
       margin-top: 0;
       top: 0;
