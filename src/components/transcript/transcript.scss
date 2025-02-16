@@ -83,6 +83,9 @@ $button-height: 32px;
     &:focus {
       opacity: 1;
     }
+    &[class^="Button__button"]:focus:not([class^="Button__disabled"]) {
+      background-color: $tone-6-color
+    }
   }
 }
 
