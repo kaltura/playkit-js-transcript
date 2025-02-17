@@ -8,6 +8,8 @@ import {Button, ButtonType} from '@playkit-js/common/dist/components/button';
 const {withText, Text} = KalturaPlayer.ui.preacti18n;
 
 interface TranscriptMenuProps {
+  shouldUseCalculatedHeight: boolean;
+  popOverHeight: number;
   printTranscript?: string;
   downloadTranscript?: string;
   moreOptionsLabel?: string;
@@ -41,6 +43,8 @@ const translates = {
 class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState> {
   render() {
     const {
+      shouldUseCalculatedHeight,
+      popOverHeight,
       downloadDisabled,
       onDownload,
       printDisabled,
@@ -94,7 +98,11 @@ class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState>
     }
 
     return items.length ? (
-      <PopoverMenu items={items} kitchenSinkDetached={kitchenSinkDetached}>
+      <PopoverMenu
+        items={items}
+        kitchenSinkDetached={kitchenSinkDetached}
+        popOverMenuHeight={popOverHeight}
+        shouldUseCalculatedHeight={shouldUseCalculatedHeight}>
         <Button type={ButtonType.borderless} icon={'more'} tabIndex={-1} ariaLabel={this.props.moreOptionsLabel} />
       </PopoverMenu>
     ) : null;

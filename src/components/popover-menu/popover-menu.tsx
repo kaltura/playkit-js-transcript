@@ -16,6 +16,8 @@ interface PopoverMenuProps {
   children?: VNode;
   items: Array<PopoverMenuItemData>;
   kitchenSinkDetached: boolean;
+  popOverMenuHeight: number;
+  shouldUseCalculatedHeight: boolean;
 }
 
 interface PopoverMenuState {
@@ -106,7 +108,14 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
   };
 
   render() {
-    const {children, items, kitchenSinkDetached} = this.props;
+    const {children, items, kitchenSinkDetached, popOverMenuHeight, shouldUseCalculatedHeight} = this.props;
+
+    let popOverHeight = 0;
+    if (shouldUseCalculatedHeight) {
+      const neededHeight = 48 * items.length;
+      const padding = 14;
+      popOverHeight = popOverMenuHeight - neededHeight <= 0 ? popOverMenuHeight - padding : neededHeight - padding;
+    }
 
     const popoverMenuContent = (
       <div className={styles.popoverContainer}>
@@ -132,6 +141,7 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
 
         <div
           className={styles.popoverComponent}
+          style={shouldUseCalculatedHeight ? {height: `${popOverHeight}px`, overflowY: 'auto'} : {}}
           role="menu"
           aria-expanded={this.state.isOpen}
           id="popoverContent"
