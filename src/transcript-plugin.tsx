@@ -349,6 +349,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
             focusPluginButton={(event: KeyboardEvent) => this.upperBarManager!.focusPluginButton(this._transcriptIcon, event)}
             textTracks={this._getTextTracks()}
             changeLanguage={this._changeLanguage}
+            sidePanelPosition={position}
           />
         ) as any;
       },

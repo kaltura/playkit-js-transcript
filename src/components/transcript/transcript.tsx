@@ -18,7 +18,7 @@ import {TranscriptEvents} from '../../events/events';
 const {ENTER, SPACE, TAB, ESC} = ui.utils.KeyMap;
 const {withText, Text} = ui.preacti18n;
 
-const {SidePanelModes} = ui;
+const {SidePanelModes, SidePanelPositions} = ui;
 const {PLAYER_BREAK_POINTS} = ui.Components;
 const {connect} = ui.redux;
 
@@ -75,6 +75,7 @@ export interface TranscriptProps {
   focusPluginButton: (event: KeyboardEvent) => void;
   textTracks: Array<core.TextTrack>;
   changeLanguage: (textTrack: core.TextTrack) => void;
+  sidePanelPosition: string;
 }
 
 interface TranscriptState {
@@ -115,6 +116,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
   private _preventScrollEvent: boolean = false;
   private _scrollToSearchMatchEnabled: boolean = false;
   private _widgetRootRef: HTMLElement | null = null;
+  private _transcriptMenuRef: HTMLElement | null = null;
 
   private _widgetHeight: number = 0;
   private _topAutoscrollEdge: number = 0;
@@ -169,7 +171,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
   }
 
   private _handleClose = (event: KeyboardEvent) => {
-    if (event.keyCode === ESC){
+    if (event.keyCode === ESC) {
       this.props.onClose(event, true);
     }
   };
@@ -303,6 +305,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
 
   private _renderHeader = () => {
     const {
+      sidePanelPosition,
       toggledWithEnter,
       kitchenSinkActive,
       kitchenSinkDetached,
@@ -319,6 +322,10 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
       changeLanguage
     } = this.props;
     const {search, activeSearchIndex, totalSearchResults} = this.state;
+    const widgetHeight = this._widgetRootRef?.getBoundingClientRect().height;
+    const transcriptHeight = this._transcriptMenuRef?.getBoundingClientRect().height;
+    const popOverHeight = (widgetHeight ?? 0) - (transcriptHeight ?? 0) - 16;
+    const shouldUseCalculatedHeight = sidePanelPosition === SidePanelPositions.TOP || sidePanelPosition === SidePanelPositions.BOTTOM;
 
     let detachMenuItem: null | any = null;
     if (this.state.widgetWidth <= SMALL_WIDGET_WIDTH && !kitchenSinkDetached) {
@@ -330,7 +337,12 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
       };
     }
     return (
-      <div className={[styles.header, this._getHeaderStyles()].join(' ')} data-testid="transcript_header">
+      <div
+        className={[styles.header, this._getHeaderStyles()].join(' ')}
+        data-testid="transcript_header"
+        ref={node => {
+          this._transcriptMenuRef = node;
+        }}>
         <Search
           onChange={this._onSearch}
           onSearchIndexChange={this._debounced.onActiveSearchIndexChange}
@@ -343,7 +355,19 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         />
         {this._renderJumpToSearchButton()}
         <TranscriptMenu
-          {...{downloadDisabled, onDownload, printDisabled, onPrint, isLoading, detachMenuItem, kitchenSinkDetached, textTracks, changeLanguage}}
+          {...{
+            shouldUseCalculatedHeight,
+            popOverHeight,
+            downloadDisabled,
+            onDownload,
+            printDisabled,
+            onPrint,
+            isLoading,
+            detachMenuItem,
+            kitchenSinkDetached,
+            textTracks,
+            changeLanguage
+          }}
         />
         {!detachMenuItem && this._renderDetachButton()}
         {!kitchenSinkDetached && (
@@ -514,6 +538,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
   render(props: TranscriptProps) {
     const {isLoading, kitchenSinkActive, kitchenSinkDetached, hasError, smallScreen, toggledWithEnter} = props;
     const renderTranscriptButtons = !(isLoading || hasError);
+
     return (
       <ScreenReaderProvider>
         <div
