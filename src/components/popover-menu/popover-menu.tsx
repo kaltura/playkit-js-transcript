@@ -33,6 +33,7 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
   private _controlElementRef: HTMLDivElement | null = null;
   private _popoverElementRef: HTMLDivElement | null = null;
   private _itemsRefMap: Map<number, HTMLDivElement | null> = new Map();
+  //private left: number = 0;
 
   eventManager: any;
 
@@ -49,6 +50,11 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
   componentWillUnmount() {
     this._itemsRefMap = new Map();
   }
+
+  private _getLeftPositionOf = () => {
+    console.log('left: ' + this._popoverElementRef?.getBoundingClientRect().left);
+    return this._popoverElementRef?.getBoundingClientRect().left ?? 0;
+  };
 
   private _handleMouseEvent = (event: MouseEvent) => {
     if (!this._controlElementRef?.contains(event.target as Node | null)) {
@@ -110,6 +116,7 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
   render() {
     const {children, items, kitchenSinkDetached, popOverMenuHeight, shouldUseCalculatedHeight} = this.props;
 
+    //console.log('left: ' + left);
     let popOverHeight = 0;
     if (shouldUseCalculatedHeight) {
       const neededHeight = 48 * items.length;
@@ -151,6 +158,7 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
           {this.state.isOpen
             ? items.map((item, index) => (
                 <PopoverMenuItem
+                  left={this._getLeftPositionOf}
                   key={index}
                   item={item}
                   index={index}

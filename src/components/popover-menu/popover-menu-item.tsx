@@ -21,10 +21,11 @@ interface PopoverMenuItemProps {
   onKeyUp: (index: number) => void;
   onKeyDown: (index: number) => void;
   onClick?: () => void;
+  left: () => number;
 }
 
 export const PopoverMenuItem = (props: PopoverMenuItemProps) => {
-  const {item, index, setRef, onKeyUp, onKeyDown, onClick} = props;
+  const {left, item, index, setRef, onKeyUp, onKeyDown, onClick} = props;
   const {isDisabled, isSelected, items, testId, label} = item;
   const [isChildOpen, setIsChildOpen] = useState(false);
 
@@ -55,10 +56,16 @@ export const PopoverMenuItem = (props: PopoverMenuItemProps) => {
       return null;
     }
     return (
-      <div className={[styles.popoverComponent, styles.childItem].join(' ')} role="menu" aria-expanded={isChildOpen} id="popoverContent">
+      <div
+        className={[styles.popoverComponent, styles.childItem].join(' ')}
+        style={{left: left() - 177}}
+        role="menu"
+        aria-expanded={isChildOpen}
+        id="popoverContent">
         {isChildOpen
           ? items.map((item, index) => (
               <PopoverMenuItem
+                left={props.left}
                 key={index}
                 item={item}
                 index={index}
