@@ -7,7 +7,7 @@ import * as styles from './caption.scss';
 import {TranscriptEvents} from '../../events/events';
 
 //@ts-ignore
-const {getDurationAsText} = KalturaPlayer.ui.utils
+const {getDurationAsText} = KalturaPlayer.ui.utils;
 const {withText, Text} = KalturaPlayer.ui.preacti18n;
 const {withEventManager} = KalturaPlayer.ui.Event;
 const {withPlayer} = KalturaPlayer.ui.components;
@@ -42,9 +42,12 @@ interface ExtendedCaptionProps extends CaptionProps {
 const translates = {
   captionLabel: <Text id="transcript.caption_label">Jump to this point in video</Text>,
   moveToSearch: <Text id="transcript.move_to_search">Click to jump to search result</Text>,
-  navigationInstruction: <Text id="transcript.navigation_instruction">Press Home to navigate to the beginning of the transcript. Press End to jump to the end of the transcript.</Text>,
-  timeLabel: <Text id="transcript.time_label">Timestamp</Text>,
-
+  navigationInstruction: (
+    <Text id="transcript.navigation_instruction">
+      Press Home to navigate to the beginning of the transcript. Press End to jump to the end of the transcript.
+    </Text>
+  ),
+  timeLabel: <Text id="transcript.time_label">Timestamp</Text>
 };
 
 @withText(translates)
@@ -82,10 +85,10 @@ export class Caption extends Component<ExtendedCaptionProps> {
     });
 
     eventManager?.listen(player, TranscriptEvents.TRANSCRIPT_SCROLLING, () => {
-      if(this._hasSearchMatch()) {
-        this._captionRef?.scrollIntoView()
+      if (this._captionRef && this._hasSearchMatch()) {
+        this.props.scrollTo(this._captionRef);
       }
-    })
+    });
   }
 
   shouldComponentUpdate(nextProps: ExtendedCaptionProps) {
@@ -156,14 +159,17 @@ export class Caption extends Component<ExtendedCaptionProps> {
   };
 
   render() {
-    const {caption, isHighlighted, showTime, longerThanHour, indexMap, captionLabel, moveToSearch, navigationInstruction, timeLabel, player} = this.props;
+    const {caption, isHighlighted, showTime, longerThanHour, indexMap, captionLabel, moveToSearch, navigationInstruction, timeLabel, player} =
+      this.props;
     const {startTime} = caption;
     const time = showTime ? secondsToTime(startTime, longerThanHour) : '';
 
     const captionA11yProps: Record<string, any> = {
       ariaCurrent: isHighlighted,
       tabIndex: 0,
-      ariaLabel: `${showTime? `${timeLabel} ${getDurationAsText(Math.floor(startTime), player?.config.ui.locale, true)} ` : ''}${caption.text} ${indexMap ? moveToSearch : captionLabel}. ${navigationInstruction}`,
+      ariaLabel: `${showTime ? `${timeLabel} ${getDurationAsText(Math.floor(startTime), player?.config.ui.locale, true)} ` : ''}${caption.text} ${
+        indexMap ? moveToSearch : captionLabel
+      }. ${navigationInstruction}`,
       role: 'button'
     };
 
