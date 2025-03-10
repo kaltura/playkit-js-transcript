@@ -17,7 +17,7 @@ interface PluginButtonProps {
 
 export const PluginButton = ({isActive, label, id, icon, dataTestId, setRef}: PluginButtonProps) => {
   return (
-    <Tooltip label={label} type="bottom">
+    <Tooltip label={label} type="bottom-left" strictPosition={true}>
         <button
           ref={node => {
             if (setRef) {
