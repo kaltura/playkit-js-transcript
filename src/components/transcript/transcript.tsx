@@ -117,6 +117,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
   private _scrollToSearchMatchEnabled: boolean = false;
   private _widgetRootRef: HTMLElement | null = null;
   private _transcriptMenuRef: HTMLElement | null = null;
+  private _jumpToSearchButtonComponentRef = ui.preact.createRef<Button>();
 
   private _widgetHeight: number = 0;
   private _topAutoscrollEdge: number = 0;
@@ -175,10 +176,8 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
   private _handleKeyboardShortcuts = (event: KeyboardEvent) => {
     if ((event.ctrlKey || event.metaKey) && event.code === 'KeyJ') {
       event.preventDefault();
-      const jumpToSearchButton = document.querySelector('[data-testid="transcript_jumpToSearchMatch"]') as HTMLButtonElement;
-      this.props.onJumpToSearchMatch();
-      if (jumpToSearchButton) {
-        jumpToSearchButton.focus();
+      if (this._jumpToSearchButtonComponentRef.current && this._jumpToSearchButtonComponentRef.current.buttonRef.current) {
+        this._jumpToSearchButtonComponentRef.current.buttonRef.current.focus();
       }
     }
   }; 
@@ -301,6 +300,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
   private _renderJumpToSearchButton = () => {
     const {toSearchResult, onJumpToSearchMatch} = this.props;
     const {search, activeSearchIndex, totalSearchResults} = this.state;
+  
     if (!search || totalSearchResults === 0 || activeSearchIndex === 0) {
       return null;
     }
@@ -310,6 +310,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         className={styles.toSearchButton}
         onClick={onJumpToSearchMatch}
         ariaLabel={toSearchResult}
+        ref={this._jumpToSearchButtonComponentRef}
         testId="transcript_jumpToSearchMatch">
         {toSearchResult}
       </Button>
