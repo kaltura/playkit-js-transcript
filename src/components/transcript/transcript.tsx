@@ -142,6 +142,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
       // use player size to define transcript root element size
       this._debounced.setWidgetSize();
     }
+    document.addEventListener('keydown', this._handleKeyboardShortcuts);
   }
 
   componentDidUpdate(previousProps: Readonly<TranscriptProps>, previousState: Readonly<TranscriptState>): void {
@@ -168,8 +169,20 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
       this._resizeObserver?.disconnect();
       this._resizeObserver = null;
     }
+    document.removeEventListener('keydown', this._handleKeyboardShortcuts);
   }
 
+  private _handleKeyboardShortcuts = (event: KeyboardEvent) => {
+    if ((event.ctrlKey || event.metaKey) && event.code === 'KeyJ') {
+      event.preventDefault();
+      const jumpToSearchButton = document.querySelector('[data-testid="transcript_jumpToSearchMatch"]') as HTMLButtonElement;
+      this.props.onJumpToSearchMatch();
+      if (jumpToSearchButton) {
+        jumpToSearchButton.focus();
+      }
+    }
+  }; 
+  
   private _handleClose = (event: KeyboardEvent) => {
     if (event.keyCode === ESC) {
       this.props.onClose(event, true);
