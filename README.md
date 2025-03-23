@@ -200,7 +200,6 @@ Bump version: `yarn release`;<br/>
 > ##### Type: `boolean`
 >
 > ##### Default: `false`
->
 
 ##
 
