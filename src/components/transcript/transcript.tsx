@@ -117,6 +117,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
   private _scrollToSearchMatchEnabled: boolean = false;
   private _widgetRootRef: HTMLElement | null = null;
   private _transcriptMenuRef: HTMLElement | null = null;
+  private _jumpToSearchButtonComponentRef = ui.preact.createRef<Button>();
 
   private _widgetHeight: number = 0;
   private _topAutoscrollEdge: number = 0;
@@ -142,6 +143,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
       // use player size to define transcript root element size
       this._debounced.setWidgetSize();
     }
+    document.addEventListener('keydown', this._handleKeyboardShortcuts);
   }
 
   componentDidUpdate(previousProps: Readonly<TranscriptProps>, previousState: Readonly<TranscriptState>): void {
@@ -168,8 +170,18 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
       this._resizeObserver?.disconnect();
       this._resizeObserver = null;
     }
+    document.removeEventListener('keydown', this._handleKeyboardShortcuts);
   }
 
+  private _handleKeyboardShortcuts = (event: KeyboardEvent) => {
+    if ((event.ctrlKey || event.metaKey) && event.code === 'KeyJ') {
+      event.preventDefault();
+      if (this._jumpToSearchButtonComponentRef.current && this._jumpToSearchButtonComponentRef.current.buttonRef.current) {
+        this._jumpToSearchButtonComponentRef.current.buttonRef.current.focus();
+      }
+    }
+  }; 
+  
   private _handleClose = (event: KeyboardEvent) => {
     if (event.keyCode === ESC) {
       this.props.onClose(event, true);
@@ -288,6 +300,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
   private _renderJumpToSearchButton = () => {
     const {toSearchResult, onJumpToSearchMatch} = this.props;
     const {search, activeSearchIndex, totalSearchResults} = this.state;
+  
     if (!search || totalSearchResults === 0 || activeSearchIndex === 0) {
       return null;
     }
@@ -297,6 +310,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         className={styles.toSearchButton}
         onClick={onJumpToSearchMatch}
         ariaLabel={toSearchResult}
+        ref={this._jumpToSearchButtonComponentRef}
         testId="transcript_jumpToSearchMatch">
         {toSearchResult}
       </Button>
