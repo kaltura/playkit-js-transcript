@@ -1,12 +1,16 @@
 import {h, Component} from 'preact';
 import {InputField} from '@playkit-js/common/dist/components/input-field';
-import {core, ui} from '@playkit-js/kaltura-player-js';
+import {ui} from '@playkit-js/kaltura-player-js';
 
-const {Utils} = core;
+const {connect} = ui.redux;
 const {withEventManager} = KalturaPlayer.ui.Event;
 const {TAB} = KalturaPlayer.ui.utils.KeyMap;
 const {withText, Text} = KalturaPlayer.ui.preacti18n;
 const {withPlayer} = ui.Components;
+
+const mapStateToProps = (state: any) => ({
+  isOverlayOpen: state.shell.playerClasses?.includes('playkit-overlay-active')
+});
 
 const translates = ({activeSearchIndex, totalSearchResults}: SearchProps) => ({
   searchLabel: <Text id="transcript.search">Search in Transcript</Text>,
@@ -40,30 +44,32 @@ export interface SearchProps {
   nextMatchLabel?: string;
   prevMatchLabel?: string;
   searchResultsLabel?: string;
-  eventManager?: any
+  eventManager?: any;
   focusPluginButton: (event: KeyboardEvent) => void;
   player?: any;
+
+  isOverlayOpen?: boolean;
 }
 
 @withPlayer
 @withEventManager
+@connect(mapStateToProps)
 class SearchComponent extends Component<SearchProps> {
   private _inputField: InputField | null = null;
 
   constructor(props: SearchProps) {
     super(props);
-    if (this.props.player._firstPlay){
+    if (this.props.player._firstPlay) {
       this.props.eventManager?.listen(this.props.player, this.props.player.Event.FIRST_PLAY, () => {
         this.props.eventManager?.listen(document, 'keydown', this.handleKeydownEvent);
-      })
+      });
     } else {
       this.props.eventManager?.listen(document, 'keydown', this.handleKeydownEvent);
     }
   }
 
   private handleKeydownEvent = (event: KeyboardEvent) => {
-    if (event.keyCode === TAB && event.shiftKey && document.activeElement === this._inputField?.base?.childNodes[0]){
-      //@ts-ignore
+    if (event.keyCode === TAB && event.shiftKey && document.activeElement === this._inputField?.base?.childNodes[0] && !this.props.isOverlayOpen) {
       this.props.focusPluginButton(event);
     }
   };
