@@ -13,7 +13,8 @@
       "auto_scroll": "恢复自动滚动",
       "whoops": "哎呀！",
       "load_failed": "成绩单加载失败",
-      "skip_transcript": "跳过成绩单"
+      "skip_transcript": "跳过成绩单",
+      "transcript": "转录文字"
     }
   }
 }
