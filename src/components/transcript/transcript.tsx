@@ -31,7 +31,8 @@ const translates = {
   errorDescripton: <Text id="transcript.load_failed">Failed to load transcript</Text>,
   attachTranscript: <Text id="transcript.attach_transcript">Bring Transcript back</Text>,
   detachTranscript: <Text id="transcript.detach_transcript">Popout transcript</Text>,
-  toSearchResult: <Text id="transcript.to_search_result">Go to result</Text>
+  toSearchResult: <Text id="transcript.to_search_result">Go to result</Text>,
+  hideTranscript: <Text id="transcript.hide_plugin">Hide Transcript</Text>
 };
 
 export interface TranscriptProps {
@@ -57,6 +58,7 @@ export interface TranscriptProps {
   attachTranscript?: string;
   detachTranscript?: string;
   toSearchResult?: string;
+  hideTranscript?: string;
   downloadDisabled: boolean;
   onDownload: () => void;
   printDisabled: boolean;
@@ -391,8 +393,8 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
               size={ButtonSize.medium}
               disabled={false}
               onClick={this.props.onClose}
-              ariaLabel={'Hide Transcript'}
-              tooltip={{label: 'Hide Transcript'}}
+              ariaLabel={this.props.hideTranscript}
+              tooltip={{ label: this.props.hideTranscript! }}
               icon={'close'}
             />
           </div>

@@ -13,7 +13,8 @@
       "auto_scroll": "AutoScrollを再開",
       "whoops": "おっと！",
       "load_failed": "複写のロードに失敗した",
-      "skip_transcript": "複写をスキップ"
+      "skip_transcript": "複写をスキップ",
+      "transcript": "トランスクリプト"
     }
   }
 }
