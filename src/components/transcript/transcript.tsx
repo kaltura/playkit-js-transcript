@@ -556,7 +556,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     return (
       <ScreenReaderProvider>
         <div
-          className={`${styles.root} ${kitchenSinkActive || kitchenSinkDetached ? '' : styles.hidden} noSelect`}
+          className={`${styles.root} ${kitchenSinkActive || kitchenSinkDetached ? '' : styles.hidden}`}
           ref={node => {
             this._widgetRootRef = node;
           }}
