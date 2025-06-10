@@ -136,7 +136,7 @@ export class Caption extends Component<ExtendedCaptionProps> {
       return null;
     }
     return (
-      <span className={`${styles.captionSpan} no-select`}>
+      <span className={`${styles.captionSpan} ${styles.noCopy}`}>
         {indexMap
           ? indexArray.map((el: string, index: number) => {
               const preSelected = index === 0 ? text.substring(0, indexMap[el]) : '';
