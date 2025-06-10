@@ -75,3 +75,8 @@
     }
   }
 }
+
+:global(.protected) :global(.no-select) {
+  user-select: none !important;
+  -ms-user-select: none !important;
+}
