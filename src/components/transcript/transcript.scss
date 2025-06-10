@@ -52,6 +52,23 @@ $button-height: 32px;
   }
 }
 
+:global(.noSelect) {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  
+  * {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+  }
+  
+  ::selection { background: none; }
+  ::-moz-selection { background: none; }
+}
+
 .global-container {
   position: relative;
   height: 100%;
