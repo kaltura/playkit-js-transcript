@@ -13,7 +13,8 @@
       "auto_scroll": "Jatka automaattista vieritystä",
       "whoops": "Ups!",
       "load_failed": "Tekstitallenteen lataaminen epäonnistui",
-      "skip_transcript": "Ohita tekstitallenne"
+      "skip_transcript": "Ohita tekstitallenne",
+      "transcript": "Tekstitallenne"
     }
   }
 }
