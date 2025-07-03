@@ -13,7 +13,8 @@
       "auto_scroll": "AutoScroll fortsetzen",
       "whoops": "Hoppla!",
       "load_failed": "Transkript konnte nicht geladen werden",
-      "skip_transcript": "Transkript überspringen"
+      "skip_transcript": "Transkript überspringen",
+      "detach_transcript": "Transkript öffnen"
     }
   }
 }

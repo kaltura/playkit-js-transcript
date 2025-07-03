@@ -13,7 +13,8 @@
       "auto_scroll": "Reprendre AutoScroll",
       "whoops": "Oups!",
       "load_failed": "Échec du chargement de la transcription",
-      "skip_transcript": "Passer la transcription"
+      "skip_transcript": "Passer la transcription",
+      "detach_transcript": "Transcription pop-out"
     }
   }
 }

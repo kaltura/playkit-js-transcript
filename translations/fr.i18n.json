@@ -13,7 +13,8 @@
       "auto_scroll": "Reprendre AutoScroll",
       "whoops": "Oups !",
       "load_failed": "Échec de chargement du relevé",
-      "skip_transcript": "Sauter le relevé"
+      "skip_transcript": "Sauter le relevé",
+      "detach_transcript": "Transcription pop-out"
     }
   }
 }
