@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 3.7.0 (2025-06-19)
+
+
+### Features
+
+* **FEC-12933:** Prevent copy ([#251](https://github.com/kaltura/playkit-js-transcript/issues/251)) ([80ef21b](https://github.com/kaltura/playkit-js-transcript/commit/80ef21b53db8687aeb92d96956e635dcf72ad0e1))
+
+### 3.6.5 (2025-05-22)
+
 ### 3.6.4 (2025-04-24)
 
 ### 3.6.3 (2025-03-23)
