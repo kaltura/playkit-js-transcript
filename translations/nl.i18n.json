@@ -14,6 +14,7 @@
       "whoops": "Oeps!",
       "load_failed": "Laden transcriptie mislukt",
       "skip_transcript": "Transcriptie overslaan",
+      "detach_transcript": "Transcript weergeven",
       "transcript": "Transcriptie"
     }
   }

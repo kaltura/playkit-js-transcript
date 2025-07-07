@@ -15,6 +15,7 @@
       "whoops": "¡Vaya!",
       "load_failed": "Error al cargar la transcripción",
       "skip_transcript": "Omitir la transcripción",
+      "detach_transcript": "Mostrar transcripción en la ventana emergente",
       "transcript": "Transcripción"
     }
   }

@@ -14,6 +14,7 @@
       "whoops": "おっと！",
       "load_failed": "複写のロードに失敗した",
       "skip_transcript": "複写をスキップ",
+      "detach_transcript": "トランスクリプトを表示する",
       "transcript": "トランスクリプト"
     }
   }

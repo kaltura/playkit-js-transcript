@@ -14,6 +14,7 @@
       "whoops": "죄송합니다.",
       "load_failed": "기록을 로드하는 데 실패했습니다",
       "skip_transcript": "기록 스킵하기",
+      "detach_transcript": "기록 팝아웃",
       "transcript": "기록"
     }
   }

@@ -14,6 +14,7 @@
       "whoops": "哎呀！",
       "load_failed": "成绩单加载失败",
       "skip_transcript": "跳过成绩单",
+      "detach_transcript": "弹出转录文字",
       "transcript": "转录文字"
     }
   }

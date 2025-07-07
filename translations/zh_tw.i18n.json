@@ -14,6 +14,7 @@
       "whoops": "糟糕！",
       "load_failed": "無法載入文字紀錄",
       "skip_transcript": "略過文字記錄",
+      "detach_transcript": "彈出轉錄視窗",
       "transcript": "逐字稿"
     }
   }
