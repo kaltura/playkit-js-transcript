@@ -13,7 +13,8 @@
       "auto_scroll": "AutoScroll hervatten",
       "whoops": "Oeps!",
       "load_failed": "Laden transcriptie mislukt",
-      "skip_transcript": "Transcriptie overslaan"
+      "skip_transcript": "Transcriptie overslaan",
+      "detach_transcript": "Transcript weergeven"
     }
   }
 }
