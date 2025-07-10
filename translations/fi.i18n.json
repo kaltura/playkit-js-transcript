@@ -14,7 +14,8 @@
       "whoops": "Ups!",
       "load_failed": "Tekstitallenteen lataaminen epäonnistui",
       "skip_transcript": "Ohita tekstitallenne",
-      "detach_transcript": "Kelluva tekstitallenne"
+      "detach_transcript": "Kelluva tekstitallenne",
+      "transcript": "Tekstitallenne"
     }
   }
 }

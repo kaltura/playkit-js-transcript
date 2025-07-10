@@ -14,7 +14,8 @@
       "whoops": "Ops!",
       "load_failed": "Falha ao carregar a transcrição",
       "skip_transcript": "Ignorar transcrição",
-      "detach_transcript": "Transcrição em janela separada"
+      "detach_transcript": "Transcrição em janela separada",
+      "transcript": "Transcrição"
     }
   }
 }

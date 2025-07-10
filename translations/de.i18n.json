@@ -14,7 +14,8 @@
       "whoops": "Hoppla!",
       "load_failed": "Transkript konnte nicht geladen werden",
       "skip_transcript": "Transkript überspringen",
-      "detach_transcript": "Transkript öffnen"
+      "detach_transcript": "Transkript öffnen",
+      "transcript": "Transkript"
     }
   }
 }

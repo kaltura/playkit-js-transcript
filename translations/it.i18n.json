@@ -14,7 +14,8 @@
       "whoops": "Operazione non riuscita!",
       "load_failed": "Impossibile caricare la trascrizione",
       "skip_transcript": "Salta trascrizione",
-      "detach_transcript": "Trascrizione a comparsa"
+      "detach_transcript": "Trascrizione a comparsa",
+      "transcript": "Trascrizione"
     }
   }
 }

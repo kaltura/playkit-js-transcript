@@ -14,7 +14,8 @@
       "whoops": "Oups !",
       "load_failed": "Échec de chargement du relevé",
       "skip_transcript": "Sauter le relevé",
-      "detach_transcript": "Transcription pop-out"
+      "detach_transcript": "Transcription pop-out",
+      "transcript": "Relevé"
     }
   }
 }
