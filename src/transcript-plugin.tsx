@@ -431,9 +431,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
 
   private _handleClose = (e: OnClickEvent, byKeyboard: boolean) => {    
     if (byKeyboard) {
-      setTimeout(() => {
-        this._pluginButtonRef?.focus();
-      }, 50);
+      this._pluginButtonRef?.focus();
     }
     this._deactivatePlugin();
     this._pluginState = PluginStates.CLOSED;
