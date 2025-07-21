@@ -361,14 +361,15 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     }) as number;
     const translates = {
       showTranscript: <Text id="transcript.show_plugin">Show Transcript</Text>,
-      hideTranscript: <Text id="transcript.hide_plugin">Hide Transcript</Text>
+      hideTranscript: <Text id="transcript.hide_plugin">Hide Transcript</Text>,
+      transcript: <Text id="transcript.transcript">Transcript</Text>
     };
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error - Property 'MiniAudioUI' does not exist
     if (this._state.shell['activePresetName'] !== ReservedPresetNames.MiniAudioUI) {
       this._transcriptIcon = this.upperBarManager!.add({
         displayName: 'Transcript',
-        ariaLabel: 'Transcript',
+        ariaLabel: translates.transcript,
         order: 30,
         svgIcon: {path: icons.PLUGIN_ICON, viewBox: `0 0 ${icons.BigSize} ${icons.BigSize}`},
         onClick: this._handleClickOnPluginIcon as () => void,
