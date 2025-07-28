@@ -36,9 +36,11 @@ $button-height: 32px;
     line-height: 1.27;
     color: $tone-1-color;
     &:focus {
+      outline: 2px solid $tab-focus-color !important;
+      box-shadow: 0 0 0 2px white !important;
+      outline-offset: 2px;
       top: 56px;
       right: 12px;
-      outline: none !important; // prevent focus styles inherited from playkit-player.playkit-nav
     }
   }
 
@@ -48,7 +50,9 @@ $button-height: 32px;
   }
 
   *:focus-visible:not(input) {
-    outline: 1px solid $tab-focus-color;
+    outline: 2px solid $tab-focus-color !important;
+    box-shadow: 0 0 0 2px white !important;
+    outline-offset: 2px;  
   }
 }
 
