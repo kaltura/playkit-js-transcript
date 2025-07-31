@@ -73,7 +73,9 @@ class SearchComponent extends Component<SearchProps> {
       this.props.focusPluginButton(event);
     }
   };
-
+  componentDidMount(): void {
+    this._inputField?.setFocus({ preventScroll: true }); 
+  }
   shouldComponentUpdate(nextProps: Readonly<SearchProps>) {
     const {value, activeSearchIndex, totalSearchResults, kitchenSinkActive} = this.props;
     if (
