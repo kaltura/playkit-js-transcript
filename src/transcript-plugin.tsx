@@ -430,7 +430,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     this.dispatchEvent(TranscriptEvents.TRANSCRIPT_PRINT, {videoPosition: this.player.currentTime});
   };
 
-  private _handleClose = (e: OnClickEvent, byKeyboard: boolean) => {
+  private _handleClose = (e: OnClickEvent, byKeyboard: boolean) => {    
     if (byKeyboard) {
       this._pluginButtonRef?.focus();
     }
