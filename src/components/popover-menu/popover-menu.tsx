@@ -6,7 +6,7 @@ const {Tooltip} = ui.components;
 const {withText, Text} = ui.preacti18n;
 
 const {withEventManager} = ui.Event;
-const {TAB} = ui.utils.KeyMap;
+const {TAB, ESC} = ui.utils.KeyMap;
 
 import * as styles from './popover-menu.scss';
 
@@ -58,6 +58,18 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
 
   private _handleKeydownEvent = (event: KeyboardEvent) => {
     const eventTarget = event.target as Node | null;
+
+    if (this.state.isOpen && event.keyCode === ESC) {
+      event.preventDefault();
+      this.setState({ isOpen: false }, () => {
+        //using requestAnimationFrame to focus after DOM updates are complete 
+        requestAnimationFrame(() => {
+          this._controlElementRef?.focus();
+        });
+      });
+      return;
+    }
+
     if (
       this.state.isOpen &&
       event.keyCode === TAB &&
@@ -85,19 +97,24 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
     const isOpen = !this.state.isOpen;
 
     this.setState({isOpen}, () => {
-      if (isOpen) {
-        this._controlElementRef?.focus();
-        this.props.eventManager?.listen(this._controlElementRef, 'keydown', (event: KeyboardEvent) => {
-          if (event.keyCode === TAB) {
-            const firstNonDisabledItem = this.props.items.findIndex((item: PopoverMenuItemData) => !item.isDisabled);
-            if (firstNonDisabledItem !== -1) {
-              this._getItemRef(firstNonDisabledItem - 1)?.focus();
-            }
-          }
-        });
+    if (isOpen) {
+      const firstItemIndex = this.props.items.findIndex(
+        (item: PopoverMenuItemData) => !item.isDisabled
+      );
+      if (firstItemIndex !== -1) {
+        this._getItemRef(firstItemIndex)?.focus();
       }
-    });
-  };
+      this.props.eventManager?.listen(this._controlElementRef, 'keydown', (event: KeyboardEvent) => {
+        if (event.keyCode === TAB) {
+          const firstNonDisabledItem = this.props.items.findIndex((item: PopoverMenuItemData) => !item.isDisabled);
+          if (firstNonDisabledItem !== -1) {
+            this._getItemRef(firstNonDisabledItem - 1)?.focus();
+          }
+        }
+      });
+    }
+  });
+};
 
   private _getItemRef = (index: number) => {
     return this._itemsRefMap.get(index);
