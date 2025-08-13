@@ -6,7 +6,7 @@ const {Tooltip} = ui.components;
 const {withText, Text} = ui.preacti18n;
 
 const {withEventManager} = ui.Event;
-const {TAB, ESC} = ui.utils.KeyMap;
+const {KeyCode} = ui.utils
 
 import * as styles from './popover-menu.scss';
 
@@ -59,8 +59,9 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
   private _handleKeydownEvent = (event: KeyboardEvent) => {
     const eventTarget = event.target as Node | null;
 
-    if (this.state.isOpen && event.keyCode === ESC) {
+    if (this.state.isOpen && event.code === KeyCode.Escape) {      
       event.preventDefault();
+      this._closePopover();
       this.setState({ isOpen: false }, () => {
         //using requestAnimationFrame to focus after DOM updates are complete 
         requestAnimationFrame(() => {
@@ -72,7 +73,7 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
 
     if (
       this.state.isOpen &&
-      event.keyCode === TAB &&
+      event.code === KeyCode.Tab &&
       !this._controlElementRef?.contains(eventTarget) &&
       !this._popoverElementRef?.contains(eventTarget) &&
       eventTarget !== this._controlElementRef
@@ -105,7 +106,7 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
         this._getItemRef(firstItemIndex)?.focus();
       }
       this.props.eventManager?.listen(this._controlElementRef, 'keydown', (event: KeyboardEvent) => {
-        if (event.keyCode === TAB) {
+        if (event.code === KeyCode.Tab) {
           const firstNonDisabledItem = this.props.items.findIndex((item: PopoverMenuItemData) => !item.isDisabled);
           if (firstNonDisabledItem !== -1) {
             this._getItemRef(firstNonDisabledItem - 1)?.focus();
