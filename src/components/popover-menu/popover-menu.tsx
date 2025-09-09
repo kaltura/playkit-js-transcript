@@ -56,20 +56,21 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
     }
   };
 
-  private _handleKeydownEvent = (event: KeyboardEvent) => {
-    const eventTarget = event.target as Node | null;
-
-    if (this.state.isOpen && event.code === KeyCode.Escape) {      
+  // The Transcript parent component already listens onKeyDown at the root to close the entire plugin. 
+  // By handling Escape onKeyUp here we prevent that parent handler from firing when the popover is open.
+  private _handleKeyupEvent = (event: KeyboardEvent) => {
+    if (this.state.isOpen && event.code === KeyCode.Escape) {
       event.preventDefault();
+      event.stopPropagation();
       this._closePopover();
       this.setState({ isOpen: false }, () => {
-        //using requestAnimationFrame to focus after DOM updates are complete 
-        requestAnimationFrame(() => {
-          this._controlElementRef?.focus();
-        });
+      this._controlElementRef?.focus();
       });
-      return;
     }
+  };
+
+  private _handleKeydownEvent = (event: KeyboardEvent) => {
+    const eventTarget = event.target as Node | null;
 
     if (
       this.state.isOpen &&
@@ -159,6 +160,7 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
 
         <div
           className={styles.popoverComponent}
+          onKeyUp={this._handleKeyupEvent}
           style={shouldUseCalculatedHeight ? {height: `${popOverHeight}px`, overflowY: 'auto'} : {}}
           role="menu"
           aria-expanded={this.state.isOpen}
