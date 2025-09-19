@@ -354,7 +354,6 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
         ) as any;
       },
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error - Property 'MiniAudioUI' does not exist
       presets: [ReservedPresetNames.Playback, ReservedPresetNames.Live, ReservedPresetNames.Ads, ReservedPresetNames.MiniAudioUI],
       position: position,
       expandMode: expandMode === SidePanelModes.ALONGSIDE ? SidePanelModes.ALONGSIDE : SidePanelModes.OVER
@@ -365,7 +364,6 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       transcript: <Text id="transcript.transcript">Transcript</Text>
     };
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error - Property 'MiniAudioUI' does not exist
     if (this._state.shell['activePresetName'] !== ReservedPresetNames.MiniAudioUI) {
       this._transcriptIcon = this.upperBarManager!.add({
         displayName: 'Transcript',

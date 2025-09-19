@@ -13,7 +13,7 @@
     "url": "git+https://github.com/kaltura/playkit-js-transcript.git"
   },
   "devDependencies": {
-    "@playkit-js/kaltura-player-js": "3.17.9",
+    "@playkit-js/kaltura-player-js": "3.17.56",
     "@playkit-js/playkit-js-ui": "0.79.13",
     "@playkit-js/ui-managers": "1.6.2-canary.0-9634d47",
     "@types/sanitize-html": "^2.9.3",
@@ -21,7 +21,7 @@
     "copyfiles": "^2.4.1",
     "cross-env": "^7.0.3",
     "css-loader": "^6.7.1",
-    "cypress": "13.13.1",
+    "cypress": "14.1.0",
     "playwright-webkit": "^1.33.0",
     "prettier": "^2.6.2",
     "rimraf": "^5.0.5",
