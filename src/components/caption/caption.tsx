@@ -37,6 +37,8 @@ interface ExtendedCaptionProps extends CaptionProps {
   activeSearchIndex: number;
   longerThanHour: boolean;
   isAutoScrollEnabled: boolean;
+  onUpKeyPressed?: (e: KeyboardEvent) => void;
+  onDownKeyPressed?: (e: KeyboardEvent) => void;
 }
 
 const translates = {
@@ -174,7 +176,11 @@ export class Caption extends Component<ExtendedCaptionProps> {
     };
 
     return (
-      <A11yWrapper onClick={this._handleClick}>
+      <A11yWrapper
+        onClick={this._handleClick}
+        onUpKeyPressed={(e: KeyboardEvent) => this.props.onUpKeyPressed?.(e)}
+        onDownKeyPressed={(e: KeyboardEvent) => this.props.onDownKeyPressed?.(e)}
+      >
         <div
           className={styles.caption}
           ref={node => {

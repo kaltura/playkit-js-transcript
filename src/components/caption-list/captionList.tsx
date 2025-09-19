@@ -33,6 +33,40 @@ export class CaptionList extends Component<Props> {
   private _currentCaptionRef: any = null;
   private _firstCaptionRef: any = null;
   private _lastCaptionRef: any = null;
+  private _captionRefs: Map<number, HTMLElement | null> = new Map();
+
+  private _setCaptionRef = (index: number, ref: HTMLElement | null) => {
+    this._captionRefs.set(index, ref);
+  };
+
+  private _getCaptionRef = (index: number) => {
+    return this._captionRefs.get(index);
+  };
+
+  private _focusPrevCaption = (currentIndex: number) => {
+    const { data } = this.props;
+    if (!data.length) return;
+
+    let prevIndex = currentIndex - 1;
+    if (prevIndex < 0) {
+      prevIndex = data.length - 1;
+    }
+
+    this._getCaptionRef(prevIndex)?.focus();
+  };
+
+  private _focusNextCaption = (currentIndex: number) => {
+    const { data } = this.props;
+    if (!data.length) return;
+
+    let nextIndex = currentIndex + 1;
+    if (nextIndex >= data.length) {
+      nextIndex = 0;
+    }
+
+    this._getCaptionRef(nextIndex)?.focus();
+  };
+
   shouldComponentUpdate(nextProps: Readonly<Props>) {
     const {highlightedMap, data, searchMap, activeSearchIndex, isAutoScrollEnabled, captionProps} = this.props;
     if (
@@ -122,6 +156,7 @@ export class CaptionList extends Component<Props> {
                   <Caption
                     setTextToRead={setTextToRead}
                     ref={node => {
+                      this._setCaptionRef(index, node?.base ?? null);
                       if (index === 0) {
                         this._firstCaptionRef = node;
                       } else if (index === data.length - 1) {
@@ -131,6 +166,8 @@ export class CaptionList extends Component<Props> {
                         this._currentCaptionRef = node;
                       }
                     }}
+                    onUpKeyPressed={() => this._focusPrevCaption(index)}
+                    onDownKeyPressed={() => this._focusNextCaption(index)}
                     {...captionProps}
                   />
                 );
