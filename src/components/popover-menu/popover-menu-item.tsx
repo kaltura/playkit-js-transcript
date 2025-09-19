@@ -1,6 +1,6 @@
 import {A11yWrapper, OnClickEvent} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import {h} from 'preact';
-import {useState} from 'preact/hooks';
+import {useState, useRef} from 'preact/hooks';
 import {Icon} from '@playkit-js/common/dist/icon';
 
 import * as styles from './popover-menu.scss';
@@ -21,12 +21,16 @@ interface PopoverMenuItemProps {
   onKeyUp: (index: number) => void;
   onKeyDown: (index: number) => void;
   onClick?: () => void;
+  onLeftKeyPressed?: () => void;
+  onRightKeyPressed?: () => void;
 }
 
 export const PopoverMenuItem = (props: PopoverMenuItemProps) => {
   const {item, index, setRef, onKeyUp, onKeyDown, onClick} = props;
   const {isDisabled, isSelected, items, testId, label} = item;
   const [isChildOpen, setIsChildOpen] = useState(false);
+  const parentRef = useRef<HTMLDivElement | null>(null);
+  const childRefs = useRef<Map<number, HTMLDivElement | null>>(new Map());
 
   const getAddonAfter = () => {
     if (items) {
@@ -50,6 +54,41 @@ export const PopoverMenuItem = (props: PopoverMenuItemProps) => {
     onClick?.();
   };
 
+  const focusChild = (i: number) => {
+    const node = childRefs.current.get(i);
+    node?.focus();
+  };
+
+  const handleChildUp = (currentIndex: number) => {
+    if (!items?.length) return;
+
+    let prevIndex = currentIndex - 1;
+    if (prevIndex < 0) {
+      prevIndex = items.length - 1;
+    }
+
+    while (items[prevIndex].isDisabled) {
+      prevIndex = prevIndex - 1 < 0 ? items.length - 1 : prevIndex - 1;
+    }
+
+    focusChild(prevIndex);
+  };
+
+  const handleChildDown = (currentIndex: number) => {
+    if (!items?.length) return;
+
+    let nextIndex = currentIndex + 1;
+    if (nextIndex >= items.length) {
+      nextIndex = 0;
+    }
+
+    while (items[nextIndex].isDisabled) {
+      nextIndex = nextIndex + 1 >= items.length ? 0 : nextIndex + 1;
+    }
+
+    focusChild(nextIndex);
+  };
+
   const renderChildItems = () => {
     if (!items) {
       return null;
@@ -62,13 +101,22 @@ export const PopoverMenuItem = (props: PopoverMenuItemProps) => {
                 key={index}
                 item={item}
                 index={index}
-                onKeyDown={() => {}}
-                onKeyUp={() => {}}
+                onKeyDown={() => handleChildDown(index)}
+                onKeyUp={() => handleChildUp(index)}
+                setRef={(i, node) => childRefs.current.set(i, node)}
                 onClick={() => {
                   item.onClick?.();
                   onClick?.();
                   setIsChildOpen(false);
                 }}
+                onLeftKeyPressed={() => {
+                  setIsChildOpen(false);
+                  parentRef.current?.focus();
+                }}
+                onRightKeyPressed={() => {
+                  setIsChildOpen(false);
+                  parentRef.current?.focus();
+  }}
               />
             ))
           : null}
@@ -89,7 +137,25 @@ export const PopoverMenuItem = (props: PopoverMenuItemProps) => {
         if (!isDisabled) {
           onKeyUp(index);
         }
-      }}>
+      }}
+      onRightKeyPressed={() => {
+        if (items && !isDisabled) {
+          if (!isChildOpen) {
+            setIsChildOpen(true);
+          }
+          childRefs.current.get(0)?.focus();
+        } else {
+            props.onRightKeyPressed?.();
+        }
+      }}
+      onLeftKeyPressed={() => {
+        if (isChildOpen) {
+          childRefs.current.get(0)?.focus();
+        } else {
+          props.onRightKeyPressed?.();
+        }
+      }}
+    >
       <div
         tabIndex={isDisabled ? -1 : 0}
         role="menuitem"
@@ -97,8 +163,10 @@ export const PopoverMenuItem = (props: PopoverMenuItemProps) => {
         className={`${styles.popoverMenuItem} ${isDisabled ? styles.popoverMenuItemDisabled : ''}`}
         data-testid={testId}
         ref={node => {
+          parentRef.current = node;
           setRef?.(index, node);
-        }}>
+        }}
+      >
         {label}
         {getAddonAfter()}
         {renderChildItems()}

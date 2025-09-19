@@ -70,11 +70,27 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
   };
 
   private _handleUpKeyPressed = (currentIndex: number) => () => {
-    this._getItemRef(currentIndex - 1)?.focus();
+    const { items } = this.props;
+    if (!items.length) return;
+
+    let prevIndex = currentIndex - 1;
+    if (prevIndex < 0) {
+      prevIndex = items.length - 1;
+    }
+
+    this._getItemRef(prevIndex)?.focus();
   };
 
   private _handleDownKeyPressed = (currentIndex: number) => () => {
-    this._getItemRef(currentIndex + 1)?.focus();
+    const { items } = this.props;
+    if (!items.length) return;
+
+    let nextIndex = currentIndex + 1;
+    if (nextIndex >= items.length) {
+      nextIndex = 0;
+    }
+
+    this._getItemRef(nextIndex)?.focus();
   };
 
   private _closePopover() {
@@ -86,15 +102,10 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
 
     this.setState({isOpen}, () => {
       if (isOpen) {
-        this._controlElementRef?.focus();
-        this.props.eventManager?.listen(this._controlElementRef, 'keydown', (event: KeyboardEvent) => {
-          if (event.keyCode === TAB) {
-            const firstNonDisabledItem = this.props.items.findIndex((item: PopoverMenuItemData) => !item.isDisabled);
-            if (firstNonDisabledItem !== -1) {
-              this._getItemRef(firstNonDisabledItem - 1)?.focus();
-            }
-          }
-        });
+        const firstNonDisabledItem = this.props.items.findIndex((item: PopoverMenuItemData) => !item.isDisabled);
+        if (firstNonDisabledItem !== -1) {
+          this._getItemRef(firstNonDisabledItem)?.focus();
+        }
       }
     });
   };
@@ -154,8 +165,12 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
                   key={index}
                   item={item}
                   index={index}
-                  onKeyDown={this._handleDownKeyPressed}
-                  onKeyUp={this._handleUpKeyPressed}
+                  onKeyDown={(currentIndex: number) => {
+                    this._handleDownKeyPressed(currentIndex)();
+                  }}
+                  onKeyUp={(currentIndex: number) => {
+                    this._handleUpKeyPressed(currentIndex)();
+                  }}
                   setRef={this._setItemRef}
                   onClick={() => {
                     this._closePopover();
