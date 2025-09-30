@@ -99,24 +99,22 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
     const isOpen = !this.state.isOpen;
 
     this.setState({isOpen}, () => {
-    if (isOpen) {
-      const firstItemIndex = this.props.items.findIndex(
-        (item: PopoverMenuItemData) => !item.isDisabled
-      );
-      if (firstItemIndex !== -1) {
-        this._getItemRef(firstItemIndex)?.focus();
-      }
-      this.props.eventManager?.listen(this._controlElementRef, 'keydown', (event: KeyboardEvent) => {
-        if (event.code === KeyCode.Tab) {
-          const firstNonDisabledItem = this.props.items.findIndex((item: PopoverMenuItemData) => !item.isDisabled);
-          if (firstNonDisabledItem !== -1) {
-            this._getItemRef(firstNonDisabledItem - 1)?.focus();
-          }
+      if (isOpen) {
+        const firstNonDisabledIndex = this.props.items.findIndex(
+          (item: PopoverMenuItemData) => !item.isDisabled
+        );
+        if (firstNonDisabledIndex !== -1) {
+          this._getItemRef(firstNonDisabledIndex)?.focus();
         }
-      });
-    }
-  });
-};
+        this.props.eventManager?.listen(this._controlElementRef, 'keydown', (event: KeyboardEvent) => {            if (event.code === KeyCode.Tab) {
+            if (firstNonDisabledIndex !== -1) {
+              this._getItemRef(firstNonDisabledIndex)?.focus();
+            }
+          }
+        });
+      }
+    });
+  };
 
   private _getItemRef = (index: number) => {
     return this._itemsRefMap.get(index);
