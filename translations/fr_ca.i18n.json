@@ -3,6 +3,7 @@
     "transcript": {
       "hide_plugin": "Masquer la transcription",
       "show_plugin": "Afficher la transcription",
+      "more_options": "Plus d’options de transcription",
       "print_transcript": "Imprimer la transcription actuelle",
       "download_transcript": "Téléverser la transcription actuelle",
       "search": "Recherche dans la transcription",
@@ -14,8 +15,19 @@
       "whoops": "Oups!",
       "load_failed": "Échec du chargement de la transcription",
       "skip_transcript": "Passer la transcription",
+      "smallScreenText": "Pour voir la transcription, passez en mode plein écran",
+      "smallScreenMobileText": "Pour voir la transcription, faites pivoter le téléphone",
+      "attach_transcript_text": "La transcription a sauté",
+      "attach_transcript_button": "ramenez-la",
+      "attach_transcript": "Ramenez la transcription",
       "detach_transcript": "Transcription pop-out",
-      "transcript": "Relevé"
+      "transcript": "Relevé",
+      "caption_label": "Passez à ce point de la vidéo",
+      "move_to_search": "Cliquez pour accéder aux résultats de recherche",
+      "to_search_result": "Allez au résultat",
+      "to_search_result_label": "Cliquez pour passer à ce point de la vidéo",
+      "navigation_instruction": "Appuyez sur Accueil pour revenir au début de la transcription. Appuyez sur Fin pour passer à la fin de la transcription.",
+      "time_label": "Horodatage"
     }
   }
 }

@@ -3,6 +3,7 @@
     "transcript": {
       "hide_plugin": "隐藏转录文字",
       "show_plugin": "显示转录文字",
+      "more_options": "更多转录文字选项",
       "print_transcript": "打印当前转录文字",
       "download_transcript": "加载当前转录文字",
       "search": "在转录文字中搜索",
@@ -14,8 +15,19 @@
       "whoops": "哎呀！",
       "load_failed": "成绩单加载失败",
       "skip_transcript": "跳过成绩单",
+      "smallScreenText": "如要查看转录文字，请切换至全屏模式",
+      "smallScreenMobileText": "如要查看转录文字，请旋转手机,",
+      "attach_transcript_text": "转录文字已弹出,",
+      "attach_transcript_button": "还原",
+      "attach_transcript": "还原转录文字",
       "detach_transcript": "弹出转录文字",
-      "transcript": "转录文字"
+      "transcript": "转录文字",
+      "caption_label": "跳至视频此位置",
+      "move_to_search": "点击跳转至搜索结果",
+      "to_search_result": "前往结果",
+      "to_search_result_label": "点击跳转至视频此位置",
+      "navigation_instruction": "按 Home 键跳转至转录文字开头。按 End 键跳转至转录文字末尾。",
+      "time_label": "时间戳"
     }
   }
 }

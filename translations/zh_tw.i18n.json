@@ -3,6 +3,7 @@
     "transcript": {
       "hide_plugin": "隱藏文字記錄",
       "show_plugin": "顯示文字記錄",
+      "more_options": "更多文字內容選項",
       "print_transcript": "列印目前文字記錄",
       "download_transcript": "下載目前文字記錄",
       "search": "在文字記錄中搜尋",
@@ -14,8 +15,19 @@
       "whoops": "糟糕！",
       "load_failed": "無法載入文字紀錄",
       "skip_transcript": "略過文字記錄",
+      "smallScreenText": "使用全螢幕查看文字內容",
+      "smallScreenMobileText": "旋轉手機查看文字內容",
+      "attach_transcript_text": "彈出文字內容",
+      "attach_transcript_button": "帶其返回",
+      "attach_transcript": "帶文字內容返回",
       "detach_transcript": "彈出轉錄視窗",
-      "transcript": "逐字稿"
+      "transcript": "逐字稿",
+      "caption_label": "跳轉至影片中的這個位置",
+      "move_to_search": "點擊跳轉至搜尋結果",
+      "to_search_result": "前往結果",
+      "to_search_result_label": "點擊跳轉至影片中的這個位置",
+      "navigation_instruction": "按下首頁導覽至文字內容開頭。按下結束跳轉至文字內容末端。",
+      "time_label": "時間戳記"
     }
   }
 }

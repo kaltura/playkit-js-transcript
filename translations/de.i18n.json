@@ -3,6 +3,7 @@
     "transcript": {
       "hide_plugin": "Transkript ausblenden",
       "show_plugin": "Transkript anzeigen",
+      "more_options": "Weitere Transkriptionsoptionen",
       "print_transcript": "Aktuelles Transkript drucken",
       "download_transcript": "Aktuelles Transkript herunterladen",
       "search": "Suche im Transkript",
@@ -14,8 +15,19 @@
       "whoops": "Hoppla!",
       "load_failed": "Transkript konnte nicht geladen werden",
       "skip_transcript": "Transkript überspringen",
+      "smallScreenText": "Um das Transkript zu sehen, wechseln Sie in den Vollbildmodus",
+      "smallScreenMobileText": "Um das Transkript zu sehen, drehen Sie das Telefon",
+      "attach_transcript_text": "Transkript wurde eingeblendet",
+      "attach_transcript_button": "Bring es zurück",
+      "attach_transcript": "Transkript zurückholen",
       "detach_transcript": "Transkript öffnen",
-      "transcript": "Transkript"
+      "transcript": "Transkript",
+      "caption_label": "An diese Stelle im Video springen",
+      "move_to_search": "Klicken, um zum Suchergebnis zu springen",
+      "to_search_result": "Zum Ergebnis springen",
+      "to_search_result_label": "Klicken, um zu diesem Punkt im Video zu springen",
+      "navigation_instruction": "Mit Home zum Transkript-Anfang springen. Mit End zum Transkript-Ende springen.",
+      "time_label": "Zeitstempel"
     }
   }
 }

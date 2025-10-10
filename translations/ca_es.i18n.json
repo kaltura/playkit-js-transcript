@@ -15,17 +15,19 @@
       "whoops": "Ups!",
       "load_failed": "No s'ha pogut carregar la transcripció",
       "skip_transcript": "Salt de la transcripció",
-      "smallScreenText": "Per veure la transcripció, vés a pantalla completa",
-      "smallScreenMobileText": "Per veure la transcripció, gira el telèfon",
-      "attach_transcript_text": "La transcripció ha aparegut",
-      "attach_transcript_button": "Torna a portar-la",
-      "attach_transcript": "Torna a portar la transcripció",
+      "smallScreenText": "Per veure la transcripció, aneu a pantalla completa",
+      "smallScreenMobileText": "Per veure la transcripció, gireu el telèfon",
+      "attach_transcript_text": "La transcripció s’ha obert en finestra emergent",
+      "attach_transcript_button": "Tornar a la finestra principal",
+      "attach_transcript": "Tornar a la finestra de transcripció",
       "detach_transcript": "Desplegar transcripció",
       "transcript": "Transcripció",
-      "caption_label": "Salta a aquest punt del vídeo",
-      "move_to_search": "Fes clic per saltar al resultat de la cerca",
-      "to_search_result": "Vés al resultat",
-      "to_search_result_label": "Fes clic per saltar a aquest punt del vídeo"
+      "caption_label": "Saltar a aquest punt del vídeo",
+      "move_to_search": "Feu clic per anar al resultat de la cerca",
+      "to_search_result": "Anar al resultat",
+      "to_search_result_label": "Feu clic per anar a aquest punt del vídeo",
+      "navigation_instruction": "Premeu Inici per tornar al principi de la transcripció. Premeu Fi per anar a la fi de la transcripció.",
+      "time_label": "Marca de temps"
     }
   }
 }

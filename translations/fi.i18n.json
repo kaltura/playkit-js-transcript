@@ -3,6 +3,7 @@
     "transcript": {
       "hide_plugin": "Piilota tekstitallenne",
       "show_plugin": "Näytä tekstitallenne",
+      "more_options": "Lisää tekstitallenneasetuksia",
       "print_transcript": "Tulosta nykyinen tekstitallenne",
       "download_transcript": "Lataa nykyinen tekstitallenne",
       "search": "Hae tekstitallenteesta",
@@ -14,8 +15,19 @@
       "whoops": "Ups!",
       "load_failed": "Tekstitallenteen lataaminen epäonnistui",
       "skip_transcript": "Ohita tekstitallenne",
+      "smallScreenText": "Näet tekstitallenteen siirtymällä koko näytön tilaan",
+      "smallScreenMobileText": "Näet tekstitallenteen kääntämällä puhelinta",
+      "attach_transcript_text": "Tekstitallenne avautui kelluvana",
+      "attach_transcript_button": "Tuo se takaisin",
+      "attach_transcript": "Tuo tekstitallenne takaisin",
       "detach_transcript": "Kelluva tekstitallenne",
-      "transcript": "Tekstitallenne"
+      "transcript": "Tekstitallenne",
+      "caption_label": "Siirry tähän kohtaan videossa",
+      "move_to_search": "Siirry hakutulokseen napsauttamalla",
+      "to_search_result": "Siirry tulokseen",
+      "to_search_result_label": "Siirry tähän kohtaan videossa napsauttamalla",
+      "navigation_instruction": "Siirry tekstitallenteen alkuun painamalla Etusivu. Siirry tekstitallenteen loppuun painamalla Loppu.",
+      "time_label": "Aikaleima"
     }
   }
 }

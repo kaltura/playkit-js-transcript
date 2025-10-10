@@ -3,6 +3,7 @@
     "transcript": {
       "hide_plugin": "Nascondi trascrizione",
       "show_plugin": "Mostra trascrizione",
+      "more_options": "Altre opzioni di trascrizione",
       "print_transcript": "Stampa trascrizione corrente",
       "download_transcript": "Scarica trascrizione corrente",
       "search": "Cerca in Trascrizione",
@@ -14,8 +15,19 @@
       "whoops": "Operazione non riuscita!",
       "load_failed": "Impossibile caricare la trascrizione",
       "skip_transcript": "Salta trascrizione",
+      "smallScreenText": "Per vedere la trascrizione, passa a schermo intero",
+      "smallScreenMobileText": "Per vedere la trascrizione, ruota il telefono",
+      "attach_transcript_text": "Trascrizione aperta in popup",
+      "attach_transcript_button": "Ripristina",
+      "attach_transcript": "Ripristina la trascrizione",
       "detach_transcript": "Trascrizione a comparsa",
-      "transcript": "Trascrizione"
+      "transcript": "Trascrizione",
+      "caption_label": "Vai a questo punto del video",
+      "move_to_search": "Clicca per andare al risultato di ricerca",
+      "to_search_result": "Vai al risultato",
+      "to_search_result_label": "Clicca per andare a questo punto del video",
+      "navigation_instruction": "Premi Home per andare all'inizio della trascrizione. Premi Fine per andare alla fine della trascrizione.",
+      "time_label": "Timestamp"
     }
   }
 }

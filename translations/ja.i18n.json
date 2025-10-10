@@ -3,6 +3,7 @@
     "transcript": {
       "hide_plugin": "複写を非表示にする",
       "show_plugin": "複写を表示する",
+      "more_options": "トランスクリプトのその他のオプション",
       "print_transcript": "現在の複写を印刷する",
       "download_transcript": "現在の複写をダウンロードする",
       "search": "複写で検索",
@@ -14,8 +15,19 @@
       "whoops": "おっと！",
       "load_failed": "複写のロードに失敗した",
       "skip_transcript": "複写をスキップ",
+      "smallScreenText": "トランスクリプトを見るには、全画面表示にしてください",
+      "smallScreenMobileText": "トランスクリプトを見るには、電話を回転させてください",
+      "attach_transcript_text": "トランスクリプトが別画面で表示されました",
+      "attach_transcript_button": "元に戻す",
+      "attach_transcript": "トランスクリプトを元に戻す",
       "detach_transcript": "トランスクリプトを表示する",
-      "transcript": "トランスクリプト"
+      "transcript": "トランスクリプト",
+      "caption_label": "ビデオのこのポイントにジャンプする",
+      "move_to_search": "クリックして検索結果にジャンプする",
+      "to_search_result": "結果に移動する",
+      "to_search_result_label": "クリックして、ビデオのこのポイントにジャンプする",
+      "navigation_instruction": "Home キーを押すと、トランスクリプトの先頭に移動します。End キーを押すと、トランスクリプトの最後に移動します。",
+      "time_label": "タイプスタンプ"
     }
   }
 }

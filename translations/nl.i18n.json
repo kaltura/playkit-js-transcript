@@ -3,6 +3,7 @@
     "transcript": {
       "hide_plugin": "Transcriptie verbergen",
       "show_plugin": "Transcriptie tonen",
+      "more_options": "Meer transcriptie-opties",
       "print_transcript": "Huidige transcriptie afdrukken",
       "download_transcript": "Huidige transcriptie downloaden",
       "search": "In transcriptie zoeken",
@@ -14,8 +15,19 @@
       "whoops": "Oeps!",
       "load_failed": "Laden transcriptie mislukt",
       "skip_transcript": "Transcriptie overslaan",
+      "smallScreenText": "Om de transcriptie te bekijken, ga naar volledig scherm",
+      "smallScreenMobileText": "Om de transcriptie te bekijken, draai de telefoon",
+      "attach_transcript_text": "Transcriptie is uitgevouwen",
+      "attach_transcript_button": "Breng het terug",
+      "attach_transcript": "Breng de transcriptie terug",
       "detach_transcript": "Transcript weergeven",
-      "transcript": "Transcriptie"
+      "transcript": "Transcriptie",
+      "caption_label": "Spoel door naar dit punt in de video",
+      "move_to_search": "Klik om door te spoelen naar het zoekresultaat",
+      "to_search_result": "Ga naar resultaat",
+      "to_search_result_label": "Klik om door te spoelen naar dit punt in de video",
+      "navigation_instruction": "Klik op startpagina om naar het begin van de transcriptie te navigeren. Druk op einde om naar het einde van de transcriptie door te spoelen.",
+      "time_label": "Tijdstempel"
     }
   }
 }
