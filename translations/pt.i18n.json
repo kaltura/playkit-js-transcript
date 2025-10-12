@@ -1,0 +1,18 @@
+{
+  "pt": {
+    "transcript": {
+      "more_options": "Mais opções de transcrição",
+      "smallScreenText": "Para ver a transcrição, vá para ecrã inteiro",
+      "smallScreenMobileText": "Para ver a transcrição, rode o telemóvel",
+      "attach_transcript_text": "Transcrição exibida",
+      "attach_transcript_button": "Trazer de volta",
+      "attach_transcript": "Trazer a Transcrição de volta",
+      "caption_label": "Avançar para este ponto no vídeo",
+      "move_to_search": "Clicar para avançar para o resultado da pesquisa",
+      "to_search_result": "Ir para o resultado",
+      "to_search_result_label": "Clicar para avançar para este ponto do vídeo",
+      "navigation_instruction": "Premir Início para navegar até ao início da transcrição. Premir Fim para avançar para o final da transcrição.",
+      "time_label": "Marcação de data e hora"
+    }
+  }
+}

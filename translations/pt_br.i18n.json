@@ -3,6 +3,7 @@
     "transcript": {
       "hide_plugin": "Ocultar transcrição",
       "show_plugin": "Mostrar transcrição",
+      "more_options": "Mais opções de transcrição",
       "print_transcript": "Imprimir transcrição atual",
       "download_transcript": "Baixar transcrição atual",
       "search": "Buscar na transcrição",
@@ -14,8 +15,19 @@
       "whoops": "Ops!",
       "load_failed": "Falha ao carregar a transcrição",
       "skip_transcript": "Ignorar transcrição",
+      "smallScreenText": "Para ver a transcrição, acesse tela cheia",
+      "smallScreenMobileText": "Para ver a transcrição, gire o telefone",
+      "attach_transcript_text": "Transcrição exibida",
+      "attach_transcript_button": "Voltar",
+      "attach_transcript": "Voltar a Transcrição",
       "detach_transcript": "Transcrição em janela separada",
-      "transcript": "Transcrição"
+      "transcript": "Transcrição",
+      "caption_label": "Avançar para este ponto no vídeo",
+      "move_to_search": "Clicar para avançar para o resultado da pesquisa",
+      "to_search_result": "Ir para o resultado",
+      "to_search_result_label": "Clicar para avançar para este ponto do vídeo",
+      "navigation_instruction": "Pressione Início para ir ao início da transcrição. Pressione Fim para ir ao fim da transcrição.",
+      "time_label": "Marcação de data e hora"
     }
   }
 }

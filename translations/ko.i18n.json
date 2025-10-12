@@ -3,6 +3,7 @@
     "transcript": {
       "hide_plugin": "기록 숨기기",
       "show_plugin": "기록 보기",
+      "more_options": "더 자세한 대본 옵션을 알아봅니다",
       "print_transcript": "현재 기록 인쇄",
       "download_transcript": "현재 기록 다운로드",
       "search": "기록 검색",
@@ -14,8 +15,19 @@
       "whoops": "죄송합니다.",
       "load_failed": "기록을 로드하는 데 실패했습니다",
       "skip_transcript": "기록 스킵하기",
+      "smallScreenText": "대본을 보려면 전체 화면으로 전환하세요",
+      "smallScreenMobileText": "대본을 보려면 휴대폰을 가로로 회전하세요",
+      "attach_transcript_text": "대본이 팝업으로 열렸습니다",
+      "attach_transcript_button": "원래 위치로 가져옵니다",
+      "attach_transcript": "대본을 원래 위치로 가져옵니다",
       "detach_transcript": "기록 팝아웃",
-      "transcript": "기록"
+      "transcript": "기록",
+      "caption_label": "이 시점으로 이동합니다",
+      "move_to_search": "클릭하여 검색 결과로 이동합니다",
+      "to_search_result": "결과로 이동합니다",
+      "to_search_result_label": "클릭하여 이 시점으로 이동합니다",
+      "navigation_instruction": "Home 키를 누르면 대본의 시작으로 이동합니다. End 키를 누르면 대본의 끝으로 이동합니다.",
+      "time_label": "타임스탬프"
     }
   }
 }

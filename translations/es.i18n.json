@@ -15,8 +15,19 @@
       "whoops": "¡Vaya!",
       "load_failed": "Error al cargar la transcripción",
       "skip_transcript": "Omitir la transcripción",
+      "smallScreenText": "Para ver la transcripción, ir a pantalla completa",
+      "smallScreenMobileText": "Para ver la transcripción, girar el teléfono",
+      "attach_transcript_text": "La transcripción se ha abierto en la ventana emergente",
+      "attach_transcript_button": "Volver a la ventana principal",
+      "attach_transcript": "Volver a la ventana de transcripción",
       "detach_transcript": "Mostrar transcripción en la ventana emergente",
-      "transcript": "Transcripción"
+      "transcript": "Transcripción",
+      "caption_label": "Saltar a este punto del vídeo",
+      "move_to_search": "Hacer clic para ir al resultado de la búsqueda",
+      "to_search_result": "Ir al resultado",
+      "to_search_result_label": "Hacer clic para ir a este punto del vídeo",
+      "navigation_instruction": "Pulsar Inicio para volver al comienzo de la transcripción. Pulsar Fin para ir al final de la transcripción.",
+      "time_label": "Marca de tiempo"
     }
   }
 }

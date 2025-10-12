@@ -3,6 +3,7 @@
     "transcript": {
       "hide_plugin": "Cacher le relevé",
       "show_plugin": "Afficher le relevé",
+      "more_options": "Plus d’options de transcription",
       "print_transcript": "Imprimer le relevé actuel",
       "download_transcript": "Télécharger le relevé actuel",
       "search": "Rechercher dans le relevé",
@@ -14,8 +15,19 @@
       "whoops": "Oups !",
       "load_failed": "Échec de chargement du relevé",
       "skip_transcript": "Sauter le relevé",
+      "smallScreenText": "Pour voir la transcription, passez en mode plein écran",
+      "smallScreenMobileText": "Pour voir la transcription, faites pivoter le téléphone",
+      "attach_transcript_text": "La transcription a sauté",
+      "attach_transcript_button": "La ramener",
+      "attach_transcript": "Ramener la transcription",
       "detach_transcript": "Transcription pop-out",
-      "transcript": "Relevé"
+      "transcript": "Relevé",
+      "caption_label": "Allez à ce point de la vidéo",
+      "move_to_search": "Cliquez pour accéder aux résultats de recherche",
+      "to_search_result": "Allez au résultat",
+      "to_search_result_label": "Cliquez pour passer à ce moment de la vidéo",
+      "navigation_instruction": "Appuyez sur Accueil pour revenir au début de la transcription. Appuyez sur Fin pour passer à la fin de la transcription.",
+      "time_label": "Horodatage"
     }
   }
 }
