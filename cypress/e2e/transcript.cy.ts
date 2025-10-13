@@ -216,7 +216,7 @@ describe('Transcript plugin', () => {
           cy.get(`[data-testid="language-change-menu-item-active"]`).should('have.text', 'Finnish');
           cy.get(`[data-testid="language-change-menu-item-active"]`).click();
           cy.get(`[data-testid="language-change-menu-item-English"]`).should('exist');
-          cy.get(`[data-testid="language-change-menu-item-Finnish"]`).should('exist').should('have.attr', 'aria-selected', 'true');
+          cy.get(`[data-testid="language-change-menu-item-Finnish"]`).should('exist').should('have.attr', 'aria-checked', 'true');
           cy.get(`[data-testid="language-change-menu-item-Off"]`).should('exist');
         });
       });
