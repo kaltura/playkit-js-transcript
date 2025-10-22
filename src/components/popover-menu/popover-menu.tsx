@@ -6,7 +6,7 @@ const {Tooltip} = ui.components;
 const {withText, Text} = ui.preacti18n;
 
 const {withEventManager} = ui.Event;
-const {TAB} = ui.utils.KeyMap;
+const {KeyCode} = ui.utils
 
 import * as styles from './popover-menu.scss';
 
@@ -56,11 +56,24 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
     }
   };
 
+  // The Transcript parent component already listens onKeyDown at the root to close the entire plugin. 
+  // By handling Escape onKeyUp here we prevent that parent handler from firing when the popover is open.
+  private _handleKeyupEvent = (event: KeyboardEvent) => {
+    if (this.state.isOpen && event.code === KeyCode.Escape) {
+      event.preventDefault();
+      event.stopPropagation();
+      this._closePopover();
+      this.setState({ isOpen: false }, () => {
+      this._controlElementRef?.focus();
+      });
+    }
+  };
+
   private _handleKeydownEvent = (event: KeyboardEvent) => {
     const eventTarget = event.target as Node | null;
     if (
       this.state.isOpen &&
-      event.keyCode === TAB &&
+      event.code === KeyCode.Tab &&
       !this._controlElementRef?.contains(eventTarget) &&
       !this._popoverElementRef?.contains(eventTarget) &&
       eventTarget !== this._controlElementRef
@@ -102,10 +115,23 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
 
     this.setState({isOpen}, () => {
       if (isOpen) {
-        const firstNonDisabledItem = this.props.items.findIndex((item: PopoverMenuItemData) => !item.isDisabled);
-        if (firstNonDisabledItem !== -1) {
-          this._getItemRef(firstNonDisabledItem)?.focus();
+        const firstNonDisabledIndex = this.props.items.findIndex(
+          (item: PopoverMenuItemData) => !item.isDisabled
+        );
+        if (firstNonDisabledIndex !== -1) {
+          this._getItemRef(firstNonDisabledIndex)?.focus();
         }
+        this.props.eventManager?.listen(
+          this._controlElementRef,
+          'keydown',
+          (event: KeyboardEvent) => {
+            if (event.code === KeyCode.Tab) {
+              if (firstNonDisabledIndex !== -1) {
+                this._getItemRef(firstNonDisabledIndex)?.focus();
+              }
+            }
+          }
+        );
       }
     });
   };
@@ -152,6 +178,7 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
 
         <div
           className={styles.popoverComponent}
+          onKeyUp={this._handleKeyupEvent}
           style={shouldUseCalculatedHeight ? {height: `${popOverHeight}px`, overflowY: 'auto'} : {}}
           role="menu"
           aria-expanded={this.state.isOpen}

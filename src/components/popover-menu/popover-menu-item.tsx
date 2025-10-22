@@ -23,10 +23,11 @@ interface PopoverMenuItemProps {
   onClick?: () => void;
   onLeftKeyPressed?: () => void;
   onRightKeyPressed?: () => void;
+  isChild?: boolean;
 }
 
 export const PopoverMenuItem = (props: PopoverMenuItemProps) => {
-  const {item, index, setRef, onKeyUp, onKeyDown, onClick} = props;
+  const {item, index, setRef, onKeyUp, onKeyDown, onClick, isChild} = props;
   const {isDisabled, isSelected, items, testId, label} = item;
   const [isChildOpen, setIsChildOpen] = useState(false);
   const parentRef = useRef<HTMLDivElement | null>(null);
@@ -98,6 +99,7 @@ export const PopoverMenuItem = (props: PopoverMenuItemProps) => {
         {isChildOpen
           ? items.map((item, index) => (
               <PopoverMenuItem
+                isChild={true}
                 key={index}
                 item={item}
                 index={index}
@@ -116,7 +118,7 @@ export const PopoverMenuItem = (props: PopoverMenuItemProps) => {
                 onRightKeyPressed={() => {
                   setIsChildOpen(false);
                   parentRef.current?.focus();
-  }}
+    }}
               />
             ))
           : null}
@@ -126,7 +128,7 @@ export const PopoverMenuItem = (props: PopoverMenuItemProps) => {
 
   return (
     <A11yWrapper
-      role="menuitem"
+      role={isChild ? "menuitemradio" : "menuitem"}
       onClick={handleOnClick}
       onDownKeyPressed={() => {
         if (!isDisabled) {
@@ -158,8 +160,7 @@ export const PopoverMenuItem = (props: PopoverMenuItemProps) => {
     >
       <div
         tabIndex={isDisabled ? -1 : 0}
-        role="menuitem"
-        aria-selected={isSelected}
+        aria-checked={isSelected}
         className={`${styles.popoverMenuItem} ${isDisabled ? styles.popoverMenuItemDisabled : ''}`}
         data-testid={testId}
         ref={node => {
