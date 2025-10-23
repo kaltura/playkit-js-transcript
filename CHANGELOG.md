@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.7.5 (2025-10-23)
+
+
+### Bug Fixes
+
+* **FEC-14571:** Translation for i18n ([#263](https://github.com/kaltura/playkit-js-transcript/issues/263)) ([56b427d](https://github.com/kaltura/playkit-js-transcript/commit/56b427db8fb18bb7250dafb4fcf6778758a60f5c))
+
 ### 3.7.4 (2025-10-01)
 
 ### 3.7.3 (2025-08-28)
