@@ -1,6 +1,6 @@
 {
   "name": "@playkit-js/transcript",
-  "version": "3.7.5",
+  "version": "3.7.6",
   "main": "dist/playkit-transcript.js",
   "license": "AGPL-3.0",
   "private": false,
