@@ -179,7 +179,13 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
         <div
           className={styles.popoverComponent}
           onKeyUp={this._handleKeyupEvent}
-          style={shouldUseCalculatedHeight ? {height: `${popOverHeight}px`, overflowY: 'auto'} : {}}
+          style={
+            shouldUseCalculatedHeight
+              ? kitchenSinkDetached
+                ? { height: `${popOverHeight}px` }
+                : { height: `${popOverHeight}px`, overflowY: 'auto' }
+              : {}
+          }
           role="menu"
           aria-expanded={this.state.isOpen}
           id="popoverContent"
