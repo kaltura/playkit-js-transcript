@@ -125,7 +125,7 @@ class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState>
       });
     }
 
-    const shouldUseOverlay = sidePanelPosition ===  SidePanelPositions.BOTTOM || smallScreen;
+    const shouldUseOverlay = !kitchenSinkDetached && (sidePanelPosition === SidePanelPositions.BOTTOM || smallScreen);
 
     if (shouldUseOverlay) {
       return (
