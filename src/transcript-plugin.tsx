@@ -350,6 +350,9 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
             textTracks={this._getTextTracks()}
             changeLanguage={this._changeLanguage}
             sidePanelPosition={position}
+            player={this.player}
+            onOverlayOpen={() => this.sidePanelsManager?.deactivateItem(this._transcriptPanel)}
+            onOverlayClose={() => this.sidePanelsManager?.activateItem(this._transcriptPanel)}
           />
         ) as any;
       },
