@@ -148,9 +148,9 @@
     linkify-it "^4.0.1"
 
 "@playkit-js/common@1.5.24":
-  version "1.5.24-canary.0-676471d"
-  resolved "https://registry.yarnpkg.com/@playkit-js/common/-/common-1.5.24-canary.0-676471d.tgz#5c778a19caf2cc7b42f8ce3e2db828893f4c6d4a"
-  integrity sha512-u1T/Wk0zjduhRLPWCyQWzi8QWnCdqadYqOnq3lkxRXU5AVDJkJBDvk2dhO/QsXqGfVJKKVBvhQdSak6b9FRNBg==
+  version "1.5.24"
+  resolved "https://registry.yarnpkg.com/@playkit-js/common/-/common-1.5.24.tgz#d194c5622112bebdf8dcb01e7f46eadc514df2e5"
+  integrity sha512-B3HlWDDE5vr0mVZjqwg2sq+WQU6UiPprk1ufQmVK+m9Kmgnd/1o2V51B1d3OQ/hs/s8BSVNfCi8/Dx7OlcFrqQ==
   dependencies:
     classnames "^2.3.2"
     linkify-it "^4.0.1"
