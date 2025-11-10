@@ -8,6 +8,7 @@ import {capitalizeFirstLetter} from '../../utils';
 import {Button, ButtonType} from '@playkit-js/common/dist/components/button';
 const {withText, Text} = KalturaPlayer.ui.preacti18n;
 const {SidePanelPositions, getOverlayPortalElement} = ui;
+const {focusElement} = ui.Utils;
 
 interface TranscriptMenuProps {
   shouldUseCalculatedHeight: boolean;
@@ -62,7 +63,7 @@ class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState>
     const ref = this._triggerButtonRef.current as any;
     const innerBtn = ref?.base || ref?.buttonRef?.current;
     if (innerBtn && typeof innerBtn.focus === 'function') {
-      innerBtn.focus();
+      focusElement(innerBtn);
     }
   };
 
@@ -147,11 +148,11 @@ class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState>
             items={items}
             textTracks={this.props.textTracks}
             changeLanguage={this.props.changeLanguage}
-            playerWidth={this.props.playerWidth}  // 👈 add this
+            playerWidth={this.props.playerWidth}
             onClose={() => {
               this.setState({ isOverlayOpen: false }, () => {
                 this.props.onOverlayClose?.();
-                setTimeout(() => this._focusTriggerButton(), 50);
+                this._focusTriggerButton();
               });
             }}
           />
