@@ -79,7 +79,7 @@ export class PopoverOverlay extends Component<PopoverOverlayProps> {
     return createPortal(
       <Overlay open onClose={onClose} ariaLabel={this.props.moreOptionsLabel}>
         <div ref={this._containerRef}   className={`${styles.popoverOverlayContainer} ${isCompact ? styles.compact : ''}`}>
-          <h3>{this.props.moreOptionsLabel}</h3>
+          <h3 className={styles.overlayTitle}>{this.props.moreOptionsLabel}</h3>
           {textTracks && textTracks.length > 1 && (
             <div className={styles.languageSelector}>
               <svg

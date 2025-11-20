@@ -153,6 +153,14 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
       const padding = 14;
       popOverHeight = popOverMenuHeight - neededHeight <= 0 ? popOverMenuHeight - padding : neededHeight - padding;
     }
+    let popoverStyle = {};
+    if (shouldUseCalculatedHeight) {
+      if (kitchenSinkDetached) {
+        popoverStyle = { height: `${popOverHeight}px` };
+      } else {
+        popoverStyle = { height: `${popOverHeight}px`, overflowY: 'auto' };
+      }
+    }
 
     const popoverMenuContent = (
       <div className={styles.popoverContainer}>
@@ -179,13 +187,7 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
         <div
           className={styles.popoverComponent}
           onKeyUp={this._handleKeyupEvent}
-          style={
-            shouldUseCalculatedHeight
-              ? kitchenSinkDetached
-                ? { height: `${popOverHeight}px` }
-                : { height: `${popOverHeight}px`, overflowY: 'auto' }
-              : {}
-          }
+          style={popoverStyle}
           role="menu"
           aria-expanded={this.state.isOpen}
           id="popoverContent"
