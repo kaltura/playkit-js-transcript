@@ -9,6 +9,7 @@ import {Button, ButtonType} from '@playkit-js/common/dist/components/button';
 const {withText, Text} = KalturaPlayer.ui.preacti18n;
 const {SidePanelPositions, getOverlayPortalElement} = ui;
 const {focusElement} = ui.Utils;
+const {PLAYER_BREAK_POINTS} = ui.Components;
 
 interface TranscriptMenuProps {
   shouldUseCalculatedHeight: boolean;
@@ -32,7 +33,6 @@ interface TranscriptMenuProps {
   } | null;
   sidePanelPosition: string;
   isMobile?: boolean;
-  smallScreen?: boolean;
   player: any;
   onOverlayOpen?: () => void;
   onOverlayClose?: () => void;
@@ -83,7 +83,8 @@ class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState>
       textTracks,
       changeLanguage,
       sidePanelPosition,
-      smallScreen
+      isMobile,
+      playerWidth
     } = this.props;
     const items = [];
     const { isOverlayOpen } = this.state;
@@ -125,8 +126,8 @@ class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState>
         isDisabled: isLoading
       });
     }
-
-    const shouldUseOverlay = !kitchenSinkDetached && (sidePanelPosition === SidePanelPositions.BOTTOM || smallScreen);
+    const isSmallPlayer = playerWidth! <= PLAYER_BREAK_POINTS.MEDIUM;
+    const shouldUseOverlay = !kitchenSinkDetached && (sidePanelPosition === SidePanelPositions.BOTTOM || isMobile || isSmallPlayer);
 
     if (shouldUseOverlay) {
       return (

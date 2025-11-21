@@ -8,6 +8,7 @@ import * as styles from '../popover-overlay/popover-overlay.scss';
 const { Overlay } = KalturaPlayer.ui.components;
 const { getOverlayPortalElement } = ui;
 const { withText, Text } = ui.preacti18n;
+const {PLAYER_BREAK_POINTS} = ui.Components;
 
 const translates = {
   moreOptionsLabel: <Text id="transcript.more_options">More transcript options</Text>,
@@ -66,7 +67,7 @@ export class PopoverOverlay extends Component<PopoverOverlayProps> {
     } = this.props;
 
     const { playerWidth } = this.props;
-    const isCompact = playerWidth && playerWidth <= 600;
+    const isCompact = playerWidth && playerWidth <= PLAYER_BREAK_POINTS.SMALL;
 
 
     if (!isOpen || !player) return null;
