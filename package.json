@@ -1,6 +1,6 @@
 {
   "name": "@playkit-js/transcript",
-  "version": "3.7.7",
+  "version": "3.7.8",
   "main": "dist/playkit-transcript.js",
   "license": "AGPL-3.0",
   "private": false,
@@ -39,7 +39,7 @@
     "@playkit-js/kaltura-player-js": "3.17.9"
   },
   "scripts": {
-    "preinstall": "npx --yes --prefer-online --registry=https://npm.pkg.github.com --package @kaltura/kaltura-tools@latest kaltura-tools check --root=.",
+    "disabled-preinstall": "npx --yes --prefer-online --registry=https://npm.pkg.github.com --package @kaltura/kaltura-tools@latest kaltura-tools check --root=.",
     "clean": "rimraf ./dist",
     "prebuild": "npm run clean",
     "build": "webpack --mode production",
