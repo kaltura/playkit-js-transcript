@@ -33,6 +33,7 @@ interface PopoverOverlayProps {
   transcript?: preact.VNode;
   printTranscript?: preact.VNode;
   downloadTranscript?: preact.VNode;
+  kitchenSinkDetached: boolean;
 }
 
 @withText(translates)
@@ -64,6 +65,7 @@ export class PopoverOverlay extends Component<PopoverOverlayProps> {
       items,
       textTracks,
       changeLanguage,
+      kitchenSinkDetached
     } = this.props;
 
     const { playerWidth } = this.props;
@@ -76,10 +78,11 @@ export class PopoverOverlay extends Component<PopoverOverlayProps> {
 
     const downloadItem = items.find(i => i.testId === 'download-menu-item');
     const printItem = items.find(i => i.testId === 'print-menu-item');
+    const popoutTranscriptItem = items.find(i => i.testId === 'transcript-detach-attach-button');
 
     return createPortal(
       <Overlay open onClose={onClose} ariaLabel={this.props.moreOptionsLabel}>
-        <div ref={this._containerRef}   className={`${styles.popoverOverlayContainer} ${isCompact ? styles.compact : ''}`}>
+        <div data-testid="popover-overlay" ref={this._containerRef}   className={`${styles.popoverOverlayContainer} ${isCompact ? styles.compact : ''}`}>
           <h3 className={styles.overlayTitle}>{this.props.moreOptionsLabel}</h3>
           {textTracks && textTracks.length > 1 && (
             <div className={styles.languageSelector}>
@@ -131,6 +134,16 @@ export class PopoverOverlay extends Component<PopoverOverlayProps> {
               >
                 <Icon name="print" size={IconSize.medium} />
                 <span>{printItem.label}</span>
+              </button>
+            )}
+            {popoutTranscriptItem && (
+              <button
+                data-testid="transcript-detach-attach-button"
+                disabled={popoutTranscriptItem.isDisabled}
+                onClick={() => popoutTranscriptItem.onClick?.()}
+              >
+                <Icon name={kitchenSinkDetached ? 'attach' : 'detach'} size={IconSize.medium} />
+                <span>{popoutTranscriptItem.label}</span>
               </button>
             )}
           </div>
