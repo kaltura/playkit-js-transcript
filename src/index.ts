@@ -1,4 +1,5 @@
 import {pluginName, TranscriptPlugin} from './transcript-plugin';
+import {registerPlugin} from '@playkit-js/kaltura-player-js';
 
 declare var __VERSION__: string;
 declare var __NAME__: string;
@@ -10,4 +11,4 @@ export {TranscriptEvents} from './events/events';
 export {TranscriptPlugin as Plugin};
 export {VERSION, NAME};
 
-KalturaPlayer.core.registerPlugin(pluginName, TranscriptPlugin);
+registerPlugin(pluginName, TranscriptPlugin as any);
