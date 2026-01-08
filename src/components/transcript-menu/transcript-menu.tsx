@@ -126,7 +126,7 @@ class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState>
         isDisabled: isLoading
       });
     }
-    const isSmallPlayer = playerWidth! <= PLAYER_BREAK_POINTS.MEDIUM;
+    const isSmallPlayer = playerWidth! <= PLAYER_BREAK_POINTS.SMALL;
     const shouldUseOverlay = !kitchenSinkDetached && (sidePanelPosition === SidePanelPositions.BOTTOM || isMobile || isSmallPlayer);
 
     if (shouldUseOverlay) {

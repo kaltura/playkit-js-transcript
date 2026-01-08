@@ -4,11 +4,13 @@ import { ui } from '@playkit-js/kaltura-player-js';
 import {Icon, IconSize} from '@playkit-js/common/dist/icon';
 import { icons } from '../icons';
 import * as styles from '../popover-overlay/popover-overlay.scss';
-
+// @ts-ignore
+const {withKeyboardA11y} = KalturaPlayer.ui.utils
 const { Overlay } = KalturaPlayer.ui.components;
 const { getOverlayPortalElement } = ui;
 const { withText, Text } = ui.preacti18n;
 const {PLAYER_BREAK_POINTS} = ui.Components;
+const focusableElements = 'select, button, [href], input:not([type="hidden"]), textarea, [tabindex]:not([tabindex="-1"])';
 
 const translates = {
   moreOptionsLabel: <Text id="transcript.more_options">More transcript options</Text>,
@@ -34,27 +36,65 @@ interface PopoverOverlayProps {
   printTranscript?: preact.VNode;
   downloadTranscript?: preact.VNode;
   kitchenSinkDetached: boolean;
+  handleKeyDown?: (e: KeyboardEvent) => void;
+  addAccessibleChild?: (element: HTMLElement, pushToBeginning?: boolean) => void;
+  setIsModal?: (isModal: boolean) => void;
 }
 
+@withKeyboardA11y
 @withText(translates)
 export class PopoverOverlay extends Component<PopoverOverlayProps> {
   private _containerRef = createRef<HTMLDivElement>();
+  private _focusablesRegistered = false;
 
   private _focusFirstItem() {
     const container = this._containerRef.current;
     if (!container) return;
-    const focusable = container.querySelector<HTMLElement>(
-      'select, button, [href], input, [tabindex]:not([tabindex="-1"])'
-    );
+    const focusable = container.querySelector<HTMLElement>(focusableElements);
     focusable?.focus();
   }
 
   componentDidMount() {
-    if (this.props.isOpen) this._focusFirstItem();
+    this.props.setIsModal?.(true);
   }
 
   componentDidUpdate(prevProps: PopoverOverlayProps) {
     if (!prevProps.isOpen && this.props.isOpen) this._focusFirstItem();
+    // Register focusable elements when overlay opens
+    if (!prevProps.isOpen && this.props.isOpen) {
+      this._focusablesRegistered = false;
+      this._registerAccessibleChildren();
+    }
+    // If content changed while open, re-register once
+    if (this.props.isOpen && !this._focusablesRegistered && (prevProps.items !== this.props.items || prevProps.textTracks !== this.props.textTracks)) {
+      this._registerAccessibleChildren();
+    }
+    if (prevProps.isOpen && !this.props.isOpen) {
+      this._focusablesRegistered = false;
+    }
+  }
+
+  componentWillUnmount() {
+    this.props.setIsModal?.(false);
+  }
+
+  private _getFocusableElements(): HTMLElement[] {
+    const container = this._containerRef.current;
+    if (!container) return [];
+
+    return Array.from(
+      container.querySelectorAll<HTMLElement>(focusableElements)).filter(el => !el.hasAttribute('disabled') && el.offsetParent !== null);
+  }
+
+  private _registerAccessibleChildren() {
+    const { addAccessibleChild } = this.props;
+    if (!addAccessibleChild || this._focusablesRegistered) return;
+
+    this._getFocusableElements()
+      .reverse()
+      .forEach(el => addAccessibleChild(el, true));
+
+    this._focusablesRegistered = true;
   }
 
   render() {
@@ -81,7 +121,7 @@ export class PopoverOverlay extends Component<PopoverOverlayProps> {
     const popoutTranscriptItem = items.find(i => i.testId === 'transcript-detach-attach-button');
 
     return createPortal(
-      <Overlay open onClose={onClose} ariaLabel={this.props.moreOptionsLabel}>
+      <Overlay open onClose={onClose} ariaLabel={this.props.moreOptionsLabel} handleKeyDown={this.props.handleKeyDown} addAccessibleChild={this.props.addAccessibleChild}>
         <div data-testid="popover-overlay" ref={this._containerRef}   className={`${styles.popoverOverlayContainer} ${isCompact ? styles.compact : ''}`}>
           <h3 className={styles.overlayTitle}>{this.props.moreOptionsLabel}</h3>
           {textTracks && textTracks.length > 1 && (
@@ -116,6 +156,16 @@ export class PopoverOverlay extends Component<PopoverOverlayProps> {
           )}
 
           <div className={styles.actionButtons}>
+            {popoutTranscriptItem && (
+              <button
+                data-testid="transcript-detach-attach-button"
+                disabled={popoutTranscriptItem.isDisabled}
+                onClick={() => popoutTranscriptItem.onClick?.()}
+              >
+                <Icon name="detach" size={IconSize.medium} />
+                <span>{popoutTranscriptItem.label}</span>
+              </button>
+            )}
             {downloadItem && (
               <button
                 data-testid={downloadItem.testId}
@@ -134,16 +184,6 @@ export class PopoverOverlay extends Component<PopoverOverlayProps> {
               >
                 <Icon name="print" size={IconSize.medium} />
                 <span>{printItem.label}</span>
-              </button>
-            )}
-            {popoutTranscriptItem && (
-              <button
-                data-testid="transcript-detach-attach-button"
-                disabled={popoutTranscriptItem.isDisabled}
-                onClick={() => popoutTranscriptItem.onClick?.()}
-              >
-                <Icon name={kitchenSinkDetached ? 'attach' : 'detach'} size={IconSize.medium} />
-                <span>{popoutTranscriptItem.label}</span>
               </button>
             )}
           </div>
