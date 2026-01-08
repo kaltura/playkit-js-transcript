@@ -349,9 +349,8 @@ describe('Transcript plugin', () => {
       mockKalturaBe();
       loadPlayer().then(() => {
         cy.viewport(726, 380);
-        cy.get('button[aria-label="More transcript options"]').click();
-        cy.get('[data-testid="popover-overlay"]').should('exist');
-        cy.get('[data-testid="popover-overlay"]').find('[data-testid="transcript-detach-attach-button"]').should('exist');
+        cy.get('[data-testid="popover-anchor-container"]').should('exist').click();
+        cy.get('[data-testid="transcript-detach-attach-button"]').should('exist');
       });
     });
   });
