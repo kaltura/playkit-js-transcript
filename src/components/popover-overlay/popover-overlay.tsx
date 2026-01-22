@@ -126,13 +126,7 @@ export class PopoverOverlay extends Component<PopoverOverlayProps> {
           <h3 className={styles.overlayTitle}>{this.props.moreOptionsLabel}</h3>
           {textTracks && textTracks.length > 1 && (
             <div className={styles.languageSelector}>
-              <svg
-                viewBox={`0 0 ${icons.BigSize} ${icons.BigSize}`}
-                fill="currentColor"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d={icons.PLUGIN_ICON} />
-              </svg>
+              <Icon name="transcript" size={IconSize.medium} />
               <label htmlFor="transcript-language">Transcript</label>
               <select
                 id="transcript-language"

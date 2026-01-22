@@ -147,10 +147,10 @@
     classnames "^2.3.2"
     linkify-it "^4.0.1"
 
-"@playkit-js/common@1.5.23":
-  version "1.5.23"
-  resolved "https://registry.yarnpkg.com/@playkit-js/common/-/common-1.5.23.tgz#4cb66fcaecf847dafd55510f507c1c6cdacf6d92"
-  integrity sha512-t7uCY5y6NbcmKWj4u2U0ZpKznY6B6lY9IMqeE3vLNyGLcZinLO6soRH5CyhSsPny5+EF3CEAeakZ0t7tuVyIPg==
+"@playkit-js/common@1.5.26":
+  version "1.5.26"
+  resolved "https://registry.yarnpkg.com/@playkit-js/common/-/common-1.5.26.tgz#f68ea552f1d1ea1e7854b34183bbdb5aca97515d"
+  integrity sha512-VvQNTnGbqXiXKLVuUwGbIr+JiXwzoaOVel3nSJsUunpQybkQgtTyRaTxVrGuxot2OIOu/P+m2ecyyyGAGsKOkw==
   dependencies:
     classnames "^2.3.2"
     linkify-it "^4.0.1"
