@@ -2,7 +2,7 @@ import { h, Component, createRef } from 'preact';
 import { createPortal } from 'preact/compat';
 import { ui } from '@playkit-js/kaltura-player-js';
 import {Icon, IconSize} from '@playkit-js/common/dist/icon';
-import { icons } from '../icons';
+import { PopoverMenuItemData } from '../popover-menu/popover-menu-item';
 import * as styles from '../popover-overlay/popover-overlay.scss';
 // @ts-ignore
 const {withKeyboardA11y} = KalturaPlayer.ui.utils
@@ -14,32 +14,92 @@ const focusableElements = 'select, button, [href], input:not([type="hidden"]), t
 
 const translates = {
   moreOptionsLabel: <Text id="transcript.more_options">More transcript options</Text>,
+  languageSelectorLabel: <Text id="transcript.transcript">Transcript</Text>
 };
 
 interface PopoverOverlayProps {
   player: any;
   isOpen: boolean;
   onClose: () => void;
-  items: Array<{
-    testId: string;
-    label: string;
-    onClick?: () => void;
-    isDisabled?: boolean;
-  }>;
+  items: Array<PopoverMenuItemData>;
   textTracks: Array<any>;
   changeLanguage: (track: any) => void;
-  title?: string;
-  ariaLabel?: string;
-  playerWidth?: number;
+  playerSize?: number;
   moreOptionsLabel?: preact.VNode;
-  transcript?: preact.VNode;
-  printTranscript?: preact.VNode;
-  downloadTranscript?: preact.VNode;
-  kitchenSinkDetached: boolean;
   handleKeyDown?: (e: KeyboardEvent) => void;
   addAccessibleChild?: (element: HTMLElement, pushToBeginning?: boolean) => void;
   setIsModal?: (isModal: boolean) => void;
 }
+
+
+const COMPACT_SIZES = [
+  PLAYER_BREAK_POINTS.TINY,
+  PLAYER_BREAK_POINTS.EXTRA_SMALL,
+  PLAYER_BREAK_POINTS.SMALL
+];
+
+const iconsMap: Record<string, string> = {
+  'transcript-detach-attach-button': 'detach',
+  'download-menu-item': 'download',
+  'print-menu-item': 'print'
+};
+
+interface TranscriptLanguageSelectorProps {
+  textTracks: Array<any>;
+  changeLanguage: (track: any) => void;
+}
+
+const TranscriptLanguageSelector = ({ textTracks, changeLanguage }: TranscriptLanguageSelectorProps) => {
+  // Filter out metadata tracks
+  const selectableTracks = (textTracks || []).filter(track => track.kind !== 'metadata');
+  
+  if (selectableTracks.length <= 1) return null;
+
+  return (
+    <div className={styles.languageSelector}>
+      <Icon name="transcript" size={IconSize.medium} />
+      <label htmlFor="transcript-language">{translates.languageSelectorLabel}</label>
+      <select
+        id="transcript-language"
+        aria-labelledby="transcript-language"
+        value={selectableTracks.findIndex(track => track.active)}
+        onChange={(e) => {
+          const selectedIdx = Number((e.target as HTMLSelectElement).value);
+          changeLanguage(selectableTracks[selectedIdx]);
+        }}
+        onFocus={(e) => e.currentTarget.classList.add(styles.open)}
+        onBlur={(e) => e.currentTarget.classList.remove(styles.open)}
+      >
+        {selectableTracks.map((track, idx) => (
+          <option key={idx} value={idx}>
+            {track.label}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+};
+
+interface OverlayActionItemProps {
+  item: PopoverMenuItemData;
+}
+
+const OverlayActionItem = ({ item }: OverlayActionItemProps) => {
+  const iconName = iconsMap[item.testId];
+  if (!iconName || item.items) return null;
+
+  return (
+    <button
+      data-testid={item.testId}
+      disabled={item.isDisabled}
+      onClick={() => item.onClick?.()}
+    >
+      <Icon name={iconName} size={IconSize.medium} />
+      <span>{item.label}</span>
+    </button>
+  );
+};
+
 
 @withKeyboardA11y
 @withText(translates)
@@ -105,81 +165,25 @@ export class PopoverOverlay extends Component<PopoverOverlayProps> {
       items,
       textTracks,
       changeLanguage,
-      kitchenSinkDetached
+      playerSize
     } = this.props;
-
-    const { playerWidth } = this.props;
-    const isCompact = playerWidth && playerWidth <= PLAYER_BREAK_POINTS.SMALL;
-
 
     if (!isOpen || !player) return null;
     const overlayRoot = getOverlayPortalElement(player);
     if (!overlayRoot) return null;
 
-    const downloadItem = items.find(i => i.testId === 'download-menu-item');
-    const printItem = items.find(i => i.testId === 'print-menu-item');
-    const popoutTranscriptItem = items.find(i => i.testId === 'transcript-detach-attach-button');
+    const isCompact = playerSize !== undefined ? COMPACT_SIZES.includes(playerSize) : false;
 
     return createPortal(
       <Overlay open onClose={onClose} ariaLabel={this.props.moreOptionsLabel} handleKeyDown={this.props.handleKeyDown} addAccessibleChild={this.props.addAccessibleChild}>
         <div data-testid="popover-overlay" ref={this._containerRef}   className={`${styles.popoverOverlayContainer} ${isCompact ? styles.compact : ''}`}>
           <h3 className={styles.overlayTitle}>{this.props.moreOptionsLabel}</h3>
-          {textTracks && textTracks.length > 1 && (
-            <div className={styles.languageSelector}>
-              <Icon name="transcript" size={IconSize.medium} />
-              <label htmlFor="transcript-language">Transcript</label>
-              <select
-                id="transcript-language"
-                aria-labelledby="transcript-language"
-                value={textTracks.findIndex(track => track.active)}
-                onChange={(e) => {
-                  const selectedIdx = Number((e.target as HTMLSelectElement).value);
-                  const selectedTrack = textTracks[selectedIdx];
-                  changeLanguage(selectedTrack);
-                }}
-                onFocus={(e) => e.currentTarget.classList.add(styles.open)}
-                onBlur={(e) => e.currentTarget.classList.remove(styles.open)}
-              >
-                {textTracks.map((track, idx) => (
-                  <option key={idx} value={idx}>
-                    {track.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
+          <TranscriptLanguageSelector textTracks={textTracks} changeLanguage={changeLanguage} />
 
           <div className={styles.actionButtons}>
-            {popoutTranscriptItem && (
-              <button
-                data-testid="transcript-detach-attach-button"
-                disabled={popoutTranscriptItem.isDisabled}
-                onClick={() => popoutTranscriptItem.onClick?.()}
-              >
-                <Icon name="detach" size={IconSize.medium} />
-                <span>{popoutTranscriptItem.label}</span>
-              </button>
-            )}
-            {downloadItem && (
-              <button
-                data-testid={downloadItem.testId}
-                disabled={downloadItem.isDisabled}
-                onClick={() => downloadItem.onClick?.()}
-              >
-                <Icon name="download" size={IconSize.medium} />
-                <span>{downloadItem.label}</span>
-              </button>
-            )}
-            {printItem && (
-              <button
-                data-testid={printItem.testId}
-                disabled={printItem.isDisabled}
-                onClick={() => printItem.onClick?.()}
-              >
-                <Icon name="print" size={IconSize.medium} />
-                <span>{printItem.label}</span>
-              </button>
-            )}
+            {items.map(item => (
+              <OverlayActionItem key={item.testId} item={item} /> 
+            ))}
           </div>
         </div>
       </Overlay>,

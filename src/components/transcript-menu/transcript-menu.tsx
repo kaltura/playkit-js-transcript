@@ -148,9 +148,8 @@ class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState>
             isOpen={isOverlayOpen}
             items={items}
             textTracks={this.props.textTracks}
-            kitchenSinkDetached={kitchenSinkDetached}
             changeLanguage={this.props.changeLanguage}
-            playerWidth={this.props.playerWidth}
+            playerSize={this.props.playerWidth}
             onClose={() => {
               this.setState({ isOverlayOpen: false }, () => {
                 this.props.onOverlayClose?.();
