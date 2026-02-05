@@ -61,7 +61,6 @@ const TranscriptLanguageSelector = ({ textTracks, changeLanguage }: TranscriptLa
       <label htmlFor="transcript-language">{translates.languageSelectorLabel}</label>
       <select
         id="transcript-language"
-        aria-labelledby="transcript-language"
         value={selectableTracks.findIndex(track => track.active)}
         onChange={(e) => {
           const selectedIdx = Number((e.target as HTMLSelectElement).value);
