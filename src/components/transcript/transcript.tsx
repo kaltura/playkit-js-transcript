@@ -14,6 +14,7 @@ import {Button, ButtonType, ButtonSize} from '@playkit-js/common/dist/components
 import {ScreenReaderProvider} from '@playkit-js/common/dist/hoc/sr-wrapper';
 import {OnClickEvent, OnClick} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import {TranscriptEvents} from '../../events/events';
+const {withPlayer} = KalturaPlayer.ui.components;
 
 const {ENTER, SPACE, TAB, ESC} = ui.utils.KeyMap;
 const {withText, Text} = ui.preacti18n;
@@ -78,6 +79,9 @@ export interface TranscriptProps {
   textTracks: Array<core.TextTrack>;
   changeLanguage: (textTrack: core.TextTrack) => void;
   sidePanelPosition: string;
+  player: any;
+  onOverlayOpen?: () => void;
+  onOverlayClose?: () => void;
 }
 
 interface TranscriptState {
@@ -110,6 +114,7 @@ const mapStateToProps = (state: any, ownProps: Pick<TranscriptProps, 'expandMode
 // @ts-ignore
 @connect(mapStateToProps)
 @withText(translates)
+@withPlayer
 export class Transcript extends Component<TranscriptProps, TranscriptState> {
   private _transcriptListRef: HTMLElement | null = null;
   private _captionListRef: any = null;
@@ -335,7 +340,9 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
       onAttach,
       onDetach,
       textTracks,
-      changeLanguage
+      changeLanguage,
+      isMobile,
+      smallScreen
     } = this.props;
     const {search, activeSearchIndex, totalSearchResults} = this.state;
     const widgetHeight = this._widgetRootRef?.getBoundingClientRect().height;
@@ -382,7 +389,14 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
             detachMenuItem,
             kitchenSinkDetached,
             textTracks,
-            changeLanguage
+            changeLanguage,
+            sidePanelPosition,
+            isMobile,
+            smallScreen,
+            player: this.props.player,
+            onOverlayOpen: this.props.onOverlayOpen,
+            onOverlayClose: this.props.onOverlayClose,
+            playerWidth : this.props.playerWidth
           }}
         />
         {!detachMenuItem && this._renderDetachButton()}

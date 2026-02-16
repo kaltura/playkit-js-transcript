@@ -1,11 +1,15 @@
-import {Component, h} from 'preact';
-import {core} from '@playkit-js/kaltura-player-js';
+import {Component, h, Fragment, createRef} from 'preact';
+import {core, ui} from '@playkit-js/kaltura-player-js';
 import {PopoverMenu} from '../popover-menu';
 import {PopoverMenuItemData} from '../popover-menu';
+import { PopoverOverlay } from '../popover-overlay';
 import {capitalizeFirstLetter} from '../../utils';
 
 import {Button, ButtonType} from '@playkit-js/common/dist/components/button';
 const {withText, Text} = KalturaPlayer.ui.preacti18n;
+const {SidePanelPositions, getOverlayPortalElement} = ui;
+const {focusElement} = ui.Utils;
+const {PLAYER_BREAK_POINTS} = ui.Components;
 
 interface TranscriptMenuProps {
   shouldUseCalculatedHeight: boolean;
@@ -27,9 +31,16 @@ interface TranscriptMenuProps {
     onClick: () => void;
     isDisabled: boolean;
   } | null;
+  sidePanelPosition: string;
+  isMobile?: boolean;
+  player: any;
+  onOverlayOpen?: () => void;
+  onOverlayClose?: () => void;
+  playerWidth?: number;
 }
 
 interface TranscriptMenuState {
+  isOverlayOpen: boolean;
   items: Array<PopoverMenuItemData>;
 }
 
@@ -41,6 +52,21 @@ const translates = {
 
 @withText(translates)
 class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState> {
+  private _triggerButtonRef = createRef<HTMLButtonElement>();
+
+  state: TranscriptMenuState = {
+    isOverlayOpen: false,
+    items: []
+  };
+
+  private _focusTriggerButton = () => {
+    const ref = this._triggerButtonRef.current as any;
+    const innerBtn = ref?.base || ref?.buttonRef?.current;
+    if (innerBtn && typeof innerBtn.focus === 'function') {
+      focusElement(innerBtn);
+    }
+  };
+
   render() {
     const {
       shouldUseCalculatedHeight,
@@ -55,9 +81,13 @@ class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState>
       detachMenuItem,
       kitchenSinkDetached,
       textTracks,
-      changeLanguage
+      changeLanguage,
+      sidePanelPosition,
+      isMobile,
+      playerWidth
     } = this.props;
     const items = [];
+    const { isOverlayOpen } = this.state;
 
     if (textTracks?.length > 1) {
       const activeTextTrack = textTracks.find(track => track.active);
@@ -95,6 +125,40 @@ class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState>
         onClick: onPrint,
         isDisabled: isLoading
       });
+    }
+    const isSmallPlayer = playerWidth! <= PLAYER_BREAK_POINTS.SMALL;
+    const shouldUseOverlay = !kitchenSinkDetached && (sidePanelPosition === SidePanelPositions.BOTTOM || isMobile || isSmallPlayer);
+
+    if (shouldUseOverlay) {
+      return (
+        <Fragment>
+          <Button
+            ref={this._triggerButtonRef}
+            type={ButtonType.borderless}
+            icon="more"
+            ariaLabel={this.props.moreOptionsLabel}
+            onClick={() => {
+              this.props.onOverlayOpen?.();
+              this.setState({ isOverlayOpen: true });
+            }}
+          />
+
+          <PopoverOverlay
+            player={this.props.player}
+            isOpen={isOverlayOpen}
+            items={items}
+            textTracks={this.props.textTracks}
+            changeLanguage={this.props.changeLanguage}
+            playerSize={this.props.playerWidth}
+            onClose={() => {
+              this.setState({ isOverlayOpen: false }, () => {
+                this.props.onOverlayClose?.();
+                this._focusTriggerButton();
+              });
+            }}
+          />
+        </Fragment>
+      );
     }
 
     return items.length ? (
