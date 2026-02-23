@@ -127,7 +127,7 @@ class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState>
       });
     }
     const isSmallPlayer = playerWidth! <= PLAYER_BREAK_POINTS.SMALL;
-    const shouldUseOverlay = !kitchenSinkDetached && (sidePanelPosition === SidePanelPositions.BOTTOM || isMobile || isSmallPlayer);
+    const shouldUseOverlay = !kitchenSinkDetached && (sidePanelPosition === SidePanelPositions.BOTTOM || sidePanelPosition === SidePanelPositions.TOP || isMobile || isSmallPlayer);
 
     if (shouldUseOverlay) {
       return (
