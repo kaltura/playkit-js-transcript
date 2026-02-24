@@ -138,7 +138,7 @@ export class Caption extends Component<ExtendedCaptionProps> {
       return null;
     }
     return (
-      <span className={`${styles.captionSpan} no-copy`}>
+      <span className={`${styles.captionSpan} no-copy ${styles.noCopyDetached}`}>
         {indexMap
           ? indexArray.map((el: string, index: number) => {
               const preSelected = index === 0 ? text.substring(0, indexMap[el]) : '';
