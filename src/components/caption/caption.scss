@@ -75,3 +75,13 @@
     }
   }
 }
+
+// Copy protection for transcript text in detached mode
+// Inherits from global .no-copy and adds span child selection protection
+.no-copy-detached {
+  @extend :global(.no-copy);
+
+  & > span::selection {
+    background: transparent;
+  }
+}

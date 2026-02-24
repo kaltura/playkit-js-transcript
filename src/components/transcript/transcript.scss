@@ -19,25 +19,6 @@ $button-height: 32px;
   -webkit-backdrop-filter: blur(8px);
   z-index: 1;
   cursor: default;
-
-  // Copy protection for transcript text - works in both attached and detached modes
-  // This ensures .no-copy class works even when transcript is in a detached popup window
-  :global(.no-copy) {
-    user-select: none !important;
-    -webkit-user-select: none !important;
-    -moz-user-select: none !important;
-    -ms-user-select: none !important;
-    -webkit-touch-callout: none !important;
-    cursor: default;
-
-    &::selection {
-      background: transparent;
-    }
-
-    & > span::selection {
-      background: transparent;
-    }
-  }
   .skip-transcript-button {
     position: absolute;
     top: -1000px;
