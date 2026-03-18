@@ -8,4 +8,5 @@ export interface TranscriptConfig {
   downloadDisabled: boolean; // disable download menu
   printDisabled: boolean; // disable print menu
   expandMode: string; // over or pushing the player
+  protectCaptionCopy: boolean; // enable/disable copy protection for caption text (default: true)
 }

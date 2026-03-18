@@ -13,6 +13,7 @@ export interface CaptionProps {
   scrollTo(el: HTMLElement): void;
   scrollToSearchMatch(el: HTMLElement): void;
   videoDuration: number;
+  protectCaptionCopy: boolean;
 }
 
 export interface Props {
@@ -124,6 +125,7 @@ export class CaptionList extends Component<Props> {
       shouldScrollToSearchMatch: this._getShouldScrollToSearchMatch(id),
       isAutoScrollEnabled,
       searchCaption: this.props.searchMap[id],
+      protectCaptionCopy: captionProps.protectCaptionCopy,
       ...this._getSearchProps(id)
     };
     return newCaptionProps;
