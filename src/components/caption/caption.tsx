@@ -138,10 +138,8 @@ export class Caption extends Component<ExtendedCaptionProps> {
     if (text?.length === 0) {
       return null;
     }
-    // no-copy is a global class, noCopyDetached is a CSS module class for detached mode protection
-    const captionSpanClasses = protectCaptionCopy
-      ? `${styles.captionSpan} no-copy ${styles.noCopyDetached}`
-      : styles.captionSpan;
+    // no-copy is a global class, no-copy-detached is a CSS module class for detached mode protection
+    const captionSpanClasses = protectCaptionCopy ? `${styles.captionSpan} no-copy ${styles.noCopyDetached}` : styles.captionSpan;
     return (
       <span className={captionSpanClasses}>
         {indexMap
@@ -191,7 +189,8 @@ export class Caption extends Component<ExtendedCaptionProps> {
           ref={node => {
             this._captionRef = node;
           }}
-          {...captionA11yProps}>
+          {...captionA11yProps}
+        >
           {showTime && (
             <div className={styles.captionTime} aria-hidden="true">
               {time}
@@ -199,7 +198,8 @@ export class Caption extends Component<ExtendedCaptionProps> {
           )}
           <div
             aria-hidden="true"
-            className={`${styles.captionContent} ${isHighlighted ? styles.highlighted : ''} ${showTime ? '' : styles.withoutTime}`}>
+            className={`${styles.captionContent} ${isHighlighted ? styles.highlighted : ''} ${showTime ? '' : styles.withoutTime}`}
+          >
             {this._renderText(caption.text)}
           </div>
         </div>
