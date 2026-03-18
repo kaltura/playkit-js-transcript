@@ -138,9 +138,12 @@ export class Caption extends Component<ExtendedCaptionProps> {
     if (text?.length === 0) {
       return null;
     }
-    const copyProtectionClasses = protectCaptionCopy ? `no-copy ${styles.noCopyDetached}` : '';
+    // no-copy is a global class, noCopyDetached is a CSS module class for detached mode protection
+    const captionSpanClasses = protectCaptionCopy
+      ? `${styles.captionSpan} no-copy ${styles.noCopyDetached}`
+      : styles.captionSpan;
     return (
-      <span className={`${styles.captionSpan} ${copyProtectionClasses}`}>
+      <span className={captionSpanClasses}>
         {indexMap
           ? indexArray.map((el: string, index: number) => {
               const preSelected = index === 0 ? text.substring(0, indexMap[el]) : '';
