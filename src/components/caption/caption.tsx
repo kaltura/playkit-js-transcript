@@ -189,8 +189,7 @@ export class Caption extends Component<ExtendedCaptionProps> {
           ref={node => {
             this._captionRef = node;
           }}
-          {...captionA11yProps}
-        >
+          {...captionA11yProps}>
           {showTime && (
             <div className={styles.captionTime} aria-hidden="true">
               {time}
@@ -198,8 +197,7 @@ export class Caption extends Component<ExtendedCaptionProps> {
           )}
           <div
             aria-hidden="true"
-            className={`${styles.captionContent} ${isHighlighted ? styles.highlighted : ''} ${showTime ? '' : styles.withoutTime}`}
-          >
+            className={`${styles.captionContent} ${isHighlighted ? styles.highlighted : ''} ${showTime ? '' : styles.withoutTime}`}>
             {this._renderText(caption.text)}
           </div>
         </div>

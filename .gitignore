@@ -42,6 +42,3 @@ jspm_packages
 .idea
 
 dist/
-
-# Lock files - this project uses yarn
-package-lock.json
