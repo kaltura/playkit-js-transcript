@@ -84,6 +84,36 @@ describe('Transcript plugin', () => {
         ).should('have.text', 'Dark Side.');
       });
     });
+
+    it('should apply copy protection classes by default', () => {
+      mockKalturaBe();
+      loadPlayer().then(() => {
+        cy.get('[data-testid="transcript_list"]').within(() => {
+          cy.get('span[class*="captionSpan"]').first().should('have.class', 'no-copy');
+          cy.get('span[class*="captionSpan"]').first().invoke('attr', 'class').should('contain', 'noCopyDetached');
+        });
+      });
+    });
+
+    it('should apply copy protection classes when protectCaptionCopy is true', () => {
+      mockKalturaBe();
+      loadPlayer({protectCaptionCopy: true}).then(() => {
+        cy.get('[data-testid="transcript_list"]').within(() => {
+          cy.get('span[class*="captionSpan"]').first().should('have.class', 'no-copy');
+          cy.get('span[class*="captionSpan"]').first().invoke('attr', 'class').should('contain', 'noCopyDetached');
+        });
+      });
+    });
+
+    it('should not apply copy protection classes when protectCaptionCopy is false', () => {
+      mockKalturaBe();
+      loadPlayer({protectCaptionCopy: false}).then(() => {
+        cy.get('[data-testid="transcript_list"]').within(() => {
+          cy.get('span[class*="captionSpan"]').first().should('not.have.class', 'no-copy');
+          cy.get('span[class*="captionSpan"]').first().invoke('attr', 'class').should('not.contain', 'noCopyDetached');
+        });
+      });
+    });
   });
 
   describe('search bar', () => {

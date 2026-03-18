@@ -38,7 +38,8 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     searchDebounceTimeout: 250,
     searchNextPrevDebounceTimeout: 100,
     downloadDisabled: false,
-    printDisabled: false
+    printDisabled: false,
+    protectCaptionCopy: true
   };
   private _activeCaptionMapId: string = '';
   private _activeCuePointsMap: HighlightedMap = {};
@@ -308,7 +309,8 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       searchDebounceTimeout,
       searchNextPrevDebounceTimeout,
       downloadDisabled,
-      printDisabled
+      printDisabled,
+      protectCaptionCopy
     } = this.config;
     this._transcriptPanel = this.sidePanelsManager!.add({
       label: 'Transcript',
@@ -353,6 +355,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
             player={this.player}
             onOverlayOpen={() => this.sidePanelsManager?.deactivateItem(this._transcriptPanel)}
             onOverlayClose={() => this.sidePanelsManager?.activateItem(this._transcriptPanel)}
+            protectCaptionCopy={getConfigValue(protectCaptionCopy, isBoolean, true)}
           />
         ) as any;
       },

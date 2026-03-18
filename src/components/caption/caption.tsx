@@ -25,6 +25,7 @@ export interface CaptionProps {
   navigationInstruction?: string;
   timeLabel?: string;
   setTextToRead: (textToRead: string, delay?: number) => void;
+  protectCaptionCopy: boolean;
 }
 
 interface ExtendedCaptionProps extends CaptionProps {
@@ -132,13 +133,14 @@ export class Caption extends Component<ExtendedCaptionProps> {
   };
 
   private _renderText = (text: string) => {
-    const {activeSearchIndex, searchLength, indexMap} = this.props;
+    const {activeSearchIndex, searchLength, indexMap, protectCaptionCopy} = this.props;
     const indexArray = this.indexArray;
     if (text?.length === 0) {
       return null;
     }
+    const copyProtectionClasses = protectCaptionCopy ? `no-copy ${styles.noCopyDetached}` : '';
     return (
-      <span className={`${styles.captionSpan} no-copy ${styles.noCopyDetached}`}>
+      <span className={`${styles.captionSpan} ${copyProtectionClasses}`}>
         {indexMap
           ? indexArray.map((el: string, index: number) => {
               const preSelected = index === 0 ? text.substring(0, indexMap[el]) : '';
