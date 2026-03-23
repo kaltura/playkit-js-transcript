@@ -137,8 +137,9 @@ export class Caption extends Component<ExtendedCaptionProps> {
     if (text?.length === 0) {
       return null;
     }
+    const styleDetacheProtection = !!this.props.player?.config.ui.isCopyProtected ? styles.noCopyDetached : '';
     return (
-      <span className={`${styles.captionSpan} no-copy ${styles.noCopyDetached}`}>
+      <span className={`${styles.captionSpan} no-copy ${styleDetacheProtection}`}>
         {indexMap
           ? indexArray.map((el: string, index: number) => {
               const preSelected = index === 0 ? text.substring(0, indexMap[el]) : '';
