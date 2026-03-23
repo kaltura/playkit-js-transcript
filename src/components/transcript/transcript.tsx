@@ -82,7 +82,6 @@ export interface TranscriptProps {
   player: any;
   onOverlayOpen?: () => void;
   onOverlayClose?: () => void;
-  protectCaptionCopy: boolean;
 }
 
 interface TranscriptState {
@@ -456,7 +455,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
   };
 
   private _renderTranscript = () => {
-    const {captions, hasError, onRetryLoad, showTime, videoDuration, highlightedMap, protectCaptionCopy} = this.props;
+    const {captions, hasError, onRetryLoad, showTime, videoDuration, highlightedMap} = this.props;
     const {isAutoScrollEnabled, searchMap, activeSearchIndex, searchLength} = this.state;
 
     if (hasError) {
@@ -480,8 +479,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
       searchLength,
       scrollTo: this._scrollTo,
       scrollToSearchMatch: this._scrollToSearchMatch,
-      videoDuration,
-      protectCaptionCopy
+      videoDuration
     };
 
     return (
