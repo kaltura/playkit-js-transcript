@@ -84,36 +84,6 @@ describe('Transcript plugin', () => {
         ).should('have.text', 'Dark Side.');
       });
     });
-
-    it('should apply copy protection classes by default', () => {
-      mockKalturaBe();
-      loadPlayer().then(() => {
-        cy.get('[data-testid="transcript_list"]').within(() => {
-          cy.get('span[class*="caption-span"]').first().should('have.class', 'no-copy');
-          cy.get('span[class*="caption-span"]').first().invoke('attr', 'class').should('contain', 'no-copy-detached');
-        });
-      });
-    });
-
-    it('should apply copy protection classes when protectCaptionCopy is true', () => {
-      mockKalturaBe();
-      loadPlayer({protectCaptionCopy: true}).then(() => {
-        cy.get('[data-testid="transcript_list"]').within(() => {
-          cy.get('span[class*="caption-span"]').first().should('have.class', 'no-copy');
-          cy.get('span[class*="caption-span"]').first().invoke('attr', 'class').should('contain', 'no-copy-detached');
-        });
-      });
-    });
-
-    it('should not apply copy protection classes when protectCaptionCopy is false', () => {
-      mockKalturaBe();
-      loadPlayer({protectCaptionCopy: false}).then(() => {
-        cy.get('[data-testid="transcript_list"]').within(() => {
-          cy.get('span[class*="caption-span"]').first().should('not.have.class', 'no-copy');
-          cy.get('span[class*="caption-span"]').first().invoke('attr', 'class').should('not.contain', 'no-copy-detached');
-        });
-      });
-    });
   });
 
   describe('search bar', () => {
@@ -260,7 +230,7 @@ describe('Transcript plugin', () => {
           cy.contains('première légende').should('exist');
           cy.get(`[data-testid="popover-anchor-container"]`).click();
           cy.get(`[data-testid="language-change-menu-item-active"]`).click();
-          cy.get(`[data-testid="language-change-menu-item-English"]`).click({force: true});
+          cy.get(`[data-testid="language-change-menu-item-English"]`).click({ force: true });
           cy.contains('first caption').should('exist');
         });
       });

@@ -25,7 +25,6 @@ export interface CaptionProps {
   navigationInstruction?: string;
   timeLabel?: string;
   setTextToRead: (textToRead: string, delay?: number) => void;
-  protectCaptionCopy: boolean;
 }
 
 interface ExtendedCaptionProps extends CaptionProps {
@@ -133,15 +132,13 @@ export class Caption extends Component<ExtendedCaptionProps> {
   };
 
   private _renderText = (text: string) => {
-    const {activeSearchIndex, searchLength, indexMap, protectCaptionCopy} = this.props;
+    const {activeSearchIndex, searchLength, indexMap} = this.props;
     const indexArray = this.indexArray;
     if (text?.length === 0) {
       return null;
     }
-    // no-copy is a global class, no-copy-detached is a CSS module class for detached mode protection
-    const captionSpanClasses = protectCaptionCopy ? `${styles.captionSpan} no-copy ${styles.noCopyDetached}` : styles.captionSpan;
     return (
-      <span className={captionSpanClasses}>
+      <span className={`${styles.captionSpan} no-copy ${styles.noCopyDetached}`}>
         {indexMap
           ? indexArray.map((el: string, index: number) => {
               const preSelected = index === 0 ? text.substring(0, indexMap[el]) : '';

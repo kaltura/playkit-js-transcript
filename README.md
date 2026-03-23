@@ -128,7 +128,6 @@ Bump version: `yarn release`;<br/>
   searchNextPrevDebounceTimeout?: number // optional
   downloadDisabled?: boolean // optional
   printDisabled?: boolean // optional
-  protectCaptionCopy:? boolean // optional 
 }
 ```
 ##
