@@ -1,0 +1,150 @@
+{
+  "repositoryName": "playkit-js-transcript",
+  "version": "1.0.0",
+  "lastUpdated": "2026-04-23",
+  "coreResponsibility": {
+    "summary": "A Kaltura Player plugin that provides an interactive transcript panel for displaying, searching, and navigating video captions/subtitles in sync with video playback.",
+    "type": "UI Plugin",
+    "category": "Accessibility & Captions"
+  },
+  "domainOwnership": {
+    "featureOwnership": [
+      "Transcript panel UI rendering and management",
+      "Caption/subtitle display synchronized with video playback",
+      "Transcript search functionality with result navigation",
+      "Auto-scroll to active caption during playback",
+      "Transcript download as text file",
+      "Transcript print functionality",
+      "Multi-language transcript support with language switching",
+      "Popout/detach transcript to separate window",
+      "Side panel positioning (left, right, top, bottom)",
+      "Responsive layout for different screen sizes"
+    ],
+    "dataHandling": {
+      "manages": [
+        "Caption cue points (id, startTime, endTime, text)",
+        "Active/highlighted caption state map",
+        "Search state (query, results, active index)",
+        "Auto-scroll enabled state",
+        "Plugin panel state (opened, closed, detached)"
+      ],
+      "transforms": [
+        "Raw timed metadata into sanitized caption objects",
+        "Caption text sanitization (HTML removal, character decoding)",
+        "Time conversion for display formatting"
+      ]
+    }
+  },
+  "integrationPoints": {
+    "upstream": {
+      "repositories": [
+        {
+          "name": "playkit-js-kaltura-cuepoints",
+          "purpose": "Provides caption cue point data and timed metadata events",
+          "required": true
+        },
+        {
+          "name": "playkit-js-ui-managers",
+          "purpose": "Provides SidePanelsManager and UpperBarManager services for panel/icon registration",
+          "required": true
+        },
+        {
+          "name": "kaltura-player-js",
+          "purpose": "Core player instance, event system, and base plugin infrastructure",
+          "required": true
+        }
+      ],
+      "services": [
+        "kalturaCuepoints service (cue point registration and events)",
+        "sidePanelsManager service (panel lifecycle management)",
+        "upperBarManager service (toolbar icon management)",
+        "AudioPluginsManager service (audio player UI integration)"
+      ]
+    },
+    "downstream": {
+      "consumers": [
+        "Kaltura Player embedded instances",
+        "Kaltura Video Portal",
+        "Custom video player implementations using Kaltura Player"
+      ]
+    },
+    "externalAPIs": {
+      "kalturaAPIs": [
+        "Timed Metadata API (TIMED_METADATA_CHANGE, TIMED_METADATA_ADDED events)",
+        "Text Track API (TEXT_TRACK_CHANGED event)"
+      ],
+      "thirdPartySDKs": [
+        {
+          "name": "sanitize-html",
+          "purpose": "Sanitizes caption text to remove potentially harmful HTML"
+        }
+      ]
+    }
+  },
+  "technicalStack": {
+    "languages": ["TypeScript", "SCSS"],
+    "frameworks": ["Preact (via kaltura-player-js UI)"],
+    "buildTools": ["Webpack", "TypeScript Compiler"],
+    "testingTools": ["Cypress (E2E)"],
+    "packageManager": "Yarn",
+    "entryPoints": {
+      "main": "src/index.ts",
+      "pluginCore": "src/transcript-plugin.tsx",
+      "mainComponent": "src/components/transcript/transcript.tsx",
+      "types": "src/types/index.ts",
+      "events": "src/events/events.ts"
+    },
+    "outputBundle": "dist/playkit-transcript.js"
+  },
+  "triageKeywords": [
+    "transcript",
+    "caption",
+    "subtitle",
+    "auto-scroll",
+    "transcript search",
+    "transcript download",
+    "transcript print",
+    "transcript panel",
+    "transcript popout",
+    "transcript detach",
+    "showTime",
+    "scrollOffset",
+    "expandMode",
+    "expandOnFirstPlay",
+    "transcript_open",
+    "transcript_close",
+    "TIMED_METADATA",
+    "kalturaCuepoints",
+    "sidePanelsManager",
+    "kalturaCaption"
+  ],
+  "errorPatterns": [
+    "Failed to load transcript",
+    "kalturaCuepoints, sidePanelsManager or upperBarManager haven't registered",
+    "transcript plugin is not supported for live entries"
+  ],
+  "configurationKeys": [
+    "transcript.expandMode",
+    "transcript.expandOnFirstPlay",
+    "transcript.showTime",
+    "transcript.position",
+    "transcript.scrollOffset",
+    "transcript.searchDebounceTimeout",
+    "transcript.searchNextPrevDebounceTimeout",
+    "transcript.downloadDisabled",
+    "transcript.printDisabled"
+  ],
+  "eventTypes": [
+    "transcript_open",
+    "transcript_close",
+    "transcript_download",
+    "transcript_print",
+    "transcript_search",
+    "transcript_navigate_result",
+    "transcript_popout_open",
+    "transcript_popout_close",
+    "transcript_popout_drag",
+    "transcript_popout_resize",
+    "transcript_scrolling"
+  ]
+}
