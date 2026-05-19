@@ -6,6 +6,11 @@ import * as styles from './captionList.scss';
 import {HighlightedMap, CuePointData} from '../../types';
 
 const {END, HOME} = KalturaPlayer.ui.utils.KeyMap;
+const {withText, Text} = KalturaPlayer.ui.preacti18n;
+
+const translates = {
+  captionsList: <Text id="transcript.captions_list">Captions List</Text>
+};
 
 export interface CaptionProps {
   showTime: boolean;
@@ -28,7 +33,9 @@ export interface Props {
   activeSearchIndex: number;
   searchMap: Record<string, Record<string, number>>;
   captionProps: CaptionProps;
+  captionsList?: string;
 }
+@withText(translates)
 export class CaptionList extends Component<Props> {
   private _currentCaptionRef: any = null;
   private _firstCaptionRef: any = null;
@@ -138,10 +145,10 @@ export class CaptionList extends Component<Props> {
   };
 
   render() {
-    const {data, highlightedMap} = this.props;
+    const {data, highlightedMap, captionsList} = this.props;
     let isSearchCaptionInList = false;
     return (
-      <div className={styles.transcriptWrapper} onKeyUp={this._handleKeyUp}>
+      <div className={styles.transcriptWrapper} onKeyUp={this._handleKeyUp} aria-label={captionsList} role="region">
         {data.map((captionData, index) => {
           const captionProps = this._getCaptionProps(captionData);
           let isSearchCaption = false;
@@ -168,6 +175,7 @@ export class CaptionList extends Component<Props> {
                     }}
                     onUpKeyPressed={() => this._focusPrevCaption(index)}
                     onDownKeyPressed={() => this._focusNextCaption(index)}
+                    includeNavigationInstructions={index === 0 || index === data.length - 1}
                     {...captionProps}
                   />
                 );
