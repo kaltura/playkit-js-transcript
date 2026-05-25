@@ -164,7 +164,7 @@ export class Caption extends Component<ExtendedCaptionProps> {
     const {startTime} = caption;
     const time = showTime ? secondsToTime(startTime, longerThanHour) : '';
     const baseLabel = `${jumpTo} ${getDurationAsText(Math.floor(startTime), player?.config.ui.locale, true)}. ${caption.text}`;
-    const ariaLabel = includeNavigationInstructions ? `${baseLabel}. ${navigationInstruction}` : baseLabel;
+    const ariaLabel = includeNavigationInstructions ? `${baseLabel}${/[.!?]$/.test(baseLabel.trim()) ? ' ' : '. '}${navigationInstruction}` : baseLabel;
 
     const captionA11yProps: Record<string, any> = {
       ariaCurrent: isHighlighted,

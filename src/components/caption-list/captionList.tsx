@@ -6,11 +6,6 @@ import * as styles from './captionList.scss';
 import {HighlightedMap, CuePointData} from '../../types';
 
 const {END, HOME} = KalturaPlayer.ui.utils.KeyMap;
-const {withText, Text} = KalturaPlayer.ui.preacti18n;
-
-const translates = {
-  captionsList: <Text id="transcript.captions_list">Captions List</Text>
-};
 
 export interface CaptionProps {
   showTime: boolean;
@@ -35,7 +30,6 @@ export interface Props {
   captionProps: CaptionProps;
   captionsList?: string;
 }
-@withText(translates)
 export class CaptionList extends Component<Props> {
   private _currentCaptionRef: any = null;
   private _firstCaptionRef: any = null;
