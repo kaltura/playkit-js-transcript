@@ -22,12 +22,9 @@
       "attach_transcript": "Tornar a la finestra de transcripció",
       "detach_transcript": "Desplegar transcripció",
       "transcript": "Transcripció",
-      "caption_label": "Saltar a aquest punt del vídeo",
-      "move_to_search": "Feu clic per anar al resultat de la cerca",
       "to_search_result": "Anar al resultat",
       "to_search_result_label": "Feu clic per anar a aquest punt del vídeo",
-      "navigation_instruction": "Premeu Inici per tornar al principi de la transcripció. Premeu Fi per anar a la fi de la transcripció.",
-      "time_label": "Marca de temps"
+      "navigation_instruction": "Premeu Inici per tornar al principi de la transcripció. Premeu Fi per anar a la fi de la transcripció."
     }
   }
 }

@@ -142,7 +142,7 @@ export class CaptionList extends Component<Props> {
     const {data, highlightedMap, captionsList} = this.props;
     let isSearchCaptionInList = false;
     return (
-      <div className={styles.transcriptWrapper} onKeyUp={this._handleKeyUp} aria-label={captionsList} role="region">
+      <div className={styles.transcriptWrapper} onKeyUp={this._handleKeyUp} aria-label={captionsList || 'Captions List'} role="region">
         {data.map((captionData, index) => {
           const captionProps = this._getCaptionProps(captionData);
           let isSearchCaption = false;

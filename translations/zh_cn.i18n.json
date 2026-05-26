@@ -22,12 +22,9 @@
       "attach_transcript": "还原转录文字",
       "detach_transcript": "弹出转录文字",
       "transcript": "转录文字",
-      "caption_label": "跳至视频此位置",
-      "move_to_search": "点击跳转至搜索结果",
       "to_search_result": "前往结果",
       "to_search_result_label": "点击跳转至视频此位置",
-      "navigation_instruction": "按 Home 键跳转至转录文字开头。按 End 键跳转至转录文字末尾。",
-      "time_label": "时间戳"
+      "navigation_instruction": "按 Home 键跳转至转录文字开头。按 End 键跳转至转录文字末尾。"
     }
   }
 }
