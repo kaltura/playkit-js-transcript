@@ -165,7 +165,8 @@ export class Caption extends Component<ExtendedCaptionProps> {
     const time = showTime ? secondsToTime(startTime, longerThanHour) : '';
     // Always include timestamp in aria-label for screen reader navigation, regardless of showTime visual display setting
     const baseLabel = `${jumpTo} ${getDurationAsText(Math.floor(startTime), player?.config.ui.locale, true)}. ${caption.text}`;
-    const ariaLabel = includeNavigationInstructions ? `${baseLabel}${/[.!?]$/.test(baseLabel.trim()) ? ' ' : '. '}${navigationInstruction}` : baseLabel;
+    const separator = /[.!?]$/.test(baseLabel.trim()) ? ' ' : '. ';
+    const ariaLabel = includeNavigationInstructions ? `${baseLabel}${separator}${navigationInstruction}` : baseLabel;
 
     const captionA11yProps: Record<string, any> = {
       ariaCurrent: isHighlighted,
