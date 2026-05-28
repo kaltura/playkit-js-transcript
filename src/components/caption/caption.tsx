@@ -20,10 +20,6 @@ export interface CaptionProps {
   videoDuration: number;
   eventManager?: any;
   player?: any;
-  captionLabel?: string;
-  moveToSearch?: string;
-  navigationInstruction?: string;
-  timeLabel?: string;
   setTextToRead: (textToRead: string, delay?: number) => void;
 }
 
@@ -39,17 +35,18 @@ interface ExtendedCaptionProps extends CaptionProps {
   isAutoScrollEnabled: boolean;
   onUpKeyPressed?: (e: KeyboardEvent) => void;
   onDownKeyPressed?: (e: KeyboardEvent) => void;
+  includeNavigationInstructions?: boolean;
+  jumpTo?: string;
+  navigationInstruction?: string;
 }
 
 const translates = {
-  captionLabel: <Text id="transcript.caption_label">Jump to this point in video</Text>,
-  moveToSearch: <Text id="transcript.move_to_search">Click to jump to search result</Text>,
+  jumpTo: <Text id="transcript.jump_to">Jump to</Text>,
   navigationInstruction: (
     <Text id="transcript.navigation_instruction">
       Press Home to navigate to the beginning of the transcript. Press End to jump to the end of the transcript.
     </Text>
-  ),
-  timeLabel: <Text id="transcript.time_label">Timestamp</Text>
+  )
 };
 
 @withText(translates)
@@ -162,17 +159,19 @@ export class Caption extends Component<ExtendedCaptionProps> {
   };
 
   render() {
-    const {caption, isHighlighted, showTime, longerThanHour, indexMap, captionLabel, moveToSearch, navigationInstruction, timeLabel, player} =
+    const {caption, isHighlighted, showTime, longerThanHour, indexMap, jumpTo, player, includeNavigationInstructions, navigationInstruction} =
       this.props;
     const {startTime} = caption;
     const time = showTime ? secondsToTime(startTime, longerThanHour) : '';
+    // Always include timestamp in aria-label for screen reader navigation, regardless of showTime visual display setting
+    const baseLabel = `${jumpTo} ${getDurationAsText(Math.floor(startTime), player?.config.ui.locale, true)}. ${caption.text}`;
+    const separator = /[.!?]$/.test(baseLabel.trim()) ? ' ' : '. ';
+    const ariaLabel = includeNavigationInstructions ? `${baseLabel}${separator}${navigationInstruction}` : baseLabel;
 
     const captionA11yProps: Record<string, any> = {
       ariaCurrent: isHighlighted,
       tabIndex: 0,
-      ariaLabel: `${showTime ? `${timeLabel} ${getDurationAsText(Math.floor(startTime), player?.config.ui.locale, true)} ` : ''}${caption.text} ${
-        indexMap ? moveToSearch : captionLabel
-      }. ${navigationInstruction}`,
+      ariaLabel,
       role: 'button'
     };
 

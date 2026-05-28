@@ -33,7 +33,8 @@ const translates = {
   attachTranscript: <Text id="transcript.attach_transcript">Bring Transcript back</Text>,
   detachTranscript: <Text id="transcript.detach_transcript">Popout transcript</Text>,
   toSearchResult: <Text id="transcript.to_search_result">Go to result</Text>,
-  hideTranscript: <Text id="transcript.hide_plugin">Hide Transcript</Text>
+  hideTranscript: <Text id="transcript.hide_plugin">Hide Transcript</Text>,
+  captionsList: <Text id="transcript.captions_list">Captions List</Text>
 };
 
 export interface TranscriptProps {
@@ -60,6 +61,7 @@ export interface TranscriptProps {
   detachTranscript?: string;
   toSearchResult?: string;
   hideTranscript?: string;
+  captionsList?: string;
   downloadDisabled: boolean;
   onDownload: () => void;
   printDisabled: boolean;
@@ -497,6 +499,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
         onScroll={this._onScroll}
         showItemsIcons={true}
         searchActive={false}
+        captionsList={this.props.captionsList}
       />
     );
   };

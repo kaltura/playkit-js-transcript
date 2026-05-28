@@ -22,12 +22,10 @@
       "attach_transcript": "Ripristina la trascrizione",
       "detach_transcript": "Trascrizione a comparsa",
       "transcript": "Trascrizione",
-      "caption_label": "Vai a questo punto del video",
-      "move_to_search": "Clicca per andare al risultato di ricerca",
+
       "to_search_result": "Vai al risultato",
       "to_search_result_label": "Clicca per andare a questo punto del video",
-      "navigation_instruction": "Premi Home per andare all'inizio della trascrizione. Premi Fine per andare alla fine della trascrizione.",
-      "time_label": "Timestamp"
+      "navigation_instruction": "Premi Home per andare all'inizio della trascrizione. Premi Fine per andare alla fine della trascrizione."
     }
   }
 }

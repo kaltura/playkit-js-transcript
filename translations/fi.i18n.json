@@ -22,12 +22,9 @@
       "attach_transcript": "Tuo tekstitallenne takaisin",
       "detach_transcript": "Kelluva tekstitallenne",
       "transcript": "Tekstitallenne",
-      "caption_label": "Siirry tähän kohtaan videossa",
-      "move_to_search": "Siirry hakutulokseen napsauttamalla",
       "to_search_result": "Siirry tulokseen",
       "to_search_result_label": "Siirry tähän kohtaan videossa napsauttamalla",
-      "navigation_instruction": "Siirry tekstitallenteen alkuun painamalla Etusivu. Siirry tekstitallenteen loppuun painamalla Loppu.",
-      "time_label": "Aikaleima"
+      "navigation_instruction": "Siirry tekstitallenteen alkuun painamalla Etusivu. Siirry tekstitallenteen loppuun painamalla Loppu."
     }
   }
 }

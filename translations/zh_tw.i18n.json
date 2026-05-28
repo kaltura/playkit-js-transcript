@@ -22,12 +22,9 @@
       "attach_transcript": "帶文字內容返回",
       "detach_transcript": "彈出轉錄視窗",
       "transcript": "逐字稿",
-      "caption_label": "跳轉至影片中的這個位置",
-      "move_to_search": "點擊跳轉至搜尋結果",
       "to_search_result": "前往結果",
       "to_search_result_label": "點擊跳轉至影片中的這個位置",
-      "navigation_instruction": "按下首頁導覽至文字內容開頭。按下結束跳轉至文字內容末端。",
-      "time_label": "時間戳記"
+      "navigation_instruction": "按下首頁導覽至文字內容開頭。按下結束跳轉至文字內容末端。"
     }
   }
 }

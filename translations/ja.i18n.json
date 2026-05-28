@@ -22,12 +22,9 @@
       "attach_transcript": "トランスクリプトを元に戻す",
       "detach_transcript": "トランスクリプトを表示する",
       "transcript": "トランスクリプト",
-      "caption_label": "ビデオのこのポイントにジャンプする",
-      "move_to_search": "クリックして検索結果にジャンプする",
       "to_search_result": "結果に移動する",
       "to_search_result_label": "クリックして、ビデオのこのポイントにジャンプする",
-      "navigation_instruction": "Home キーを押すと、トランスクリプトの先頭に移動します。End キーを押すと、トランスクリプトの最後に移動します。",
-      "time_label": "タイプスタンプ"
+      "navigation_instruction": "Home キーを押すと、トランスクリプトの先頭に移動します。End キーを押すと、トランスクリプトの最後に移動します。"
     }
   }
 }

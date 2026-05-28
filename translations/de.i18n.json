@@ -22,12 +22,9 @@
       "attach_transcript": "Transkript zurückholen",
       "detach_transcript": "Transkript öffnen",
       "transcript": "Transkript",
-      "caption_label": "An diese Stelle im Video springen",
-      "move_to_search": "Klicken, um zum Suchergebnis zu springen",
       "to_search_result": "Zum Ergebnis springen",
       "to_search_result_label": "Klicken, um zu diesem Punkt im Video zu springen",
-      "navigation_instruction": "Mit Home zum Transkript-Anfang springen. Mit End zum Transkript-Ende springen.",
-      "time_label": "Zeitstempel"
+      "navigation_instruction": "Mit Home zum Transkript-Anfang springen. Mit End zum Transkript-Ende springen."
     }
   }
 }
