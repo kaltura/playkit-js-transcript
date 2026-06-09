@@ -24,7 +24,9 @@
       "transcript": "Transcriptie",
       "to_search_result": "Ga naar resultaat",
       "to_search_result_label": "Klik om door te spoelen naar dit punt in de video",
-      "navigation_instruction": "Klik op startpagina om naar het begin van de transcriptie te navigeren. Druk op einde om naar het einde van de transcriptie door te spoelen."
+      "navigation_instruction": "Klik op startpagina om naar het begin van de transcriptie te navigeren. Druk op einde om naar het einde van de transcriptie door te spoelen.",
+      "jump_to": "Ga naar",
+	    "captions_list": "Lijst met ondertitels"
     }
   }
 }

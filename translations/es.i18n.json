@@ -24,7 +24,10 @@
       "transcript": "Transcripción",
       "to_search_result": "Ir al resultado",
       "to_search_result_label": "Hacer clic para ir a este punto del vídeo",
-      "navigation_instruction": "Pulsar Inicio para volver al comienzo de la transcripción. Pulsar Fin para ir al final de la transcripción."
+      "navigation_instruction": "Pulsar Inicio para volver al comienzo de la transcripción. Pulsar Fin para ir al final de la transcripción.",
+      "jump_to": "Saltar a",
+	    "captions_list": "Lista de subtítulos"
+
     }
   }
 }
