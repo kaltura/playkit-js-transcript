@@ -24,7 +24,9 @@
       "transcript": "Transcripció",
       "to_search_result": "Anar al resultat",
       "to_search_result_label": "Feu clic per anar a aquest punt del vídeo",
-      "navigation_instruction": "Premeu Inici per tornar al principi de la transcripció. Premeu Fi per anar a la fi de la transcripció."
+      "navigation_instruction": "Premeu Inici per tornar al principi de la transcripció. Premeu Fi per anar a la fi de la transcripció.",
+      "jump_to": "Anar a",
+      "captions_list": "la llista de subtítols"
     }
   }
 }

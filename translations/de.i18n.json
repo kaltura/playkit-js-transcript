@@ -24,7 +24,9 @@
       "transcript": "Transkript",
       "to_search_result": "Zum Ergebnis springen",
       "to_search_result_label": "Klicken, um zu diesem Punkt im Video zu springen",
-      "navigation_instruction": "Mit Home zum Transkript-Anfang springen. Mit End zum Transkript-Ende springen."
+      "navigation_instruction": "Mit Home zum Transkript-Anfang springen. Mit End zum Transkript-Ende springen.",
+      "jump_to": "Springen zu",
+      "captions_list": "Untertitelliste"
     }
   }
 }

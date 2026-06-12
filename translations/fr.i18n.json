@@ -24,7 +24,9 @@
       "transcript": "Relevé",
       "to_search_result": "Allez au résultat",
       "to_search_result_label": "Cliquez pour passer à ce moment de la vidéo",
-      "navigation_instruction": "Appuyez sur Accueil pour revenir au début de la transcription. Appuyez sur Fin pour passer à la fin de la transcription."
+      "navigation_instruction": "Appuyez sur Accueil pour revenir au début de la transcription. Appuyez sur Fin pour passer à la fin de la transcription.",
+      "jump_to": "Passer à",
+      "captions_list": "Liste de sous-titres"
     }
   }
 }

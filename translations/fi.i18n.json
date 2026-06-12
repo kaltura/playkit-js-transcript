@@ -24,7 +24,9 @@
       "transcript": "Tekstitallenne",
       "to_search_result": "Siirry tulokseen",
       "to_search_result_label": "Siirry tähän kohtaan videossa napsauttamalla",
-      "navigation_instruction": "Siirry tekstitallenteen alkuun painamalla Etusivu. Siirry tekstitallenteen loppuun painamalla Loppu."
+      "navigation_instruction": "Siirry tekstitallenteen alkuun painamalla Etusivu. Siirry tekstitallenteen loppuun painamalla Loppu.",
+      "jump_to": "Siirry kohteeseen",
+      "captions_list": "Tekstitysten luettelo"
     }
   }
 }

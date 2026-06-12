@@ -24,7 +24,9 @@
       "transcript": "トランスクリプト",
       "to_search_result": "結果に移動する",
       "to_search_result_label": "クリックして、ビデオのこのポイントにジャンプする",
-      "navigation_instruction": "Home キーを押すと、トランスクリプトの先頭に移動します。End キーを押すと、トランスクリプトの最後に移動します。"
+      "navigation_instruction": "Home キーを押すと、トランスクリプトの先頭に移動します。End キーを押すと、トランスクリプトの最後に移動します。",
+      "jump_to": "ジャンプ先",
+      "captions_list": "キャプションリスト"
     }
   }
 }

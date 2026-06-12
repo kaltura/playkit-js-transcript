@@ -24,7 +24,9 @@
       "transcript": "转录文字",
       "to_search_result": "前往结果",
       "to_search_result_label": "点击跳转至视频此位置",
-      "navigation_instruction": "按 Home 键跳转至转录文字开头。按 End 键跳转至转录文字末尾。"
+      "navigation_instruction": "按 Home 键跳转至转录文字开头。按 End 键跳转至转录文字末尾。",
+      "jump_to": "跳转至",
+      "captions_list": "字幕列表"
     }
   }
 }
