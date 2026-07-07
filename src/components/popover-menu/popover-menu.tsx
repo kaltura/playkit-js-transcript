@@ -162,27 +162,44 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
       }
     }
 
+    const popoverAnchor = (
+      <div
+        tabIndex={0}
+        role="button"
+        data-testid="popover-anchor-container"
+        className={`${styles.popoverAnchorContainer} ${this.state.isOpen ? styles.active : ''}`}
+        aria-expanded={this.state.isOpen}
+        aria-controls="popoverContent"
+        ref={node => {
+          if (node) {
+            this._controlElementRef = node;
+          }
+        }}>
+        <div className={styles.popoverAnchor}>{children}</div>
+      </div>
+    );
+
     const popoverMenuContent = (
       <div className={styles.popoverContainer}>
-        <A11yWrapper
-          onClick={e => {
-            e.stopPropagation();
-            this._togglePopover();
-          }}>
-          <div
-            tabIndex={0}
-            data-testid="popover-anchor-container"
-            className={`${styles.popoverAnchorContainer} ${this.state.isOpen ? styles.active : ''}`}
-            aria-expanded={this.state.isOpen}
-            aria-controls="popoverContent"
-            ref={node => {
-              if (node) {
-                this._controlElementRef = node;
-              }
+        {this.state.isOpen ? (
+          <A11yWrapper
+            onClick={e => {
+              e.stopPropagation();
+              this._togglePopover();
             }}>
-            <div className={styles.popoverAnchor}>{children}</div>
-          </div>
-        </A11yWrapper>
+            {popoverAnchor}
+          </A11yWrapper>
+        ) : (
+          <Tooltip label={this.props.moreOptionsLabel!} {...(kitchenSinkDetached ? {type: 'bottom-left', strictPosition: true} : {})}>
+            <A11yWrapper
+              onClick={e => {
+                e.stopPropagation();
+                this._togglePopover();
+              }}>
+              {popoverAnchor}
+            </A11yWrapper>
+          </Tooltip>
+        )}
 
         <div
           className={styles.popoverComponent}
@@ -220,15 +237,7 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
       </div>
     );
 
-    return this.state.isOpen ? (
-      popoverMenuContent
-    ) : (
-      <div>
-        <Tooltip label={this.props.moreOptionsLabel!} {...(kitchenSinkDetached ? {type: 'bottom-left', strictPosition: true} : {})}>
-          {popoverMenuContent}
-        </Tooltip>
-      </div>
-    );
+    return popoverMenuContent;
   }
 }
 
