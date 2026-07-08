@@ -421,7 +421,16 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
 
   private _handleClick = (event: MouseEvent | KeyboardEvent) => {
     event.preventDefault();
-    this._autoscrollButtonRef?.focus();
+
+    if (!this.state.isAutoScrollEnabled) {
+      this._autoscrollButtonRef?.focus();
+      return;
+    }
+
+    this.setState(
+      {isAutoScrollEnabled: false},
+      () => this._autoscrollButtonRef?.focus()
+    );
   };
 
   private _handleKeyDown = (event: KeyboardEvent) => {
