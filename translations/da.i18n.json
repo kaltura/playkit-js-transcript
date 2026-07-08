@@ -24,7 +24,7 @@
       "transcript": "Transskription",
       "to_search_result": "Gå til resultat",
       "to_search_result_label": "Klik for at hoppe til dette punkt i videoen",
-      "navigation_instruction": "Tryk Home for at gå til begyndelsen af transskriptionen. Tryk End for at hoppe til slutningen af transskriptionen.",
+      "navigation_instruction": "Tryk på Home-tasten for at gå til begyndelsen af transskriptionen. Tryk på End-tasten for at hoppe til slutningen af transskriptionen.",
       "jump_to": "Hop til",
       "captions_list": "Undertekstliste"
     }
