@@ -28,6 +28,7 @@ const WIDGET_RESIZE_DEBOUNCE_TIMEOUT = 250;
 
 const translates = {
   skipTranscript: <Text id="transcript.skip_transcript">Skip transcript</Text>,
+  skipTranscriptDescription: <Text id="transcript.skip_transcript_description">Activates to move focus to the Resume AutoScroll button</Text>,
   errorTitle: <Text id="transcript.whoops">Whoops!</Text>,
   errorDescripton: <Text id="transcript.load_failed">Failed to load transcript</Text>,
   attachTranscript: <Text id="transcript.attach_transcript">Bring Transcript back</Text>,
@@ -55,6 +56,7 @@ export interface TranscriptProps {
   highlightedMap: HighlightedMap;
   onItemClicked: (n: number) => void;
   skipTranscript?: string;
+  skipTranscriptDescription?: string;
   errorTitle?: string;
   errorDescripton?: string;
   attachTranscript?: string;
@@ -441,17 +443,23 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
 
   private _renderSkipTranscriptButton = () => {
     return (
-      <div
-        role="button"
-        ref={node => {
-          this._skipTranscriptButtonRef = node;
-        }}
-        data-testid="transcript_skipButton"
-        className={styles.skipTranscriptButton}
-        onKeyDown={this._handleKeyDown}
-        onClick={this._handleClick}
-        tabIndex={0}>
-        {this.props.skipTranscript}
+      <div>
+        <div
+          role="button"
+          ref={node => {
+            this._skipTranscriptButtonRef = node;
+          }}
+          data-testid="transcript_skipButton"
+          className={styles.skipTranscriptButton}
+          onKeyDown={this._handleKeyDown}
+          onClick={this._handleClick}
+          aria-describedby="skip-transcript-description"
+          tabIndex={0}>
+          {this.props.skipTranscript}
+        </div>
+        <span id="skip-transcript-description" className={styles.srOnly}>
+          {this.props.skipTranscriptDescription}
+        </span>
       </div>
     );
   };

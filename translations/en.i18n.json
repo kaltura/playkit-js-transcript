@@ -15,6 +15,7 @@
       "whoops": "Whoops!",
       "load_failed": "Failed to load transcript",
       "skip_transcript": "Skip transcript",
+      "skip_transcript_description": "Activates to move focus to the Resume AutoScroll button",
       "smallScreenText": "To see the transcript, go to full screen",
       "smallScreenMobileText": "To see the transcript, rotate the phone",
       "attach_transcript_text": "Transcript popped out",
