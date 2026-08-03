@@ -4,21 +4,26 @@ import {Button, ButtonType, ButtonSize} from '@playkit-js/common/dist/components
 import {OnClickEvent} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import * as styles from './attach-placeholder.scss';
 
-const {Text} = ui.preacti18n;
+const {withText, Text} = ui.preacti18n;
+
+const translates = {
+  hideTranscriptPanel: <Text id="transcript.hide_transcript_panel">Hide transcript panel</Text>
+};
 
 interface AttachPlaceholderProps {
   onAttach: () => void;
   onClose: (e: OnClickEvent, byKeyboard: boolean) => void;
+  hideTranscriptPanel?: string;
 }
 
-export const AttachPlaceholder = ({onAttach, onClose}: AttachPlaceholderProps) => {
+export const AttachPlaceholder = withText(translates)(({onAttach, onClose, hideTranscriptPanel}: AttachPlaceholderProps) => {
   return (
     <div className={styles.attachPlaceholderContainer} data-testid="transcriptAttachPlaceholder">
       <div className={styles.attachHeader}>
         <div className={styles.attachHeaderTitle}>
           <Text id="transcript.transcript">Transcript</Text>
         </div>
-        <Button type={ButtonType.borderless} size={ButtonSize.medium} icon={'close'} onClick={onClose}/>
+        <Button type={ButtonType.borderless} size={ButtonSize.medium} icon={'close'} onClick={onClose} ariaLabel={hideTranscriptPanel}/>
       </div>
       <div className={styles.attachContent}>
         <div className={styles.attachText}>
@@ -30,4 +35,4 @@ export const AttachPlaceholder = ({onAttach, onClose}: AttachPlaceholderProps) =
       </div>
     </div>
   );
-};
+});
