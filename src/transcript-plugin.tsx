@@ -240,13 +240,13 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     return this.sidePanelsManager!.isItemActive(this._transcriptPanel);
   };
 
-  private _handleClickOnPluginIcon = (e: OnClickEvent, byKeyboard?: boolean) => {
+  private _handleClickOnPluginIcon = (e?: OnClickEvent, byKeyboard?: boolean) => {
     if (this._isPluginActive()) {
       this._triggeredByKeyboard = false;
       this._deactivatePlugin();
       this._pluginState = PluginStates.CLOSED;
     } else {
-      this._triggeredByKeyboard = Boolean(byKeyboard || isKeyboardEvent(e));
+      this._triggeredByKeyboard = Boolean(byKeyboard || (e && isKeyboardEvent(e)));
       this._activatePlugin();
     }
   };
@@ -393,7 +393,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
         ariaLabel: translates.transcript,
         order: 30,
         svgIcon: {path: icons.PLUGIN_ICON, viewBox: `0 0 ${icons.BigSize} ${icons.BigSize}`},
-        onClick: this._handleClickOnPluginIcon as () => void,
+        onClick: this._handleClickOnPluginIcon,
         component: withText(translates)((props: {showTranscript: string; hideTranscript: string}) => {
           const isActive = this._isPluginActive();
           const label = isActive ? props.hideTranscript : props.showTranscript;

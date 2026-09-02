@@ -1,6 +1,8 @@
 import {ui} from '@playkit-js/kaltura-player-js';
 import {mockKalturaBe, loadPlayer, clickClosePluginButton} from './env';
 
+const FOCUS_FALLBACK_WAIT = 600;
+
 const MANIFEST = `#EXTM3U
 #EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="audio",LANGUAGE="en",NAME="English",AUTOSELECT=YES,DEFAULT=YES,URI="${location.origin}/media/index_1.m3u8",SUBTITLES="subs"
 #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=509496,RESOLUTION=480x272,AUDIO="audio",SUBTITLES="subs"
@@ -63,6 +65,36 @@ describe('Transcript plugin', () => {
       });
     });
 
+    it('should restore focus to the plugin or more plugins button when closed by keyboard', () => {
+      mockKalturaBe();
+      loadPlayer().then(() => {
+        cy.get('[aria-label="Search in Transcript"]').focus().trigger('keyup', {keyCode: 27});
+        cy.get('[data-testid="transcript_root"]').should('have.css', 'visibility', 'hidden');
+        cy.focused().should('have.attr', 'tabindex', '0');
+      });
+    });
+
+    it('should not call focus restoration again if the user moved focus after closing', () => {
+      mockKalturaBe();
+      loadPlayer().then(kalturaPlayer => {
+        cy.document().then(document => {
+          const initiallyFocusedTarget = document.createElement('button');
+          const focusTarget = document.createElement('button');
+          document.body.appendChild(initiallyFocusedTarget);
+          document.body.appendChild(focusTarget);
+          const upperBarManager = kalturaPlayer.getService('upperBarManager');
+          const focusPluginButton = cy.stub(upperBarManager, 'focusPluginButton').callsFake(() => initiallyFocusedTarget.focus());
+
+          cy.get('[aria-label="Search in Transcript"]').focus().trigger('keyup', {keyCode: 27});
+          cy.get('[data-testid="transcript_root"]').should('have.css', 'visibility', 'hidden');
+          cy.wrap(initiallyFocusedTarget).should('have.focus');
+          focusTarget.focus();
+          cy.wait(FOCUS_FALLBACK_WAIT);
+          cy.wrap(focusPluginButton).should('have.been.calledOnce');
+        });
+      });
+    });
+
     it('should select captions and highlight them', () => {
       mockKalturaBe();
       loadPlayer().then(kalturaPlayer => {
@@ -105,6 +137,23 @@ describe('Transcript plugin', () => {
         });
       });
     });
+
+    it('should set focus to search input if plugin is opened by a screen reader from more plugins', () => {
+      mockKalturaBe();
+      loadPlayer({expandOnFirstPlay: false}).then(kalturaPlayer => {
+        cy.get('[data-testid="transcript_pluginButton"]').should('exist').then(() => {
+          const upperBarManager = kalturaPlayer.getService('upperBarManager');
+          const transcriptControl = Array.from(upperBarManager.componentsRegistry.values()).find(
+            (control: any) => control.displayName === 'Transcript'
+          ) as any;
+          cy.window().then(win => {
+            transcriptControl.onClick(new win.PointerEvent('click', {pointerType: 'mouse'}));
+          });
+          cy.get('[aria-label="Search in Transcript"]').should('have.focus');
+        });
+      });
+    });
+
     it('should search for the word "first" and find 2 results', () => {
       mockKalturaBe();
       loadPlayer().then(() => {
