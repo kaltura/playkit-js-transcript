@@ -8,22 +8,16 @@ const {Tooltip, Icon} = KalturaPlayer.ui.components;
 
 interface PluginButtonProps {
   isActive: boolean;
-  setRef?: (ref: HTMLButtonElement | null) => void;
   id: string;
   icon: string;
   label?: string;
   dataTestId?: string;
 }
 
-export const PluginButton = ({isActive, label, id, icon, dataTestId, setRef}: PluginButtonProps) => {
+export const PluginButton = ({isActive, label, id, icon, dataTestId}: PluginButtonProps) => {
   return (
     <Tooltip label={label} type="bottom-left" strictPosition={true}>
         <button
-          ref={node => {
-            if (setRef) {
-              setRef(node);
-            }
-          }}
           tabIndex={0}
           type="button"
           aria-label={label}
