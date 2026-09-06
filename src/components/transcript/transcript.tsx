@@ -592,7 +592,7 @@ export class Transcript extends Component<TranscriptProps, TranscriptState> {
     return (
       <ScreenReaderProvider>
         <div
-          className={`${styles.root} ${kitchenSinkActive || kitchenSinkDetached ? '' : styles.hidden}`}
+          className={`${styles.root} playkit-transcript ${kitchenSinkActive || kitchenSinkDetached ? '' : styles.hidden}`}
           ref={node => {
             this._widgetRootRef = node;
           }}
