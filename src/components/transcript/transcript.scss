@@ -21,14 +21,14 @@ $button-height: 32px;
 .root {
   display: flex;
   justify-content: center;
-  padding: 16px 4px 0px 0px;
+  padding: var(--transcript-panel-padding, 16px 4px 0 0);
   color: $tone-1-color;
   height: 100%;
-  width: 100%;
+  width:  100%;
   position: absolute;
-  background: $plugin-background;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: var(--transcript-panel-background, rgba(0, 0, 0, 0.6));
+  backdrop-filter: blur(var(--transcript-panel-blur, 8px));
+  -webkit-backdrop-filter: blur(var(--transcript-panel-blur, 8px));
   z-index: 1;
   cursor: default;
   .skip-transcript-button {

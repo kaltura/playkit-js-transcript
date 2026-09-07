@@ -210,6 +210,30 @@ Bump version: `yarn release`;<br/>
 > ##### Default: `false`
 >
 
+<a name="theming"></a>
+## Theming
+
+The plugin root element always carries the class `playkit-transcript`, providing a stable, non-hashed selector for CSS overrides.
+
+The following CSS custom properties can be set on `.playkit-transcript` to customise the plugin appearance:
+
+| Property | Default | Description |
+|---|---|---|
+| `--transcript-panel-padding` | `16px 4px 0 0` | Padding inside the panel root |
+| `--transcript-panel-background` | `rgba(0,0,0,0.6)` | Panel background colour |
+| `--transcript-panel-blur` | `8px` | `backdrop-filter` blur radius |
+| `--transcript-caption-font-size` | `14px` | Font size of caption text |
+| `--transcript-caption-line-height` | `18px` | Line height of caption text |
+| `--transcript-caption-time-font-size` | `12px` | Font size of caption timestamps |
+
+Example:
+```css
+.playkit-transcript {
+  --transcript-panel-background: rgba(20, 20, 20, 0.85);
+  --transcript-caption-font-size: 16px;
+}
+```
+
 <a name="dependencies"></a>
 ## Dependencies
 

@@ -2,6 +2,15 @@ body {
   background-color: #212121;
 }
 
+.playkit-transcript {
+  --transcript-panel-padding: 16px 4px 0 0;
+  --transcript-panel-background: rgba(0, 0, 0, 0.6);
+  --transcript-panel-blur: 8px;
+  --transcript-caption-font-size: 14px;
+  --transcript-caption-line-height: 18px;
+  --transcript-caption-time-font-size: 12px;
+}
+
 #player-placeholder {
   margin: 100px auto;
   width: 768px;
