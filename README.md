@@ -219,11 +219,9 @@ The following CSS custom properties can be set on `.playkit-transcript` to custo
 
 | Property | Default | Description |
 |---|---|---|
-| `--transcript-panel-width` | `100%` | Width of the transcript panel root element |
 | `--transcript-panel-padding` | `16px 4px 0 0` | Padding inside the panel root |
 | `--transcript-panel-background` | `rgba(0,0,0,0.6)` | Panel background colour |
 | `--transcript-panel-blur` | `8px` | `backdrop-filter` blur radius |
-| `--transcript-header-font-size` | `16px` | Font size of the panel header |
 | `--transcript-caption-font-size` | `14px` | Font size of caption text |
 | `--transcript-caption-line-height` | `18px` | Line height of caption text |
 | `--transcript-caption-time-font-size` | `12px` | Font size of caption timestamps |
