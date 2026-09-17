@@ -2,8 +2,9 @@
   "hi_in": {
     "transcript": {
       "jump_to": "इस पर जाएँ",
-      "captions_list": "कैप्शन सूची"
-
+      "captions_list": "कैप्शन सूची",
+      "skip_transcript_description": "फ़ोकस को 'ऑटोस्क्रॉल फिर से शुरू करें' बटन पर ले जाने के लिए सक्रिय करता है",
+      "hide_transcript_panel": "ट्रांसक्रिप्ट पैनल छिपाएँ"
     }
   }
 }

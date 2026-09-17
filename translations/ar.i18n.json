@@ -2,7 +2,9 @@
   "ar": {
     "transcript": {
       "jump_to": "انتقل إلى",
-      "captions_list": "قائمة التسميات التوضيحية"
+      "captions_list": "قائمة التسميات التوضيحية",
+      "skip_transcript_description": "يؤدي تفعيله إلى نقل التركيز إلى زر «استئناف التمرير التلقائي»،",
+      "hide_transcript_panel": "إخفاء لوحة النص المُفرَّغ"
     }
   }
 }
