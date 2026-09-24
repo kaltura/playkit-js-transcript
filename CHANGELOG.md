@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 3.8.0 (2026-09-24)
+
+
+### Features
+
+* **FEC-14943:** Transcript plugin: expose CSS custom properties and stable root class for theming ([#295](https://github.com/kaltura/playkit-js-transcript/issues/295)) ([15b5060](https://github.com/kaltura/playkit-js-transcript/commit/15b5060afdc35867e76ebe663b662a992842b990))
+
 ### 3.7.19 (2026-09-03)
 
 ### 3.7.18 (2026-08-28)
