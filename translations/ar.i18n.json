@@ -1,6 +1,32 @@
 {
   "ar": {
     "transcript": {
+      "hide_plugin": "إخفاء النص المفرغ",
+      "show_plugin": "إظهار النص المفرغ",
+      "more_options": "خيارات إضافية للنص المُفرَّغ",
+      "print_transcript": "طباعة النص المُفرَّغ الحالي",
+      "download_transcript": "تنزيل النص المُفرَّغ الحالي",
+      "search": "البحث في النص المُفرَّغ",
+      "clear_search": "مسح البحث",
+      "next_search_match": "نتيجة البحث التالي",
+      "prev_search_match": "نتيجة البحث السابق",
+      "search_results": "نتيجة البحث {{current}} من إجمالي {{total}}",
+      "auto_scroll": "استئناف التمرير التلقائي",
+      "whoops": "عفوًا",
+      "load_failed": "تعذر تحميل النص المُفرَّغ",
+      "skip_transcript": "تخطّي النص المُفرَّغ",
+      "skip_transcript_description": "يُفعَّل لنقل التركيز إلى زر «استئناف التمرير التلقائي»",
+      "smallScreenText": "لعرض النص المُفرَّغ، انتقل إلى وضع ملء الشاشة",
+      "smallScreenMobileText": "لعرض النص المُفرَّغ، أدر الهاتف",
+      "attach_transcript_text": "فتح النص المُفرَّغ في نافذة منفصلة",
+      "attach_transcript_button": "إعادة إظهار النص المُفرَّغ",
+      "attach_transcript": "إعادة إظهار النص المُفرَّغ",
+      "hide_transcript_panel": "إخفاء لوحة النص المُفرَّغ",
+      "detach_transcript": "فتح النص المُفرَّغ في نافذة منفصلة",
+      "transcript": "النص المُفرَّغ",
+      "to_search_result": "الانتقال إلى النتيجة",
+      "to_search_result_label": "انقر للانتقال إلى هذا الموضع في الفيديو",
+      "navigation_instruction": "اضغط على مفتاح \"Home\" للانتقال إلى بداية النص المُفرَّغ. اضغط على مفتاح \"End\" للانتقال إلى نهاية النص المُفرَّغ",
       "jump_to": "انتقل إلى",
       "captions_list": "قائمة التسميات التوضيحية"
     }
