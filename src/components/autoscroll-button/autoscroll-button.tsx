@@ -19,7 +19,7 @@ const translates = {
 export const AutoscrollButton = withText(translates)(
   ({onClick, isAutoScrollEnabled, setAutoscrollButtonRef, autoScrollLabel}: AutoscrollButtonProps) => {
     return (
-      <div className={styles.autoscrollRoot} tabIndex={isAutoScrollEnabled ? -1 : 1}>
+      <div className={styles.autoscrollRoot}>
         <Button
           onClick={onClick}
           setRef={setAutoscrollButtonRef}
