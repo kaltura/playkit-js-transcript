@@ -2,28 +2,21 @@ import {h} from 'preact';
 import * as styles from './plugin-button.scss';
 import {ui} from '@playkit-js/kaltura-player-js';
 import {icons} from '../icons';
-import {A11yWrapper, OnClick} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 
 const {Tooltip, Icon} = KalturaPlayer.ui.components;
 
 interface PluginButtonProps {
   isActive: boolean;
-  setRef?: (ref: HTMLButtonElement | null) => void;
   id: string;
   icon: string;
   label?: string;
   dataTestId?: string;
 }
 
-export const PluginButton = ({isActive, label, id, icon, dataTestId, setRef}: PluginButtonProps) => {
+export const PluginButton = ({isActive, label, id, icon, dataTestId}: PluginButtonProps) => {
   return (
     <Tooltip label={label} type="bottom-left" strictPosition={true}>
         <button
-          ref={node => {
-            if (setRef) {
-              setRef(node);
-            }
-          }}
           tabIndex={0}
           type="button"
           aria-label={label}

@@ -1,6 +1,6 @@
 import * as sanitizeHtml from 'sanitize-html';
 import {h} from 'preact';
-import {OnClickEvent} from '@playkit-js/common/dist/hoc/a11y-wrapper';
+import {isKeyboardEvent, OnClickEvent} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import {ui, core} from '@playkit-js/kaltura-player-js';
 import {UpperBarManager, SidePanelsManager} from '@playkit-js/ui-managers';
 import {ObjectUtils, downloadContent, printContent, decodeString} from './utils';
@@ -19,6 +19,7 @@ const {withText, Text} = KalturaPlayer.ui.preacti18n;
 const {get} = ObjectUtils;
 
 const LOADING_TIMEOUT = 10000;
+const PLAYER_RESIZE_TRANSITION_TIMEOUT = 500;
 
 interface TimedMetadataEvent {
   payload: {
@@ -45,6 +46,8 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   private _captionMap: Map<string, Array<CuePointData>> = new Map();
   private _isLoading = false;
   private _loadingTimeoutId?: ReturnType<typeof setTimeout>;
+  private _focusAnimationFrameId?: ReturnType<typeof requestAnimationFrame>;
+  private _focusTimeoutId?: ReturnType<typeof setTimeout>;
   private _hasError = false;
   private _triggeredByKeyboard = false;
 
@@ -52,7 +55,6 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   private _transcriptIcon = -1;
   private _audioPlayerIconId = -1;
   private _pluginState: PluginStates | null = null;
-  private _pluginButtonRef: HTMLButtonElement | null = null;
 
   constructor(name: string, player: KalturaPlayerTypes.Player, config: TranscriptConfig) {
     super(name, player, config);
@@ -208,10 +210,28 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     });
   };
 
-  private _deactivatePlugin = () => {
+  private _deactivatePlugin = (restoreFocus = false) => {
     this.ready.then(() => {
       this.sidePanelsManager?.deactivateItem(this._transcriptPanel);
       this.upperBarManager?.update(this._transcriptIcon);
+      if (restoreFocus && this._transcriptIcon > 0) {
+        if (this._focusAnimationFrameId !== undefined) {
+          cancelAnimationFrame(this._focusAnimationFrameId);
+        }
+        this._focusAnimationFrameId = requestAnimationFrame(() => {
+          this._focusAnimationFrameId = undefined;
+          // @ts-ignore
+          this.upperBarManager?.focusPluginButton(this._transcriptIcon);
+        });
+        clearTimeout(this._focusTimeoutId);
+        this._focusTimeoutId = setTimeout(() => {
+          this._focusTimeoutId = undefined;
+          if (document.activeElement === document.body) {
+            // @ts-ignore
+            this.upperBarManager?.focusPluginButton(this._transcriptIcon);
+          }
+        }, PLAYER_RESIZE_TRANSITION_TIMEOUT);
+      }
       this.dispatchEvent(TranscriptEvents.TRANSCRIPT_CLOSE);
     });
   };
@@ -220,13 +240,13 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
     return this.sidePanelsManager!.isItemActive(this._transcriptPanel);
   };
 
-  private _handleClickOnPluginIcon = (e: OnClickEvent, byKeyboard?: boolean) => {
+  private _handleClickOnPluginIcon = (e?: OnClickEvent, byKeyboard?: boolean) => {
     if (this._isPluginActive()) {
       this._triggeredByKeyboard = false;
       this._deactivatePlugin();
       this._pluginState = PluginStates.CLOSED;
     } else {
-      this._triggeredByKeyboard = Boolean(byKeyboard);
+      this._triggeredByKeyboard = Boolean(byKeyboard || (e && isKeyboardEvent(e)));
       this._activatePlugin();
     }
   };
@@ -373,7 +393,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
         ariaLabel: translates.transcript,
         order: 30,
         svgIcon: {path: icons.PLUGIN_ICON, viewBox: `0 0 ${icons.BigSize} ${icons.BigSize}`},
-        onClick: this._handleClickOnPluginIcon as () => void,
+        onClick: this._handleClickOnPluginIcon,
         component: withText(translates)((props: {showTranscript: string; hideTranscript: string}) => {
           const isActive = this._isPluginActive();
           const label = isActive ? props.hideTranscript : props.showTranscript;
@@ -384,7 +404,6 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
               label={label}
               icon={icons.PLUGIN_ICON}
               dataTestId="transcript_pluginButton"
-              setRef={this._setPluginButtonRef}
             />
           );
         })
@@ -401,10 +420,6 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       this._activatePlugin(true);
     }
   }
-
-  private _setPluginButtonRef = (ref: HTMLButtonElement | null) => {
-    this._pluginButtonRef = ref;
-  };
 
   private _seekTo = (time: number) => {
     this.player.currentTime = time;
@@ -432,10 +447,7 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
   };
 
   private _handleClose = (e: OnClickEvent, byKeyboard: boolean) => {
-    if (byKeyboard) {
-      this._pluginButtonRef?.focus();
-    }
-    this._deactivatePlugin();
+    this._deactivatePlugin(byKeyboard);
     this._pluginState = PluginStates.CLOSED;
   };
 
@@ -452,12 +464,16 @@ export class TranscriptPlugin extends KalturaPlayer.core.BasePlugin {
       this._transcriptPanel = -1;
       this._transcriptIcon = -1;
       this._audioPlayerIconId = -1;
-      this._pluginButtonRef = null;
     }
     this._captionMap = new Map();
     this._activeCaptionMapId = '';
     this._isLoading = false;
     clearTimeout(this._loadingTimeoutId);
+    if (this._focusAnimationFrameId !== undefined) {
+      cancelAnimationFrame(this._focusAnimationFrameId);
+      this._focusAnimationFrameId = undefined;
+    }
+    clearTimeout(this._focusTimeoutId);
     this._hasError = false;
     this._triggeredByKeyboard = false;
   }
