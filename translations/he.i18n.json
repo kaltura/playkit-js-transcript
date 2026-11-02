@@ -2,7 +2,9 @@
   "he": {
     "transcript": {
       "jump_to": "מעבר אל",
-      "captions_list": " רשימת כתוביות"
+      "captions_list": " רשימת כתוביות",
+      "skip_transcript_description": "מפעיל כדי להעביר את המוקד ללחצן „המשך גלילה אוטומטית”",
+      "hide_transcript_panel": "הסתרת חלונית התמלול"
     }
   }
 }
