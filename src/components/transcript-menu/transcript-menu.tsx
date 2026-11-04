@@ -6,6 +6,7 @@ import { PopoverOverlay } from '../popover-overlay';
 import {capitalizeFirstLetter} from '../../utils';
 
 import {Button, ButtonType} from '@playkit-js/common/dist/components/button';
+import {Icon, IconSize} from '@playkit-js/common/dist/icon';
 const {withText, Text} = KalturaPlayer.ui.preacti18n;
 const {SidePanelPositions, getOverlayPortalElement} = ui;
 const {focusElement} = ui.Utils;
@@ -164,10 +165,11 @@ class TranscriptMenu extends Component<TranscriptMenuProps, TranscriptMenuState>
     return items.length ? (
       <PopoverMenu
         items={items}
+        moreOptionsLabel={this.props.moreOptionsLabel}
         kitchenSinkDetached={kitchenSinkDetached}
         popOverMenuHeight={popOverHeight}
         shouldUseCalculatedHeight={shouldUseCalculatedHeight}>
-        <Button type={ButtonType.borderless} icon={'more'} tabIndex={-1} ariaLabel={this.props.moreOptionsLabel} />
+        <Icon name={'more'} size={IconSize.medium} />
       </PopoverMenu>
     ) : null;
   }
