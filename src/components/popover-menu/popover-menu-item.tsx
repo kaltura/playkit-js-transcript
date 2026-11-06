@@ -159,7 +159,8 @@ export const PopoverMenuItem = (props: PopoverMenuItemProps) => {
       }}
     >
       <div
-        tabIndex={isDisabled ? -1 : 0}
+        tabIndex={-1}
+        aria-disabled={isDisabled}
         aria-checked={isSelected}
         className={`${styles.popoverMenuItem} ${isDisabled ? styles.popoverMenuItemDisabled : ''}`}
         data-testid={testId}
