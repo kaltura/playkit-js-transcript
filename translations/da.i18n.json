@@ -1,0 +1,32 @@
+{
+  "da": {
+    "transcript": {
+      "hide_plugin": "Skjul transskription",
+      "show_plugin": "Vis transskription",
+      "more_options": "Flere transskriptionsindstillinger",
+      "print_transcript": "Udskriv aktuel transskription",
+      "download_transcript": "Download aktuel transskription",
+      "search": "Søg i transskription",
+      "clear_search": "Ryd søgning",
+      "next_search_match": "Næste søgeresultat",
+      "prev_search_match": "Forrige søgeresultat",
+      "search_results": "Søgeresultat {{current}} af {{total}}",
+      "auto_scroll": "Genoptag automatisk rulning",
+      "whoops": "Ups!",
+      "load_failed": "Kunne ikke indlæse transskription",
+      "skip_transcript": "Spring transskription over",
+      "smallScreenText": "Skift til fuld skærm for at se transskriptionen",
+      "smallScreenMobileText": "Drej telefonen for at se transskriptionen",
+      "attach_transcript_text": "Transskriptionen er løsrevet",
+      "attach_transcript_button": "Sæt den tilbage",
+      "attach_transcript": "Sæt transskriptionen tilbage",
+      "detach_transcript": "Løsriv transskription",
+      "transcript": "Transskription",
+      "to_search_result": "Gå til resultat",
+      "to_search_result_label": "Klik for at hoppe til dette punkt i videoen",
+      "navigation_instruction": "Tryk på Home-tasten for at gå til begyndelsen af transskriptionen. Tryk på End-tasten for at hoppe til slutningen af transskriptionen.",
+      "jump_to": "Hop til",
+      "captions_list": "Undertekstliste"
+    }
+  }
+}
