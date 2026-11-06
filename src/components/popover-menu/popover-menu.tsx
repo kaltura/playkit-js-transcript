@@ -33,6 +33,7 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
   private _controlElementRef: HTMLDivElement | null = null;
   private _popoverElementRef: HTMLDivElement | null = null;
   private _itemsRefMap: Map<number, HTMLDivElement | null> = new Map();
+  private _tabCloseTimeout: ReturnType<typeof setTimeout> | null = null;
 
   eventManager: any;
 
@@ -43,11 +44,18 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
     };
 
     this.props.eventManager?.listen(document, 'click', this._handleMouseEvent);
-    this.props.eventManager?.listen(document, 'keydown', this._handleKeydownEvent);
   }
 
   componentWillUnmount() {
+    this._clearTabCloseTimeout();
     this._itemsRefMap = new Map();
+  }
+
+  private _clearTabCloseTimeout() {
+    if (this._tabCloseTimeout) {
+      clearTimeout(this._tabCloseTimeout);
+      this._tabCloseTimeout = null;
+    }
   }
 
   private _handleMouseEvent = (event: MouseEvent) => {
@@ -69,17 +77,30 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
     }
   };
 
-  private _handleKeydownEvent = (event: KeyboardEvent) => {
-    const eventTarget = event.target as Node | null;
-    if (
-      this.state.isOpen &&
-      event.code === KeyCode.Tab &&
-      !this._controlElementRef?.contains(eventTarget) &&
-      !this._popoverElementRef?.contains(eventTarget) &&
-      eventTarget !== this._controlElementRef
-    ) {
-      this._closePopover();
+  private _handleMenuKeyDown = (event: KeyboardEvent) => {
+    if (!this.state.isOpen || event.code !== KeyCode.Tab) {
+      return;
     }
+    if (event.shiftKey) {
+      // the previous tab stop is the menu button; it is re-created on close, so focus it after render
+      event.preventDefault();
+      this.setState({isOpen: false}, () => {
+        this._controlElementRef?.focus();
+      });
+      return;
+    }
+    // let the browser move focus to the next tab stop first, then close (closing unmounts the focused item)
+    this._clearTabCloseTimeout();
+    this._tabCloseTimeout = setTimeout(() => {
+      this._tabCloseTimeout = null;
+      // if Tab was cancelled elsewhere, focus is still on an item that is about to unmount: move it to the menu button
+      const focusStayedInMenu = !!this._popoverElementRef?.contains(document.activeElement);
+      this.setState({isOpen: false}, () => {
+        if (focusStayedInMenu) {
+          this._controlElementRef?.focus();
+        }
+      });
+    });
   };
 
   private _handleUpKeyPressed = (currentIndex: number) => () => {
@@ -112,6 +133,9 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
 
   private _togglePopover = () => {
     const isOpen = !this.state.isOpen;
+    if (isOpen) {
+      this._clearTabCloseTimeout();
+    }
 
     this.setState({isOpen}, () => {
       if (isOpen) {
@@ -121,17 +145,6 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
         if (firstNonDisabledIndex !== -1) {
           this._getItemRef(firstNonDisabledIndex)?.focus();
         }
-        this.props.eventManager?.listen(
-          this._controlElementRef,
-          'keydown',
-          (event: KeyboardEvent) => {
-            if (event.code === KeyCode.Tab) {
-              if (firstNonDisabledIndex !== -1) {
-                this._getItemRef(firstNonDisabledIndex)?.focus();
-              }
-            }
-          }
-        );
       }
     });
   };
@@ -205,6 +218,7 @@ class PopoverMenu extends Component<PopoverMenuProps, PopoverMenuState> {
         <div
           className={styles.popoverComponent}
           onKeyUp={this._handleKeyupEvent}
+          onKeyDown={this._handleMenuKeyDown}
           style={popoverStyle}
           role="menu"
           aria-expanded={this.state.isOpen}
